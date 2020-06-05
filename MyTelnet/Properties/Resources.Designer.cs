@@ -63,6 +63,16 @@ namespace MyGpnSoftware.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
+        internal static System.Drawing.Bitmap 下载升级 {
+            get {
+                object obj = ResourceManager.GetObject("下载升级", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
         internal static System.Drawing.Bitmap 导入要求 {
             get {
                 object obj = ResourceManager.GetObject("导入要求", resourceCulture);
@@ -73,9 +83,9 @@ namespace MyGpnSoftware.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
-        internal static System.Drawing.Bitmap 总界面 {
+        internal static System.Drawing.Bitmap 批量 {
             get {
-                object obj = ResourceManager.GetObject("总界面", resourceCulture);
+                object obj = ResourceManager.GetObject("批量", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -83,9 +93,29 @@ namespace MyGpnSoftware.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
-        internal static System.Drawing.Bitmap 批量 {
+        internal static System.Drawing.Bitmap 排查故障2 {
             get {
-                object obj = ResourceManager.GetObject("批量", resourceCulture);
+                object obj = ResourceManager.GetObject("排查故障2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap 故障排查1 {
+            get {
+                object obj = ResourceManager.GetObject("故障排查1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap 运行exe {
+            get {
+                object obj = ResourceManager.GetObject("运行exe", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

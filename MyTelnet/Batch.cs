@@ -1,13 +1,16 @@
-﻿using System;
+﻿using MetroFramework.Forms;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.OleDb;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
 using System.Net;
 using System.Net.NetworkInformation;
+using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -15,7 +18,7 @@ using System.Windows.Forms;
 
 namespace MyGpnSoftware
 {
-    public partial class Batch : Form
+    public partial class Batch : MetroForm
     {
         int doneCount = 0;
         public Batch()
@@ -24,7 +27,7 @@ namespace MyGpnSoftware
             InitializeComponent();
         }
 
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private void DataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
 
@@ -36,14 +39,19 @@ namespace MyGpnSoftware
         public string app;
         public string GPNUSR;
         public string GPNPSD;
+        public string GPNPSDEN;
 
-        private void butshow_Click(object sender, EventArgs e)
+
+        //导入Excel表格
+        private void Butshow_Click(object sender, EventArgs e)
         {
             MessageBox.Show("导出「网管资源列表的Excel表格」尝试导入！");
             dataGridView1.DataSource = null;
             dataGridView1.Columns.Clear();
-            OpenFileDialog ofd = new OpenFileDialog();//首先根据打开对话框，选择excel表格
-            ofd.Filter = "Excel office2003(*.xls)|*.xls|Excel office2010(*.xlsx)|*.xlsx";//打开对话框筛选器
+            OpenFileDialog ofd = new OpenFileDialog
+            {
+               // Filter = "Excel office2003(*.xls)|*.xls|Excel office2010(*.xlsx)|*.xlsx"//打开对话框筛选器
+            };//首先根据打开对话框，选择excel表格
             string strPath;//完整的路径名
             string strCon = "";
             if (ofd.ShowDialog() == DialogResult.OK)
@@ -135,45 +143,47 @@ namespace MyGpnSoftware
                 catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message);//捕捉异常
-                    MessageBox.Show("请使用Office 2003版本格式内容，如.xls格式");
+                    MessageBox.Show("请使用Office2003或者更新版本格式内容，如.xls或者.xlsx格式");
                 }
             }
         }
-
-        private void butout_Click(object sender, EventArgs e)
+        //导出Excel表格
+        private void Butout_Click(object sender, EventArgs e)
         {
             NPOIExcel ET = new NPOIExcel();
             ET.ExportExcel("sheet1",dataGridView1);
         }
 
-        public void save(object obj)
+        //保存业务函数
+        public void Save(object obj)
         {
 
             int i  = int.Parse(obj.ToString());
             this.dataGridView1.Rows[i].Cells["开始时间"].Value = DateTime.Now.ToString();
-            Ping ping = new Ping();
-            int timeout = 500;
             MySocket mysocket1 = new MySocket();
-            string ip = "";
-            ip = dataGridView1.Rows[i].Cells["地址"].Value.ToString();
+            string ip =  dataGridView1.Rows[i].Cells["地址"].Value.ToString();
+            Ping ping = new Ping();
+            PingReply pingReply = ping.Send(ip);
 
-            // MessageBox.Show(ip);
-            PingReply pingReply = ping.Send(ip, timeout);
-            for (int j = 0; j <= 5; j++)
-            {
-
-
-                pingReply = ping.Send(ip, timeout);
-                if (pingReply.Status == IPStatus.Success)
-                {
+            for (int a = 0; a <= 1; a++) {
+                if (pingReply.Status == IPStatus.Success) {
                     break;
                 }
-                Thread.Sleep(10);
-            }//判断请求是否超时
+                Thread.Sleep(1000);
+                pingReply = ping.Send(ip);
+            }
             if  (pingReply.Status == IPStatus.Success)
             {
                 this.dataGridView1.Rows[i].Cells["ping测试"].Value = "OK";
+                this.dataGridView1.Rows[i].Cells["升级后当前版本"].Value = "初始化";
+                this.dataGridView1.Rows[i].Cells["OMU序列号"].Value = "初始化";
+                this.dataGridView1.Rows[i].Cells["NMS序列号"].Value = "初始化";
+                this.dataGridView1.Rows[i].Cells["NMS硬件版本"].Value = "初始化";
+                this.dataGridView1.Rows[i].Cells["FPGA版本"].Value = "初始化";
+                this.dataGridView1.Rows[i].Cells["主控背板误码"].Value = "初始化";
+                this.dataGridView1.Rows[i].Cells["主控保护"].Value = "初始化";
                 this.dataGridView1.Rows[i].Cells["最终结果"].Value = "初始化";
+                
 
                 this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.White;
 
@@ -181,71 +191,482 @@ namespace MyGpnSoftware
                 if (bo)
                 {
 
-                    if (mysocket1.SendData(GPNUSR))
+                    mysocket1.SendData(GPNUSR);
+                    for (int a = 0; a <= 1000; a++)
                     {
-                        mysocket1.SendData(GPNPSD);
-                        mysocket1.SendData("enable");
-                        Thread.Sleep(200);
-                        string pass = mysocket1.ReceiveData(int.Parse("10"));
-                        if (pass.Contains("Pas"))
+                        string login = mysocket1.ReceiveData(int.Parse(yanshi));
+                        // MessageBox.Show(login);
+                        if (login.Contains("Password:"))
                         {
                             mysocket1.SendData(GPNPSD);
-                            Thread.Sleep(500);
-                            string locked = mysocket1.ReceiveData(int.Parse("10"));
-                            if (locked.Contains("configuration is locked by other user"))
+                            break;
+                        }
+                        Thread.Sleep(10);
+                    }
+                    for (int c = 0; c <= 1000; c++)
+                    {
+                        string passd = mysocket1.ReceiveData(int.Parse(yanshi));
+                        //MessageBox.Show(passd);
+                        if (passd.Contains("Error") || passd.Contains("failed") || passd.Contains("Kerberos") || passd.Contains("Bad passwords"))
+                        {
+                            
+                            //textDOS.AppendText("\r\n" + "用户名或密码错误，请重新输入");
+                            this.dataGridView1.Rows[i].Cells["最终结果"].Value = "用户名密码错误";
+                            this.dataGridView1.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString();
+                            this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.Yellow;
+                            lock (sb)
                             {
-                                mysocket1.SendData("grosadvdebug");
-                                Thread.Sleep(200);
-                                mysocket1.SendData("vty user limit no");
-                                Thread.Sleep(200);
-                                mysocket1.SendData("exit");
-                                Thread.Sleep(200);
-                                mysocket1.SendData("enable");
-                                Thread.Sleep(200);
-                                mysocket1.SendData(GPNPSD);
-                                Thread.Sleep(500);
+                                int s = int.Parse(toolStripStatusLabelshibai.Text);
+                                s = s + 1;
+                                toolStripStatusLabelshibai.Text = s.ToString();
+                            }
+                            lock (o1)
+                            {
+                                int d = int.Parse(toolStripStatusLabelshengyu.Text);
+                                d = d - 1;
+                                toolStripStatusLabelshengyu.Text = d.ToString();
+
+                                doneCount++;
 
                             }
-
+                            return;
                         }
-                        mysocket1.SendData("save");
-                            for (int a = 1; a <= 5000; a++)
+                        if (passd.Contains("Password:"))
+                        {
+                            mysocket1.SendData(GPNPSD);
+                        }
+                        if (passd.Contains(">"))
+                        {
+                            //textDOS.AppendText("\r\n" + "用户名密码正确==========================================OK");
+                            mysocket1.SendData("enable");
+                            for (int b = 0; b <= 1000; b++)
                             {
-                                string box = mysocket1.ReceiveData(int.Parse("10")); ;
-                                if (box.Contains("successfully"))
+                                string pass = mysocket1.ReceiveData(int.Parse(yanshi));
+                                if (pass.Contains("Pas"))
                                 {
-                                    this.dataGridView1.Rows[i].Cells["最终结果"].Value = "成功";
-                                    this.dataGridView1.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString();
-                                    this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.GreenYellow;
-                                    lock (cg)
+                                    mysocket1.SendData(GPNPSDEN);
+                                    //Thread.Sleep(500);
+                                    for (int d = 0; d <= 1000; d++)
                                     {
-                                        int c = int.Parse(toolStripStatusLabelchenggong.Text);
-                                        c = c + 1;
-                                        toolStripStatusLabelchenggong.Text = c.ToString();
-                                        break;
-                                    }
-                                }
-                                if (box.Contains("erro"))
-                                {
-                                    this.dataGridView1.Rows[i].Cells["最终结果"].Value = "失败";
-                                    this.dataGridView1.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString();
-                                    this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.Yellow;
-                                    lock (sb)
-                                    {
-                                        int s = int.Parse(toolStripStatusLabelshibai.Text);
-                                        s = s + 1;
-                                        toolStripStatusLabelshibai.Text = s.ToString();
-                                        break;
-                                    }
-                                }
+                                        string locked = mysocket1.ReceiveData(int.Parse(yanshi));
+                                        if (locked.Contains("configuration is locked by other user"))
+                                        //configuration is locked by other user
+                                        {
+                                            //textDOS.AppendText("\r\n" + "已经有用户登录，正在重新登录========================OK");
+                                            mysocket1.SendData("grosadvdebug");
+                                            Thread.Sleep(200);
+                                            mysocket1.SendData("vty user limit no");
+                                            Thread.Sleep(200);
+                                            mysocket1.SendData("exit");
+                                            Thread.Sleep(200);
+                                            mysocket1.SendData("enable");
+                                            Thread.Sleep(200);
+                                            if (mysocket1.ReceiveData(int.Parse(yanshi)).Contains("Pas"))
+                                            {
+                                                mysocket1.SendData(GPNPSDEN);
+                                                Thread.Sleep(200);
+                                                if (!mysocket1.ReceiveData(int.Parse(yanshi)).Contains("failed"))
+                                                {
+                                                    this.dataGridView1.Rows[i].Cells["最终结果"].Value = "用户名密码错误2";
+                                                    this.dataGridView1.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString();
+                                                    this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.Yellow;
+                                                    lock (sb)
+                                                    {
+                                                        int s = int.Parse(toolStripStatusLabelshibai.Text);
+                                                        s = s + 1;
+                                                        toolStripStatusLabelshibai.Text = s.ToString();
+                                                    }
+                                                    lock (o1)
+                                                    {
+                                                        int e = int.Parse(toolStripStatusLabelshengyu.Text);
+                                                        e = e - 1;
+                                                        toolStripStatusLabelshengyu.Text = e.ToString();
 
+                                                        doneCount++;
+
+                                                    }
+                                                    return;
+                                                }
+
+                                                break;
+                                            }
+                                        }
+                                        if (locked.Contains("#"))
+                                        {
+                                            break;
+                                        }
+                                        Thread.Sleep(1);
+                                    }
+                                    break;
+                                }
+                                if (pass.Contains("#"))
+                                {
+                                    break;
+                                }
+                                if (pass.Contains("configuration is locked by other user"))
+                                //configuration is locked by other user
+                                {
+                                    //textDOS.AppendText("\r\n" + "已经有用户登录，正在重新登录=============================OK");
+                                    mysocket1.SendData("grosadvdebug");
+                                    Thread.Sleep(200);
+                                    mysocket1.SendData("vty user limit no");
+                                    Thread.Sleep(200);
+                                    mysocket1.SendData("exit");
+                                    Thread.Sleep(200);
+                                    mysocket1.SendData("enable");
+                                    Thread.Sleep(200);
+                                    if (mysocket1.ReceiveData(int.Parse(yanshi)).Contains("Pas"))
+                                    {
+                                        mysocket1.SendData(GPNPSDEN);
+                                        Thread.Sleep(200);
+                                        if (!mysocket1.ReceiveData(int.Parse(yanshi)).Contains("failed"))
+                                        {
+                                            this.dataGridView1.Rows[i].Cells["最终结果"].Value = "用户名密码错误2";
+                                            this.dataGridView1.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString();
+                                            this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.Yellow;
+                                            lock (sb)
+                                            {
+                                                int s = int.Parse(toolStripStatusLabelshibai.Text);
+                                                s = s + 1;
+                                                toolStripStatusLabelshibai.Text = s.ToString();
+                                            }
+                                            lock (o1)
+                                            {
+                                                int e = int.Parse(toolStripStatusLabelshengyu.Text);
+                                                e = e - 1;
+                                                toolStripStatusLabelshengyu.Text = e.ToString();
+
+                                                doneCount++;
+
+                                            }
+                                            return;
+                                        }
+
+                                        break;
+                                    }
+                                    break;
+                                }
                                 Thread.Sleep(1);
                             }
-                            mysocket1.SendData("logout");
+                            break;
+                        }
+                        Thread.Sleep(10);
+                    }
+
+                    mysocket1.SendData("show ver");
+                    string ver = "";
+                    string ver2 = "";
+                    for (int a = 0; a <= 1000; a++)
+                    {
+                        ver2 = mysocket1.ReceiveData(int.Parse(yanshi));
+                        ver = ver + ver2;
+                        if (ver2.Contains("Ctrl+c"))
+                        {
+                            mysocket1.SendDate("\r\n");
+                            //MessageBox.Show(ver);
+                        }
+                        if (ver2.Contains("(config)#"))
+                        {
+                            ver2 = mysocket1.ReceiveData(int.Parse(yanshi));
+                            ver = ver + ver2;
+                            break;
+                        }
+                        Thread.Sleep(10);
+                    }
+                    Regex r = new Regex(@"ProductOS\s*Version\s*([\w\d]+)[\s*\(]*", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                    string banben = r.Match(ver).Groups[1].Value;
+                    if (banben.ToString() == "")
+                    {
+                        this.dataGridView1.Rows[i].Cells["升级后当前版本"].Value = "获取失败";
+
+
+                    }
+                    else
+                    {
+                        this.dataGridView1.Rows[i].Cells["升级后当前版本"].Value = banben.ToString();
+
+
+                    }
+                    //MessageBox.Show(ver);
+                    Regex omusn5 = new Regex(@"SLOT  5 : GPN7600-[\s\S]*(OMU[\w\d]+)", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                    string OMUSN5 = omusn5.Match(ver).Groups[1].Value;
+                    
+                    if (OMUSN5 != "")
+                    {
+                        this.dataGridView1.Rows[i].Cells["OMU序列号"].Value = OMUSN5;
+                    }
+                    Regex omusn6 = new Regex(@"SLOT  6 : GPN7600-[\s\S]*(OMU[\w\d]+)", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                    string OMUSN6 = omusn6.Match(ver).Groups[1].Value;
+                    if (OMUSN6 != "")
+                    {
+                        this.dataGridView1.Rows[i].Cells["OMU序列号"].Value = OMUSN6;
+                    }
+                    
+                    Regex nmssn17 = new Regex(@"SLOT 17 : GPN7600[\s\S]*(G76NMS[\w\d]+)", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                    string NMSSN17 = nmssn17.Match(ver).Groups[1].Value;
+                    if (NMSSN17 != "") {
+                        this.dataGridView1.Rows[i].Cells["NMS序列号"].Value = NMSSN17;
+                    }
+                    Regex nmssn18 = new Regex(@"SLOT 18 : GPN7600[\s\S]*(G76NMS[\w\d]+)", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                    string NMSSN18 = nmssn18.Match(ver).Groups[1].Value;
+                    //MessageBox.Show(ver);
+                    //textDOS.AppendText(ver);
+
+                    //MessageBox.Show(NMSSN18);
+                    if (NMSSN18 != "")
+                    {
+                        this.dataGridView1.Rows[i].Cells["NMS序列号"].Value = NMSSN18;
+                    }
+                    Regex nmshard17 = new Regex(@"SLOT 17 : GPN7600[\-\d\w\s]*(V[\w\d\.]+)", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                    string NMSHard17 = nmshard17.Match(ver).Groups[1].Value;
+                    if (NMSHard17 != "")
+                    {
+                        this.dataGridView1.Rows[i].Cells["NMS硬件版本"].Value = NMSHard17;
+                    }
+                    Regex nmshard18 = new Regex(@"SLOT 18 : GPN7600[\-\d\w\s]*(V[\w\d\.]+)", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                    string NMSHard18 = nmshard18.Match(ver).Groups[1].Value;
+                    if (NMSHard18 != "")
+                    {
+                        this.dataGridView1.Rows[i].Cells["NMS硬件版本"].Value = NMSHard18;
+                    }
+                    if (ver.Contains("SLOT 17 : GPN7600") && ver.Contains("SLOT 18 : GPN7600"))
+                    {
+                        this.dataGridView1.Rows[i].Cells["主控保护"].Value = "双主控";
+                    }
+                    if (!ver.Contains("SLOT 17 : GPN7600") && ver.Contains("SLOT 18 : GPN7600"))
+                    {
+                        this.dataGridView1.Rows[i].Cells["主控保护"].Value = "18主用单主控";
+                    }
+                    if (ver.Contains("SLOT 17 : GPN7600") && !ver.Contains("SLOT 18 : GPN7600"))
+                    {
+                        this.dataGridView1.Rows[i].Cells["主控保护"].Value = "17主用单主控";
+                    }
+                    ver = "";
+                    mysocket1.SendData("show fpga-version");
+                    for (int a = 0; a <= 1000; a++)
+                    {
+                        ver2 = mysocket1.ReceiveData(int.Parse(yanshi));
+                        ver = ver + ver2;
+                        if (ver2.Contains("Ctrl+c"))
+                        {
+                            mysocket1.SendDate("\r\n");
+                        }
+                        if (ver2.Contains("#"))
+                        {
+                            break;
+                        }
+                        Thread.Sleep(1);
+                    }
+                    Regex nms0 = new Regex(@"nms.fpga:\s*([\d\.\w\d]+)", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                    Regex code0 = new Regex(@"fpga_code.bin:\s*([\d\.\w\d]+)", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                    string nmsfpga = nms0.Match(ver).Groups[1].Value;
+                    string code = code0.Match(ver).Groups[1].Value;
+                    if (nmsfpga.ToString() == "" || code.ToString() == "")
+                    {
+                        this.dataGridView1.Rows[i].Cells["FPGA版本"].Value = "获取失败";
+                        this.dataGridView1.Rows[i].Cells["最终结果"].Value = "失败";
+                        this.dataGridView1.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString();
+                        this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.Yellow;
+                        lock (sb)
+                        {
+                            int s = int.Parse(toolStripStatusLabelshibai.Text);
+                            s = s + 1;
+                            toolStripStatusLabelshibai.Text = s.ToString();
+                        }
+                    }
+                    else
+                    {
+
+                        this.dataGridView1.Rows[i].Cells["FPGA版本"].Value = "NMS:" + nmsfpga + "  CODE:" + code ;
+                        this.dataGridView1.Rows[i].Cells["最终结果"].Value = "成功";
+                        this.dataGridView1.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString();
+                        this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.GreenYellow;
+                        if (nmsfpga.ToString() != null )
+                        {
+                            Regex wuma0 = null;
+                            string wuma = "";
+                            string wuma2 = "";
+                            mysocket1.SendData("config msap");
+                            string dd = mysocket1.ReceiveData(int.Parse(yanshi));
+                            Thread.Sleep(200);
+                            mysocket1.SendData("show vc4");
+                            Thread.Sleep(200);
+                            ver = "";
+                            ver2 = "";
+                            for (int a = 0; a <= 500; a++)
+                            {
+                                ver2 = mysocket1.ReceiveData(int.Parse(yanshi));
+                                ver = ver + ver2;
+                                if (ver2.Contains("Ctrl+c"))
+                                {
+                                    mysocket1.SendDate("\r\n");
+                                }
+                                if (ver2.Contains("17")|| ver2.Contains("18"))
+                                {
+                                    break;
+                                }
+                                Thread.Sleep(10);
+                            }
+                            if (!ver.Contains("17") || !ver.Contains("18"))
+                            {
+                                this.dataGridView1.Rows[i].Cells["主控背板误码"].Value = "17或18槽不存在板卡";
+                            }
+                            if (ver.Contains("18") && !ver.Contains("17"))
+                            {
+                                wuma0 = new Regex(@"18\s*\w*\s*([\d]+)", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                                wuma = wuma0.Match(ver).Groups[1].Value;
+                                //dataGridView1.Rows[i].Cells["主控保护"].Value = "18主";
+
+                            }
+                            if (ver.Contains("18") && ver.Contains("17"))
+                            {
+                                wuma0 = new Regex(@"17\s*\w*\s*([\d]+)", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                                wuma = wuma0.Match(ver).Groups[1].Value;
+                               // dataGridView1.Rows[i].Cells["主控保护"].Value = "双主控";
+                            }
+                            if (!ver.Contains("18") || ver.Contains("17"))
+                            {
+                                wuma0 = new Regex(@"17\s*\w*\s*([\d]+)", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                                wuma = wuma0.Match(ver).Groups[1].Value;
+                               // dataGridView1.Rows[i].Cells["主控保护"].Value = "17主";
+                            }
+
+                            Thread.Sleep(int.Parse(comtime.Text));
+                             mysocket1.SendData("show vc4");
+                            Thread.Sleep(200);
+                            ver = "";
+                            ver2 = "";
+                            for (int a = 0; a <= 500; a++)
+                            {
+                                ver2 = mysocket1.ReceiveData(int.Parse(yanshi));
+                                ver = ver + ver2;
+                                if (ver2.Contains("Ctrl+c"))
+                                {
+                                    mysocket1.SendDate("\r\n");
+                                }
+                                if (ver2.Contains("17")|| ver2.Contains("18"))
+                                {
+                                    break;
+                                }
+                                Thread.Sleep(10);
+                            }
+                            if (ver.Contains("17")|| !ver.Contains("18")) {
+                                wuma0 = new Regex(@"17\s*\w*\s*([\d]+)", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                                wuma2 = wuma0.Match(ver).Groups[1].Value;
+                                if (wuma.ToString()!="" && wuma2.ToString()!= ""){
+                                    if (int.Parse(wuma.ToString()) == int.Parse(wuma2.ToString()))
+                                    {
+                                        this.dataGridView1.Rows[i].Cells["主控背板误码"].Value = "没有误码";
+                                        this.dataGridView1.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString();
+                                        this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.GreenYellow;
+
+                                    }
+                                    else
+                                    {
+                                        this.dataGridView1.Rows[i].Cells["主控背板误码"].Value = "存在误码" + wuma2;
+                                        this.dataGridView1.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString();
+                                        this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.Yellow;
+
+                                    }
+                                }
+
+                            }
+                            if (ver.Contains("17") && ver.Contains("18"))
+                            {
+                                wuma0 = new Regex(@"17\s*\w*\s*([\d]+)", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                                wuma2 = wuma0.Match(ver).Groups[1].Value;
+                                if (wuma.ToString() != "" && wuma2.ToString() != "")
+                                {
+                                    if (int.Parse(wuma.ToString()) == int.Parse(wuma2.ToString()))
+                                    {
+                                        this.dataGridView1.Rows[i].Cells["主控背板误码"].Value = "没有误码";
+                                        this.dataGridView1.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString();
+                                        this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.GreenYellow;
+
+                                    }
+                                    else
+                                    {
+                                        this.dataGridView1.Rows[i].Cells["主控背板误码"].Value = "存在误码" + wuma2;
+                                        this.dataGridView1.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString();
+                                        this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.Yellow;
+
+                                    }
+                                }
+
+                            }
+                            if (ver.Contains("18") && !ver.Contains("17"))
+                            {
+                                wuma0 = new Regex(@"18\s*\w*\s*([\d]+)", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                                wuma2 = wuma0.Match(ver).Groups[1].Value;
+                                if (wuma.ToString() != "" && wuma2.ToString() != "") {
+                                    if (int.Parse(wuma.ToString()) == int.Parse(wuma2.ToString()))
+                                    {
+                                        this.dataGridView1.Rows[i].Cells["主控背板误码"].Value = "没有误码";
+                                        this.dataGridView1.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString();
+                                        this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.GreenYellow;
+
+                                    }
+                                    else
+                                    {
+                                        this.dataGridView1.Rows[i].Cells["主控背板误码"].Value = "存在误码" + wuma2;
+                                        this.dataGridView1.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString();
+                                        this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.Yellow;
+
+                                    }
+                                }
+
+                            }
+
+                            mysocket1.SendData("exit");
+
                         }
 
+                        lock (cg)
+                        {
+                            //MessageBox.Show("fff");
+                            int cg = int.Parse(toolStripStatusLabelchenggong.Text);
+                            cg = cg + 1;
+                            toolStripStatusLabelchenggong.Text = cg.ToString();
+                        }
+                    }
+
+                    //mysocket1.SendData("save");
+                    //    for (int a = 1; a <= 5000; a++)
+                    //    {
+                    //        string box = mysocket1.ReceiveData(int.Parse("10")); ;
+                    //        if (box.Contains("successfully"))
+                    //        {
+                    //            this.dataGridView1.Rows[i].Cells["最终结果"].Value = "成功";
+                    //            this.dataGridView1.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString();
+                    //            this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.GreenYellow;
+                    //            lock (cg)
+                    //            {
+                    //                int c = int.Parse(toolStripStatusLabelchenggong.Text);
+                    //                c = c + 1;
+                    //                toolStripStatusLabelchenggong.Text = c.ToString();
+                    //                break;
+                    //            }
+                    //        }
+                    //        if (box.Contains("erro"))
+                    //        {
+                    //            this.dataGridView1.Rows[i].Cells["最终结果"].Value = "失败";
+                    //            this.dataGridView1.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString();
+                    //            this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.Yellow;
+                    //            lock (sb)
+                    //            {
+                    //                int s = int.Parse(toolStripStatusLabelshibai.Text);
+                    //                s = s + 1;
+                    //                toolStripStatusLabelshibai.Text = s.ToString();
+                    //                break;
+                    //            }
+                    //        }
+
+                    //        Thread.Sleep(1);
+                    //    }
+                    //    mysocket1.SendData("logout");
 
                 }
+
                 else
                 {
                     this.dataGridView1.Rows[i].Cells["最终结果"].Value = "telnet失败";
@@ -300,7 +721,8 @@ namespace MyGpnSoftware
             //MessageBox.Show("一键保存结束");
 
         }
-        public void upload(object obj)
+        //备份数据库函数
+        public void Upload(object obj)
         {
             int i = int.Parse(obj.ToString());
             this.dataGridView1.Rows[i].Cells["开始时间"].Value = DateTime.Now.ToString();
@@ -311,14 +733,15 @@ namespace MyGpnSoftware
 
             // MessageBox.Show(ip);
             PingReply pingReply = ping.Send(ip, timeout);
-            for (int j = 0; j <= 5; j++)
+            for (int j = 0; j <= 1; j++)
             {
-                pingReply = ping.Send(ip, timeout);
+                
                 if (pingReply.Status == IPStatus.Success)
                 {
                     break;
                 }
-                Thread.Sleep(10);
+                Thread.Sleep(1000);
+                pingReply = ping.Send(ip, timeout);
             }//判断请求是否超时
             if (pingReply.Status == IPStatus.Success)
             {
@@ -331,34 +754,169 @@ namespace MyGpnSoftware
 
                 if (bo)
                 {
-
-                    if (mysocket1.SendData(GPNUSR))
+                    mysocket1.SendData(GPNUSR);
+                    for (int a = 0; a <= 1000; a++)
                     {
-                        mysocket1.SendData(GPNPSD);
-                        mysocket1.SendData("enable");
-                        Thread.Sleep(200);
-                        string pass = mysocket1.ReceiveData(int.Parse("10"));
-                        if (pass.Contains("Pas"))
+                        string login = mysocket1.ReceiveData(int.Parse(yanshi));
+                        // MessageBox.Show(login);
+                        if (login.Contains("Password:"))
                         {
                             mysocket1.SendData(GPNPSD);
-                            Thread.Sleep(500);
-                            string locked = mysocket1.ReceiveData(int.Parse("10"));
-                            if (locked.Contains("configuration is locked by other user"))
+                            break;
+                        }
+                        Thread.Sleep(10);
+                    }
+                    for (int c = 0; c <= 1000; c++)
+                    {
+                        string passd = mysocket1.ReceiveData(int.Parse(yanshi));
+                        //MessageBox.Show(passd);
+                        if (passd.Contains("Error") || passd.Contains("failed") || passd.Contains("Kerberos") || passd.Contains("Bad passwords"))
+                        {
+
+                            //textDOS.AppendText("\r\n" + "用户名或密码错误，请重新输入");
+                            this.dataGridView1.Rows[i].Cells["最终结果"].Value = "用户名密码错误";
+                            this.dataGridView1.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString();
+                            this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.Yellow;
+                            lock (sb)
                             {
-                                mysocket1.SendData("grosadvdebug");
-                                Thread.Sleep(200);
-                                mysocket1.SendData("vty user limit no");
-                                Thread.Sleep(200);
-                                mysocket1.SendData("exit");
-                                Thread.Sleep(200);
-                                mysocket1.SendData("enable");
-                                Thread.Sleep(200);
-                                mysocket1.SendData(GPNPSD);
-                                Thread.Sleep(500);
+                                int s = int.Parse(toolStripStatusLabelshibai.Text);
+                                s = s + 1;
+                                toolStripStatusLabelshibai.Text = s.ToString();
+                            }
+                            lock (o1)
+                            {
+                                int d = int.Parse(toolStripStatusLabelshengyu.Text);
+                                d = d - 1;
+                                toolStripStatusLabelshengyu.Text = d.ToString();
+
+                                doneCount++;
 
                             }
+                            return;
                         }
-                            this.dataGridView1.Rows[i].Cells["save"].Value = "初始化";
+                        if (passd.Contains("Password:"))
+                        {
+                            mysocket1.SendData(GPNPSD);
+                        }
+                        if (passd.Contains(">"))
+                        {
+                            //textDOS.AppendText("\r\n" + "用户名密码正确==========================================OK");
+                            mysocket1.SendData("enable");
+                            for (int b = 0; b <= 1000; b++)
+                            {
+                                string pass = mysocket1.ReceiveData(int.Parse(yanshi));
+                                if (pass.Contains("Pas"))
+                                {
+                                    mysocket1.SendData(GPNPSDEN);
+                                    //Thread.Sleep(500);
+                                    for (int d = 0; d <= 1000; d++)
+                                    {
+                                        string locked = mysocket1.ReceiveData(int.Parse(yanshi));
+                                        if (locked.Contains("configuration is locked by other user"))
+                                        //configuration is locked by other user
+                                        {
+                                            //textDOS.AppendText("\r\n" + "已经有用户登录，正在重新登录========================OK");
+                                            mysocket1.SendData("grosadvdebug");
+                                            Thread.Sleep(200);
+                                            mysocket1.SendData("vty user limit no");
+                                            Thread.Sleep(200);
+                                            mysocket1.SendData("exit");
+                                            Thread.Sleep(200);
+                                            mysocket1.SendData("enable");
+                                            Thread.Sleep(200);
+                                            if (mysocket1.ReceiveData(int.Parse(yanshi)).Contains("Pas"))
+                                            {
+                                                mysocket1.SendData(GPNPSDEN);
+                                                Thread.Sleep(200);
+                                                if (!mysocket1.ReceiveData(int.Parse(yanshi)).Contains("failed"))
+                                                {
+                                                    this.dataGridView1.Rows[i].Cells["最终结果"].Value = "用户名密码错误2";
+                                                    this.dataGridView1.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString();
+                                                    this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.Yellow;
+                                                    lock (sb)
+                                                    {
+                                                        int s = int.Parse(toolStripStatusLabelshibai.Text);
+                                                        s = s + 1;
+                                                        toolStripStatusLabelshibai.Text = s.ToString();
+                                                    }
+                                                    lock (o1)
+                                                    {
+                                                        int e = int.Parse(toolStripStatusLabelshengyu.Text);
+                                                        e = e - 1;
+                                                        toolStripStatusLabelshengyu.Text = e.ToString();
+
+                                                        doneCount++;
+
+                                                    }
+                                                    return;
+                                                }
+
+                                                break;
+                                            }
+                                        }
+                                        if (locked.Contains("#"))
+                                        {
+                                            break;
+                                        }
+                                        Thread.Sleep(1);
+                                    }
+                                    break;
+                                }
+                                if (pass.Contains("#"))
+                                {
+                                    break;
+                                }
+                                if (pass.Contains("configuration is locked by other user"))
+                                //configuration is locked by other user
+                                {
+                                    //textDOS.AppendText("\r\n" + "已经有用户登录，正在重新登录=============================OK");
+                                    mysocket1.SendData("grosadvdebug");
+                                    Thread.Sleep(200);
+                                    mysocket1.SendData("vty user limit no");
+                                    Thread.Sleep(200);
+                                    mysocket1.SendData("exit");
+                                    Thread.Sleep(200);
+                                    mysocket1.SendData("enable");
+                                    Thread.Sleep(200);
+                                    if (mysocket1.ReceiveData(int.Parse(yanshi)).Contains("Pas"))
+                                    {
+                                        mysocket1.SendData(GPNPSDEN);
+                                        Thread.Sleep(200);
+                                        if (!mysocket1.ReceiveData(int.Parse(yanshi)).Contains("failed"))
+                                        {
+                                            this.dataGridView1.Rows[i].Cells["最终结果"].Value = "用户名密码错误2";
+                                            this.dataGridView1.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString();
+                                            this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.Yellow;
+                                            lock (sb)
+                                            {
+                                                int s = int.Parse(toolStripStatusLabelshibai.Text);
+                                                s = s + 1;
+                                                toolStripStatusLabelshibai.Text = s.ToString();
+                                            }
+                                            lock (o1)
+                                            {
+                                                int e = int.Parse(toolStripStatusLabelshengyu.Text);
+                                                e = e - 1;
+                                                toolStripStatusLabelshengyu.Text = e.ToString();
+
+                                                doneCount++;
+
+                                            }
+                                            return;
+                                        }
+
+                                        break;
+                                    }
+                                    break;
+                                }
+                                Thread.Sleep(1);
+                            }
+                            break;
+                        }
+                        Thread.Sleep(10);
+                    }
+
+                    this.dataGridView1.Rows[i].Cells["save"].Value = "初始化";
                             this.dataGridView1.Rows[i].Cells["config"].Value = "初始化";
                             this.dataGridView1.Rows[i].Cells["slotconfig"].Value = "初始化";
                             this.dataGridView1.Rows[i].Cells["db"].Value = "初始化";
@@ -539,35 +1097,33 @@ namespace MyGpnSoftware
                             string config = dataGridView1.Rows[i].Cells["config"].Value.ToString();
                             string slotconfig = dataGridView1.Rows[i].Cells["slotconfig"].Value.ToString();
                             string db = dataGridView1.Rows[i].Cells["db"].Value.ToString();
-                            if (save == "OK" && config == "OK" && slotconfig == "OK" && db == "OK")
-                            {
-                                lock (cg)
-                                {
-                                    int c = int.Parse(toolStripStatusLabelchenggong.Text);
-                                    c = c + 1;
-                                    toolStripStatusLabelchenggong.Text = c.ToString();
+                    if (save == "OK" && config == "OK" && slotconfig == "OK" && db == "OK")
+                    {
+                        lock (cg)
+                        {
+                            int c = int.Parse(toolStripStatusLabelchenggong.Text);
+                            c = c + 1;
+                            toolStripStatusLabelchenggong.Text = c.ToString();
 
-                                }
-                                this.dataGridView1.Rows[i].Cells["最终结果"].Value = "成功";
-                                this.dataGridView1.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString();
-                                this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.GreenYellow;
+                        }
+                        this.dataGridView1.Rows[i].Cells["最终结果"].Value = "成功";
+                        this.dataGridView1.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString();
+                        this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.GreenYellow;
 
-                            }
-                            else {
-                                this.dataGridView1.Rows[i].Cells["最终结果"].Value = "失败";
+                    }
+                    else
+                    {
+                        this.dataGridView1.Rows[i].Cells["最终结果"].Value = "失败";
 
-                                lock (sb)
-                                {
-                                    int s = int.Parse(toolStripStatusLabelshibai.Text);
-                                    s = s + 1;
-                                    toolStripStatusLabelshibai.Text = s.ToString();
+                        lock (sb)
+                        {
+                            int s = int.Parse(toolStripStatusLabelshibai.Text);
+                            s = s + 1;
+                            toolStripStatusLabelshibai.Text = s.ToString();
 
-                                }
-                                this.dataGridView1.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString();
-                                this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.Yellow;
-
-                            }
-
+                        }
+                        this.dataGridView1.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString();
+                        this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.Yellow;
 
                     }
 
@@ -641,14 +1197,83 @@ namespace MyGpnSoftware
         public static object sb = new object();
         public static object cg = new object();
         
-        private void button1_Click(object sender, EventArgs e)
+        //保存按钮
+        private void Butsave_Click(object sender, EventArgs e)
         {
-            if (dataGridView1.DataSource == null) {
-               
-
-                MessageBox.Show("请先导入「网管导出的表格」，然后再次尝试");
+            if (dataGridView1.CurrentCell == null)
+            {
+                MessageBox.Show("请先导入「网管导出的表格」或「制作IP表」，然后再次尝试");
                 return;
+            }
+            if (dataGridView1.Columns["升级后当前版本"] == null)
+            {
 
+                this.dataGridView1.Columns.Add("升级后当前版本", "升级后当前版本");
+            }
+            else
+            {
+                this.dataGridView1.Columns.Remove("升级后当前版本");
+                this.dataGridView1.Columns.Add("升级后当前版本", "升级后当前版本");
+            }
+            if (dataGridView1.Columns["OMU序列号"] == null)
+            {
+
+                this.dataGridView1.Columns.Add("OMU序列号", "OMU序列号");
+            }
+            else
+            {
+                this.dataGridView1.Columns.Remove("OMU序列号");
+                this.dataGridView1.Columns.Add("OMU序列号", "OMU序列号");
+            }
+            if (dataGridView1.Columns["NMS序列号"] == null)
+            {
+
+                this.dataGridView1.Columns.Add("NMS序列号", "NMS序列号");
+            }
+            else
+            {
+                this.dataGridView1.Columns.Remove("NMS序列号");
+                this.dataGridView1.Columns.Add("NMS序列号", "NMS序列号");
+            }
+            if (dataGridView1.Columns["NMS硬件版本"] == null)
+            {
+
+                this.dataGridView1.Columns.Add("NMS硬件版本", "NMS硬件版本");
+            }
+            else
+            {
+                this.dataGridView1.Columns.Remove("NMS硬件版本");
+                this.dataGridView1.Columns.Add("NMS硬件版本", "NMS硬件版本");
+            }
+            if (dataGridView1.Columns["FPGA版本"] == null)
+            {
+
+                this.dataGridView1.Columns.Add("FPGA版本", "FPGA版本");
+            }
+            else
+            {
+                this.dataGridView1.Columns.Remove("FPGA版本");
+                this.dataGridView1.Columns.Add("FPGA版本", "FPGA版本");
+            }
+            if (dataGridView1.Columns["主控背板误码"] == null)
+            {
+
+                this.dataGridView1.Columns.Add("主控背板误码", "主控背板误码");
+            }
+            else
+            {
+                this.dataGridView1.Columns.Remove("主控背板误码");
+                this.dataGridView1.Columns.Add("主控背板误码", "主控背板误码");
+            }
+            if (dataGridView1.Columns["主控保护"] == null)
+            {
+
+                this.dataGridView1.Columns.Add("主控保护", "主控保护");
+            }
+            else
+            {
+                this.dataGridView1.Columns.Remove("主控保护");
+                this.dataGridView1.Columns.Add("主控保护", "主控保护");
             }
             TimeNow = DateTime.Now;
 
@@ -661,44 +1286,50 @@ namespace MyGpnSoftware
             toolStripStatusLabelyichang.Text = "0";
 
             string task = "save";
-            ParameterizedThreadStart p = new ParameterizedThreadStart(xianchengchi);
+            ParameterizedThreadStart p = new ParameterizedThreadStart(Xianchengchi);
             Thread t = new Thread(p);
             t.Start(task);
-            Thread  bar = new Thread(bartest);
-            bar.IsBackground = true;
+            Thread bar = new Thread(Bartest)
+            {
+                IsBackground = true
+            };
             bar.Start();
         }
 
-
-        private void xianchengchi(object obj)
+        //线程池
+        private void Xianchengchi(object obj)
         {
-            ThreadPool.SetMinThreads(1, 1);
-            ThreadPool.SetMaxThreads(int.Parse(compl.Text), int.Parse(compl.Text));
+            ThreadPool.SetMinThreads(int.Parse(comMinThreads.Text), 1);
+            ThreadPool.SetMaxThreads(int.Parse(comMaxThreads.Text), 2);
             for (int i = 0; i < dataGridView1.Rows.Count - 1; i++)
             {
                 if (obj.ToString() == "link")
                 {
-                    ThreadPool.QueueUserWorkItem(new WaitCallback(link), i.ToString());
+                    Thread.Sleep(500);
+                    ThreadPool.QueueUserWorkItem(new WaitCallback(Link), i.ToString());
 
                 }
                 if (obj.ToString() == "save")
                 {
-                    ThreadPool.QueueUserWorkItem(new WaitCallback(save), i.ToString());
+                    Thread.Sleep(500);
+                    ThreadPool.QueueUserWorkItem(new WaitCallback(Save), i.ToString());
 
                 }
                 if (obj.ToString() == "upload")
                 {
-                    ThreadPool.QueueUserWorkItem(new WaitCallback(upload), i.ToString());
+                    Thread.Sleep(500);
+                    ThreadPool.QueueUserWorkItem(new WaitCallback(Upload), i.ToString());
 
                 }
                 if (obj.ToString() == "download")
                 {
-                    ThreadPool.QueueUserWorkItem(new WaitCallback(download), i.ToString());
+                    Thread.Sleep(500);
+                    ThreadPool.QueueUserWorkItem(new WaitCallback(Download), i.ToString());
 
                 }
                 if (obj.ToString() == "reboot" && (bool)dataGridView1.Rows[i].Cells["重启选择"].EditedFormattedValue == true)
                 {
-                    ThreadPool.QueueUserWorkItem(new WaitCallback(reboot), i.ToString());
+                    ThreadPool.QueueUserWorkItem(new WaitCallback(Reboot), i.ToString());
                 }
 
             }
@@ -707,7 +1338,8 @@ namespace MyGpnSoftware
 
 
         }
-        private void bartest()
+        //进度条
+        private void Bartest()
         {
             for (int a = 0; a <= 1000000000; a++)
             {
@@ -729,7 +1361,13 @@ namespace MyGpnSoftware
                     this.toolStripProgressBar1.Value = doneCount;
                     toolStripStatusLabeljindu.Text = "100%";
                     //Mytimer.Change(Timeout.Infinite, 1000);
-                    MessageBox.Show("批量操作结束");
+                    MessageBox.Show("批量操作结束！"+ "\n"+
+                        "\n" +
+                        "一共：" + all + "台！" + "\n" +
+                        "\n" +
+                        "成功：" + cg + "台！"+"\n"+
+                        "\n" +
+                        "失败：" + sb + "台！");
                     if (dataGridView1.Columns["重启选择"] != null)
                     {
                         butreboot.Enabled = true;
@@ -772,16 +1410,14 @@ namespace MyGpnSoftware
         }
         #endregion
 
-        private void butupload_Click(object sender, EventArgs e)
+        //备份数据按钮
+        private void Butupload_Click(object sender, EventArgs e)
         {
 
-            if (dataGridView1.DataSource == null)
+            if (dataGridView1.CurrentCell == null)
             {
-
-
-                MessageBox.Show("请先导入「网管导出的表格」，然后再次尝试");
+                MessageBox.Show("请先导入「网管导出的表格」或「制作IP表」，然后再次尝试");
                 return;
-
             }
             TimeNow = DateTime.Now;
             //TimeCount = 0;
@@ -837,31 +1473,31 @@ namespace MyGpnSoftware
             toolStripStatusLabelyichang.Text = "0";
 
             string task = "upload";
-            ParameterizedThreadStart p = new ParameterizedThreadStart(xianchengchi);
+            ParameterizedThreadStart p = new ParameterizedThreadStart(Xianchengchi);
             Thread t = new Thread(p);
             t.Start(task);
-            Thread bar = new Thread(bartest);
-            bar.IsBackground = true;
+            Thread bar = new Thread(Bartest)
+            {
+                IsBackground = true
+            };
             bar.Start();
 
         }
         System.DateTime TimeNow = new DateTime();
         TimeSpan time = new TimeSpan();
-        private void timer1_Tick(object sender, EventArgs e)
+        //计时器1
+        private void Timer1_Tick(object sender, EventArgs e)
         {
             time = DateTime.Now - TimeNow;
             toolStripStatusLabeltime.Text = string.Format("{0:00}:{1:00}:{2:00}", time.Hours, time.Minutes, time.Seconds);
         }
-
-        private void butdown_Click(object sender, EventArgs e)
+        //下载升级按钮
+        private void Butdown_Click(object sender, EventArgs e)
         {
-            if (dataGridView1.DataSource == null)
+            if (dataGridView1.CurrentCell == null)
             {
-
-
-                MessageBox.Show("请先导入「网管导出的表格」，然后再次尝试");
+                MessageBox.Show("请先导入「网管导出的表格」或「制作IP表」，然后再次尝试");
                 return;
-
             }
             if (app.Contains(".bin"))
             {
@@ -873,36 +1509,56 @@ namespace MyGpnSoftware
                     //Mytimer.Change(0, 1000);
                     this.timer1.Enabled = true;
                     this.timer1.Start();
-                    if (dataGridView1.Columns["当前版本"] == null)
+                    if (dataGridView1.Columns["升级前当前版本"] == null)
                     {
 
-                        this.dataGridView1.Columns.Add("当前版本", "当前版本");
+                        this.dataGridView1.Columns.Add("升级前当前版本", "升级前当前版本");
 
                     }
                     else
                     {
-                        this.dataGridView1.Columns.Remove("当前版本");
-                        this.dataGridView1.Columns.Add("当前版本", "当前版本");
+                        this.dataGridView1.Columns.Remove("升级前当前版本");
+                        this.dataGridView1.Columns.Add("升级前当前版本", "升级前当前版本");
                     }
-                    if (dataGridView1.Columns["save"] == null)
+                    //if (dataGridView1.Columns["save"] == null)
+                    //{
+
+                    //    this.dataGridView1.Columns.Add("save", "save");
+                    //}
+                    //else
+                    //{
+                    //    this.dataGridView1.Columns.Remove("save");
+                    //    this.dataGridView1.Columns.Add("save", "save");
+                    //}
+                    //if (dataGridView1.Columns["备份config"] == null)
+                    //{
+
+                    //    this.dataGridView1.Columns.Add("备份config", "备份config");
+                    //}
+                    //else
+                    //{
+                    //    this.dataGridView1.Columns.Remove("备份config");
+                    //    this.dataGridView1.Columns.Add("备份config", "备份config");
+                    //}
+                    if (dataGridView1.Columns["删除sysfile"] == null)
                     {
 
-                        this.dataGridView1.Columns.Add("save", "save");
+                        this.dataGridView1.Columns.Add("删除sysfile", "删除sysfile");
                     }
                     else
                     {
-                        this.dataGridView1.Columns.Remove("save");
-                        this.dataGridView1.Columns.Add("save", "save");
+                        this.dataGridView1.Columns.Remove("删除sysfile");
+                        this.dataGridView1.Columns.Add("删除sysfile", "删除sysfile");
                     }
-                    if (dataGridView1.Columns["备份config"] == null)
+                    if (dataGridView1.Columns["二次检查sysfile"] == null)
                     {
 
-                        this.dataGridView1.Columns.Add("备份config", "备份config");
+                        this.dataGridView1.Columns.Add("二次检查sysfile", "二次检查sysfile");
                     }
                     else
                     {
-                        this.dataGridView1.Columns.Remove("备份config");
-                        this.dataGridView1.Columns.Add("备份config", "备份config");
+                        this.dataGridView1.Columns.Remove("二次检查sysfile");
+                        this.dataGridView1.Columns.Add("二次检查sysfile", "二次检查sysfile");
                     }
 
                     if (dataGridView1.Columns["下载APP"] == null)
@@ -923,11 +1579,23 @@ namespace MyGpnSoftware
                         this.dataGridView1.Columns.Remove("写入APP");
                         this.dataGridView1.Columns.Add("写入APP", "写入APP");
                     }
+                    if (dataGridView1.Columns["清空配置"] == null)
+                    {
+
+                        this.dataGridView1.Columns.Add("清空配置", "清空配置");
+                    }
+                    else
+                    {
+                        this.dataGridView1.Columns.Remove("清空配置");
+                        this.dataGridView1.Columns.Add("清空配置", "清空配置");
+                    }
                     if (dataGridView1.Columns["重启选择"] == null)
                     {
-                        DataGridViewCheckBoxColumn newColumn = new DataGridViewCheckBoxColumn();
-                        newColumn.Name = "重启选择";
-                        newColumn.HeaderText = "重启选择";
+                        DataGridViewCheckBoxColumn newColumn = new DataGridViewCheckBoxColumn
+                        {
+                            Name = "重启选择",
+                            HeaderText = "重启选择"
+                        };
                         dataGridView1.Columns.Add(newColumn);
                     }
                    
@@ -939,11 +1607,13 @@ namespace MyGpnSoftware
                     toolStripStatusLabelyichang.Text = "0";
 
                     string task = "download";
-                    ParameterizedThreadStart p = new ParameterizedThreadStart(xianchengchi);
+                    ParameterizedThreadStart p = new ParameterizedThreadStart(Xianchengchi);
                     Thread t = new Thread(p);
                     t.Start(task);
-                    Thread bar = new Thread(bartest);
-                    bar.IsBackground = true;
+                    Thread bar = new Thread(Bartest)
+                    {
+                        IsBackground = true
+                    };
                     bar.Start();
 
 
@@ -962,7 +1632,8 @@ namespace MyGpnSoftware
             }
            
         }
-        public void download(object obj)
+        //下载升级函数
+        public void Download(object obj)
         {
             int i = int.Parse(obj.ToString());
             Thread.Sleep(500);
@@ -975,16 +1646,16 @@ namespace MyGpnSoftware
 
             // MessageBox.Show(ip);
             PingReply pingReply = ping.Send(ip, timeout);
-            for (int j = 0; j <= 5; j++)
+            for (int j = 0; j <= 1; j++)
             {
+                if (pingReply.Status == IPStatus.Success)
+                {
+                    break;
+                }
+                
 
-
+                Thread.Sleep(1000);
                 pingReply = ping.Send(ip, timeout);
-                if(pingReply.Status == IPStatus.Success)
-                    {
-                    break;      
-                    }
-                Thread.Sleep(10);
             }//判断请求是否超时
             if (pingReply.Status == IPStatus.Success)
             {
@@ -997,164 +1668,333 @@ namespace MyGpnSoftware
 
                 if (bo)
                 {
-
-                    if (mysocket1.SendData(GPNUSR))
+                    mysocket1.SendData(GPNUSR);
+                    for (int a = 0; a <= 1000; a++)
                     {
-                        mysocket1.SendData(GPNPSD);
-                        mysocket1.SendData("enable");
-                        Thread.Sleep(200);
-                        string pass = mysocket1.ReceiveData(int.Parse("10"));
-                        if (pass.Contains("Pas"))
+                        string login = mysocket1.ReceiveData(int.Parse(yanshi));
+                        // MessageBox.Show(login);
+                        if (login.Contains("Password:"))
                         {
                             mysocket1.SendData(GPNPSD);
-                            Thread.Sleep(500);
-                            string locked = mysocket1.ReceiveData(int.Parse("10"));
-                            if (locked.Contains("configuration is locked by other user"))
-                            {
-                                mysocket1.SendData("grosadvdebug");
-                                Thread.Sleep(200);
-                                mysocket1.SendData("vty user limit no");
-                                Thread.Sleep(200);
-                                mysocket1.SendData("exit");
-                                Thread.Sleep(200);
-                                mysocket1.SendData("enable");
-                                Thread.Sleep(200);
-                                mysocket1.SendData(GPNPSD);
-                                Thread.Sleep(500);
-
-                            }
+                            break;
                         }
-                            this.dataGridView1.Rows[i].Cells["当前版本"].Value = "初始化";
-                            this.dataGridView1.Rows[i].Cells["save"].Value = "初始化";
-                            this.dataGridView1.Rows[i].Cells["备份config"].Value = "初始化";
-                            this.dataGridView1.Rows[i].Cells["下载APP"].Value = "初始化";
-                            this.dataGridView1.Rows[i].Cells["写入APP"].Value = "初始化";
-
-                        mysocket1.SendData("show version");
-                        string ver = "";
-                        for (int b = 0; b <= 100; b++)
+                        Thread.Sleep(10);
+                    }
+                    for (int c = 0; c <= 1000; c++)
+                    {
+                        string passd = mysocket1.ReceiveData(int.Parse(yanshi));
+                        //MessageBox.Show(passd);
+                        if (passd.Contains("Error") || passd.Contains("failed") || passd.Contains("Kerberos") || passd.Contains("Bad passwords"))
                         {
 
-                            ver = ver + mysocket1.ReceiveData(int.Parse(yanshi));
+                            //textDOS.AppendText("\r\n" + "用户名或密码错误，请重新输入");
+                            this.dataGridView1.Rows[i].Cells["最终结果"].Value = "用户名密码错误";
+                            this.dataGridView1.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString();
+                            this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.Yellow;
+                            lock (sb)
+                            {
+                                int s = int.Parse(toolStripStatusLabelshibai.Text);
+                                s = s + 1;
+                                toolStripStatusLabelshibai.Text = s.ToString();
+                            }
+                            lock (o1)
+                            {
+                                int d = int.Parse(toolStripStatusLabelshengyu.Text);
+                                d = d - 1;
+                                toolStripStatusLabelshengyu.Text = d.ToString();
 
+                                doneCount++;
+
+                            }
+                            return;
+                        }
+                        if (passd.Contains("Password:"))
+                        {
+                            mysocket1.SendData(GPNPSD);
+                        }
+                        if (passd.Contains(">"))
+                        {
+                            //textDOS.AppendText("\r\n" + "用户名密码正确==========================================OK");
+                            mysocket1.SendData("enable");
+                            for (int b = 0; b <= 1000; b++)
+                            {
+                                string pass = mysocket1.ReceiveData(int.Parse(yanshi));
+                                if (pass.Contains("Pas"))
+                                {
+                                    mysocket1.SendData(GPNPSDEN);
+                                    //Thread.Sleep(500);
+                                    for (int d = 0; d <= 1000; d++)
+                                    {
+                                        string locked = mysocket1.ReceiveData(int.Parse(yanshi));
+                                        if (locked.Contains("configuration is locked by other user"))
+                                        //configuration is locked by other user
+                                        {
+                                            //textDOS.AppendText("\r\n" + "已经有用户登录，正在重新登录========================OK");
+                                            mysocket1.SendData("grosadvdebug");
+                                            Thread.Sleep(200);
+                                            mysocket1.SendData("vty user limit no");
+                                            Thread.Sleep(200);
+                                            mysocket1.SendData("exit");
+                                            Thread.Sleep(200);
+                                            mysocket1.SendData("enable");
+                                            Thread.Sleep(200);
+                                            if (mysocket1.ReceiveData(int.Parse(yanshi)).Contains("Pas"))
+                                            {
+                                                mysocket1.SendData(GPNPSDEN);
+                                                Thread.Sleep(200);
+                                                if (!mysocket1.ReceiveData(int.Parse(yanshi)).Contains("failed"))
+                                                {
+                                                    this.dataGridView1.Rows[i].Cells["最终结果"].Value = "用户名密码错误2";
+                                                    this.dataGridView1.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString();
+                                                    this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.Yellow;
+                                                    lock (sb)
+                                                    {
+                                                        int s = int.Parse(toolStripStatusLabelshibai.Text);
+                                                        s = s + 1;
+                                                        toolStripStatusLabelshibai.Text = s.ToString();
+                                                    }
+                                                    lock (o1)
+                                                    {
+                                                        int e = int.Parse(toolStripStatusLabelshengyu.Text);
+                                                        e = e - 1;
+                                                        toolStripStatusLabelshengyu.Text = e.ToString();
+
+                                                        doneCount++;
+
+                                                    }
+                                                    return;
+                                                }
+
+                                                break;
+                                            }
+                                        }
+                                        if (locked.Contains("#"))
+                                        {
+                                            break;
+                                        }
+                                        Thread.Sleep(1);
+                                    }
+                                    break;
+                                }
+                                if (pass.Contains("#"))
+                                {
+                                    break;
+                                }
+                                if (pass.Contains("configuration is locked by other user"))
+                                //configuration is locked by other user
+                                {
+                                    //textDOS.AppendText("\r\n" + "已经有用户登录，正在重新登录=============================OK");
+                                    mysocket1.SendData("grosadvdebug");
+                                    Thread.Sleep(200);
+                                    mysocket1.SendData("vty user limit no");
+                                    Thread.Sleep(200);
+                                    mysocket1.SendData("exit");
+                                    Thread.Sleep(200);
+                                    mysocket1.SendData("enable");
+                                    Thread.Sleep(200);
+                                    if (mysocket1.ReceiveData(int.Parse(yanshi)).Contains("Pas"))
+                                    {
+                                        mysocket1.SendData(GPNPSDEN);
+                                        Thread.Sleep(200);
+                                        if (!mysocket1.ReceiveData(int.Parse(yanshi)).Contains("failed"))
+                                        {
+                                            this.dataGridView1.Rows[i].Cells["最终结果"].Value = "用户名密码错误2";
+                                            this.dataGridView1.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString();
+                                            this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.Yellow;
+                                            lock (sb)
+                                            {
+                                                int s = int.Parse(toolStripStatusLabelshibai.Text);
+                                                s = s + 1;
+                                                toolStripStatusLabelshibai.Text = s.ToString();
+                                            }
+                                            lock (o1)
+                                            {
+                                                int e = int.Parse(toolStripStatusLabelshengyu.Text);
+                                                e = e - 1;
+                                                toolStripStatusLabelshengyu.Text = e.ToString();
+
+                                                doneCount++;
+
+                                            }
+                                            return;
+                                        }
+
+                                        break;
+                                    }
+                                    break;
+                                }
+                                Thread.Sleep(1);
+                            }
+                            break;
+                        }
+                        Thread.Sleep(10);
+                    }
+
+                    this.dataGridView1.Rows[i].Cells["升级前当前版本"].Value = "初始化";
+                        //this.dataGridView1.Rows[i].Cells["save"].Value = "初始化";
+                        //this.dataGridView1.Rows[i].Cells["备份config"].Value = "初始化";
+                        this.dataGridView1.Rows[i].Cells["删除sysfile"].Value = "初始化";
+                        this.dataGridView1.Rows[i].Cells["二次检查sysfile"].Value = "初始化";
+                        this.dataGridView1.Rows[i].Cells["下载APP"].Value = "初始化";
+                        this.dataGridView1.Rows[i].Cells["写入APP"].Value = "初始化";
+                        this.dataGridView1.Rows[i].Cells["清空配置"].Value = "初始化";
+
+                        mysocket1.SendData("show ver");
+                        string ver = "";
+                        string ver2 = "";
+                        for (int a = 0; a <= 1000; a++)
+                        {
+                            ver2 = mysocket1.ReceiveData(int.Parse(yanshi));
+                            ver = ver + ver2;
+                            if (ver2.Contains("Ctrl+c"))
+                            {
+                                mysocket1.SendDate("\r\n");
+                            }
+                            if (ver2.Contains("#"))
+                            {
+                                break;
+                            }
                             Thread.Sleep(1);
                         }
-                        Regex r = new Regex("ProductOS Version (V\\d+)*R\\d+(C\\d+)*B\\d+(SP\\d+)*", RegexOptions.IgnoreCase | RegexOptions.Multiline);
-                        string banben = r.Match(ver).Groups[0].Value;
-                        banben = banben.Substring("ProductOS Version ".Length);
-                        this.dataGridView1.Rows[i].Cells["当前版本"].Value = banben.ToString();
+                        Regex r = new Regex(@"ProductOS\s*Version\s*([\w\d]+)[\s*\(]*", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                        string banben = r.Match(ver).Groups[1].Value;
+                        this.dataGridView1.Rows[i].Cells["升级前当前版本"].Value = banben.ToString();
 
 
-                        mysocket1.SendData("save");
-                            for (int a = 1; a <= 1000; a++)
-                            {
+                        //mysocket1.SendData("save");
+                        //    for (int a = 1; a <= 1000; a++)
+                        //    {
 
-                                string box = mysocket1.ReceiveData(int.Parse(yanshi));
-                                if (box.Contains("successfully"))
-                                {
-                                    this.dataGridView1.Rows[i].Cells["save"].Value = "OK";
-                                    break;
-                                }
-                                if (box.Contains("erro"))
-                                {
-                                    this.dataGridView1.Rows[i].Cells["save"].Value = "NOK";
-                                    this.dataGridView1.Rows[i].Cells["最终结果"].Value = "失败";
+                        //        string box = mysocket1.ReceiveData(int.Parse(yanshi));
+                        //        if (box.Contains("successfully"))
+                        //        {
+                        //            this.dataGridView1.Rows[i].Cells["save"].Value = "OK";
+                        //            break;
+                        //        }
+                        //        if (box.Contains("erro"))
+                        //        {
+                        //            this.dataGridView1.Rows[i].Cells["save"].Value = "NOK";
+                        //            this.dataGridView1.Rows[i].Cells["最终结果"].Value = "失败";
 
-                                    lock (sb)
-                                    {
-                                        int s = int.Parse(toolStripStatusLabelshibai.Text);
-                                        s = s + 1;
-                                        toolStripStatusLabelshibai.Text = s.ToString();
+                        //            lock (sb)
+                        //            {
+                        //                int s = int.Parse(toolStripStatusLabelshibai.Text);
+                        //                s = s + 1;
+                        //                toolStripStatusLabelshibai.Text = s.ToString();
 
-                                    }
-                                    this.dataGridView1.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString();
-                                    this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.Yellow;
-                                    lock (o1)
-                                    {
-                                        int d = int.Parse(toolStripStatusLabelshengyu.Text);
-                                        d = d - 1;
-                                        toolStripStatusLabelshengyu.Text = d.ToString();
+                        //            }
+                        //            this.dataGridView1.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString();
+                        //            this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.Yellow;
+                        //            lock (o1)
+                        //            {
+                        //                int d = int.Parse(toolStripStatusLabelshengyu.Text);
+                        //                d = d - 1;
+                        //                toolStripStatusLabelshengyu.Text = d.ToString();
 
-                                        doneCount++;
+                        //                doneCount++;
 
-                                    }
-                                    return;
-
-
-                                }
-
-                                Thread.Sleep(10);
-                            }
-                            Thread.Sleep(1500);
-
-                            mysocket1.SendData("upload ftp file /flash/sys/conf_data.txt " + FTPIP + " " + FTPUSR + " " + FTPPSD + " " + ip + "_" + DateTime.Now.ToString("yyyy-MM-dd") + "_config.txt");
-                            for (int a = 1; a <= 3000; a++)
-                            {
+                        //            }
+                        //            return;
 
 
-                                string box = mysocket1.ReceiveData(int.Parse(yanshi));
+                        //        }
 
-                                if (box.Contains("ok"))
-                                {
-                                    this.dataGridView1.Rows[i].Cells["备份config"].Value = "OK";
-                                    break;
-                                }
-                                if (box.Contains("fail"))
-                                {
-                                    this.dataGridView1.Rows[i].Cells["备份config"].Value = "检查FTP服务器IP地址";
-                                    this.dataGridView1.Rows[i].Cells["最终结果"].Value = "失败";
+                        //        Thread.Sleep(10);
+                        //    }
+                            //Thread.Sleep(1500);
 
-                                    lock (sb)
-                                    {
-                                        int s = int.Parse(toolStripStatusLabelshibai.Text);
-                                        s = s + 1;
-                                        toolStripStatusLabelshibai.Text = s.ToString();
+                            //mysocket1.senddata("upload ftp file /flash/sys/conf_data.txt " + ftpip + " " + ftpusr + " " + ftppsd + " " + ip + "_" + datetime.now.tostring("yyyy-mm-dd") + "_config.txt");
+                            //for (int a = 1; a <= 3000; a++)
+                            //{
 
-                                    }
-                                    this.dataGridView1.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString();
-                                    this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.Yellow;
-                                    lock (o1)
-                                    {
-                                        int d = int.Parse(toolStripStatusLabelshengyu.Text);
-                                        d = d - 1;
-                                        toolStripStatusLabelshengyu.Text = d.ToString();
 
-                                        doneCount++;
+                            //    string box = mysocket1.receivedata(int.parse(yanshi));
 
-                                    }
-                                    return;
-                                }
-                                if (box.Contains("User need password"))
-                                {
-                                    this.dataGridView1.Rows[i].Cells["备份config"].Value = "检查FTP用户名密码";
-                                    this.dataGridView1.Rows[i].Cells["最终结果"].Value = "失败";
+                            //    if (box.contains("ok"))
+                            //    {
+                            //        this.datagridview1.rows[i].cells["备份config"].value = "ok";
+                            //        break;
+                            //    }
+                            //    if (box.contains("fail"))
+                            //    {
+                            //        this.datagridview1.rows[i].cells["备份config"].value = "检查ftp服务器ip地址";
+                            //        this.datagridview1.rows[i].cells["最终结果"].value = "失败";
 
-                                    lock (sb)
-                                    {
-                                        int s = int.Parse(toolStripStatusLabelshibai.Text);
-                                        s = s + 1;
-                                        toolStripStatusLabelshibai.Text = s.ToString();
+                            //        lock (sb)
+                            //        {
+                            //            int s = int.parse(toolstripstatuslabelshibai.text);
+                            //            s = s + 1;
+                            //            toolstripstatuslabelshibai.text = s.tostring();
 
-                                    }
-                                    this.dataGridView1.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString();
-                                    this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.Yellow;
-                                    lock (o1)
-                                    {
-                                        int d = int.Parse(toolStripStatusLabelshengyu.Text);
-                                        d = d - 1;
-                                        toolStripStatusLabelshengyu.Text = d.ToString();
+                            //        }
+                            //        this.datagridview1.rows[i].cells["结束时间"].value = datetime.now.tostring();
+                            //        this.datagridview1.rows[i].defaultcellstyle.backcolor = color.yellow;
+                            //        lock (o1)
+                            //        {
+                            //            int d = int.parse(toolstripstatuslabelshengyu.text);
+                            //            d = d - 1;
+                            //            toolstripstatuslabelshengyu.text = d.tostring();
 
-                                        doneCount++;
+                            //            donecount++;
 
-                                    }
-                                    return;
-                                }
-                                Thread.Sleep(10);
+                            //        }
+                            //        return;
+                            //    }
+                            //    if (box.contains("user need password"))
+                            //    {
+                            //        this.datagridview1.rows[i].cells["备份config"].value = "检查ftp用户名密码";
+                            //        this.datagridview1.rows[i].cells["最终结果"].value = "失败";
 
-                            }
+                            //        lock (sb)
+                            //        {
+                            //            int s = int.parse(toolstripstatuslabelshibai.text);
+                            //            s = s + 1;
+                            //            toolstripstatuslabelshibai.text = s.tostring();
 
-                            //Thread.Sleep(1000);
-                            mysocket1.SendData("download ftp app " + FTPIP + " " + FTPUSR + " " + FTPPSD + " " + app +" gpn");
+                            //        }
+                            //        this.datagridview1.rows[i].cells["结束时间"].value = datetime.now.tostring();
+                            //        this.datagridview1.rows[i].defaultcellstyle.backcolor = color.yellow;
+                            //        lock (o1)
+                            //        {
+                            //            int d = int.parse(toolstripstatuslabelshengyu.text);
+                            //            d = d - 1;
+                            //            toolstripstatuslabelshengyu.text = d.tostring();
+
+                            //            donecount++;
+
+                            //        }
+                            //        return;
+                            //    }
+                            //    thread.sleep(10);
+
+                            //}
+                        mysocket1.SendData("grosadvdebug");
+                        Thread.Sleep(500);
+                        mysocket1.SendData("shell");
+                        Thread.Sleep(500);
+                        mysocket1.SendData("system2 \"rm /mnt/flash/gwd/sysfile_ini.bin\"");
+                        Thread.Sleep(5000);
+                        this.dataGridView1.Rows[i].Cells["删除sysfile"].Value = "OK";
+                        string SHANCHUSYSFILE = mysocket1.ReceiveData(int.Parse(yanshi));
+                        mysocket1.SendData("system2 \"ls -all /mnt/flash/gwd\"");
+                        Thread.Sleep(5000);
+                        string chaxun = mysocket1.ReceiveData(int.Parse(yanshi));
+                        if (chaxun.Contains("sysfile_ini.bin"))
+                        {
+                            this.dataGridView1.Rows[i].Cells["二次检查sysfile"].Value = "未删除";
+                            mysocket1.SendData("system2 \"rm /mnt/flash/gwd/sysfile_ini.bin\"");
+                            Thread.Sleep(500);
+
+                        }
+                        else {
+                            this.dataGridView1.Rows[i].Cells["二次检查sysfile"].Value = "已删除";
+                        }
+                        mysocket1.SendData("exit");
+                        Thread.Sleep(500);
+                        mysocket1.SendData("exit");
+                        Thread.Sleep(500);
+
+                        mysocket1.SendData("download ftp app " + FTPIP + " " + FTPUSR + " " + FTPPSD + " " + app +" gpn");
                             for (int a = 1; a <= 20000; a++)
                             {
 
@@ -1227,13 +2067,19 @@ namespace MyGpnSoftware
                                 }
                                 Thread.Sleep(10);
                             }
+                        mysocket1.SendData("erase config-file");
+                        Thread.Sleep(500);
+                        mysocket1.SendData("Y");
+                        Thread.Sleep(500);
+                        this.dataGridView1.Rows[i].Cells["清空配置"].Value = "OK";
 
-                            string save = dataGridView1.Rows[i].Cells["save"].Value.ToString();
-                            string config = dataGridView1.Rows[i].Cells["备份config"].Value.ToString();
-                            string downloadapp = dataGridView1.Rows[i].Cells["下载APP"].Value.ToString();
-                            string writeloadapp = dataGridView1.Rows[i].Cells["写入APP"].Value.ToString();
-                            
-                            if (save == "OK" && config == "OK" && downloadapp == "OK" && writeloadapp == "OK")
+                        string save = dataGridView1.Rows[i].Cells["删除sysfile"].Value.ToString();
+                        string config = dataGridView1.Rows[i].Cells["二次检查sysfile"].Value.ToString();
+                        string downloadapp = dataGridView1.Rows[i].Cells["下载APP"].Value.ToString();
+                        string writeloadapp = dataGridView1.Rows[i].Cells["写入APP"].Value.ToString();
+                        string erase = dataGridView1.Rows[i].Cells["清空配置"].Value.ToString();
+
+                        if (save == "OK" && config == "已删除" && downloadapp == "OK" && writeloadapp == "OK" && erase == "OK")
                             {
                                 lock (cg)
                                 {
@@ -1264,13 +2110,6 @@ namespace MyGpnSoftware
                                 this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.Yellow;
 
                             }
-
-
-
-                       
-
-                    }
-
 
                 }
                 else
@@ -1324,18 +2163,24 @@ namespace MyGpnSoftware
             }
         }
 
-
-        private void butreboot_Click(object sender, EventArgs e)
+        //重启按钮
+        private void Butreboot_Click(object sender, EventArgs e)
         {
 
-                    if (dataGridView1.DataSource == null)
-                    {
-
-
-                        MessageBox.Show("请先导入「网管导出的表格」，然后再次尝试");
-                        return;
-
-                    }
+            if (dataGridView1.CurrentCell == null)
+            {
+                MessageBox.Show("请先导入「网管导出的表格」或「制作IP表」，然后再次尝试");
+                return;
+            }
+            if (dataGridView1.Columns["重启前清空配置"] == null)
+            {
+                this.dataGridView1.Columns.Add("重启前清空配置", "重启前清空配置");
+            }
+            else
+            {
+                this.dataGridView1.Columns.Remove("重启前清空配置");
+                this.dataGridView1.Columns.Add("重启前清空配置", "重启前清空配置");
+            }
             if (dataGridView1.Columns["重启结果"] == null)
             {
                 this.dataGridView1.Columns.Add("重启结果", "重启结果");
@@ -1345,7 +2190,8 @@ namespace MyGpnSoftware
                 this.dataGridView1.Columns.Remove("重启结果");
                 this.dataGridView1.Columns.Add("重启结果", "重启结果");
             }
-                    TimeNow = DateTime.Now;
+
+            TimeNow = DateTime.Now;
                     //TimeCount = 0;
                     //Mytimer.Change(0, 1000);
                     this.timer1.Enabled = true;
@@ -1356,16 +2202,18 @@ namespace MyGpnSoftware
                     toolStripStatusLabelshibai.Text = "0";
                     toolStripStatusLabelyichang.Text = "0";
                     string task = "reboot";
-                    ParameterizedThreadStart p = new ParameterizedThreadStart(xianchengchi);
+                    ParameterizedThreadStart p = new ParameterizedThreadStart(Xianchengchi);
                     Thread t = new Thread(p);
                     t.Start(task);
-                    Thread bar = new Thread(rebootbar);
-                    bar.IsBackground = true;
-                    bar.Start();
+            Thread bar = new Thread(Rebootbar)
+            {
+                IsBackground = true
+            };
+            bar.Start();
 
         }
-
-        private void rebootbar()
+        //重启进度条
+        private void Rebootbar()
         {
             for (int a = 0; a <= 1000000000; a++)
             {
@@ -1405,7 +2253,8 @@ namespace MyGpnSoftware
             }
 
         }
-        public void reboot(object obj)
+        //重启函数
+        public void Reboot(object obj)
         {
 
             int i = int.Parse(obj.ToString());
@@ -1418,21 +2267,20 @@ namespace MyGpnSoftware
             PingReply pingReply = ping.Send(ip, timeout);
             // MessageBox.Show(ip);
             //判断请求是否超时
-            for (int j = 0; j <= 5; j++)
+            for (int j = 0; j <= 1; j++)
             {
-                
-                
-                pingReply = ping.Send(ip, timeout);
                 if (pingReply.Status == IPStatus.Success)
                 {
                     break;
                 }
-                Thread.Sleep(10);
+                Thread.Sleep(1000);
+                pingReply = ping.Send(ip, timeout);
             }
             if (pingReply.Status == IPStatus.Success)
             {
                 this.dataGridView1.Rows[i].Cells["ping测试"].Value = "OK";
                 this.dataGridView1.Rows[i].Cells["重启结果"].Value = "初始化";
+                this.dataGridView1.Rows[i].Cells["重启前清空配置"].Value = "初始化";
 
                 this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.White;
 
@@ -1440,33 +2288,175 @@ namespace MyGpnSoftware
                 if (mysocket1.Connect(ip, "23"))
                 {
 
-                    if (mysocket1.SendData(GPNUSR))
+                    mysocket1.SendData(GPNUSR);
+                    for (int a = 0; a <= 1000; a++)
                     {
-                        mysocket1.SendData(GPNPSD);
-                        mysocket1.SendData("enable");
-                        Thread.Sleep(200);
-                        string pass = mysocket1.ReceiveData(int.Parse("10"));
-                        if (pass.Contains("Pas"))
+                        string login = mysocket1.ReceiveData(int.Parse(yanshi));
+                        // MessageBox.Show(login);
+                        if (login.Contains("Password:"))
                         {
                             mysocket1.SendData(GPNPSD);
-                            Thread.Sleep(500);
-                            string locked = mysocket1.ReceiveData(int.Parse("10"));
-                            if (locked.Contains("configuration is locked by other user"))
+                            break;
+                        }
+                        Thread.Sleep(10);
+                    }
+                    for (int c = 0; c <= 1000; c++)
+                    {
+                        string passd = mysocket1.ReceiveData(int.Parse(yanshi));
+                        //MessageBox.Show(passd);
+                        if (passd.Contains("Error") || passd.Contains("failed") || passd.Contains("Kerberos") || passd.Contains("Bad passwords"))
+                        {
+
+                            //textDOS.AppendText("\r\n" + "用户名或密码错误，请重新输入");
+                            this.dataGridView1.Rows[i].Cells["最终结果"].Value = "用户名密码错误";
+                            this.dataGridView1.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString();
+                            this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.Yellow;
+                            lock (sb)
                             {
-                                mysocket1.SendData("grosadvdebug");
-                                Thread.Sleep(200);
-                                mysocket1.SendData("vty user limit no");
-                                Thread.Sleep(200);
-                                mysocket1.SendData("exit");
-                                Thread.Sleep(200);
-                                mysocket1.SendData("enable");
-                                Thread.Sleep(200);
-                                mysocket1.SendData(GPNPSD);
-                                Thread.Sleep(500);
+                                int s = int.Parse(toolStripStatusLabelshibai.Text);
+                                s = s + 1;
+                                toolStripStatusLabelshibai.Text = s.ToString();
+                            }
+                            lock (o1)
+                            {
+                                int d = int.Parse(toolStripStatusLabelshengyu.Text);
+                                d = d - 1;
+                                toolStripStatusLabelshengyu.Text = d.ToString();
+
+                                doneCount++;
 
                             }
+                            return;
                         }
-                            mysocket1.SendData("reboot");
+                        if (passd.Contains("Password:"))
+                        {
+                            mysocket1.SendData(GPNPSD);
+                        }
+                        if (passd.Contains(">"))
+                        {
+                            //textDOS.AppendText("\r\n" + "用户名密码正确==========================================OK");
+                            mysocket1.SendData("enable");
+                            for (int b = 0; b <= 1000; b++)
+                            {
+                                string pass = mysocket1.ReceiveData(int.Parse(yanshi));
+                                if (pass.Contains("Pas"))
+                                {
+                                    mysocket1.SendData(GPNPSDEN);
+                                    //Thread.Sleep(500);
+                                    for (int d = 0; d <= 1000; d++)
+                                    {
+                                        string locked = mysocket1.ReceiveData(int.Parse(yanshi));
+                                        if (locked.Contains("configuration is locked by other user"))
+                                        //configuration is locked by other user
+                                        {
+                                            //textDOS.AppendText("\r\n" + "已经有用户登录，正在重新登录========================OK");
+                                            mysocket1.SendData("grosadvdebug");
+                                            Thread.Sleep(200);
+                                            mysocket1.SendData("vty user limit no");
+                                            Thread.Sleep(200);
+                                            mysocket1.SendData("exit");
+                                            Thread.Sleep(200);
+                                            mysocket1.SendData("enable");
+                                            Thread.Sleep(200);
+                                            if (mysocket1.ReceiveData(int.Parse(yanshi)).Contains("Pas"))
+                                            {
+                                                mysocket1.SendData(GPNPSDEN);
+                                                Thread.Sleep(200);
+                                                if (!mysocket1.ReceiveData(int.Parse(yanshi)).Contains("failed"))
+                                                {
+                                                    this.dataGridView1.Rows[i].Cells["最终结果"].Value = "用户名密码错误2";
+                                                    this.dataGridView1.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString();
+                                                    this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.Yellow;
+                                                    lock (sb)
+                                                    {
+                                                        int s = int.Parse(toolStripStatusLabelshibai.Text);
+                                                        s = s + 1;
+                                                        toolStripStatusLabelshibai.Text = s.ToString();
+                                                    }
+                                                    lock (o1)
+                                                    {
+                                                        int e = int.Parse(toolStripStatusLabelshengyu.Text);
+                                                        e = e - 1;
+                                                        toolStripStatusLabelshengyu.Text = e.ToString();
+
+                                                        doneCount++;
+
+                                                    }
+                                                    return;
+                                                }
+
+                                                break;
+                                            }
+                                        }
+                                        if (locked.Contains("#"))
+                                        {
+                                            break;
+                                        }
+                                        Thread.Sleep(1);
+                                    }
+                                    break;
+                                }
+                                if (pass.Contains("#"))
+                                {
+                                    break;
+                                }
+                                if (pass.Contains("configuration is locked by other user"))
+                                //configuration is locked by other user
+                                {
+                                    //textDOS.AppendText("\r\n" + "已经有用户登录，正在重新登录=============================OK");
+                                    mysocket1.SendData("grosadvdebug");
+                                    Thread.Sleep(200);
+                                    mysocket1.SendData("vty user limit no");
+                                    Thread.Sleep(200);
+                                    mysocket1.SendData("exit");
+                                    Thread.Sleep(200);
+                                    mysocket1.SendData("enable");
+                                    Thread.Sleep(200);
+                                    if (mysocket1.ReceiveData(int.Parse(yanshi)).Contains("Pas"))
+                                    {
+                                        mysocket1.SendData(GPNPSDEN);
+                                        Thread.Sleep(200);
+                                        if (!mysocket1.ReceiveData(int.Parse(yanshi)).Contains("failed"))
+                                        {
+                                            this.dataGridView1.Rows[i].Cells["最终结果"].Value = "用户名密码错误2";
+                                            this.dataGridView1.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString();
+                                            this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.Yellow;
+                                            lock (sb)
+                                            {
+                                                int s = int.Parse(toolStripStatusLabelshibai.Text);
+                                                s = s + 1;
+                                                toolStripStatusLabelshibai.Text = s.ToString();
+                                            }
+                                            lock (o1)
+                                            {
+                                                int e = int.Parse(toolStripStatusLabelshengyu.Text);
+                                                e = e - 1;
+                                                toolStripStatusLabelshengyu.Text = e.ToString();
+
+                                                doneCount++;
+
+                                            }
+                                            return;
+                                        }
+
+                                        break;
+                                    }
+                                    break;
+                                }
+                                Thread.Sleep(1);
+                            }
+                            break;
+                        }
+                        Thread.Sleep(10);
+                    }
+
+                    mysocket1.SendData("erase config-file");
+                        Thread.Sleep(500);
+                        mysocket1.SendData("Y");
+                        Thread.Sleep(500);
+                        this.dataGridView1.Rows[i].Cells["重启前清空配置"].Value = "OK";
+
+                        mysocket1.SendData("reboot");
                             for (int a = 1; a <= 5000; a++)
                             {
                                 string box = mysocket1.ReceiveData(int.Parse("10")); ;
@@ -1501,15 +2491,11 @@ namespace MyGpnSoftware
                                 Thread.Sleep(1);
                             }
 
-                     
-
-                    }
-
 
                 }
                 else
                 {
-
+                    this.dataGridView1.Rows[i].Cells["重启前清空配置"].Value = "NOK";
                     this.dataGridView1.Rows[i].Cells["重启结果"].Value = "NOK";
 
                     lock (sb)
@@ -1522,7 +2508,7 @@ namespace MyGpnSoftware
             }
             else
             {
-
+                this.dataGridView1.Rows[i].Cells["重启前清空配置"].Value = "NOK";
                 this.dataGridView1.Rows[i].Cells["ping测试"].Value = "NOK";
                 this.dataGridView1.Rows[i].Cells["重启结果"].Value = "NOK";
 
@@ -1548,7 +2534,7 @@ namespace MyGpnSoftware
 
         }
 
-        private void batch_Paint(object sender, PaintEventArgs e)
+        private void Batch_Paint(object sender, PaintEventArgs e)
         {
             Graphics g = e.Graphics;
             Color FColor = Color.White;
@@ -1563,27 +2549,19 @@ namespace MyGpnSoftware
                 g.FillRectangle(b, this.ClientRectangle);
             }
         }
-
-        private void batch_Resize(object sender, EventArgs e)
+        //重绘窗体函数
+        private void Batch_Resize(object sender, EventArgs e)
         {
             this.Invalidate();//重绘窗体
         }
-
-        private void comtype_SelectedIndexChanged(object sender, EventArgs e)
+        //连接测试按钮
+        private void Butlink_Click(object sender, EventArgs e)
         {
-
-        }
-
-        private void butlink_Click(object sender, EventArgs e)
-        {
-            //if (dataGridView1.DataSource == null)
-            //{
-
-
-            //    MessageBox.Show("请先导入「网管导出的表格」，然后再次尝试");
-            //    return;
-
-            //}
+            if (dataGridView1.CurrentCell == null)
+            {
+                MessageBox.Show("请先导入「网管导出的表格」或「制作IP表」，然后再次尝试");
+                return;
+            }
             TimeNow = DateTime.Now;
             this.timer1.Enabled = true;
             this.timer1.Start();
@@ -1593,60 +2571,59 @@ namespace MyGpnSoftware
             toolStripStatusLabelshibai.Text = "0";
             toolStripStatusLabelyichang.Text = "0";
             string task = "link";
-            ParameterizedThreadStart p = new ParameterizedThreadStart(xianchengchi);
+            ParameterizedThreadStart p = new ParameterizedThreadStart(Xianchengchi);
             Thread t = new Thread(p);
             t.Start(task);
-            Thread bar = new Thread(bartest);
-            bar.IsBackground = true;
+            Thread bar = new Thread(Bartest)
+            {
+                IsBackground = true
+            };
             bar.Start();
         }
-        public void link(object obj)
+        //连接测试函数
+        public void Link(object obj)
         {
-
+            
             int i = int.Parse(obj.ToString());
             this.dataGridView1.Rows[i].Cells["开始时间"].Value = DateTime.Now.ToString();
-            Ping ping = new Ping();
-            int timeout = 500;
             MySocket mysocket1 = new MySocket();
-            string ip = "";
-            ip = dataGridView1.Rows[i].Cells["地址"].Value.ToString();
+            string ip = dataGridView1.Rows[i].Cells["地址"].Value.ToString();
+            //Ping p1 = new Ping();
+            //p1.SendAsync(ip, 10000, obj);
+            //p1.PingCompleted += new PingCompletedEventHandler(PingCompletedCallBack);//设置PingCompleted事件处理程序 
 
-            // MessageBox.Show(ip);
-            PingReply pingReply = ping.Send(ip, timeout);
-            for (int j = 0; j <= 1; j++)
+            Ping ping = new Ping();
+            //ing.SendAsync(ip, timeout);
+            PingReply pingReply = ping.Send(ip, 400);
+            for (int a = 0; a <= 1; a++)
             {
-
-
-                pingReply = ping.Send(ip, timeout);
                 if (pingReply.Status == IPStatus.Success)
                 {
+                    this.dataGridView1.Rows[i].Cells["ping测试"].Value = pingReply.RoundtripTime;
+                    this.dataGridView1.Rows[i].Cells["最终结果"].Value = "在线";
+                    this.dataGridView1.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString();
+                    this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.GreenYellow;
+                    lock (cg)
+                    {
+                        int c = int.Parse(toolStripStatusLabelchenggong.Text);
+                        c = c + 1;
+                        toolStripStatusLabelchenggong.Text = c.ToString();
+
+                    }
+
                     break;
                 }
-                Thread.Sleep(10);
-            }//判断请求是否超时
-            if (pingReply.Status == IPStatus.Success)
-            {
-                this.dataGridView1.Rows[i].Cells["ping测试"].Value = "OK";
-                this.dataGridView1.Rows[i].Cells["最终结果"].Value = "在线";
-                this.dataGridView1.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString();
-                this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.GreenYellow;
-                lock (cg)
-                {
-                    int c = int.Parse(toolStripStatusLabelchenggong.Text);
-                    c = c + 1;
-                    toolStripStatusLabelchenggong.Text = c.ToString();
 
-                }
-
-
+                Thread.Sleep(1000);
+                pingReply = ping.Send(ip);
             }
-            else
+            if (pingReply.Status != IPStatus.Success)
             {
-
-                this.dataGridView1.Rows[i].Cells["ping测试"].Value = "NOK";
+                this.dataGridView1.Rows[i].Cells["ping测试"].Value = pingReply.Status;
                 this.dataGridView1.Rows[i].Cells["最终结果"].Value = "离线";
                 this.dataGridView1.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString();
                 this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.Yellow;
+
                 lock (sb)
                 {
                     int s = int.Parse(toolStripStatusLabelshibai.Text);
@@ -1667,79 +2644,219 @@ namespace MyGpnSoftware
             //MessageBox.Show("一键保存结束");
 
         }
-        public void newip()
+        //生成IP表格函数
+
+        private void PingCompletedCallBack(object sender, PingCompletedEventArgs e)
         {
-            Control.CheckForIllegalCrossThreadCalls = false;
-            int a = int.Parse(textAstop.Text) - int.Parse(textAstart.Text);
-            int b = int.Parse(textBstop.Text) - int.Parse(textBstart.Text);
-            int c = int.Parse(textCstop.Text) - int.Parse(textCstart.Text);
-            int d = int.Parse(textDstop.Text) - int.Parse(textDstart.Text);
-            int astart = int.Parse(textAstart.Text);
-            int bstart = int.Parse(textBstart.Text);
-            int cstart = int.Parse(textCstart.Text);
-            int dstart = int.Parse(textDstart.Text);
-
-
-            for (int i = 0; i <= c; i++)
+            
+            //Thread.Sleep(1000);
+            string a = e.UserState as string ;
+           // MessageBox.Show(a);
+            int i = int.Parse(a.ToString());
+            if (e.Cancelled)
             {
-                if (c == 0)
-                {
-                    for (int j = 1; j <= d; j++)
-                    {
-                        int index = this.dataGridView1.Rows.Add();
-                        this.dataGridView1.Rows[index].Cells["地址"].Value = textAstart.Text + "." + textBstart.Text + "." + textCstart.Text + "." + j.ToString();
-                       // dataGridView1.CurrentCell = dataGridView1.Rows[index].Cells[0];
-                        //textBox1.AppendText(textAstart.Text + "." + textBstart.Text + "." + textCstart.Text + "." + j.ToString() + "\r\n");
-
-                    }
-
-                }
-                if( c!=0 )
-                {
-                    for (int q = 1; q <= 254; q++)
-                    {
-                        int cip = cstart + i;
-                        int index = this.dataGridView1.Rows.Add();
-                        this.dataGridView1.Rows[index].Cells["地址"].Value = textAstart.Text + "." + textBstart.Text + "." + cip.ToString() + "." + q.ToString();
-                       // dataGridView1.CurrentCell = dataGridView1.Rows[index].Cells[0];
-                        //textBox1.AppendText(textAstart.Text + "." + textBstart.Text + "." + cip.ToString() + "." + q.ToString() + "\r\n");
-                    }
-                }
+                MessageBox.Show("Ping Canncel");
+                return;
+            }
+            if (e.Error != null)
+            {
+                //listBox1.Items.Add(e.Error.Message);
+                return;
 
             }
+            StringBuilder sbuilder;
+            PingReply reply = e.Reply;
+            if (reply.Status == IPStatus.Success)
+            {
+                this.dataGridView1.Rows[i].Cells["ping测试"].Value = reply.RoundtripTime;
+                this.dataGridView1.Rows[i].Cells["最终结果"].Value = "在线";
+                this.dataGridView1.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString();
+                this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.GreenYellow;
+                lock (cg)
+                {
+                    int c = int.Parse(toolStripStatusLabelchenggong.Text);
+                    c = c + 1;
+                    toolStripStatusLabelchenggong.Text = c.ToString();
+
+                }
+                sbuilder = new StringBuilder();
+                sbuilder.Append(string.Format("Address: {0} ", reply.Address.ToString()));
+                sbuilder.Append(string.Format("RoundTrip time: {0} ", reply.RoundtripTime));
+                sbuilder.Append(string.Format("Time to live: {0} ", reply.Options.Ttl));
+                sbuilder.Append(string.Format("Don't fragment: {0} ", reply.Options.DontFragment));
+                sbuilder.Append(string.Format("Buffer size: {0} ", reply.Buffer.Length));
+                //listBox1.Items.Add(sbuilder.ToString());
+
+            }
+            if (reply.Status != IPStatus.Success)
+            {
+                this.dataGridView1.Rows[i].Cells["ping测试"].Value = reply.Status;
+                this.dataGridView1.Rows[i].Cells["最终结果"].Value = "离线";
+                this.dataGridView1.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString();
+                this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.Yellow;
+
+                lock (sb)
+                {
+                    int s = int.Parse(toolStripStatusLabelshibai.Text);
+                    s = s + 1;
+                    toolStripStatusLabelshibai.Text = s.ToString();
+                }
+            }
+            lock (o1)
+            {
+                int d = int.Parse(toolStripStatusLabelshengyu.Text);
+                d = d - 1;
+                toolStripStatusLabelshengyu.Text = d.ToString();
+
+                doneCount++;
+
+            }
+        }
+        public void Newip()
+        {
+
+            Control.CheckForIllegalCrossThreadCalls = false;
+            string StartIp = TextStartIp.Text; 
+            string EndIp = TextStopIp.Text;
+            uint iStartip = IpTint(StartIp);
+            uint iEndIp = IpTint(EndIp);
+            //string ip_result="";  
+            StringBuilder ip_result = new StringBuilder();
+            if (iEndIp >= iStartip)
+            {
+                for (uint ip = iStartip; ip <= iEndIp; ip++)
+                {
+                    String[] values = { ip_result + IntTip(ip) };
+                    dataGridView1.Rows.Add(values);
+                    //ip_result = ip_result + intTip(ip)+"\r\n";  
+                }
+                //String[] values = { ip_result.ToString() }; dataGridView1.Rows.Add(values);
+
+               // resultTextBox.Text = ip_result.ToString();   //RichTextBox  
+            }
+            else
+            {
+                MessageBox.Show("错误！起始ip不能比终止ip大");
+            }
+
+
+
+            //int a = int.Parse(textAstop.Text) - int.Parse(textAstart.Text);
+            //int b = int.Parse(textBstop.Text) - int.Parse(textBstart.Text);
+            //int c = int.Parse(textCstop.Text) - int.Parse(textCstart.Text);
+            //int d = int.Parse(textDstop.Text) - int.Parse(textDstart.Text);
+            //int astart = int.Parse(textAstart.Text);
+            //int bstart = int.Parse(textBstart.Text);
+            //int cstart = int.Parse(textCstart.Text);
+            //int dstart = int.Parse(textDstart.Text);
+
+
+            //for (int i = 0; i <= c; i++)
+            //{
+            //    if (c == 0)
+            //    {
+            //        for (int j = int.Parse(textDstart.Text); j <= int.Parse(textDstop.Text); j++)
+            //        {
+            //            //int index = this.dataGridView1.Rows.Add();
+            //            //this.dataGridView1.Rows[index].Cells["地址"].Value = textAstart.Text + "." + textBstart.Text + "." + textCstart.Text + "." + j.ToString();
+            //            // dataGridView1.CurrentCell = dataGridView1.Rows[index].Cells[0];
+            //            //textBox1.AppendText(textAstart.Text + "." + textBstart.Text + "." + textCstart.Text + "." + j.ToString() + "\r\n");
+            //            //MessageBox.Show(index.ToString());
+            //            String[] values = { textAstart.Text + "." + textBstart.Text + "." + textCstart.Text + "." + j.ToString() }; dataGridView1.Rows.Add(values);
+            //            //MessageBox.Show(j.ToString());
+            //        }
+
+            //    }
+            //    if( c!=0 )
+            //    {
+            //        for (int q = 1; q <= 254; q++)
+            //        {
+            //            int cip = cstart + i;
+            //            int index = this.dataGridView1.Rows.Add();
+            //            this.dataGridView1.Rows[index].Cells["地址"].Value = textAstart.Text + "." + textBstart.Text + "." + cip.ToString() + "." + q.ToString();
+            //           // dataGridView1.CurrentCell = dataGridView1.Rows[index].Cells[0];
+            //            //textBox1.AppendText(textAstart.Text + "." + textBstart.Text + "." + cip.ToString() + "." + q.ToString() + "\r\n");
+            //        }
+            //    }
+
+            //}
 
 
             foreach (DataGridViewColumn column in dataGridView1.Columns)
             {
                 column.SortMode = DataGridViewColumnSortMode.NotSortable;
             }
-            toolStripStatusLabelzonggong.Text = (dataGridView1.Rows.Count - 1).ToString();
+            toolStripStatusLabelzonggong.Text = (dataGridView1.Rows.Count -1).ToString();
             toolStripStatusLabelshengyu.Text = toolStripStatusLabelzonggong.Text;
             MessageBox.Show("已完成，共生成了"+ toolStripStatusLabelzonggong.Text+"个ip地址");
             
 
         }
-        private void butping_Click(object sender, EventArgs e)
+        /// <summary>
+        /// 验证IP地址是否合法
+        /// </summary>
+        /// <param name="ip">要验证的IP地址</param>
+        /// 
+        public static bool IsIP(string ip)
         {
-
-
-            // MessageBox.Show(ipping + "\r\n");
-            //IPAddress ipAddress1 = new IPAddress(new byte[] { 151, 33, 86, 50 });
+            //如果为空，认为验证合格
+            if (string.IsNullOrEmpty(ip))
+            {
+                return true;
+            }
+            //清除要验证字符串中的空格
+            ip = ip.Trim();
+            //模式字符串
+            string pattern = @"^((2[0-4]\d|25[0-5]|[01]?\d\d?)\.){3}(2[0-4]\d|25[0-5]|[01]?\d\d?)$";
+            //验证
+            return Regex.IsMatch(ip, pattern);
         }
-
-        private void butip_Click(object sender, EventArgs e)
+        public static uint IpTint(string ipStr)
         {
-            dataGridView1.DataSource = null;
+            string[] ip = ipStr.Split('.');
+            uint ipcode = 0xFFFFFF00 | byte.Parse(ip[3]);
+            ipcode = ipcode & 0xFFFF00FF | (uint.Parse(ip[2]) << 0x8);
+            ipcode = ipcode & 0xFF00FFFF | (uint.Parse(ip[1]) << 0xF);
+            ipcode = ipcode & 0x00FFFFFF | (uint.Parse(ip[0]) << 0x18);
+            return ipcode;
+        }
+        public static string IntTip(uint ipcode)
+        {
+            byte a = (byte)((ipcode & 0xFF000000) >> 0x18);
+            byte b = (byte)((ipcode & 0x00FF0000) >> 0xF);
+            byte c = (byte)((ipcode & 0x0000FF00) >> 0x8);
+            byte d = (byte)(ipcode & 0x000000FF);
+            string ipStr = string.Format("{0}.{1}.{2}.{3}", a, b, c, d);
+            return ipStr;
+        }
+        //生成IP表格按钮
+        private void Butip_Click(object sender, EventArgs e)
+        {
+            if (!IsIP(TextStartIp.Text.Trim()) || !IsIP(TextStopIp.Text.Trim()))
+            {
+                MessageBox.Show("您输入了非法IP地址，请修改后再次尝试！");
+                return;
+            }
+            uint iStartip = IpTint(TextStartIp.Text.Trim());
+            uint iEndIp = IpTint(TextStopIp.Text.Trim());
+            if (iEndIp <= iStartip)
+            {
+                MessageBox.Show("错误！起始ip不能比终止ip大,请重新输入");
+                return;
+
+            }
+                //dataGridView1.DataSource = null;
+                dataGridView1.Rows.Clear();
             if (dataGridView1.Columns["地址"] == null)
             {
 
                 this.dataGridView1.Columns.Add("地址", "地址");
             }
-            else
-            {
-                this.dataGridView1.Columns.Remove("地址");
-                this.dataGridView1.Columns.Add("地址", "地址");
-            }
+            //else
+            //{
+            //    this.dataGridView1.Columns.Remove("地址");
+            //    this.dataGridView1.Columns.Add("地址", "地址");
+            //}
             if (dataGridView1.Columns["开始时间"] == null)
             {
 
@@ -1787,11 +2904,14 @@ namespace MyGpnSoftware
 
 
             this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            Thread t = new Thread(newip);
-            t.IsBackground = true;
+            Thread t = new Thread(Newip)
+            {
+                IsBackground = true
+            };
             t.Start();
 
         }
+
     }
 
 }

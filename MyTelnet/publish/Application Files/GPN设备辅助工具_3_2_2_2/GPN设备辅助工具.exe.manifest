@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<asmv1:assembly xsi:schemaLocation="urn:schemas-microsoft-com:asm.v1 assembly.adaptive.xsd" manifestVersion="1.0" xmlns:asmv1="urn:schemas-microsoft-com:asm.v1" xmlns="urn:schemas-microsoft-com:asm.v2" xmlns:asmv2="urn:schemas-microsoft-com:asm.v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:co.v1="urn:schemas-microsoft-com:clickonce.v1" xmlns:asmv3="urn:schemas-microsoft-com:asm.v3" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:co.v2="urn:schemas-microsoft-com:clickonce.v2">
+  <asmv1:assemblyIdentity name="GPN设备辅助工具.exe" version="3.2.2.2" publicKeyToken="0eb5cf74f65b6e87" language="neutral" processorArchitecture="msil" type="win32" />
+  <description asmv2:iconFile="telnet.ico" xmlns="urn:schemas-microsoft-com:asm.v1" />
+  <application />
+  <entryPoint>
+    <assemblyIdentity name="GPN设备辅助工具" version="3.2.2.0" language="neutral" processorArchitecture="msil" />
+    <commandLine file="GPN设备辅助工具.exe" parameters="" />
+  </entryPoint>
+  <trustInfo>
+    <security>
+      <applicationRequestMinimum>
+        <PermissionSet Unrestricted="true" ID="Custom" SameSite="site" />
+        <defaultAssemblyRequest permissionSetReference="Custom" />
+      </applicationRequestMinimum>
+      <requestedPrivileges xmlns="urn:schemas-microsoft-com:asm.v3">
+        <!--
+          UAC 清单选项
+         若想要更改 Windows 用户帐户控制级别，请
+         将 requestedExecutionLevel 节点替换为下述某项。
+
+       <requestedExecutionLevel  level="asInvoker" uiAccess="false" />
+       <requestedExecutionLevel  level="requireAdministrator" uiAccess="false" />
+       <requestedExecutionLevel  level="highestAvailable" uiAccess="false" />
+
+        若想要使用文件和注册表虚拟化以实现向后
+        兼容，请删除 requestedExecutionLevel 节点。
+    -->
+        <requestedExecutionLevel level="asInvoker" uiAccess="false" />
+      </requestedPrivileges>
+    </security>
+  </trustInfo>
+  <dependency>
+    <dependentOS>
+      <osVersionInfo>
+        <os majorVersion="5" minorVersion="1" buildNumber="2600" servicePackMajor="0" />
+      </osVersionInfo>
+    </dependentOS>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="preRequisite" allowDelayedBinding="true">
+      <assemblyIdentity name="Microsoft.Windows.CommonLanguageRuntime" version="4.0.30319.0" />
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="GPN设备辅助工具.exe" size="1329024">
+      <assemblyIdentity name="GPN设备辅助工具" version="3.2.2.0" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+        <dsig:DigestValue>oPh1LV5KXhfVWWz08ig7anNiZ6k=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="NPOI.dll" size="1677824">
+      <assemblyIdentity name="NPOI" version="2.2.0.0" publicKeyToken="0DF73EC7942B34E1" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+        <dsig:DigestValue>oryHReC9sVM+goM+iNuTCIdCLyU=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <file name="GPN设备辅助工具.exe.config" size="161">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+      <dsig:DigestValue>XhmNWIUSMbaVlaWABznwa4dcyj0=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="telnet.ico" size="67646">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+      <dsig:DigestValue>4FkRX+WoTfzMATbMyUPwoXC0Yqg=</dsig:DigestValue>
+    </hash>
+  </file>
+<publisherIdentity name="CN=GW\hun" issuerKeyHash="1a015993186d2147bf6e19f5616a20daf4e07f38" /><Signature Id="StrongNameSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" /><DigestValue>hLis2AjUfLuJqPr0FAD7hA1Qk6Y=</DigestValue></Reference></SignedInfo><SignatureValue>QP+z/i0+tg8WLZaA966fkuamih/IPk+nxbJKuuoOZ80/hqjQ+SSOoONVFMBo0YOixcnLmXOi//NkPvyQN7ROEMCeBdi7Ir9ZpIDz+XYzipYcF7JZpQyzpn7ocdS2fP4NpMfacXf/Z7YMyuDTMzkeEH1CHZ0bXSgLif5atpQezLM=</SignatureValue><KeyInfo Id="StrongNameKeyInfo"><KeyValue><RSAKeyValue><Modulus>pSYQNf5yaMmX4JldnLTLtdvKBwHetsTuxT3zYilJi0YkCJsitbuAXPcPqvyoBn3N0H+aGCUzwmfuNC2vrbx4GO7bKWS38q+2TeJQIn2NAuO1S0bM9dyOdF3R/KcxqYsKRFaU671F7OvxX9rZZWx7udaCw2saUevu6IZnJ6LRVxs=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><msrel:RelData xmlns:msrel="http://schemas.microsoft.com/windows/rel/2005/reldata"><r:license xmlns:r="urn:mpeg:mpeg21:2003:01-REL-R-NS" xmlns:as="http://schemas.microsoft.com/windows/pki/2005/Authenticode"><r:grant><as:ManifestInformation Hash="a693500d84fb0014f4faa889bb7cd408d8acb884" Description="" Url=""><as:assemblyIdentity name="GPN设备辅助工具.exe" version="3.2.2.2" publicKeyToken="0eb5cf74f65b6e87" language="neutral" processorArchitecture="msil" type="win32" /></as:ManifestInformation><as:SignedBy /><as:AuthenticodePublisher><as:X509SubjectName>CN=GW\hun</as:X509SubjectName></as:AuthenticodePublisher></r:grant><r:issuer><Signature Id="AuthenticodeSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" /><DigestValue>76RExQCcA3Yhw94N44241gXks3Y=</DigestValue></Reference></SignedInfo><SignatureValue>QcsqIuIFlo6YMpUdELmCmQtuFXqeoc04eq3viyXiTHiyNmRoeUoOdxFVX9uO0aJdoIAqmoyhCiHEiOWqQqZwlvtw11SuCJ1ZsESrKrr1Gmv6RoemPkEeHhci6HFOIRddNgJgFxT10bZEyDXDGOJYfVO9TujJ7m8phkRAS2+PsGw=</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>pSYQNf5yaMmX4JldnLTLtdvKBwHetsTuxT3zYilJi0YkCJsitbuAXPcPqvyoBn3N0H+aGCUzwmfuNC2vrbx4GO7bKWS38q+2TeJQIn2NAuO1S0bM9dyOdF3R/KcxqYsKRFaU671F7OvxX9rZZWx7udaCw2saUevu6IZnJ6LRVxs=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>MIIBsTCCARqgAwIBAgIQab3NwW8WGqpPonfa5dEGfDANBgkqhkiG9w0BAQUFADAXMRUwEwYDVQQDHgwARwBXAFwAaAB1AG4wHhcNMTkxMDI5MDU1NDU0WhcNMjAxMDI4MTE1NDU0WjAXMRUwEwYDVQQDHgwARwBXAFwAaAB1AG4wgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAKUmEDX+cmjJl+CZXZy0y7XbygcB3rbE7sU982IpSYtGJAibIrW7gFz3D6r8qAZ9zdB/mhglM8Jn7jQtr628eBju2ylkt/Kvtk3iUCJ9jQLjtUtGzPXcjnRd0fynMamLCkRWlOu9Rezr8V/a2WVse7nWgsNrGlHr7uiGZyei0VcbAgMBAAEwDQYJKoZIhvcNAQEFBQADgYEAmnCW1RY+NssbT0JSpyFanOkMb5sODaVEQxol+g01OllGpNLxc3RzZ7QCGHJsGN+zRpn61FuxE/LQJ4Zx+X2mKmNO9bjXmQqb0YFcDYAocPKAYkoBX+Y8eC9rzxgbc8MM4QKZmhhpDjhHRL9EghWNVRovNgGVP0IQWd70yMTCGCs=</X509Certificate></X509Data></KeyInfo></Signature></r:issuer></r:license></msrel:RelData></KeyInfo></Signature></asmv1:assembly>

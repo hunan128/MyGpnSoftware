@@ -1,0 +1,8 @@
+obj\Debug\ResolveAssemblyReference.cache
+obj\Debug\MyTelnet.Form1.resources
+obj\Debug\MyTelnet.Properties.Resources.resources
+obj\Debug\MyTelnet.csproj.GenerateResource.Cache
+bin\Debug\MyTelnet.exe
+bin\Debug\MyTelnet.pdb
+obj\Debug\MyTelnet.exe
+obj\Debug\MyTelnet.pdb

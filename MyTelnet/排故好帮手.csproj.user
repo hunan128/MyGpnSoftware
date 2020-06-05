@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PublishUrlHistory>ftp://otrs.gw.com/ftp/|ftp://otrs.gw.com/gpn/|D:\software\GPN工具\|publish\</PublishUrlHistory>
+    <InstallUrlHistory>http://otrs.gw.com/ftp/|http://otrs.gw.com/gpn/</InstallUrlHistory>
+    <SupportUrlHistory>http://otrs.gw.com/ftp/publish.htm</SupportUrlHistory>
+    <UpdateUrlHistory />
+    <BootstrapperUrlHistory>http://otrs.gw.com/ftp/Application%2520Files/|http://192.168.22.250/ftp/Application%2520Files/</BootstrapperUrlHistory>
+    <ErrorReportUrlHistory />
+    <FallbackCulture>zh-CN</FallbackCulture>
+    <VerifyUploadedFiles>false</VerifyUploadedFiles>
+  </PropertyGroup>
+  <PropertyGroup>
+    <EnableSecurityDebugging>false</EnableSecurityDebugging>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,10 @@
+D:\记住密码\51622429MyTelnet\MyTelnet\MyTelnet\bin\Debug\MyTelnet.exe
+D:\记住密码\51622429MyTelnet\MyTelnet\MyTelnet\bin\Debug\MyTelnet.pdb
+D:\记住密码\51622429MyTelnet\MyTelnet\MyTelnet\obj\Debug\MyTelnet.csprojResolveAssemblyReference.cache
+D:\记住密码\51622429MyTelnet\MyTelnet\MyTelnet\obj\Debug\MyTelnet.Form1.resources
+D:\记住密码\51622429MyTelnet\MyTelnet\MyTelnet\obj\Debug\MyTelnet.Properties.Resources.resources
+D:\记住密码\51622429MyTelnet\MyTelnet\MyTelnet\obj\Debug\MyTelnet.csproj.GenerateResource.Cache
+D:\记住密码\51622429MyTelnet\MyTelnet\MyTelnet\obj\Debug\MyTelnet.exe
+D:\记住密码\51622429MyTelnet\MyTelnet\MyTelnet\obj\Debug\MyTelnet.pdb
+D:\记住密码\51622429MyTelnet\MyTelnet\MyTelnet\bin\Debug\MyTelnet.exe.config
+D:\记住密码\51622429MyTelnet\MyTelnet\MyTelnet\obj\Debug\MyTelnet.batch.resources

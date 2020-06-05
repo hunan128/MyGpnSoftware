@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace MyGpnSoftware
@@ -8,6 +9,7 @@ namespace MyGpnSoftware
     {
         private System.Net.Sockets.Socket socket;
         private bool closed;
+        private static string ipaddress = "";
         public MySocket()
 
         {
@@ -21,6 +23,7 @@ namespace MyGpnSoftware
             {
 
                 System.Net.IPAddress ipaddr = System.Net.IPAddress.Parse(address);
+                ipaddress = address;
                 System.Net.IPEndPoint ipep = new System.Net.IPEndPoint(ipaddr, int.Parse(port));
                 socket = new System.Net.Sockets.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream, System.Net.Sockets.ProtocolType.Tcp);
                 socket.Connect(ipep);
@@ -90,6 +93,26 @@ namespace MyGpnSoftware
             closed = false;
             return true;
         }
+
+
+        /// <summary>
+        /// ¼ÆËã×Ö·û´®ÖÐ×Ó´®³öÏÖµÄ´ÎÊý
+        /// </summary>
+        /// <param name="str">×Ö·û´®</param>
+        /// <param name="substring">×Ó´®</param>
+        /// <returns>³öÏÖµÄ´ÎÊý</returns>
+        static int SubstringCount(string str, string substring)
+        {
+            if (str.Contains(substring))
+            {
+                string strReplaced = str.Replace(substring, "");
+                return (str.Length - strReplaced.Length) / substring.Length;
+            }
+            return 0;
+        }
+
+
+
         /// <summary>
         /// ½ÓÊÕÊý¾Ý
         /// </summary>
@@ -113,15 +136,78 @@ namespace MyGpnSoftware
                 if (recvdata.Length > 0)
                 {
                     socket.Receive(recvdata, 0, datalong, System.Net.Sockets.SocketFlags.None);
-                    str = Encoding.ASCII.GetString(recvdata).Trim();
+                    string ss =  Encoding.ASCII.GetString(recvdata).Trim();
+                    string luanma = "[7m --Press any key to continue Ctrl+c to stop-- [m";
+                    string newSS = ss.Replace(luanma, "Press any key to continue Ctrl+c to stop");
+                    string luama2 = "                                              ";
+                    string newSD = newSS.Replace(luama2, "");
+                    string vcg = "[0m[0;0m";//[0;31m
+                    string newvcg = newSD.Replace(vcg, "");
+                    string vcg2 = "\n";
+                    string newvcg2 = newvcg.Replace(vcg2, "\r\n");
+                    string kou = "";
+                    string kou2 = "";
+                    string newkou = newvcg2.Replace(kou, "");
+                    string newkou2 = newkou.Replace(kou2, "");
+                    string msapeth = "[0;32m";
+                    string msapeth2 = newkou2.Replace(msapeth, "");
+                    string msapeth1 = "[0m";
+                    string msapeth3 = msapeth2.Replace(msapeth1, "");
+                    string msapeth4 = "[0;0m";
+                    string msapeth5 = msapeth3.Replace(msapeth4, "");
+                    string msapeth6 = "[0;31m";
+                    str = msapeth5.Replace(msapeth6, "");
+
                 }
             }
             catch (Exception eee)
             {
                 str = eee.ToString();
             }
+            if (str != "") {
+                WriteLogs("Logs", "Ó¦´ð£º", str);
+            }
+            
             return str;
 
+        }
+
+
+        /// <summary>
+        /// ÈÕÖ¾²¿·Ö
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="type"></param>
+        /// <param name="content"></param>
+        public static void WriteLogs(string fileName, string type, string content)
+        {
+            string path = @"C:\gpn\";
+            if (!string.IsNullOrEmpty(path))
+            {
+                path = @"C:\gpn\" + fileName;
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+                path = path + "\\" + DateTime.Now.ToString("yyyyMMdd");
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+                path = path + "\\" + ipaddress + "-" + DateTime.Now.ToString("yyyyMMdd") + ".txt";
+                if (!File.Exists(path))
+                {
+                    FileStream fs = File.Create(path);
+                    fs.Close();
+                }
+                if (File.Exists(path))
+                {
+                    StreamWriter sw = new StreamWriter(path, true, System.Text.Encoding.Default);
+                    sw.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + type + "-->" + content);
+                    //  sw.WriteLine("----------------------------------------");
+                    sw.Close();
+                }
+            }
         }
         /// <summary>
         /// ·¢ËÍ´øÃüÁî½áÊø·û\r\nµÄÊý¾Ý
@@ -134,6 +220,7 @@ namespace MyGpnSoftware
             if (dataStr == null || dataStr.Length < 0)
                 return false;
             byte[] cmd = Encoding.ASCII.GetBytes(dataStr + "\r\n");
+            WriteLogs("Logs", "ÇëÇó£º", dataStr);
             try
             {
                 int n = socket.Send(cmd, 0, cmd.Length, System.Net.Sockets.SocketFlags.None);
@@ -153,6 +240,7 @@ namespace MyGpnSoftware
             if (dataStr == null || dataStr.Length < 0)
                 return false;
             byte[] cmd = Encoding.ASCII.GetBytes(dataStr);
+            //WriteLogs("Logs", "ÇëÇó£º", dataStr);
             try
             {
                 int n = socket.Send(cmd, 0, cmd.Length, System.Net.Sockets.SocketFlags.None);
