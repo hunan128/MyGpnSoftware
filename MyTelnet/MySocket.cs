@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Windows.Forms;
 
 namespace MyGpnSoftware
 {
@@ -181,33 +182,48 @@ namespace MyGpnSoftware
         /// <param name="content"></param>
         public static void WriteLogs(string fileName, string type, string content)
         {
-            string path = @"C:\gpn\";
-            if (!string.IsNullOrEmpty(path))
+            try
             {
-                path = @"C:\gpn\" + fileName;
-                if (!Directory.Exists(path))
+                string path = @"C:\gpn\";
+                if (!string.IsNullOrEmpty(path))
                 {
-                    Directory.CreateDirectory(path);
-                }
-                path = path + "\\" + DateTime.Now.ToString("yyyyMMdd");
-                if (!Directory.Exists(path))
-                {
-                    Directory.CreateDirectory(path);
-                }
-                path = path + "\\" + ipaddress + "-" + DateTime.Now.ToString("yyyyMMdd") + ".txt";
-                if (!File.Exists(path))
-                {
-                    FileStream fs = File.Create(path);
-                    fs.Close();
-                }
-                if (File.Exists(path))
-                {
-                    StreamWriter sw = new StreamWriter(path, true, System.Text.Encoding.Default);
-                    sw.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + type + "-->" + content);
-                    //  sw.WriteLine("----------------------------------------");
-                    sw.Close();
+                    path = @"C:\gpn\" + fileName;
+                    if (!Directory.Exists(path))
+                    {
+                        Directory.CreateDirectory(path);
+                    }
+                    path = path + "\\" + DateTime.Now.ToString("yyyyMMdd");
+                    if (!Directory.Exists(path))
+                    {
+                        Directory.CreateDirectory(path);
+                    }
+                    path = path + "\\" + ipaddress + "-" + DateTime.Now.ToString("yyyyMMdd") + ".txt";
+                    if (!File.Exists(path))
+                    {
+                        FileStream fs = File.Create(path);
+                        fs.Close();
+                    }
+                    if (File.Exists(path))
+                    {
+                        //StreamWriter sw = new StreamWriter(path, true, System.Text.Encoding.Default);
+                        //sw.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + type + "-->" + content);
+                        ////  sw.WriteLine("----------------------------------------");
+                        //sw.Close();
+                        using (StreamWriter sw = new StreamWriter(path, true, Encoding.Default))
+                        {
+                            string s = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + type + "-->" + content;
+                            sw.WriteLine(s);
+                            sw.WriteLine("-------------------------------------------------------------------------------------------------------");
+                            sw.Close();
+                        }
+
+                    }
                 }
             }
+            catch(Exception ex)
+            {
+            }
+
         }
         /// <summary>
         /// 发送带命令结束符\r\n的数据

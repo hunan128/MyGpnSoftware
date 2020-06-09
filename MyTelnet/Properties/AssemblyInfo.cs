@@ -29,6 +29,7 @@ using System.Runtime.InteropServices;
                          + "2020.05.25 新增760A的fpga下载功能" + "\r\n"
                          + "2020.05.28 新增问题日志自动记录功能和问题反馈窗口" + "\r\n"
                          + "2020.05.30 优化升级和上传备份的代码，更稳定" + "\r\n"
+                         + "2020.06.05 新增CPU、内存、温度实时状态显示" + "\r\n"
 
                          + "")]
 [assembly: AssemblyConfiguration("")]
@@ -53,4 +54,4 @@ using System.Runtime.InteropServices;
 //      内部版本号
 //      修订号
 //
-[assembly: AssemblyVersion("4.1.1.37")]
+[assembly: AssemblyVersion("4.1.1.48")]

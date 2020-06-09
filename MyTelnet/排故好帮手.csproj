@@ -34,7 +34,7 @@
     <PublisherName>北京格林威尔-GPN系列工具</PublisherName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>40</ApplicationRevision>
+    <ApplicationRevision>50</ApplicationRevision>
     <ApplicationVersion>4.1.1.%2a</ApplicationVersion>
     <UseApplicationTrust>true</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -138,6 +138,12 @@
       <EmbedInteropTypes>False</EmbedInteropTypes>
       <Private>True</Private>
     </Reference>
+    <Reference Include="PacketDotNet, Version=0.16.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\PacketDotNet.0.16.0\lib\PacketDotNet.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpPcap, Version=4.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpPcap.4.4.0\lib\SharpPcap.dll</HintPath>
+    </Reference>
     <Reference Include="SnmpSharpNet, Version=0.9.5.0, Culture=neutral, PublicKeyToken=b2181aa3b9571feb, processorArchitecture=MSIL">
       <HintPath>..\packages\SnmpSharpNet.0.9.5\lib\SnmpSharpNet.dll</HintPath>
     </Reference>
@@ -166,6 +172,7 @@
       <DependentUpon>Batch.cs</DependentUpon>
     </Compile>
     <Compile Include="ExportToExcel.cs" />
+    <Compile Include="FindDevType.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="GPN.cs">
       <SubType>Form</SubType>

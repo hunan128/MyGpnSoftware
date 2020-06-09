@@ -293,8 +293,7 @@
             this.textreq.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
             this.textreq.CustomButton.UseSelectable = true;
             this.textreq.CustomButton.Visible = false;
-            this.textreq.Lines = new string[] {
-        "问题描述"};
+            this.textreq.Lines = new string[0];
             this.textreq.Location = new System.Drawing.Point(104, 63);
             this.textreq.MaxLength = 32767;
             this.textreq.Multiline = true;
@@ -307,7 +306,6 @@
             this.textreq.ShortcutsEnabled = true;
             this.textreq.Size = new System.Drawing.Size(342, 117);
             this.textreq.TabIndex = 265;
-            this.textreq.Text = "问题描述";
             this.textreq.UseSelectable = true;
             this.textreq.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
             this.textreq.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);

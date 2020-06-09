@@ -68,6 +68,7 @@
             this.metroTextBox2.Multiline = true;
             this.metroTextBox2.Name = "metroTextBox2";
             this.metroTextBox2.PasswordChar = '\0';
+            this.metroTextBox2.ReadOnly = true;
             this.metroTextBox2.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.metroTextBox2.SelectedText = "";
             this.metroTextBox2.SelectionLength = 0;

@@ -13,4 +13,8 @@
   <PropertyGroup>
     <EnableSecurityDebugging>false</EnableSecurityDebugging>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <RemoteDebugEnabled>false</RemoteDebugEnabled>
+    <StartAction>Project</StartAction>
+  </PropertyGroup>
 </Project>

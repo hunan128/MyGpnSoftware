@@ -46,6 +46,8 @@ namespace MyGpnSoftware
         private Thread listenThread;
         public int XHTime = 1000;                       //循环间隔时间
         public int XHCount = 720;                       //循环次数
+        public static string devtype = "";              //设备类型
+        public bool backupfile = false;
         // 保存户名和密码
         Dictionary<string, string> users;
         #endregion
@@ -84,6 +86,8 @@ namespace MyGpnSoftware
             {
                 Directory.CreateDirectory(@"C:\gpn");
             }
+            gpnurlupdate();
+
             if (File.Exists(strFilePath))//读取时先要判读INI文件是否存在
             {
                 strSec = Path.GetFileNameWithoutExtension(strFilePath);
@@ -95,6 +99,14 @@ namespace MyGpnSoftware
                 textftpusr.Text = ContentValue(strSec, "FTPuser");
                 textftppsd.Text = ContentValue(strSec, "FTPpsd");
                 tbxFtpRoot.Text = ContentValue(strSec, "FTPpath");
+                if (ContentValue(strSec, "ReadCommunity") != "")
+                {
+                    textReadCommunity.Text = ContentValue(strSec, "ReadCommunity");
+                }
+                if (ContentValue(strSec, "WriteCommunity") != "")
+                {
+                    textWriteCommunity.Text = ContentValue(strSec, "WriteCommunity");
+                }
                 FileStream fs = new FileStream(@"C:\gpn\gpnip.bin", FileMode.OpenOrCreate);
                 if (fs.Length > 0)
                 {
@@ -131,144 +143,7 @@ namespace MyGpnSoftware
                 textpsden.Text = ContentValue(strSec, "GPNpsden");
                 if (Directory.Exists(tbxFtpRoot.Text))
                 {
-                    DirectoryInfo dir = new DirectoryInfo(tbxFtpRoot.Text);
-                    FileInfo[] fileInfo = dir.GetFiles();
-                    List<string> fileNames = new List<string>();
-                    foreach (FileInfo item in fileInfo)
-                    {
-                        fileNames.Add(item.Name);
-                    }
-                    foreach (string s in fileNames)
-                    {
-                        if (s.Contains(".bin") && !s.Contains("code") && !s.Contains("sysfile") && !s.Contains("db") && !s.Contains("slot"))
-                        {
-                            comapp.Items.Add(s);
-                            if (comapp.Items.Count > 0)
-                            {
-                                comapp.SelectedIndex = comapp.Items.Count - 1;
-                            }
-                        }
-                        if (s.Contains("code") || s.Contains("CODE"))
-                        {
-                            comcode.Items.Add(s);
-                            if (comcode.Items.Count > 0)
-                            {
-                                comcode.SelectedIndex = comcode.Items.Count - 1;
-                            }
-                        }
-                        if (s.Contains("NMS") || s.Contains("nms"))
-                        {
-                            comnms.Items.Add(s);
-                            if (comnms.Items.Count > 0)
-                            {
-                                comnms.SelectedIndex = comnms.Items.Count - 1;
-                            }
-                        }
-                        if (s.Contains("SW") || s.Contains("sw"))
-                        {
-                            comsw.Items.Add(s);
-                            if (comsw.Items.Count > 0)
-                            {
-                                comsw.SelectedIndex = comsw.Items.Count - 1;
-                            }
-                        }
-                        if (s.Contains("config") && !s.Contains("slot"))
-                        {
-                            comconfig.Items.Add(s);
-                            if (comconfig.Items.Count > 0)
-                            {
-                                comconfig.SelectedIndex = comconfig.Items.Count - 1;
-                            }
-                        }
-                        if (s.Contains("db"))
-                        {
-                            comdb.Items.Add(s);
-                            if (comdb.Items.Count > 0)
-                            {
-                                comdb.SelectedIndex = comdb.Items.Count - 1;
-                            }
-                        }
-                        if (s.Contains("slotconfig"))
-                        {
-                            comslotconfig.Items.Add(s);
-                            if (comslotconfig.Items.Count > 0)
-                            {
-                                comslotconfig.SelectedIndex = comslotconfig.Items.Count - 1;
-                            }
-                        }
-                        if (s.Contains("760a") || s.Contains("760A"))
-                        {
-                            com760a.Items.Add(s);
-                            if (com760a.Items.Count > 0)
-                            {
-                                com760a.SelectedIndex = com760a.Items.Count - 1;
-                            }
-                        }
-                        if (s.Contains("760b") || s.Contains("760B"))
-                        {
-                            com760b.Items.Add(s);
-                            if (com760b.Items.Count > 0)
-                            {
-                                com760b.SelectedIndex = com760b.Items.Count - 1;
-                            }
-                        }
-                        if (s.Contains("760c") || s.Contains("760C"))
-                        {
-                            com760c.Items.Add(s);
-                            if (com760c.Items.Count > 0)
-                            {
-                                com760c.SelectedIndex = com760c.Items.Count - 1;
-                            }
-                        }
-                        if (s.Contains("760d") || s.Contains("760D"))
-                        {
-                            com760d.Items.Add(s);
-                            if (com760d.Items.Count > 0)
-                            {
-                                com760d.SelectedIndex = com760d.Items.Count - 1;
-                            }
-                        }
-                        if (s.Contains("760e") || s.Contains("760E"))
-                        {
-                            com760e.Items.Add(s);
-                            if (com760e.Items.Count > 0)
-                            {
-                                com760e.SelectedIndex = com760e.Items.Count - 1;
-                            }
-                        }
-                        if (s.Contains("pack") || s.Contains("PACK") || s.Contains("Pack"))
-                        {
-                            comotnpack.Items.Add(s);
-                            if (comotnpack.Items.Count > 0)
-                            {
-                                comotnpack.SelectedIndex = comotnpack.Items.Count - 1;
-                            }
-                        }
-                        if (s.Contains("sysfile") || s.Contains("Sysfile") || s.Contains("SYSFILE"))
-                        {
-                            comsysfile.Items.Add(s);
-                            if (comsysfile.Items.Count > 0)
-                            {
-                                comsysfile.SelectedIndex = comsysfile.Items.Count - 1;
-                            }
-                        }
-                        if (s.Contains("flash") || s.Contains("Flash") || s.Contains("FLASH"))
-                        {
-                            comflash.Items.Add(s);
-                            if (comflash.Items.Count > 0)
-                            {
-                                comflash.SelectedIndex = comflash.Items.Count - 1;
-                            }
-                        }
-                        if (s.Contains("yaffs") || s.Contains("Yaffs") || s.Contains("YAFFS"))
-                        {
-                            comyaffs.Items.Add(s);
-                            if (comyaffs.Items.Count > 0)
-                            {
-                                comyaffs.SelectedIndex = comyaffs.Items.Count - 1;
-                            }
-                        }
-                    }
+                    Readfile(tbxFtpRoot.Text);
                 }
                 if (comapp.Items.Contains(ContentValue(strSec, "APP")))
                 {
@@ -745,23 +620,32 @@ namespace MyGpnSoftware
         // 处理RETR命令，提供下载功能，将户请求的文件发送给户
         private void CommandRETR(User user, string filename)
         {
-            string sendString = "";
-            // 下载的文件全名
-            string path = user.CurrentDir + filename;
-            FileStream filestream = new FileStream(path, FileMode.Open, FileAccess.Read);
-            // 发送150到户，表示服务器文件状态良好，将要打开数据连接传输文件
-            if (user.IsBinary)
+            try
             {
-                sendString = "150 Opening BINARY mode data connection for download";
+                string sendString = "";
+                // 下载的文件全名
+                string path = user.CurrentDir + filename;
+                FileStream filestream = new FileStream(path, FileMode.Open, FileAccess.Read);
+                // 发送150到户，表示服务器文件状态良好，将要打开数据连接传输文件
+                if (user.IsBinary)
+                {
+                    sendString = "150 Opening BINARY mode data connection for download";
+                }
+                else
+                {
+                    sendString = "150 Opening ASCII mode data connection for download";
+                }
+                RepleyCommandToUser(user, sendString);
+                InitDataSession(user);
+                SendFileByUserSession(user, filestream, path);
+                RepleyCommandToUser(user, "226 Transfer complete");
+
             }
-            else
+            catch(Exception ex)
             {
-                sendString = "150 Opening ASCII mode data connection for download";
+                AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " "+ex);
             }
-            RepleyCommandToUser(user, sendString);
-            InitDataSession(user);
-            SendFileByUserSession(user, filestream, path);
-            RepleyCommandToUser(user, "226 Transfer complete");
+
         }
         // 处理STOR命令，提供上传功能，接收客户端上传的文件
         private void CommandSTOR(User user, string filename)
@@ -934,10 +818,10 @@ namespace MyGpnSoftware
                         percent = (int)Math.Floor((float)totalDownloadedByte / (float)Filesize * 100);
                         // textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") +" "+percent.ToString() + "\r\np");
                         //textDOS.AppendText("d:"+totalDownloadedByte.ToString() + "\r\n");
-                        toolStripStatusLabjindu.Text = "进度：" + percent.ToString() + "%";
+                        toolStripStatusLabjindu.Text =  percent.ToString() + "%";
                         if (percent >= 0 && percent <= 100)
                         {
-                            toolStripProgressBarshishi.Value = percent;
+                            metroProgressBar.Value = percent;
                         }
                     }
                 }
@@ -949,8 +833,8 @@ namespace MyGpnSoftware
                         user.DataSession.streamWriter.WriteLine(streamReader.ReadLine());
                     }
                 }
-                toolStripProgressBarshishi.Value = 100;
-                toolStripStatusLabjindu.Text = "进度：" + 100 + "%";
+                metroProgressBar.Value = 100;
+                toolStripStatusLabjindu.Text = 100 + "%";
                 AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + "                                              ...................]发送完毕！");
             }
             finally
@@ -985,10 +869,10 @@ namespace MyGpnSoftware
                         percent = (int)Math.Floor((float)totalDownloadedByte / (float)Filesize * 100);
                         // textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") +" "+percent.ToString() + "\r\np");
                         //textDOS.AppendText("d:"+totalDownloadedByte.ToString() + "\r\n");
-                        toolStripStatusLabjindu.Text = "进度：" + percent.ToString() + "%";
+                        toolStripStatusLabjindu.Text = percent.ToString() + "%";
                         if (percent >= 0 && percent <= 100)
                         {
-                            toolStripProgressBarshishi.Value = percent;
+                            metroProgressBar.Value = percent;
                         }
                     }
                 }
@@ -1001,8 +885,8 @@ namespace MyGpnSoftware
                         streamWriter.Flush();
                     }
                 }
-                toolStripProgressBarshishi.Value = 100;
-                toolStripStatusLabjindu.Text = "进度：" + 100 + "%";
+                metroProgressBar.Value = 100;
+                toolStripStatusLabjindu.Text =  100 + "%";
                 AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + "                                              ...................]接收完毕！");
             }
             finally
@@ -1020,62 +904,6 @@ namespace MyGpnSoftware
         /////////////////////////////////////////////////////////////////////////////////////////////////////
         private void Butupgrade_Click(object sender, EventArgs e)
         {
-            //if (butupgrade.Text == "④下载升级")
-            //{
-            //    if (string.Compare(btnFtpServerStartStop.Text, "③启动FTP服务器") == 0)
-            //    {
-            //        MessageBox.Show("请先③启动FTP服务器,进行后续操作！");
-            //        return;
-            //    }
-            //    if (checkapp.Checked == false &&
-            //        checkcode.Checked == false &&
-            //        checknms.Checked == false &&
-            //        checksw.Checked == false &&
-            //        check760a.Checked == false &&
-            //        check760b.Checked == false &&
-            //        check760c.Checked == false &&
-            //        check760d.Checked == false &&
-            //        checkotnpack.Checked == false &&
-            //        checksysfile.Checked == false &&
-            //        checkflash.Checked == false &&
-            //        checkyaffs.Checked == false &&
-            //        checkconfig.Checked == false &&
-            //        checkdb.Checked == false &&
-            //        checkslotconfig.Checked == false &&
-            //        check760e.Checked == false)
-            //    {
-            //        MessageBox.Show("请勾选升级文件后继续！");
-            //        return;
-            //    }
-            //    DialogResult dr = MessageBox.Show("升级前是否进行备份设备数据？", "提示", MessageBoxButtons.YesNoCancel);
-            //    if (dr == DialogResult.Yes)
-            //    {
-            //        Thread back = new Thread(Backup);
-            //        back.Start();
-            //        //户选择确认的操作
-            //    }
-            //    else if (dr == DialogResult.No)
-            //    {
-            //        //户选择取消的操作
-            //        this.butupgrade.Text = "④停止升级";
-            //        this.metroProgressBar.Maximum = 100;
-            //        this.backgroundWorker1.RunWorkerAsync();
-            //    }
-            //    if (dr == DialogResult.Cancel)
-            //    {
-            //        return;
-            //        //户选择确认的操作
-            //    }
-            //}
-            //else
-            //{
-            //    Mytimer.Change(Timeout.Infinite, 1000);
-            //    this.butupgrade.Enabled = true;
-            //    backgroundWorker1.CancelAsync();
-            //    this.butupgrade.Text = "④下载升级";
-            //    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") +" " + "下载升级已停止！");
-            //    this.butsend.PerformClick();
-            //}
             if (butupgrade.Text == "④下载升级")
             {
                 if (string.Compare(btnFtpServerStartStop.Text, "③启动FTP服务器") == 0)
@@ -1106,12 +934,19 @@ namespace MyGpnSoftware
                 DialogResult dr = MessageBox.Show("升级前是否进行备份设备数据？", "提示", MessageBoxButtons.YesNoCancel);
                 if (dr == DialogResult.Yes)
                 {
-                    Thread back = new Thread(Backup);
-                    back.Start();
+                    DownLoadFile_Stop = false;
+                    DownLoadFileThread = new Thread(DownLoadFile)
+                    {
+                        IsBackground = true
+                    };
+                    DownLoadFileThread.Start();
+                    backupfile = true;
+                    butupgrade.Text = "④停止升级";
                     //户选择确认的操作
                 }
                 else if (dr == DialogResult.No)
                 {
+
                     //户选择取消的操作
                     DownLoadFile_Stop = false;
                     DownLoadFileThread = new Thread(DownLoadFile)
@@ -1119,8 +954,8 @@ namespace MyGpnSoftware
                         IsBackground = true
                     };
                     DownLoadFileThread.Start();
+                    backupfile = false;
                     butupgrade.Text = "④停止升级";
-                    textcurrent.AppendText("\r\n开始运行！");
                 }
                 if (dr == DialogResult.Cancel)
                 {
@@ -1131,6 +966,7 @@ namespace MyGpnSoftware
             else
             {
                 DownLoadFile_Stop = true;
+                backupfile = false;
                 butupgrade.Text = "④下载升级";
             }
         }
@@ -1141,28 +977,7 @@ namespace MyGpnSoftware
             textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + mysocket.ReceiveData(int.Parse(ts)));
         }
         #endregion
-        #region 升级后操作
-        //这里是后台工作完成后的消息处理，可以在这里进行后续的处理工作。
-        private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            if (e.Error != null)
-            {
-                MessageBox.Show(e.Error.ToString());
-                return;
-            }
-            if (!e.Cancelled)
-            {   //停止计时
-                Mytimer.Change(Timeout.Infinite, 1000);
-                this.toolStripStatusLabelzt.Text = "升级成功";
-            }
-            else
-            {
-                //停止计时
-                Mytimer.Change(Timeout.Infinite, 1000);
-                this.toolStripStatusLabelzt.Text = "升级失败!";
-            }
-        }
-        #endregion
+
         #region 正式升级
         //这里，就是后台进程开始工作时，调工作函数的地方。你可以把你现有的处理函数写在这儿。
         private void DownLoadFile()
@@ -1171,8 +986,16 @@ namespace MyGpnSoftware
             TimeCount = 0;
             Mytimer.Change(0, 1000);
             Control.CheckForIllegalCrossThreadCalls = false;
-            Save();
             Testftpser();
+            if (DownLoadFile_Stop)
+            {
+                textDOS.AppendText(DateTime.Now.ToString("\r\n"+"yyyy-MM-dd HH:mm:ss.fff") + " " + "下载升级已停止！");
+                return;
+            }
+            Save();
+            if (backupfile) {
+                Backup();
+            }
             Thread.Sleep(XHTime);
             int a = 0;
             int p = 0;
@@ -1249,12 +1072,12 @@ namespace MyGpnSoftware
                 {
                     if (DownLoadFile_Stop)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                         return;
                     }
                     if (DownLoadFile_On_Off)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                         DownLoadFilePause = new ManualResetEvent(false);
                         DownLoadFilePause.WaitOne();
                     }
@@ -1270,12 +1093,12 @@ namespace MyGpnSoftware
                         p = 100;
                         if (DownLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (DownLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
@@ -1287,12 +1110,12 @@ namespace MyGpnSoftware
                     {
                         if (DownLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (DownLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
@@ -1310,12 +1133,12 @@ namespace MyGpnSoftware
                 {
                     if (DownLoadFile_Stop)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                         return;
                     }
                     if (DownLoadFile_On_Off)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                         DownLoadFilePause = new ManualResetEvent(false);
                         DownLoadFilePause.WaitOne();
                     }
@@ -1331,12 +1154,12 @@ namespace MyGpnSoftware
                         p = 100;
                         if (DownLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (DownLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
@@ -1348,12 +1171,12 @@ namespace MyGpnSoftware
                     {
                         if (DownLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (DownLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
@@ -1371,12 +1194,12 @@ namespace MyGpnSoftware
                 {
                     if (DownLoadFile_Stop)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                         return;
                     }
                     if (DownLoadFile_On_Off)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                         DownLoadFilePause = new ManualResetEvent(false);
                         DownLoadFilePause.WaitOne();
                     }
@@ -1392,12 +1215,12 @@ namespace MyGpnSoftware
                         p = 100;
                         if (DownLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (DownLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
@@ -1409,12 +1232,12 @@ namespace MyGpnSoftware
                     {
                         if (DownLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (DownLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
@@ -1439,12 +1262,12 @@ namespace MyGpnSoftware
                 {
                     if (DownLoadFile_Stop)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                         return;
                     }
                     if (DownLoadFile_On_Off)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                         DownLoadFilePause = new ManualResetEvent(false);
                         DownLoadFilePause.WaitOne();
                     }
@@ -1460,12 +1283,12 @@ namespace MyGpnSoftware
                         p = 100;
                         if (DownLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (DownLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
@@ -1477,12 +1300,12 @@ namespace MyGpnSoftware
                     {
                         if (DownLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (DownLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
@@ -1500,12 +1323,12 @@ namespace MyGpnSoftware
                 {
                     if (DownLoadFile_Stop)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                         return;
                     }
                     if (DownLoadFile_On_Off)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                         DownLoadFilePause = new ManualResetEvent(false);
                         DownLoadFilePause.WaitOne();
                     }
@@ -1521,12 +1344,12 @@ namespace MyGpnSoftware
                         p = 100;
                         if (DownLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (DownLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
@@ -1538,12 +1361,12 @@ namespace MyGpnSoftware
                     {
                         if (DownLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (DownLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
@@ -1561,12 +1384,12 @@ namespace MyGpnSoftware
                 {
                     if (DownLoadFile_Stop)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                         return;
                     }
                     if (DownLoadFile_On_Off)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                         DownLoadFilePause = new ManualResetEvent(false);
                         DownLoadFilePause.WaitOne();
                     }
@@ -1582,12 +1405,12 @@ namespace MyGpnSoftware
                         p = 100;
                         if (DownLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (DownLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
@@ -1599,12 +1422,12 @@ namespace MyGpnSoftware
                     {
                         if (DownLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (DownLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
@@ -1622,12 +1445,12 @@ namespace MyGpnSoftware
                 {
                     if (DownLoadFile_Stop)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                         return;
                     }
                     if (DownLoadFile_On_Off)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                         DownLoadFilePause = new ManualResetEvent(false);
                         DownLoadFilePause.WaitOne();
                     }
@@ -1643,12 +1466,12 @@ namespace MyGpnSoftware
                         p = 100;
                         if (DownLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (DownLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
@@ -1660,12 +1483,12 @@ namespace MyGpnSoftware
                     {
                         if (DownLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (DownLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
@@ -1683,12 +1506,12 @@ namespace MyGpnSoftware
                 {
                     if (DownLoadFile_Stop)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                         return;
                     }
                     if (DownLoadFile_On_Off)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                         DownLoadFilePause = new ManualResetEvent(false);
                         DownLoadFilePause.WaitOne();
                     }
@@ -1704,12 +1527,12 @@ namespace MyGpnSoftware
                         p = 100;
                         if (DownLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (DownLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
@@ -1721,12 +1544,12 @@ namespace MyGpnSoftware
                     {
                         if (DownLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (DownLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
@@ -1744,12 +1567,12 @@ namespace MyGpnSoftware
                 {
                     if (DownLoadFile_Stop)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                         return;
                     }
                     if (DownLoadFile_On_Off)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                         DownLoadFilePause = new ManualResetEvent(false);
                         DownLoadFilePause.WaitOne();
                     }
@@ -1765,12 +1588,12 @@ namespace MyGpnSoftware
                         p = 100;
                         if (DownLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (DownLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
@@ -1782,12 +1605,12 @@ namespace MyGpnSoftware
                     {
                         if (DownLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (DownLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
@@ -1805,12 +1628,12 @@ namespace MyGpnSoftware
                 {
                     if (DownLoadFile_Stop)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                         return;
                     }
                     if (DownLoadFile_On_Off)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                         DownLoadFilePause = new ManualResetEvent(false);
                         DownLoadFilePause.WaitOne();
                     }
@@ -1826,12 +1649,12 @@ namespace MyGpnSoftware
                         p = 100;
                         if (DownLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (DownLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
@@ -1843,12 +1666,12 @@ namespace MyGpnSoftware
                     {
                         if (DownLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (DownLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
@@ -1866,12 +1689,12 @@ namespace MyGpnSoftware
                 {
                     if (DownLoadFile_Stop)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                         return;
                     }
                     if (DownLoadFile_On_Off)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                         DownLoadFilePause = new ManualResetEvent(false);
                         DownLoadFilePause.WaitOne();
                     }
@@ -1887,12 +1710,12 @@ namespace MyGpnSoftware
                         p = 100;
                         if (DownLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (DownLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
@@ -1904,12 +1727,12 @@ namespace MyGpnSoftware
                     {
                         if (DownLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (DownLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
@@ -1927,12 +1750,12 @@ namespace MyGpnSoftware
                 {
                     if (DownLoadFile_Stop)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                         return;
                     }
                     if (DownLoadFile_On_Off)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                         DownLoadFilePause = new ManualResetEvent(false);
                         DownLoadFilePause.WaitOne();
                     }
@@ -1948,12 +1771,12 @@ namespace MyGpnSoftware
                         p = 100;
                         if (DownLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (DownLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
@@ -1965,12 +1788,12 @@ namespace MyGpnSoftware
                     {
                         if (DownLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (DownLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
@@ -1988,12 +1811,12 @@ namespace MyGpnSoftware
                 {
                     if (DownLoadFile_Stop)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                         return;
                     }
                     if (DownLoadFile_On_Off)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                         DownLoadFilePause = new ManualResetEvent(false);
                         DownLoadFilePause.WaitOne();
                     }
@@ -2009,12 +1832,12 @@ namespace MyGpnSoftware
                         p = 100;
                         if (DownLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (DownLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
@@ -2026,12 +1849,12 @@ namespace MyGpnSoftware
                     {
                         if (DownLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (DownLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
@@ -2049,12 +1872,12 @@ namespace MyGpnSoftware
                 {
                     if (DownLoadFile_Stop)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                         return;
                     }
                     if (DownLoadFile_On_Off)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                         DownLoadFilePause = new ManualResetEvent(false);
                         DownLoadFilePause.WaitOne();
                     }
@@ -2070,12 +1893,12 @@ namespace MyGpnSoftware
                         p = 100;
                         if (DownLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (DownLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
@@ -2087,12 +1910,12 @@ namespace MyGpnSoftware
                     {
                         if (DownLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (DownLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
@@ -2110,12 +1933,12 @@ namespace MyGpnSoftware
                 {
                     if (DownLoadFile_Stop)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                         return;
                     }
                     if (DownLoadFile_On_Off)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                         DownLoadFilePause = new ManualResetEvent(false);
                         DownLoadFilePause.WaitOne();
                     }
@@ -2131,12 +1954,12 @@ namespace MyGpnSoftware
                         p = 100;
                         if (DownLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (DownLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
@@ -2148,12 +1971,12 @@ namespace MyGpnSoftware
                     {
                         if (DownLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (DownLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
@@ -2171,18 +1994,18 @@ namespace MyGpnSoftware
                 {
                     if (DownLoadFile_Stop)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                         return;
                     }
                     if (DownLoadFile_On_Off)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                         DownLoadFilePause = new ManualResetEvent(false);
                         DownLoadFilePause.WaitOne();
                     }
                     metroProgressBar.Value = p;
                     toolStripStatusLabelbar.Text = p + "%";
-                    System.Threading.Thread.Sleep(XHTime);
+                    Thread.Sleep(XHTime);
                     p = s + p;
                 }
                 else
@@ -2192,12 +2015,12 @@ namespace MyGpnSoftware
                         p = 100;
                         if (DownLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (DownLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
@@ -2209,12 +2032,12 @@ namespace MyGpnSoftware
                     {
                         if (DownLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (DownLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
@@ -2275,10 +2098,12 @@ namespace MyGpnSoftware
             string canyu2 = mysocket.ReceiveData(int.Parse(ts));
             toolStripStatusLabelzt.Text = "已完成";
             textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "下载结束" + "================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-            butsend.PerformClick();
+
             DownLoadFile_Stop = true;
             butupgrade.Text = "④下载升级";
             Mytimer.Change(Timeout.Infinite, 1000);
+            Reboot();
+            //butsend.PerformClick();
         }
         #endregion
         #region 连接断开按钮
@@ -2301,9 +2126,7 @@ namespace MyGpnSoftware
             //验证
             return Regex.IsMatch(ip, pattern);
         }
-        private void Pingip()
-        {
-        }
+
         private void Butlogin_Click(object sender, EventArgs e)
         {
             if (string.Compare(butlogin.Text, "①断开设备") == 0)
@@ -2321,17 +2144,25 @@ namespace MyGpnSoftware
                 butslectfile.Enabled = false;
                 butupload.Enabled = false;
                 butotnpaigu.Enabled = false;
-                toolStripStatusLabelnms.Text = "17槽：无";
-                toolStripStatusLabelnms18.Text = "18槽：无";
-                toolStripStatusLabelswa11.Text = "11槽：无";
-                toolStripStatusLabelswa12.Text = "12槽：无";
-                toolStripStatusLabelver.Text = "版本：无";
+                toolStripStatusLabelnms.Text = "17:无";
+                toolStripStatusLabelnms18.Text = "18:无";
+                toolStripStatusLabelswa11.Text = "11:无";
+                toolStripStatusLabelswa12.Text = "12:无";
+                toolStripStatusLabelver.Text = "APP:无";
+                toolStripStatusLabelcpu.Text = "CPU:无";
+                toolStripStatusLabelfpgaver.Text = "FPGA:无";
+                toolStripStatusLabelmem.Text = "内存:无";
+                toolStripStatusLabeltem.Text = "温度:无";
+                toolStripStatusLabeldevtype.Text = "型号";
+                timer1.Stop();
+
                 slot18 = "";               //18槽位状态
                 slot11 = "";                //11槽位状态
                 sw = "";                    //SW型号状态
                 slot17 = "";               //17槽位状态
                 slot12 = "";               //12槽位状态
                 version = "";              //设备版本号
+                devtype = "";               //设备型号
                 textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已断开==================================================OK");
                 this.AcceptButton = butlogin;
                 mysocket.Close();
@@ -2351,11 +2182,7 @@ namespace MyGpnSoftware
                 MessageBox.Show("您输入了非法IP地址，请修改后再次尝试！");
                 return;
             }
-            Thread pingip = new Thread(Pingip)
-            {
-                IsBackground = true
-            };
-            pingip.Start();
+
             Ping ping = new Ping();
             int timeout = 120;
             PingReply pingReply = ping.Send(comip.Text, timeout);
@@ -2516,189 +2343,375 @@ namespace MyGpnSoftware
                     Thread.Sleep(XHTime / 3);
                 }
                 toolStripStatusLabellinkstat.Text = "已连接";
-                mysocket.SendData("show slot");
-                //mysocket.SendData("\r\n");
-                //mysocket.SendData("\r\n");
-                string nms17A = "17  GPN7600-NMS-V1           GPN7600-NMS-V1           RUNNING        MASTER   ACTIVE";
-                string nms17S = "17  GPN7600-NMS-V1           GPN7600-NMS-V1           RUNNING        MASTER   STANDBY";
-                string nms18A = "18  GPN7600-NMS-V1           GPN7600-NMS-V1           RUNNING        MASTER   ACTIVE";
-                string nms18S = "18  GPN7600-NMS-V1           GPN7600-NMS-V1           RUNNING        MASTER   STANDBY";
-                string nms17AV2 = "17  GPN7600-V2-NMS           GPN7600-V2-NMS           RUNNING        MASTER   ACTIVE";
-                string nms17SV2 = "17  GPN7600-V2-NMS           GPN7600-V2-NMS           RUNNING        MASTER   STANDBY";
-                string nms18AV2 = "18  GPN7600-V2-NMS           GPN7600-V2-NMS           RUNNING        MASTER   ACTIVE";
-                string nms18SV2 = "18  GPN7600-V2-NMS           GPN7600-V2-NMS           RUNNING        MASTER   STANDBY";
-                string nms17A2 = "17  GPN7600-NMS-V2           GPN7600-NMS-V2           RUNNING        MASTER   ACTIVE";
-                string nms17S2 = "17  GPN7600-NMS-V2           GPN7600-NMS-V2           RUNNING        MASTER   STANDBY";
-                string nms18A2 = "18  GPN7600-NMS-V2           GPN7600-NMS-V2           RUNNING        MASTER   ACTIVE";
-                string nms18S2 = "18  GPN7600-NMS-V2           GPN7600-NMS-V2           RUNNING        MASTER   STANDBY";
-                string swa11AA = "11  GPN7600-SW-A             GPN7600-SW-A             RUNNING        SLAVE    ACTIVE";
-                string swa12AS = "12  GPN7600-SW-A             GPN7600-SW-A             RUNNING        SLAVE    STANDBY";
-                string swa11AS = "11  GPN7600-SW-A             GPN7600-SW-A             RUNNING        SLAVE    STANDBY";
-                string swa12AA = "12  GPN7600-SW-A             GPN7600-SW-A             RUNNING        SLAVE    ACTIVE";
-                string swa11AAV2 = "11  GPN7600-V2-SW            GPN7600-V2-SW            RUNNING        SLAVE    ACTIVE";
-                string swa12ASV2 = "12  GPN7600-V2-SW            GPN7600-V2-SW            RUNNING        SLAVE    STANDBY";
-                string swa11ASV2 = "11  GPN7600-V2-SW            GPN7600-V2-SW            RUNNING        SLAVE    STANDBY";
-                string swa12AAV2 = "12  GPN7600-V2-SW            GPN7600-V2-SW            RUNNING        SLAVE    ACTIVE";
-                string swa11AAV3 = "11  GPN7600-V2-SW-A          GPN7600-V2-SW-A          RUNNING        SLAVE    ACTIVE";
-                string swa12ASV3 = "12  GPN7600-V2-SW-A          GPN7600-V2-SW-A          RUNNING        SLAVE    STANDBY";
-                string swa11ASV3 = "11  GPN7600-V2-SW-A          GPN7600-V2-SW-A          RUNNING        SLAVE    STANDBY";
-                string swa12AAV3 = "12  GPN7600-V2-SW-A          GPN7600-V2-SW-A          RUNNING        SLAVE    ACTIVE";
-                string swb11AA = "11  GPN7600-SW-B             GPN7600-SW-B             RUNNING        SLAVE    ACTIVE";
-                string swb12AS = "12  GPN7600-SW-B             GPN7600-SW-B             RUNNING        SLAVE    STANDBY";
-                string swb11AS = "11  GPN7600-SW-B             GPN7600-SW-B             RUNNING        SLAVE    STANDBY";
-                string swb12AA = "12  GPN7600-SW-B             GPN7600-SW-B             RUNNING        SLAVE    ACTIVE";
-                string GPN800 = "1  GPN800-NMS-V1            GPN800-NMS-V1            RUNNING        MASTER   ACTIVE";
-                for (int a = 0; a <= XHCount; a++)
+                mysocket.SendData("service snmp source-ip auto");
+                Thread.Sleep(XHTime);
+                string slot = mysocket.ReceiveData(int.Parse(ts));
+                // SNMP团体名称 
+                OctetString community = new OctetString(textReadCommunity.Text);
+                //定义代理参数类 
+                AgentParameters param = new AgentParameters(community);
+                //将SNMP版本设置为1（或2） 
+                param.Version = SnmpVersion.Ver1;
+                //构造代理地址对象
+                //这里很容易使用IpAddress类，因为
+                //如果不
+                //解析为IP地址，它将尝试解析构造函数参数
+                IpAddress agent = new IpAddress(comip.Text);
+                IPAddress send = new IPAddress(agent);
+                //构建目标 
+                UdpTarget target = new UdpTarget(send, 161, 2000, 1);
+                //  用于所有请求PDU级 
+                Pdu pdu = new Pdu(PduType.Get);
+                pdu.VbList.Add("1.3.6.1.4.1.10072.6.2.2.1.1.6.1.11");   //11槽位主备状态
+                pdu.VbList.Add("1.3.6.1.4.1.10072.6.2.2.1.1.6.1.12");   //12槽位主备状态
+                pdu.VbList.Add("1.3.6.1.4.1.10072.6.2.2.1.1.6.1.17");   //17槽位主备状态
+                pdu.VbList.Add("1.3.6.1.4.1.10072.6.2.2.1.1.6.1.18");   //18槽位主备状态
+                pdu.VbList.Add("1.3.6.1.4.1.10072.6.2.1.1.1.8.1");      //APP版本
+                pdu.VbList.Add("1.3.6.1.4.1.10072.6.2.1.1.1.7.1");      //FPGA版本
+                pdu.VbList.Add("1.3.6.1.4.1.10072.6.2.1.1.1.2.1");      //设备类型
+
+
+                SnmpPacket result = null;
+                try
                 {
-                    string slot = mysocket.ReceiveData(int.Parse(ts));
-                    if (slot.Contains("Ctrl+c"))
-                    {
-                        mysocket.SendDate("\r\n");
-                    }
-                    if (slot.Contains("#"))
-                    {
-                        break;
-                    }
-                    if (slot.Contains(GPN800))
-                    {
-                        slot17 = "ACTIVE";
-                        toolStripStatusLabelnms.Text = "01槽：主";
-                        toolStripStatusLabelnms.ForeColor = Color.DarkGreen;
-                        // textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") +" " + "17槽主在位==============================================OK");
-                    }
-                    if ((slot.Contains(nms17A)) || (slot.Contains(nms17AV2)) || slot.Contains(nms17A2))
-                    {
-                        slot17 = "ACTIVE";
-                        toolStripStatusLabelnms.Text = "17槽：主";
-                        toolStripStatusLabelnms.ForeColor = Color.DarkGreen;
-                        // textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") +" " + "17槽主在位==============================================OK");
-                    }
-                    if ((slot.Contains(nms17S)) || (slot.Contains(nms17SV2)) || (slot.Contains(nms17S2)))
-                    {
-                        slot17 = "STANDBY";
-                        toolStripStatusLabelnms.Text = "17槽：备";
-                        toolStripStatusLabelnms.ForeColor = Color.Red;
-                        // textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") +" " + "17槽备在位==============================================OK");
-                    }
-                    if ((slot.Contains(nms18A)) || (slot.Contains(nms18AV2)) || (slot.Contains(nms18A2)))
-                    {
-                        slot18 = "ACTIVE";
-                        toolStripStatusLabelnms18.Text = "18槽：主";
-                        toolStripStatusLabelnms18.ForeColor = Color.DarkGreen;
-                        //textDOS.AppendText("\r\n" + "18槽主在位==============================================OK");
-                    }
-                    if ((slot.Contains(nms18S)) || (slot.Contains(nms18SV2)) || (slot.Contains(nms18S2)))
-                    {
-                        toolStripStatusLabelnms18.Text = "18槽：备";
-                        toolStripStatusLabelnms18.ForeColor = Color.Red;
-                        slot18 = "STANDBY";
-                        // textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") +" " + "18槽备在位=============================================OK");
-                    }
-                    if ((slot.Contains(swa11AA)) || (slot.Contains(swa11AAV2)) || (slot.Contains(swa11AAV3)))
-                    {
-                        slot11 = "在位";
-                        toolStripStatusLabelswa11.Text = "11槽SW-A：主";
-                        toolStripStatusLabelswa11.ForeColor = Color.DarkGreen;
-                        //textDOS.AppendText("\r\n" + "11槽在位=============================================OK");
-                    }
-                    if ((slot.Contains(swa11AS)) || (slot.Contains(swa11ASV2)) || (slot.Contains(swa11ASV3)))
-                    {
-                        slot11 = "在位";
-                        toolStripStatusLabelswa11.Text = "11槽SW-A：备";
-                        toolStripStatusLabelswa11.ForeColor = Color.Red;
-                        //textDOS.AppendText("\r\n" + "11槽在位=============================================OK");
-                    }
-                    if ((slot.Contains(swa12AA)) || (slot.Contains(swa12AAV2)) || (slot.Contains(swa12AAV3)))
-                    {
-                        slot12 = "在位";
-                        toolStripStatusLabelswa12.Text = "12槽SW-A：主";
-                        toolStripStatusLabelswa12.ForeColor = Color.DarkGreen;
-                        //textDOS.AppendText("\r\n" + "12槽在位=============================================OK");
-                    }
-                    if ((slot.Contains(swa12AS) || slot.Contains(swb12AS)) || slot.Contains(swa12ASV2) || slot.Contains(swa12ASV3))
-                    {
-                        slot12 = "在位";
-                        toolStripStatusLabelswa12.Text = "12槽SW-A：备";
-                        toolStripStatusLabelswa12.ForeColor = Color.Red;
-                        //textDOS.AppendText("\r\n" + "12槽在位=============================================OK");
-                    }
-                    if (slot.Contains(swb11AA))
-                    {
-                        slot11 = "在位";
-                        sw = "swb";
-                        toolStripStatusLabelswa11.Text = "11槽SW-B：主";
-                        toolStripStatusLabelswa11.ForeColor = Color.DarkGreen;
-                        //textDOS.AppendText("\r\n" + "11槽在位=============================================OK");
-                    }
-                    if (slot.Contains(swb11AS))
-                    {
-                        slot11 = "在位";
-                        sw = "swb";
-                        toolStripStatusLabelswa11.Text = "11槽SW-B：备";
-                        toolStripStatusLabelswa11.ForeColor = Color.Red;
-                        //textDOS.AppendText("\r\n" + "11槽在位=============================================OK");
-                    }
-                    if (slot.Contains(swb12AA))
-                    {
-                        slot12 = "在位";
-                        sw = "swb";
-                        toolStripStatusLabelswa12.Text = "12槽SW-B：主";
-                        toolStripStatusLabelswa12.ForeColor = Color.DarkGreen;
-                        //textDOS.AppendText("\r\n" + "12槽在位=============================================OK");
-                    }
-                    if (slot.Contains(swb12AS))
-                    {
-                        slot12 = "在位";
-                        sw = "swb";
-                        toolStripStatusLabelswa12.Text = "12槽SW-B：备";
-                        toolStripStatusLabelswa12.ForeColor = Color.Red;
-                        //textDOS.AppendText("\r\n" + "12槽在位=============================================OK");
-                    }
-                    Thread.Sleep(XHTime / 3);
+                    result = target.Request(pdu, param);
                 }
-                //mysocket.SendDate("\r\n");
-                // mysocket.SendDate("\r\n");
-                // mysocket.SendDate("\x03");
-                //Thread.Sleep(XHTime);
-                //string meiyong = textDOS.Text + "\r\n" + mysocket.ReceiveData(int.Parse(ts));
-                textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "获取槽位信息============================================OK");
-                mysocket.SendData("show version");
-                string ver = "";
-                string ver2 = "";
-                for (int a = 0; a <= XHCount; a++)
+                catch (SnmpException ex)
                 {
-                    ver2 = mysocket.ReceiveData(int.Parse(ts));
-                    ver = ver + ver2;
-                    if (ver2.Contains("Ctrl+c"))
-                    {
-                        mysocket.SendDate("\r\n");
-                    }
-                    if (ver2.Contains("#"))
-                    {
-                        break;
-                    }
-                    Thread.Sleep(XHTime / 3);
+                    MessageBox.Show(ex.Message);
                 }
-                Regex r = new Regex(@"ProductOS\s*Version\s*([\w\d]+)[\s*\(]*", RegexOptions.IgnoreCase | RegexOptions.Multiline);
-                string banben = r.Match(ver).Groups[1].Value;
-                if (banben.ToString() == "")
+                //SnmpV1Packet result = (SnmpV1Packet)target.Request(pdu, param);
+                //如果结果为null，则座席未回复或我们无法解析回复。
+                if (result != null)
                 {
-                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "获取版本信息===========================================NOK");
+                    //其他的ErrorStatus然后0是通过返回一个错误
+                    //代理-见SnmpConstants为错误定义
+                    if (result.Pdu.ErrorStatus != 0)
+                    {
+                        //代理报告与所述请求的错误 
+                        textDOS.Text += string.Format("\r\n" + "SNMP回复错误！错误代码 {0} 。错误行数：第 {1} 行\r\n",
+                                result.Pdu.ErrorStatus,
+                                result.Pdu.ErrorIndex);
+                        textDOS.Text += "SNMP连接存在问题，请检查读写团体是否设置正确？";
+                    }
+                    else
+                    {
+
+                        //返回变量的返回顺序与添加
+                        //到VbList
+
+                        toolStripStatusLabelver.Text = "APP:" + result.Pdu.VbList[4].Value.ToString();
+                        toolStripStatusLabelfpgaver.Text = "FPGA:" + result.Pdu.VbList[5].Value.ToString();
+                        devtype = result.Pdu.VbList[6].Value.ToString();
+                        string str = "(" + devtype + ")";
+                        FindDevType.finddevtype(str);
+
+                        toolStripStatusLabeldevtype.Text = FindDevType.type;
+
+
+
+                        //slot17 = "ACTIVE";
+                        if (result.Pdu.VbList[2].Value.ToString() == "1")
+                        {
+                            slot17 = "ACTIVE";
+                            toolStripStatusLabelnms.Text = "17:主";
+                            toolStripStatusLabelnms.ForeColor = Color.DarkGreen;
+                            Pdu pdu1 = new Pdu(PduType.Get);
+                            pdu1.VbList.Add("1.3.6.1.4.1.10072.6.2.2.1.1.23.1.17");  //17槽位CPU利用率
+                            pdu1.VbList.Add("1.3.6.1.4.1.10072.6.2.2.1.1.26.1.17");  //17槽位内存利用率
+                            pdu1.VbList.Add("1.3.6.1.4.1.10072.6.2.2.1.1.20.1.17");  //17槽位温度
+                            SnmpPacket result1 = null;
+                            try
+                            {
+                                result1 = target.Request(pdu1, param);
+                            }
+                            catch (SnmpException ex)
+                            {
+                                MessageBox.Show(ex.Message);
+                            }
+                            catch
+                            {
+                                MessageBox.Show("请检查Oid项配置信息！");
+                            }
+                            toolStripStatusLabelcpu.Text = "CPU:" + result1.Pdu.VbList[0].Value.ToString() + "%";
+                            toolStripStatusLabelmem.Text = "内存:" + result1.Pdu.VbList[1].Value.ToString() + "%";
+                            toolStripStatusLabeltem.Text = "温度:" + result1.Pdu.VbList[2].Value.ToString() + "°C";
+
+                        }
+                        if (result.Pdu.VbList[2].Value.ToString() == "2")
+                        {
+                            slot17 = "STANDBY";
+                            toolStripStatusLabelnms.Text = "17:备";
+                            toolStripStatusLabelnms.ForeColor = Color.Red;
+                        }
+                        if ((result.Pdu.VbList[2].Value.ToString() != "1") && (result.Pdu.VbList[3].Value.ToString() != "1"))
+                        {
+                            Pdu pdu2 = new Pdu(PduType.Get);
+                            pdu2.VbList.Add("1.3.6.1.4.1.10072.6.2.2.1.1.6.1.1");   //1槽位准备状态
+                            pdu2.VbList.Add("1.3.6.1.4.1.10072.6.2.2.1.1.23.1.1");  //1槽位CPU利用率
+                            pdu2.VbList.Add("1.3.6.1.4.1.10072.6.2.2.1.1.26.1.1");  //1槽位内存利用率
+                            pdu2.VbList.Add("1.3.6.1.4.1.10072.6.2.2.1.1.20.1.1");  //1槽位温度
+                            SnmpPacket result2 = null;
+                            try
+                            {
+                                result2 = target.Request(pdu2, param);
+                            }
+                            catch (SnmpException ex)
+                            {
+                                MessageBox.Show(ex.Message);
+                            }
+                            catch
+                            {
+                                MessageBox.Show("请检查Oid项配置信息！");
+                            }
+                            if (result2.Pdu.VbList[0].Value.ToString() == "1")
+                            {
+                                //slot17 = "ACTIVE";
+                                toolStripStatusLabelnms.Text = "1:主";
+                                toolStripStatusLabelnms.ForeColor = Color.DarkGreen;
+                            }
+                            toolStripStatusLabelcpu.Text = "CPU:" + result2.Pdu.VbList[1].Value.ToString() + "%";
+                            toolStripStatusLabelmem.Text = "内存:" + result2.Pdu.VbList[2].Value.ToString() + "%";
+                            toolStripStatusLabeltem.Text = "温度:" + result2.Pdu.VbList[3].Value.ToString() + "°C";
+
+                        }
+                        if (result.Pdu.VbList[3].Value.ToString() == "1")
+                        {
+                            slot18 = "ACTIVE";
+                            toolStripStatusLabelnms18.Text = "18:主";
+                            toolStripStatusLabelnms18.ForeColor = Color.DarkGreen;
+                        }
+                        if (result.Pdu.VbList[3].Value.ToString() == "2")
+                        {
+                            slot18 = "STANDBY";
+                            toolStripStatusLabelnms18.Text = "18:备";
+                            toolStripStatusLabelnms18.ForeColor = Color.Red;
+                        }
+
+                        if (result.Pdu.VbList[0].Value.ToString() == "3")
+                        {
+                            slot11 = "在位";
+                            toolStripStatusLabelswa11.Text = "11:主";
+                            toolStripStatusLabelswa11.ForeColor = Color.DarkGreen;
+                        }
+                        if (result.Pdu.VbList[0].Value.ToString() == "4")
+                        {
+                            slot11 = "在位";
+                            toolStripStatusLabelswa11.Text = "11:备";
+                            toolStripStatusLabelswa11.ForeColor = Color.DarkGreen;
+                        }
+                        if (result.Pdu.VbList[1].Value.ToString() == "3")
+                        {
+                            slot12 = "在位";
+                            toolStripStatusLabelswa12.Text = "12:主";
+                            toolStripStatusLabelswa12.ForeColor = Color.DarkGreen;
+                        }
+                        if (result.Pdu.VbList[1].Value.ToString() == "4")
+                        {
+                            slot12 = "在位";
+                            toolStripStatusLabelswa12.Text = "12:备";
+                            toolStripStatusLabelswa12.ForeColor = Color.DarkGreen;
+                        }
+
+
+                        //MessageBox.Show("ssss");
+                        //toolStripStatusLabelnms.ForeColor = Color.DarkGreen;
+
+                    }
                 }
                 else
                 {
-                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "获取版本信息============================================OK");
+                    textDOS.AppendText("\r\n" + "没有收到来自SNMP代理的响应！");
                 }
-                // banben = banben.Substring("ProductOS Version ".Length);
-                toolStripStatusLabelver.Text = "版本:" + banben.ToString();
-                toolStripStatusLabelver.ForeColor = Color.Red;
-                version = banben.ToString();
-                //mysocket.SendDate("\x03");
-                //Thread.Sleep(XHTime);
-                //string meiryong = textDOS.Text + "\r\n" + mysocket.ReceiveData(int.Parse(ts));
+                target.Close();
+
+
+
+
+                //mysocket.SendData("show slot");
+                ////mysocket.SendData("\r\n");
+                ////mysocket.SendData("\r\n");
+                //string nms17A = "17  GPN7600-NMS-V1           GPN7600-NMS-V1           RUNNING        MASTER   ACTIVE";
+                //string nms17S = "17  GPN7600-NMS-V1           GPN7600-NMS-V1           RUNNING        MASTER   STANDBY";
+                //string nms18A = "18  GPN7600-NMS-V1           GPN7600-NMS-V1           RUNNING        MASTER   ACTIVE";
+                //string nms18S = "18  GPN7600-NMS-V1           GPN7600-NMS-V1           RUNNING        MASTER   STANDBY";
+                //string nms17AV2 = "17  GPN7600-V2-NMS           GPN7600-V2-NMS           RUNNING        MASTER   ACTIVE";
+                //string nms17SV2 = "17  GPN7600-V2-NMS           GPN7600-V2-NMS           RUNNING        MASTER   STANDBY";
+                //string nms18AV2 = "18  GPN7600-V2-NMS           GPN7600-V2-NMS           RUNNING        MASTER   ACTIVE";
+                //string nms18SV2 = "18  GPN7600-V2-NMS           GPN7600-V2-NMS           RUNNING        MASTER   STANDBY";
+                //string nms17A2 = "17  GPN7600-NMS-V2           GPN7600-NMS-V2           RUNNING        MASTER   ACTIVE";
+                //string nms17S2 = "17  GPN7600-NMS-V2           GPN7600-NMS-V2           RUNNING        MASTER   STANDBY";
+                //string nms18A2 = "18  GPN7600-NMS-V2           GPN7600-NMS-V2           RUNNING        MASTER   ACTIVE";
+                //string nms18S2 = "18  GPN7600-NMS-V2           GPN7600-NMS-V2           RUNNING        MASTER   STANDBY";
+                //string swa11AA = "11  GPN7600-SW-A             GPN7600-SW-A             RUNNING        SLAVE    ACTIVE";
+                //string swa12AS = "12  GPN7600-SW-A             GPN7600-SW-A             RUNNING        SLAVE    STANDBY";
+                //string swa11AS = "11  GPN7600-SW-A             GPN7600-SW-A             RUNNING        SLAVE    STANDBY";
+                //string swa12AA = "12  GPN7600-SW-A             GPN7600-SW-A             RUNNING        SLAVE    ACTIVE";
+                //string swa11AAV2 = "11  GPN7600-V2-SW            GPN7600-V2-SW            RUNNING        SLAVE    ACTIVE";
+                //string swa12ASV2 = "12  GPN7600-V2-SW            GPN7600-V2-SW            RUNNING        SLAVE    STANDBY";
+                //string swa11ASV2 = "11  GPN7600-V2-SW            GPN7600-V2-SW            RUNNING        SLAVE    STANDBY";
+                //string swa12AAV2 = "12  GPN7600-V2-SW            GPN7600-V2-SW            RUNNING        SLAVE    ACTIVE";
+                //string swa11AAV3 = "11  GPN7600-V2-SW-A          GPN7600-V2-SW-A          RUNNING        SLAVE    ACTIVE";
+                //string swa12ASV3 = "12  GPN7600-V2-SW-A          GPN7600-V2-SW-A          RUNNING        SLAVE    STANDBY";
+                //string swa11ASV3 = "11  GPN7600-V2-SW-A          GPN7600-V2-SW-A          RUNNING        SLAVE    STANDBY";
+                //string swa12AAV3 = "12  GPN7600-V2-SW-A          GPN7600-V2-SW-A          RUNNING        SLAVE    ACTIVE";
+                //string swb11AA = "11  GPN7600-SW-B             GPN7600-SW-B             RUNNING        SLAVE    ACTIVE";
+                //string swb12AS = "12  GPN7600-SW-B             GPN7600-SW-B             RUNNING        SLAVE    STANDBY";
+                //string swb11AS = "11  GPN7600-SW-B             GPN7600-SW-B             RUNNING        SLAVE    STANDBY";
+                //string swb12AA = "12  GPN7600-SW-B             GPN7600-SW-B             RUNNING        SLAVE    ACTIVE";
+                //string GPN800 = "1  GPN800-NMS-V1            GPN800-NMS-V1            RUNNING        MASTER   ACTIVE";
+                //for (int a = 0; a <= XHCount; a++)
+                //{
+                //     slot = mysocket.ReceiveData(int.Parse(ts));
+                //    if (slot.Contains("Ctrl+c"))
+                //    {
+                //        mysocket.SendDate("\r\n");
+                //    }
+                //    if (slot.Contains("#"))
+                //    {
+                //        break;
+                //    }
+                //    if (slot.Contains(GPN800))
+                //    {
+                //        slot17 = "ACTIVE";
+                //        toolStripStatusLabelnms.Text = "01槽：主";
+                //        toolStripStatusLabelnms.ForeColor = Color.DarkGreen;
+                //        // textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") +" " + "17槽主在位==============================================OK");
+                //    }
+                //    if ((slot.Contains(nms17A)) || (slot.Contains(nms17AV2)) || slot.Contains(nms17A2))
+                //    {
+                //        slot17 = "ACTIVE";
+                //        toolStripStatusLabelnms.Text = "17槽：主";
+                //        toolStripStatusLabelnms.ForeColor = Color.DarkGreen;
+                //        // textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") +" " + "17槽主在位==============================================OK");
+                //    }
+                //    if ((slot.Contains(nms17S)) || (slot.Contains(nms17SV2)) || (slot.Contains(nms17S2)))
+                //    {
+                //        slot17 = "STANDBY";
+                //        toolStripStatusLabelnms.Text = "17槽：备";
+                //        toolStripStatusLabelnms.ForeColor = Color.Red;
+                //        // textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") +" " + "17槽备在位==============================================OK");
+                //    }
+                //    if ((slot.Contains(nms18A)) || (slot.Contains(nms18AV2)) || (slot.Contains(nms18A2)))
+                //    {
+                //        slot18 = "ACTIVE";
+                //        toolStripStatusLabelnms18.Text = "18槽：主";
+                //        toolStripStatusLabelnms18.ForeColor = Color.DarkGreen;
+                //        //textDOS.AppendText("\r\n" + "18槽主在位==============================================OK");
+                //    }
+                //    if ((slot.Contains(nms18S)) || (slot.Contains(nms18SV2)) || (slot.Contains(nms18S2)))
+                //    {
+                //        toolStripStatusLabelnms18.Text = "18槽：备";
+                //        toolStripStatusLabelnms18.ForeColor = Color.Red;
+                //        slot18 = "STANDBY";
+                //        // textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") +" " + "18槽备在位=============================================OK");
+                //    }
+                //    if ((slot.Contains(swa11AA)) || (slot.Contains(swa11AAV2)) || (slot.Contains(swa11AAV3)))
+                //    {
+                //        slot11 = "在位";
+                //        toolStripStatusLabelswa11.Text = "11槽SW-A：主";
+                //        toolStripStatusLabelswa11.ForeColor = Color.DarkGreen;
+                //        //textDOS.AppendText("\r\n" + "11槽在位=============================================OK");
+                //    }
+                //    if ((slot.Contains(swa11AS)) || (slot.Contains(swa11ASV2)) || (slot.Contains(swa11ASV3)))
+                //    {
+                //        slot11 = "在位";
+                //        toolStripStatusLabelswa11.Text = "11槽SW-A：备";
+                //        toolStripStatusLabelswa11.ForeColor = Color.Red;
+                //        //textDOS.AppendText("\r\n" + "11槽在位=============================================OK");
+                //    }
+                //    if ((slot.Contains(swa12AA)) || (slot.Contains(swa12AAV2)) || (slot.Contains(swa12AAV3)))
+                //    {
+                //        slot12 = "在位";
+                //        toolStripStatusLabelswa12.Text = "12槽SW-A：主";
+                //        toolStripStatusLabelswa12.ForeColor = Color.DarkGreen;
+                //        //textDOS.AppendText("\r\n" + "12槽在位=============================================OK");
+                //    }
+                //    if ((slot.Contains(swa12AS) || slot.Contains(swb12AS)) || slot.Contains(swa12ASV2) || slot.Contains(swa12ASV3))
+                //    {
+                //        slot12 = "在位";
+                //        toolStripStatusLabelswa12.Text = "12槽SW-A：备";
+                //        toolStripStatusLabelswa12.ForeColor = Color.Red;
+                //        //textDOS.AppendText("\r\n" + "12槽在位=============================================OK");
+                //    }
+                //    if (slot.Contains(swb11AA))
+                //    {
+                //        slot11 = "在位";
+                //        sw = "swb";
+                //        toolStripStatusLabelswa11.Text = "11槽SW-B：主";
+                //        toolStripStatusLabelswa11.ForeColor = Color.DarkGreen;
+                //        //textDOS.AppendText("\r\n" + "11槽在位=============================================OK");
+                //    }
+                //    if (slot.Contains(swb11AS))
+                //    {
+                //        slot11 = "在位";
+                //        sw = "swb";
+                //        toolStripStatusLabelswa11.Text = "11槽SW-B：备";
+                //        toolStripStatusLabelswa11.ForeColor = Color.Red;
+                //        //textDOS.AppendText("\r\n" + "11槽在位=============================================OK");
+                //    }
+                //    if (slot.Contains(swb12AA))
+                //    {
+                //        slot12 = "在位";
+                //        sw = "swb";
+                //        toolStripStatusLabelswa12.Text = "12槽SW-B：主";
+                //        toolStripStatusLabelswa12.ForeColor = Color.DarkGreen;
+                //        //textDOS.AppendText("\r\n" + "12槽在位=============================================OK");
+                //    }
+                //    if (slot.Contains(swb12AS))
+                //    {
+                //        slot12 = "在位";
+                //        sw = "swb";
+                //        toolStripStatusLabelswa12.Text = "12槽SW-B：备";
+                //        toolStripStatusLabelswa12.ForeColor = Color.Red;
+                //        //textDOS.AppendText("\r\n" + "12槽在位=============================================OK");
+                //    }
+                //    Thread.Sleep(XHTime / 3);
+                //}
+                ////mysocket.SendDate("\r\n");
+                //// mysocket.SendDate("\r\n");
+                //// mysocket.SendDate("\x03");
+                ////Thread.Sleep(XHTime);
+                ////string meiyong = textDOS.Text + "\r\n" + mysocket.ReceiveData(int.Parse(ts));
+                //textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "获取槽位信息============================================OK");
+                //mysocket.SendData("show version");
+                //string ver = "";
+                //string ver2 = "";
+                //for (int a = 0; a <= XHCount; a++)
+                //{
+                //    ver2 = mysocket.ReceiveData(int.Parse(ts));
+                //    ver = ver + ver2;
+                //    if (ver2.Contains("Ctrl+c"))
+                //    {
+                //        mysocket.SendDate("\r\n");
+                //    }
+                //    if (ver2.Contains("#"))
+                //    {
+                //        break;
+                //    }
+                //    Thread.Sleep(XHTime / 3);
+                //}
+                //Regex r = new Regex(@"ProductOS\s*Version\s*([\w\d]+)[\s*\(]*", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                //string banben = r.Match(ver).Groups[1].Value;
+                //if (banben.ToString() == "")
+                //{
+                //    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "获取版本信息===========================================NOK");
+                //}
+                //else
+                //{
+                //    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "获取版本信息============================================OK");
+                //}
+                //// banben = banben.Substring("ProductOS Version ".Length);
+                //toolStripStatusLabelver.Text = "版本:" + banben.ToString();
+                //toolStripStatusLabelver.ForeColor = Color.Red;
+                //version = banben.ToString();
+                ////mysocket.SendDate("\x03");
+                ////Thread.Sleep(XHTime);
+                ////string meiryong = textDOS.Text + "\r\n" + mysocket.ReceiveData(int.Parse(ts));
+                timer1.Start();
                 textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "登录成功可以使用========================================OK" + "\r\n");
                 this.butsend.PerformClick();
-                butguzhangsend.PerformClick();
+                //butguzhangsend.PerformClick();
             }
             else
             {
@@ -2778,9 +2791,9 @@ namespace MyGpnSoftware
         private void Testftpser()
         {
             toolStripStatusLabelzt.Text = "检查FTP服务器中";
-            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "FTP服务器连接测试中，请耐心等待,大约需要6秒钟.....");
+            textDOS.AppendText(DateTime.Now.ToString("\r\n"+"yyyy-MM-dd HH:mm:ss.fff") + " " + "FTP服务器连接测试中，请耐心等待,大约需要15秒钟.....");
             mysocket.SendData("ping " + comftpip.Text);
-            for (int i = 1; i <= 10000; i++)
+            for (int i = 1; i <= XHCount; i++)
             {
                 string ping = mysocket.ReceiveData(int.Parse(ts));
                 if (ping.Contains("ms"))
@@ -2796,7 +2809,11 @@ namespace MyGpnSoftware
                     textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "设备ping服务器=========================================NOK" + "\r\n");
                     textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "FTP服务器故障，请点击停止升级后，检查FTP服务器IP地址！");
                     toolStripStatusLabelzt.Text = "FTP的IP地址故障，请检查！";
-                    this.butupgrade.PerformClick();
+                    UpLoadFile_Stop = true;
+                    butupload.Text = "⑤上传备份";
+                    DownLoadFile_Stop = true;
+                    backupfile = false;
+                    butupgrade.Text = "④下载升级";
                     MessageBox.Show("请检查FTP服务IP地址后，再次尝试！");
                     return;
                 }
@@ -2804,7 +2821,7 @@ namespace MyGpnSoftware
             }
             //textDOS.AppendText("已执行保存");
             mysocket.SendData("upload ftp config " + comftpip.Text + " " + textftpusr.Text + " " + textftppsd.Text + " " + "FtpTest.bin");
-            for (int i = 1; i <= 10000; i++)
+            for (int i = 1; i <= XHCount; i++)
             {
                 string box = mysocket.ReceiveData(int.Parse(ts));
                 if (box.Contains("ok"))
@@ -2816,7 +2833,11 @@ namespace MyGpnSoftware
                 {
                     textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "FTP服务器IP地址故障，请点击停止升级后，检查FTP服务器IP地址！" + "\r\n");
                     toolStripStatusLabelzt.Text = "FTP故障，请检查！";
-                    this.butupgrade.PerformClick();
+                    UpLoadFile_Stop = true;
+                    butupload.Text = "⑤上传备份";
+                    DownLoadFile_Stop = true;
+                    backupfile = false;
+                    butupgrade.Text = "④下载升级";
                     MessageBox.Show("请检查FTP服务IP地址后，再次尝试！");
                     return;
                 }
@@ -2824,7 +2845,11 @@ namespace MyGpnSoftware
                 {
                     textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "FTP服务器用户名密码错误，请检查！" + "\r\n");
                     toolStripStatusLabelzt.Text = "FTP故障，请检查！";
-                    this.butupgrade.PerformClick();
+                    UpLoadFile_Stop = true;
+                    butupload.Text = "⑤上传备份";
+                    DownLoadFile_Stop = true;
+                    backupfile = false;
+                    butupgrade.Text = "④下载升级";
                     MessageBox.Show("请检查FTP用户名和密码后，再次尝试！");
                     return;
                 }
@@ -4653,22 +4678,26 @@ namespace MyGpnSoftware
                         string sync = "successful";
                         for (int p = 1; p <= XHCount; p++)
                         {
+
                             string syncotn = mysocket.ReceiveData(int.Parse(ts));
                             if (syncotn.Contains(sync))
                             {
                                 textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "同步760a===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                 break;
                             }
+
                             Thread.Sleep(XHTime);
                         }
                     }
                     break;
                 }
+
                 if (box.Contains(fail))
                 {
                     textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "下载760a===============================================fail" + toolStripStatusLabeltime.Text + "\r\n");
                     return;
                 }
+
                 Thread.Sleep(XHTime);
             }
             Thread.Sleep(XHTime);
@@ -4701,6 +4730,7 @@ namespace MyGpnSoftware
                                 textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "同步760b===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                 break;
                             }
+
                             Thread.Sleep(XHTime);
                         }
                     }
@@ -4743,6 +4773,7 @@ namespace MyGpnSoftware
                                 textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "同步760c===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                 break;
                             }
+
                             Thread.Sleep(XHTime);
                         }
                     }
@@ -4785,6 +4816,7 @@ namespace MyGpnSoftware
                                 textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "同步760d===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                 break;
                             }
+
                             Thread.Sleep(XHTime);
                         }
                     }
@@ -4967,7 +4999,7 @@ namespace MyGpnSoftware
                     str = str.Substring(0, str.Length - 3);
                     textDOS.Text = str; //赋回已删除最后一个字符的字符串给textBox
                     textDOS.AppendText(box);
-                    toolStripProgressBarshishi.Value = int.Parse(strjinfu);
+                    metroProgressBar.Value = int.Parse(strjinfu);
                     toolStripStatusLabjindu.Text = jindu;
                 }
                 if (box.Contains(ok))
@@ -5016,7 +5048,7 @@ namespace MyGpnSoftware
                     //str = str.Substring(0, str.Length - 4);
                     //textDOS.Text = str; //赋回已删除最后一个字符的字符串给textBox
                     //textDOS.AppendText(box);
-                    toolStripProgressBarshishi.Value = int.Parse(strjinfu);
+                    metroProgressBar.Value = int.Parse(strjinfu);
                     toolStripStatusLabjindu.Text = jindu;
                 }
                 if (box.Contains(ok))
@@ -5315,156 +5347,164 @@ namespace MyGpnSoftware
                 {
                     tbxFtpRoot.Text = path.SelectedPath + @"\";
                 }
-                DirectoryInfo dir = new DirectoryInfo(@path.SelectedPath);
-                if (dir == null)
-                {
-                    MessageBox.Show("文件空，请重新选择文件夹！");
-                    return;
-                }
-                FileInfo[] fileInfo = dir.GetFiles();
-                List<string> fileNames = new List<string>();
-                foreach (FileInfo item in fileInfo)
-                {
-                    fileNames.Add(item.Name);
-                }
-                foreach (string s in fileNames)
-                {
-                    if (s.Contains(".bin") && !s.Contains("code") && !s.Contains("sysfile") && !s.Contains("db") && !s.Contains("slot"))
-                    {
-                        comapp.Items.Add(s);
-                        if (comapp.Items.Count > 0)
-                        {
-                            comapp.SelectedIndex = comapp.Items.Count - 1;
-                        }
-                    }
-                    if (s.Contains("code") || s.Contains("CODE"))
-                    {
-                        comcode.Items.Add(s);
-                        if (comcode.Items.Count > 0)
-                        {
-                            comcode.SelectedIndex = comcode.Items.Count - 1;
-                        }
-                    }
-                    if (s.Contains("NMS") || s.Contains("nms"))
-                    {
-                        comnms.Items.Add(s);
-                        if (comnms.Items.Count > 0)
-                        {
-                            comnms.SelectedIndex = comnms.Items.Count - 1;
-                        }
-                    }
-                    if (s.Contains("SW") || s.Contains("sw"))
-                    {
-                        comsw.Items.Add(s);
-                        if (comsw.Items.Count > 0)
-                        {
-                            comsw.SelectedIndex = comsw.Items.Count - 1;
-                        }
-                    }
-                    if (s.Contains("config") && !s.Contains("slot"))
-                    {
-                        comconfig.Items.Add(s);
-                        if (comconfig.Items.Count > 0)
-                        {
-                            comconfig.SelectedIndex = comconfig.Items.Count - 1;
-                        }
-                    }
-                    if (s.Contains("db"))
-                    {
-                        comdb.Items.Add(s);
-                        if (comdb.Items.Count > 0)
-                        {
-                            comdb.SelectedIndex = comdb.Items.Count - 1;
-                        }
-                    }
-                    if (s.Contains("slotconfig"))
-                    {
-                        comslotconfig.Items.Add(s);
-                        if (comslotconfig.Items.Count > 0)
-                        {
-                            comslotconfig.SelectedIndex = comslotconfig.Items.Count - 1;
-                        }
-                    }
-                    if (s.Contains("760a") || s.Contains("760A"))
-                    {
-                        com760a.Items.Add(s);
-                        if (com760a.Items.Count > 0)
-                        {
-                            com760a.SelectedIndex = com760a.Items.Count - 1;
-                        }
-                    }
-                    if (s.Contains("760b") || s.Contains("760B"))
-                    {
-                        com760b.Items.Add(s);
-                        if (com760b.Items.Count > 0)
-                        {
-                            com760b.SelectedIndex = com760b.Items.Count - 1;
-                        }
-                    }
-                    if (s.Contains("760c") || s.Contains("760C"))
-                    {
-                        com760c.Items.Add(s);
-                        if (com760c.Items.Count > 0)
-                        {
-                            com760c.SelectedIndex = com760c.Items.Count - 1;
-                        }
-                    }
-                    if (s.Contains("760d") || s.Contains("760D"))
-                    {
-                        com760d.Items.Add(s);
-                        if (com760d.Items.Count > 0)
-                        {
-                            com760d.SelectedIndex = com760d.Items.Count - 1;
-                        }
-                    }
-                    if (s.Contains("760e") || s.Contains("760E"))
-                    {
-                        com760e.Items.Add(s);
-                        if (com760e.Items.Count > 0)
-                        {
-                            com760e.SelectedIndex = com760e.Items.Count - 1;
-                        }
-                    }
-                    if (s.Contains("pack") || s.Contains("PACK") || s.Contains("Pack"))
-                    {
-                        comotnpack.Items.Add(s);
-                        if (comotnpack.Items.Count > 0)
-                        {
-                            comotnpack.SelectedIndex = comotnpack.Items.Count - 1;
-                        }
-                    }
-                    if (s.Contains("sysfile") || s.Contains("Sysfile") || s.Contains("SYSFILE"))
-                    {
-                        comsysfile.Items.Add(s);
-                        if (comsysfile.Items.Count > 0)
-                        {
-                            comsysfile.SelectedIndex = comsysfile.Items.Count - 1;
-                        }
-                    }
-                    if (s.Contains("flash") || s.Contains("Flash") || s.Contains("FLASH"))
-                    {
-                        comflash.Items.Add(s);
-                        if (comflash.Items.Count > 0)
-                        {
-                            comflash.SelectedIndex = comflash.Items.Count - 1;
-                        }
-                    }
-                    if (s.Contains("yaffs") || s.Contains("Yaffs") || s.Contains("YAFFS"))
-                    {
-                        comyaffs.Items.Add(s);
-                        if (comyaffs.Items.Count > 0)
-                        {
-                            comyaffs.SelectedIndex = comyaffs.Items.Count - 1;
-                        }
-                    }
-                }
+
             }
+            Readfile(path.SelectedPath);
             //comapp.SelectedIndex = 0;
             //this.comapp.Text = file.SafeFileName;
         }
+        private void Readfile(string path)
+        {
+
+
+
+            DirectoryInfo dir = new DirectoryInfo(path);
+            if (dir == null)
+            {
+                MessageBox.Show("文件空，请重新选择文件夹！");
+                return;
+            }
+            FileInfo[] fileInfo = dir.GetFiles();
+            List<string> fileNames = new List<string>();
+            foreach (FileInfo item in fileInfo)
+            {
+                fileNames.Add(item.Name);
+            }
+            foreach (string s in fileNames)
+            {
+                if (s.Contains(".bin") && !s.Contains("code") && !s.Contains("sysfile") && !s.Contains("db") && !s.Contains("slot"))
+                {
+                    comapp.Items.Add(s);
+                    if (comapp.Items.Count > 0)
+                    {
+                        comapp.SelectedIndex = comapp.Items.Count - 1;
+                    }
+                }
+                if (s.Contains("code") || s.Contains("CODE"))
+                {
+                    comcode.Items.Add(s);
+                    if (comcode.Items.Count > 0)
+                    {
+                        comcode.SelectedIndex = comcode.Items.Count - 1;
+                    }
+                }
+                if (s.Contains("NMS") || s.Contains("nms"))
+                {
+                    comnms.Items.Add(s);
+                    if (comnms.Items.Count > 0)
+                    {
+                        comnms.SelectedIndex = comnms.Items.Count - 1;
+                    }
+                }
+                if (s.Contains("SW") || s.Contains("sw"))
+                {
+                    comsw.Items.Add(s);
+                    if (comsw.Items.Count > 0)
+                    {
+                        comsw.SelectedIndex = comsw.Items.Count - 1;
+                    }
+                }
+                if (s.Contains("config") && !s.Contains("slot"))
+                {
+                    comconfig.Items.Add(s);
+                    if (comconfig.Items.Count > 0)
+                    {
+                        comconfig.SelectedIndex = comconfig.Items.Count - 1;
+                    }
+                }
+                if (s.Contains("db"))
+                {
+                    comdb.Items.Add(s);
+                    if (comdb.Items.Count > 0)
+                    {
+                        comdb.SelectedIndex = comdb.Items.Count - 1;
+                    }
+                }
+                if (s.Contains("slotconfig"))
+                {
+                    comslotconfig.Items.Add(s);
+                    if (comslotconfig.Items.Count > 0)
+                    {
+                        comslotconfig.SelectedIndex = comslotconfig.Items.Count - 1;
+                    }
+                }
+                if (s.Contains("760a") || s.Contains("760A"))
+                {
+                    com760a.Items.Add(s);
+                    if (com760a.Items.Count > 0)
+                    {
+                        com760a.SelectedIndex = com760a.Items.Count - 1;
+                    }
+                }
+                if (s.Contains("760b") || s.Contains("760B"))
+                {
+                    com760b.Items.Add(s);
+                    if (com760b.Items.Count > 0)
+                    {
+                        com760b.SelectedIndex = com760b.Items.Count - 1;
+                    }
+                }
+                if (s.Contains("760c") || s.Contains("760C"))
+                {
+                    com760c.Items.Add(s);
+                    if (com760c.Items.Count > 0)
+                    {
+                        com760c.SelectedIndex = com760c.Items.Count - 1;
+                    }
+                }
+                if (s.Contains("760d") || s.Contains("760D"))
+                {
+                    com760d.Items.Add(s);
+                    if (com760d.Items.Count > 0)
+                    {
+                        com760d.SelectedIndex = com760d.Items.Count - 1;
+                    }
+                }
+                if (s.Contains("760e") || s.Contains("760E"))
+                {
+                    com760e.Items.Add(s);
+                    if (com760e.Items.Count > 0)
+                    {
+                        com760e.SelectedIndex = com760e.Items.Count - 1;
+                    }
+                }
+                if (s.Contains("pack") || s.Contains("PACK") || s.Contains("Pack"))
+                {
+                    comotnpack.Items.Add(s);
+                    if (comotnpack.Items.Count > 0)
+                    {
+                        comotnpack.SelectedIndex = comotnpack.Items.Count - 1;
+                    }
+                }
+                if (s.Contains("sysfile") || s.Contains("Sysfile") || s.Contains("SYSFILE"))
+                {
+                    comsysfile.Items.Add(s);
+                    if (comsysfile.Items.Count > 0)
+                    {
+                        comsysfile.SelectedIndex = comsysfile.Items.Count - 1;
+                    }
+                }
+                if (s.Contains("flash") || s.Contains("Flash") || s.Contains("FLASH"))
+                {
+                    comflash.Items.Add(s);
+                    if (comflash.Items.Count > 0)
+                    {
+                        comflash.SelectedIndex = comflash.Items.Count - 1;
+                    }
+                }
+                if (s.Contains("yaffs") || s.Contains("Yaffs") || s.Contains("YAFFS"))
+                {
+                    comyaffs.Items.Add(s);
+                    if (comyaffs.Items.Count > 0)
+                    {
+                        comyaffs.SelectedIndex = comyaffs.Items.Count - 1;
+                    }
+                }
+            }
+        }
         #endregion
         #region 保存记录内容
-        private void 保存ToolStripMenuItem_Click(object sender, EventArgs e)
+        private void Savecom()
         {
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.Title = "保存打印记录";
@@ -5514,6 +5554,11 @@ namespace MyGpnSoftware
                 fsWrite.Write(buffer, 0, buffer.Length);
                 MessageBox.Show("保存成功!");
             }
+        }
+        private void 保存ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+            Savecom();
         }
         #endregion
         #region ctrl+s快捷键保存
@@ -5602,11 +5647,6 @@ namespace MyGpnSoftware
             return base.ProcessCmdKey(ref msg, keyData);
         }
         #endregion
-        #region 软件版本信息
-        private void 关于ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-        }
-        #endregion
         #region 耗时现显示
         System.Threading.Timer Mytimer;
         long TimeCount;
@@ -5626,7 +5666,7 @@ namespace MyGpnSoftware
         {
             Mytimer = new System.Threading.Timer(new TimerCallback(TimerUp), null, Timeout.Infinite, 1000);
             btnFtpServerStartStop.PerformClick();
-            gpnurlupdate();
+
             //checkpssd.CheckedChanged = true;
             labelboard.Visible = false;
             labelslot.Visible = false;
@@ -5679,8 +5719,9 @@ namespace MyGpnSoftware
         #endregion
         #region 设置ini文件内容
         private Dictionary<string, Gpnip> userss = new Dictionary<string, Gpnip>();
-        private void 设置ToolStripMenuItem_Click(object sender, EventArgs e)
+        private void Gpnsetini()
         {
+
             try
             {
                 //根据INI文件名设置要写入INI文件的节点名称
@@ -5694,6 +5735,8 @@ namespace MyGpnSoftware
                 WritePrivateProfileString(strSec, "GPNip", comip.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "GPNuser", textusr.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "GPNpsd", textpsd.Text.Trim(), strFilePath);
+                WritePrivateProfileString(strSec, "ReadCommunity", textReadCommunity.Text.Trim(), strFilePath);
+                WritePrivateProfileString(strSec, "WriteCommunity", textWriteCommunity.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "GPNpsden", textpsden.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "APP", comapp.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "FPFA_CODE", comcode.Text.Trim(), strFilePath);
@@ -5729,12 +5772,16 @@ namespace MyGpnSoftware
                 fs.Close();
                 // textmesg.Text = "用户以保存，重新打开软件后会显示";
                 //MessageBox.Show("账号保存成功！！！");
-                MessageBox.Show("写入成功");
+                //MessageBox.Show("写入成功");
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message.ToString());
+                MessageBox.Show(ex.Message);
             }
+        }
+        private void 设置ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Gpnsetini();
         }
         private string ContentValue(string Section, string key)
         {
@@ -5749,137 +5796,19 @@ namespace MyGpnSoftware
             DialogResult dr = MessageBox.Show("是否退出并保存？", "提示", MessageBoxButtons.YesNoCancel);
             if (dr == DialogResult.Yes)
             {
-                try
-                {
-                    //根据INI文件名设置要写入INI文件的节点名称
-                    //此处的节点名称完全可以根据实际需要进行配置
-                    strSec = Path.GetFileNameWithoutExtension(strFilePath);
-                    WritePrivateProfileString(strSec, "FTPip", comftpip.Text.Trim(), strFilePath);
-                    WritePrivateProfileString(strSec, "FTPport", tbxFtpServerPort.Text.Trim(), strFilePath);
-                    WritePrivateProfileString(strSec, "FTPuser", textftpusr.Text.Trim(), strFilePath);
-                    WritePrivateProfileString(strSec, "FTPpsd", textftppsd.Text.Trim(), strFilePath);
-                    WritePrivateProfileString(strSec, "FTPpath", tbxFtpRoot.Text.Trim(), strFilePath);
-                    WritePrivateProfileString(strSec, "GPNip", comip.Text.Trim(), strFilePath);
-                    WritePrivateProfileString(strSec, "GPNuser", textusr.Text.Trim(), strFilePath);
-                    WritePrivateProfileString(strSec, "GPNpsd", textpsd.Text.Trim(), strFilePath);
-                    WritePrivateProfileString(strSec, "GPNpsden", textpsden.Text.Trim(), strFilePath);
-                    WritePrivateProfileString(strSec, "APP", comapp.Text.Trim(), strFilePath);
-                    WritePrivateProfileString(strSec, "FPFA_CODE", comcode.Text.Trim(), strFilePath);
-                    WritePrivateProfileString(strSec, "NMS", comnms.Text.Trim(), strFilePath);
-                    WritePrivateProfileString(strSec, "SW", comsw.Text.Trim(), strFilePath);
-                    WritePrivateProfileString(strSec, "760A", com760a.Text.Trim(), strFilePath);
-                    WritePrivateProfileString(strSec, "760B", com760b.Text.Trim(), strFilePath);
-                    WritePrivateProfileString(strSec, "760C", com760c.Text.Trim(), strFilePath);
-                    WritePrivateProfileString(strSec, "760D", com760d.Text.Trim(), strFilePath);
-                    WritePrivateProfileString(strSec, "760E", com760e.Text.Trim(), strFilePath);
-                    WritePrivateProfileString(strSec, "OtnPack", comotnpack.Text.Trim(), strFilePath);
-                    WritePrivateProfileString(strSec, "sysfile", comsysfile.Text.Trim(), strFilePath);
-                    WritePrivateProfileString(strSec, "Flash", comflash.Text.Trim(), strFilePath);
-                    WritePrivateProfileString(strSec, "Yaffs", comyaffs.Text.Trim(), strFilePath);
-                    WritePrivateProfileString(strSec, "GPN7600EMS", comgpn76list.Text.Trim(), strFilePath);
-                    Gpnip user = new Gpnip();
-                    // 登录时 如果没有Data.bin文件就创建、有就打开
-                    FileStream fs = new FileStream(@"C:\gpn\gpnip.bin", FileMode.OpenOrCreate);
-                    BinaryFormatter bf = new BinaryFormatter();
-                    // 保存在实体类属性中
-                    user.GpnIP = comip.Text;
-                    if (userss.ContainsKey(user.GpnIP))
-                    {
-                        //如果有清掉
-                        userss.Remove(user.GpnIP);
-                        // MessageBox.Show("ip已经存在，替换完成");
-                    }
-                    //添加用户信息到集合
-                    userss.Add(user.GpnIP, user);
-                    //写入文件
-                    bf.Serialize(fs, userss);
-                    //关闭
-                    fs.Close();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message.ToString());
-                }
+                Gpnsetini();
                 ///////保存telnet 记录////////
-                SaveFileDialog sfd = new SaveFileDialog();
-                sfd.Title = "保存打印记录";
-                //sfd.InitialDirectory = @"C:\";
-                sfd.Filter = "文本文件| *.txt";
-                sfd.FileName = comip.Text + "-" + DateTime.Now.ToString("yyyy-MM-dd") + "-" + "Telnet打印记录";
-                if (sfd.ShowDialog() != DialogResult.OK)
-                {
-                    return;
-                }
-                using (FileStream fsWrite = new FileStream(sfd.FileName, FileMode.OpenOrCreate, FileAccess.Write))
-                {
-                    string saveString = "";
-                    for (int i = 0; i < lstboxStatus.Items.Count; i++)
-                    {
-                        saveString += lstboxStatus.Items[i].ToString() + "\r\n";
-                    }
-                    string jilu = toolStripStatusLabelver.Text + "\r\n" + toolStripStatusLabelnms.Text + "\r\n" + toolStripStatusLabelnms18.Text + "\r\n" + toolStripStatusLabelswa11.Text + "\r\n" + toolStripStatusLabelswa12.Text + "\r\n" + comapp.Text + "\r\n" + comcode.Text + "\r\n" + comnms.Text + "\r\n" + comsw.Text + "\r\n ===============================" + "\r\n" + textDOS.Text + "\r\n =====================" + "\r\n" + saveString;
-                    byte[] buffer = Encoding.Default.GetBytes(jilu);
-                    fsWrite.Write(buffer, 0, buffer.Length);
-                    MessageBox.Show("保存成功!");
-                }
+                Savecom();
                 //户选择确认的操作
             }
             else if (dr == DialogResult.Cancel)
             {
+                e.Cancel = true;
                 //return;
             }
             if (dr == DialogResult.No)
             {
-                try
-                {
-                    //根据INI文件名设置要写入INI文件的节点名称
-                    //此处的节点名称完全可以根据实际需要进行配置
-                    strSec = Path.GetFileNameWithoutExtension(strFilePath);
-                    WritePrivateProfileString(strSec, "FTPip", comftpip.Text.Trim(), strFilePath);
-                    WritePrivateProfileString(strSec, "FTPport", tbxFtpServerPort.Text.Trim(), strFilePath);
-                    WritePrivateProfileString(strSec, "FTPuser", textftpusr.Text.Trim(), strFilePath);
-                    WritePrivateProfileString(strSec, "FTPpsd", textftppsd.Text.Trim(), strFilePath);
-                    WritePrivateProfileString(strSec, "FTPpath", tbxFtpRoot.Text.Trim(), strFilePath);
-                    WritePrivateProfileString(strSec, "GPNip", comip.Text.Trim(), strFilePath);
-                    WritePrivateProfileString(strSec, "GPNuser", textusr.Text.Trim(), strFilePath);
-                    WritePrivateProfileString(strSec, "GPNpsd", textpsd.Text.Trim(), strFilePath);
-                    WritePrivateProfileString(strSec, "GPNpsden", textpsden.Text.Trim(), strFilePath);
-                    WritePrivateProfileString(strSec, "APP", comapp.Text.Trim(), strFilePath);
-                    WritePrivateProfileString(strSec, "FPFA_CODE", comcode.Text.Trim(), strFilePath);
-                    WritePrivateProfileString(strSec, "NMS", comnms.Text.Trim(), strFilePath);
-                    WritePrivateProfileString(strSec, "SW", comsw.Text.Trim(), strFilePath);
-                    WritePrivateProfileString(strSec, "760A", com760a.Text.Trim(), strFilePath);
-                    WritePrivateProfileString(strSec, "760B", com760b.Text.Trim(), strFilePath);
-                    WritePrivateProfileString(strSec, "760C", com760c.Text.Trim(), strFilePath);
-                    WritePrivateProfileString(strSec, "760D", com760d.Text.Trim(), strFilePath);
-                    WritePrivateProfileString(strSec, "760E", com760e.Text.Trim(), strFilePath);
-                    WritePrivateProfileString(strSec, "sysfile", comsysfile.Text.Trim(), strFilePath);
-                    WritePrivateProfileString(strSec, "Flash", comflash.Text.Trim(), strFilePath);
-                    WritePrivateProfileString(strSec, "Yaffs", comyaffs.Text.Trim(), strFilePath);
-                    WritePrivateProfileString(strSec, "GPN7600EMS", comgpn76list.Text.Trim(), strFilePath);
-                    Gpnip user = new Gpnip();
-                    // 登录时 如果没有Data.bin文件就创建、有就打开
-                    FileStream fs = new FileStream(@"C:\gpn\gpnip.bin", FileMode.OpenOrCreate);
-                    BinaryFormatter bf = new BinaryFormatter();
-                    // 保存在实体类属性中
-                    user.GpnIP = comip.Text;
-                    if (userss.ContainsKey(user.GpnIP))
-                    {
-                        //如果有清掉
-                        userss.Remove(user.GpnIP);
-                        // MessageBox.Show("ip已经存在，替换完成");
-                    }
-                    //添加用户信息到集合
-                    userss.Add(user.GpnIP, user);
-                    //写入文件
-                    bf.Serialize(fs, userss);
-                    //关闭
-                    fs.Close();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message.ToString());
-                }
+                Gpnsetini();
             }
         }
         #endregion
@@ -5891,12 +5820,16 @@ namespace MyGpnSoftware
                 textpsd.PasswordChar = (char)0;
                 textpsden.PasswordChar = (char)0;
                 textftppsd.PasswordChar = (char)0;
+                textReadCommunity.PasswordChar = (char)0;
+                textWriteCommunity.PasswordChar = (char)0;
             }
             else
             {
                 textftppsd.PasswordChar = '*';
                 textpsd.PasswordChar = '*';
                 textpsden.PasswordChar = '*';
+                textReadCommunity.PasswordChar = '*';
+                textWriteCommunity.PasswordChar = '*';
             }
         }
         #endregion
@@ -7678,12 +7611,12 @@ namespace MyGpnSoftware
                             Regex outd = new Regex(@"Out\s*Discard\s*Frames\s*:([\d\,\d]+)", RegexOptions.IgnoreCase | RegexOptions.Multiline);
                             EthOutDiscardFrames2 = outd.Match(textcurrent.Text).Groups[1].Value;
                             Regex inc = new Regex(@"In\s*CRC\s*Error\s*Pkts\s*:([\d\,\d]+)", RegexOptions.IgnoreCase | RegexOptions.Multiline);
-                            EthInCrcErrorPkts2 = ind.Match(textcurrent.Text).Groups[1].Value;
+                            EthInCrcErrorPkts2 = inc.Match(textcurrent.Text).Groups[1].Value;
                             Regex outc = new Regex(@"Out\s*CRC\s*Error\s*Pkts\s*:([\d\,\d]+)", RegexOptions.IgnoreCase | RegexOptions.Multiline);
                             EthOutCrcErrorPkts2 = outc.Match(textcurrent.Text).Groups[1].Value;
                             int EthInDiscardFrames01 = int.Parse(EthInDiscardFrames1);
                             int EthOutDiscardFrames01 = int.Parse(EthOutDiscardFrames1);
-                            int EthInDiscardFrames02 = int.Parse(EthOutDiscardFrames2);
+                            int EthInDiscardFrames02 = int.Parse(EthInDiscardFrames2);
                             int EthOutDiscardFrames02 = int.Parse(EthOutDiscardFrames2);
                             int EthInCrcErrorPkts01 = int.Parse(EthInCrcErrorPkts1);
                             int EthOutCrcErrorPkts01 = int.Parse(EthOutCrcErrorPkts1);
@@ -7958,13 +7891,13 @@ namespace MyGpnSoftware
             TimeCount = 0;
             Mytimer.Change(0, 1000);
             Control.CheckForIllegalCrossThreadCalls = false;
-            string netid = TextNeid.Text;
-            for (int i = 0; i <= int.Parse(comcishu.Text); i++)
+            // string netid = TextNeid.Text;
+            for (int i = 1; i <= int.Parse(comcishu.Text); i++)
             {
                 int zong = int.Parse(comcishu.Text);
                 int shengyu = zong - i;
                 labshengyucishu.Text = shengyu.ToString();
-                textcurrent.AppendText("\r\n循环第" + i.ToString() + "准备开始！");
+                textcurrent.AppendText("\r\n循环第" + i.ToString() + "次准备开始！" + "\r\n");
                 if (stop)
                 {
                     textcurrent.AppendText("\r\n已经停止！");
@@ -7972,106 +7905,107 @@ namespace MyGpnSoftware
                 }
                 if (on_off)
                 {
-                    textcurrent.AppendText("\r\n暂停中！");
+                    textcurrent.AppendText("暂停中！\r\n");
                     ma = new ManualResetEvent(false);
                     ma.WaitOne();
                 }
-                LinkGpn();
-                textcurrent.AppendText("//////////////////Telnet登录后开始检查NEID变化");
                 textguzhangmingling.Text = textcyclemingling.Text;
                 butguzhangsend.PerformClick();
-                Thread.Sleep(500);
-                for (int v = 1; v < 10; v++)
-                {
-                    if (textcurrent.Text.Contains("Current"))
-                    {
-                        if (!textcurrent.Text.Contains("Current Netid: " + netid))
-                        {
-                            textcurrent.AppendText("NEID与检查不一致，已停止");
-                            on_off = true;
-                            butCycleSuspend.Text = "继续";
-                            return;
-                        }
-                        if (!textcurrent.Text.Contains("Local   Netid: " + netid))
-                        {
-                            textcurrent.AppendText("NEID与检查不一致，已停止");
-                            on_off = true;
-                            butCycleSuspend.Text = "继续";
-                            return;
-                        }
-                        break;
-                    }
-                    butguzhangsend.PerformClick();
-                    Thread.Sleep(XHTime);
-                }
-                textlog.AppendText(textcurrent.Text);
-                textcurrent.Text = "";
-                App();
-                textcurrent.AppendText("//////////////////APP下载写入陈工后开始检查NEID变化");
-                textguzhangmingling.Text = textcyclemingling.Text;
-                butguzhangsend.PerformClick();
-                Thread.Sleep(500);
-                for (int v = 1; v < 10; v++)
-                {
-                    if (textcurrent.Text.Contains("Current"))
-                    {
-                        if (!textcurrent.Text.Contains("Current Netid: " + netid))
-                        {
-                            textcurrent.AppendText("NEID与检查不一致，已停止");
-                            on_off = true;
-                            butCycleSuspend.Text = "继续";
-                            return;
-                        }
-                        if (!textcurrent.Text.Contains("Local   Netid: " + netid))
-                        {
-                            textcurrent.AppendText("NEID与检查不一致，已停止");
-                            on_off = true;
-                            butCycleSuspend.Text = "继续";
-                            return;
-                        }
-                        break;
-                    }
-                    butguzhangsend.PerformClick();
-                    Thread.Sleep(XHTime);
-                }
-                textlog.AppendText(textcurrent.Text);
-                textcurrent.Text = "";
-                UploadNetid();
-                textcurrent.AppendText("//////////////////上传NEID文件后开始检查NEID变化");
-                //UploadConfig();
-                textguzhangmingling.Text = textcyclemingling.Text;
-                butguzhangsend.PerformClick();
-                Thread.Sleep(500);
-                for (int v = 1; v < 10; v++)
-                {
-                    if (textcurrent.Text.Contains("Current"))
-                    {
-                        if (!textcurrent.Text.Contains("Current Netid: " + netid))
-                        {
-                            textcurrent.AppendText("NEID与检查不一致，已停止");
-                            on_off = true;
-                            butCycleSuspend.Text = "继续";
-                            return;
-                        }
-                        if (!textcurrent.Text.Contains("Local   Netid: " + netid))
-                        {
-                            textcurrent.AppendText("NEID与检查不一致，已停止");
-                            on_off = true;
-                            butCycleSuspend.Text = "继续";
-                            return;
-                        }
-                        break;
-                    }
-                    butguzhangsend.PerformClick();
-                    Thread.Sleep(XHTime);
-                }
-                //mysocket.SendData("reboot");
-                //Thread.Sleep(300);
-                //mysocket.SendData("Y");
-                butlogin.Text = "①连接设备";
-                mysocket.Close();
-                textlog.AppendText(textcurrent.Text);
-                textcurrent.Text = "";
+                //LinkGpn();
+                //textcurrent.AppendText("//////////////////Telnet登录后开始检查NEID变化");
+                //textguzhangmingling.Text = textcyclemingling.Text;
+                //butguzhangsend.PerformClick();
+                //Thread.Sleep(500);
+                //for (int v = 1; v < 10; v++)
+                //{
+                //    if (textcurrent.Text.Contains("Current"))
+                //    {
+                //        if (!textcurrent.Text.Contains("Current Netid: " + netid))
+                //        {
+                //            textcurrent.AppendText("NEID与检查不一致，已停止");
+                //            on_off = true;
+                //            butCycleSuspend.Text = "继续";
+                //            return;
+                //        }
+                //        if (!textcurrent.Text.Contains("Local   Netid: " + netid))
+                //        {
+                //            textcurrent.AppendText("NEID与检查不一致，已停止");
+                //            on_off = true;
+                //            butCycleSuspend.Text = "继续";
+                //            return;
+                //        }
+                //        break;
+                //    }
+                //    butguzhangsend.PerformClick();
+                //    Thread.Sleep(XHTime);
+                //}
+                //textlog.AppendText(textcurrent.Text);
+                //textcurrent.Text = "";
+                //App();
+                //textcurrent.AppendText("//////////////////APP下载写入陈工后开始检查NEID变化");
+                //textguzhangmingling.Text = textcyclemingling.Text;
+                //butguzhangsend.PerformClick();
+                //Thread.Sleep(500);
+                //for (int v = 1; v < 10; v++)
+                //{
+                //    if (textcurrent.Text.Contains("Current"))
+                //    {
+                //        if (!textcurrent.Text.Contains("Current Netid: " + netid))
+                //        {
+                //            textcurrent.AppendText("NEID与检查不一致，已停止");
+                //            on_off = true;
+                //            butCycleSuspend.Text = "继续";
+                //            return;
+                //        }
+                //        if (!textcurrent.Text.Contains("Local   Netid: " + netid))
+                //        {
+                //            textcurrent.AppendText("NEID与检查不一致，已停止");
+                //            on_off = true;
+                //            butCycleSuspend.Text = "继续";
+                //            return;
+                //        }
+                //        break;
+                //    }
+                //    butguzhangsend.PerformClick();
+                //    Thread.Sleep(XHTime);
+                //}
+                //textlog.AppendText(textcurrent.Text);
+                //textcurrent.Text = "";
+                //UploadNetid();
+                //textcurrent.AppendText("//////////////////上传NEID文件后开始检查NEID变化");
+                ////UploadConfig();
+                //textguzhangmingling.Text = textcyclemingling.Text;
+                //butguzhangsend.PerformClick();
+                //Thread.Sleep(500);
+                //for (int v = 1; v < 10; v++)
+                //{
+                //    if (textcurrent.Text.Contains("Current"))
+                //    {
+                //        if (!textcurrent.Text.Contains("Current Netid: " + netid))
+                //        {
+                //            textcurrent.AppendText("NEID与检查不一致，已停止");
+                //            on_off = true;
+                //            butCycleSuspend.Text = "继续";
+                //            return;
+                //        }
+                //        if (!textcurrent.Text.Contains("Local   Netid: " + netid))
+                //        {
+                //            textcurrent.AppendText("NEID与检查不一致，已停止");
+                //            on_off = true;
+                //            butCycleSuspend.Text = "继续";
+                //            return;
+                //        }
+                //        break;
+                //    }
+                //    butguzhangsend.PerformClick();
+                //    Thread.Sleep(XHTime);
+                //}
+                ////mysocket.SendData("reboot");
+                ////Thread.Sleep(300);
+                ////mysocket.SendData("Y");
+                // butlogin.Text = "①连接设备";
+                // mysocket.Close();
+
                 for (int g = 0; g <= 100; g++)
                 {
                     if (textcurrent.Text.Contains("Ctrl+c"))
@@ -8082,8 +8016,10 @@ namespace MyGpnSoftware
                     {
                         break;
                     }
-                    Thread.Sleep(XHTime);
+                    //Thread.Sleep(XHTime/10);
                 }
+                textlog.AppendText(textcurrent.Text);
+                textcurrent.Text = "";
                 int time = int.Parse(comshijian.Text.Trim()) * 1000;
                 Thread.Sleep(time);
             }
@@ -8290,14 +8226,14 @@ namespace MyGpnSoftware
                     //p = (int)Math.Floor((double)100 / a);
                     percent = (int)Math.Floor((float)totalDownloadedByte / (float)totalBytes * 100);
                     // textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") +" "+percent.ToString() + "\r\n");
-                    toolStripStatusLabjindu.Text = "进度：" + percent.ToString() + "%";
-                    toolStripProgressBarshishi.Value = percent;
+                    toolStripStatusLabjindu.Text = percent.ToString() + "%";
+                    metroProgressBar.Value = percent;
                     // System.Windows.Forms.Application.DoEvents();
                 }
                 stream.Close();
                 responseStream.Close();
                 textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "GPN模块下载成功============================================OK" + "\r\n");
-                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "GPN模块保存路径："+ strZipPath + "\r\n");
+                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "GPN模块保存路径：" + strZipPath + "\r\n");
 
             }
             catch (Exception)
@@ -8350,11 +8286,7 @@ namespace MyGpnSoftware
             {
                 //strURL = @"http://" + strURL;
             }
-            Thread pingip = new Thread(Pingip)
-            {
-                IsBackground = true
-            };
-            pingip.Start();
+
             Ping ping = new Ping();
             int timeout = 120;
             PingReply pingReply = ping.Send(GPN7600EMSURLIP, timeout);
@@ -10032,6 +9964,7 @@ namespace MyGpnSoftware
                     MessageBox.Show("请勾选文件后继续！");
                     return;
                 }
+
                 UpLoadFile_Stop = false;
                 UpLoadFileThread = new Thread(UpLoadFile)
                 {
@@ -10039,7 +9972,7 @@ namespace MyGpnSoftware
                 };
                 UpLoadFileThread.Start();
                 butupload.Text = "⑤停止备份";
-                textcurrent.AppendText("\r\n开始运行！");
+                //textcurrent.AppendText("\r\n开始运行！");
             }
             else
             {
@@ -10054,6 +9987,12 @@ namespace MyGpnSoftware
             Mytimer.Change(0, 1000);
             Control.CheckForIllegalCrossThreadCalls = false;
             uploading = true;
+            Testftpser();
+            if (DownLoadFile_Stop)
+            {
+                textDOS.AppendText(DateTime.Now.ToString("\r\n" + "yyyy-MM-dd HH:mm:ss.fff") + " " + "下载升级已停止！");
+                return;
+            }
             Uploadsave();
             int a = 0;
             int p = 0;
@@ -10131,12 +10070,12 @@ namespace MyGpnSoftware
                 {
                     if (UpLoadFile_Stop)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                         return;
                     }
                     if (UpLoadFile_On_Off)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                         UpLoadFilePause = new ManualResetEvent(false);
                         UpLoadFilePause.WaitOne();
                     }
@@ -10152,12 +10091,12 @@ namespace MyGpnSoftware
                         p = 100;
                         if (UpLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (UpLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             UpLoadFilePause = new ManualResetEvent(false);
                             UpLoadFilePause.WaitOne();
                         }
@@ -10169,12 +10108,12 @@ namespace MyGpnSoftware
                     {
                         if (UpLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (UpLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             UpLoadFilePause = new ManualResetEvent(false);
                             UpLoadFilePause.WaitOne();
                         }
@@ -10193,12 +10132,12 @@ namespace MyGpnSoftware
                 {
                     if (UpLoadFile_Stop)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                         return;
                     }
                     if (UpLoadFile_On_Off)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                         UpLoadFilePause = new ManualResetEvent(false);
                         UpLoadFilePause.WaitOne();
                     }
@@ -10214,12 +10153,12 @@ namespace MyGpnSoftware
                         p = 100;
                         if (UpLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (UpLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             UpLoadFilePause = new ManualResetEvent(false);
                             UpLoadFilePause.WaitOne();
                         }
@@ -10231,12 +10170,12 @@ namespace MyGpnSoftware
                     {
                         if (UpLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (UpLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             UpLoadFilePause = new ManualResetEvent(false);
                             UpLoadFilePause.WaitOne();
                         }
@@ -10255,12 +10194,12 @@ namespace MyGpnSoftware
                 {
                     if (UpLoadFile_Stop)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                         return;
                     }
                     if (UpLoadFile_On_Off)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                         UpLoadFilePause = new ManualResetEvent(false);
                         UpLoadFilePause.WaitOne();
                     }
@@ -10276,12 +10215,12 @@ namespace MyGpnSoftware
                         p = 100;
                         if (UpLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (UpLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             UpLoadFilePause = new ManualResetEvent(false);
                             UpLoadFilePause.WaitOne();
                         }
@@ -10293,12 +10232,12 @@ namespace MyGpnSoftware
                     {
                         if (UpLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (UpLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             UpLoadFilePause = new ManualResetEvent(false);
                             UpLoadFilePause.WaitOne();
                         }
@@ -10317,12 +10256,12 @@ namespace MyGpnSoftware
                 {
                     if (UpLoadFile_Stop)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                         return;
                     }
                     if (UpLoadFile_On_Off)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                         UpLoadFilePause = new ManualResetEvent(false);
                         UpLoadFilePause.WaitOne();
                     }
@@ -10338,12 +10277,12 @@ namespace MyGpnSoftware
                         p = 100;
                         if (UpLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (UpLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             UpLoadFilePause = new ManualResetEvent(false);
                             UpLoadFilePause.WaitOne();
                         }
@@ -10355,12 +10294,12 @@ namespace MyGpnSoftware
                     {
                         if (UpLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (UpLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             UpLoadFilePause = new ManualResetEvent(false);
                             UpLoadFilePause.WaitOne();
                         }
@@ -10379,12 +10318,12 @@ namespace MyGpnSoftware
                 {
                     if (UpLoadFile_Stop)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                         return;
                     }
                     if (UpLoadFile_On_Off)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                         UpLoadFilePause = new ManualResetEvent(false);
                         UpLoadFilePause.WaitOne();
                     }
@@ -10399,12 +10338,12 @@ namespace MyGpnSoftware
                         p = 100;
                         if (UpLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (UpLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             UpLoadFilePause = new ManualResetEvent(false);
                             UpLoadFilePause.WaitOne();
                         }
@@ -10416,12 +10355,12 @@ namespace MyGpnSoftware
                     {
                         if (UpLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (UpLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             UpLoadFilePause = new ManualResetEvent(false);
                             UpLoadFilePause.WaitOne();
                         }
@@ -10440,12 +10379,12 @@ namespace MyGpnSoftware
                 {
                     if (UpLoadFile_Stop)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                         return;
                     }
                     if (UpLoadFile_On_Off)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                         UpLoadFilePause = new ManualResetEvent(false);
                         UpLoadFilePause.WaitOne();
                     }
@@ -10461,12 +10400,12 @@ namespace MyGpnSoftware
                         p = 100;
                         if (UpLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (UpLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             UpLoadFilePause = new ManualResetEvent(false);
                             UpLoadFilePause.WaitOne();
                         }
@@ -10478,12 +10417,12 @@ namespace MyGpnSoftware
                     {
                         if (UpLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (UpLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             UpLoadFilePause = new ManualResetEvent(false);
                             UpLoadFilePause.WaitOne();
                         }
@@ -10502,12 +10441,12 @@ namespace MyGpnSoftware
                 {
                     if (UpLoadFile_Stop)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                         return;
                     }
                     if (UpLoadFile_On_Off)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                         UpLoadFilePause = new ManualResetEvent(false);
                         UpLoadFilePause.WaitOne();
                     }
@@ -10523,12 +10462,12 @@ namespace MyGpnSoftware
                         p = 100;
                         if (UpLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (UpLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             UpLoadFilePause = new ManualResetEvent(false);
                             UpLoadFilePause.WaitOne();
                         }
@@ -10540,12 +10479,12 @@ namespace MyGpnSoftware
                     {
                         if (UpLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (UpLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             UpLoadFilePause = new ManualResetEvent(false);
                             UpLoadFilePause.WaitOne();
                         }
@@ -10564,12 +10503,12 @@ namespace MyGpnSoftware
                 {
                     if (UpLoadFile_Stop)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                         return;
                     }
                     if (UpLoadFile_On_Off)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                         UpLoadFilePause = new ManualResetEvent(false);
                         UpLoadFilePause.WaitOne();
                     }
@@ -10585,12 +10524,12 @@ namespace MyGpnSoftware
                         p = 100;
                         if (UpLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (UpLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             UpLoadFilePause = new ManualResetEvent(false);
                             UpLoadFilePause.WaitOne();
                         }
@@ -10602,12 +10541,12 @@ namespace MyGpnSoftware
                     {
                         if (UpLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (UpLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             UpLoadFilePause = new ManualResetEvent(false);
                             UpLoadFilePause.WaitOne();
                         }
@@ -10626,12 +10565,12 @@ namespace MyGpnSoftware
                 {
                     if (UpLoadFile_Stop)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                         return;
                     }
                     if (UpLoadFile_On_Off)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                         UpLoadFilePause = new ManualResetEvent(false);
                         UpLoadFilePause.WaitOne();
                     }
@@ -10647,12 +10586,12 @@ namespace MyGpnSoftware
                         p = 100;
                         if (UpLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (UpLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             UpLoadFilePause = new ManualResetEvent(false);
                             UpLoadFilePause.WaitOne();
                         }
@@ -10664,12 +10603,12 @@ namespace MyGpnSoftware
                     {
                         if (UpLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (UpLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             UpLoadFilePause = new ManualResetEvent(false);
                             UpLoadFilePause.WaitOne();
                         }
@@ -10688,12 +10627,12 @@ namespace MyGpnSoftware
                 {
                     if (UpLoadFile_Stop)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                         return;
                     }
                     if (UpLoadFile_On_Off)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                         UpLoadFilePause = new ManualResetEvent(false);
                         UpLoadFilePause.WaitOne();
                     }
@@ -10709,12 +10648,12 @@ namespace MyGpnSoftware
                         p = 100;
                         if (UpLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (UpLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             UpLoadFilePause = new ManualResetEvent(false);
                             UpLoadFilePause.WaitOne();
                         }
@@ -10726,12 +10665,12 @@ namespace MyGpnSoftware
                     {
                         if (UpLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (UpLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             UpLoadFilePause = new ManualResetEvent(false);
                             UpLoadFilePause.WaitOne();
                         }
@@ -10750,12 +10689,12 @@ namespace MyGpnSoftware
                 {
                     if (UpLoadFile_Stop)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                         return;
                     }
                     if (UpLoadFile_On_Off)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                         UpLoadFilePause = new ManualResetEvent(false);
                         UpLoadFilePause.WaitOne();
                     }
@@ -10771,12 +10710,12 @@ namespace MyGpnSoftware
                         p = 100;
                         if (UpLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (UpLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             UpLoadFilePause = new ManualResetEvent(false);
                             UpLoadFilePause.WaitOne();
                         }
@@ -10788,12 +10727,12 @@ namespace MyGpnSoftware
                     {
                         if (UpLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (UpLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             UpLoadFilePause = new ManualResetEvent(false);
                             UpLoadFilePause.WaitOne();
                         }
@@ -10812,12 +10751,12 @@ namespace MyGpnSoftware
                 {
                     if (UpLoadFile_Stop)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                         return;
                     }
                     if (UpLoadFile_On_Off)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                         UpLoadFilePause = new ManualResetEvent(false);
                         UpLoadFilePause.WaitOne();
                     }
@@ -10833,12 +10772,12 @@ namespace MyGpnSoftware
                         p = 100;
                         if (UpLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (UpLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             UpLoadFilePause = new ManualResetEvent(false);
                             UpLoadFilePause.WaitOne();
                         }
@@ -10850,12 +10789,12 @@ namespace MyGpnSoftware
                     {
                         if (UpLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (UpLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             UpLoadFilePause = new ManualResetEvent(false);
                             UpLoadFilePause.WaitOne();
                         }
@@ -10874,12 +10813,12 @@ namespace MyGpnSoftware
                 {
                     if (UpLoadFile_Stop)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                         return;
                     }
                     if (UpLoadFile_On_Off)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                         UpLoadFilePause = new ManualResetEvent(false);
                         UpLoadFilePause.WaitOne();
                     }
@@ -10895,12 +10834,12 @@ namespace MyGpnSoftware
                         p = 100;
                         if (UpLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (UpLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             UpLoadFilePause = new ManualResetEvent(false);
                             UpLoadFilePause.WaitOne();
                         }
@@ -10912,12 +10851,12 @@ namespace MyGpnSoftware
                     {
                         if (UpLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (UpLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             UpLoadFilePause = new ManualResetEvent(false);
                             UpLoadFilePause.WaitOne();
                         }
@@ -10936,12 +10875,12 @@ namespace MyGpnSoftware
                 {
                     if (UpLoadFile_Stop)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                         return;
                     }
                     if (UpLoadFile_On_Off)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                         UpLoadFilePause = new ManualResetEvent(false);
                         UpLoadFilePause.WaitOne();
                     }
@@ -10957,12 +10896,12 @@ namespace MyGpnSoftware
                         p = 100;
                         if (UpLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (UpLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             UpLoadFilePause = new ManualResetEvent(false);
                             UpLoadFilePause.WaitOne();
                         }
@@ -10974,12 +10913,12 @@ namespace MyGpnSoftware
                     {
                         if (UpLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (UpLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             UpLoadFilePause = new ManualResetEvent(false);
                             UpLoadFilePause.WaitOne();
                         }
@@ -10998,12 +10937,12 @@ namespace MyGpnSoftware
                 {
                     if (UpLoadFile_Stop)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                         return;
                     }
                     if (UpLoadFile_On_Off)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                         UpLoadFilePause = new ManualResetEvent(false);
                         UpLoadFilePause.WaitOne();
                     }
@@ -11019,12 +10958,12 @@ namespace MyGpnSoftware
                         p = 100;
                         if (UpLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (UpLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             UpLoadFilePause = new ManualResetEvent(false);
                             UpLoadFilePause.WaitOne();
                         }
@@ -11036,12 +10975,12 @@ namespace MyGpnSoftware
                     {
                         if (UpLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (UpLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             UpLoadFilePause = new ManualResetEvent(false);
                             UpLoadFilePause.WaitOne();
                         }
@@ -11060,12 +10999,12 @@ namespace MyGpnSoftware
                 {
                     if (UpLoadFile_Stop)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                         return;
                     }
                     if (UpLoadFile_On_Off)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                         UpLoadFilePause = new ManualResetEvent(false);
                         UpLoadFilePause.WaitOne();
                     }
@@ -11081,12 +11020,12 @@ namespace MyGpnSoftware
                         p = 100;
                         if (UpLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (UpLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             UpLoadFilePause = new ManualResetEvent(false);
                             UpLoadFilePause.WaitOne();
                         }
@@ -11098,12 +11037,12 @@ namespace MyGpnSoftware
                     {
                         if (UpLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n已停止！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
                             return;
                         }
                         if (UpLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "\r\n暂停中！");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
                             UpLoadFilePause = new ManualResetEvent(false);
                             UpLoadFilePause.WaitOne();
                         }
@@ -13018,7 +12957,7 @@ namespace MyGpnSoftware
         }
         private void butoptoff_Click(object sender, EventArgs e)
         {
-           // MessageBox.Show("激光器关断和开启只对源光口作用，请选择光口为源光口！");
+            // MessageBox.Show("激光器关断和开启只对源光口作用，请选择光口为源光口！");
             if (butoptoff.Text == "主用激光器关断")
             {
                 butguzhangsend.PerformClick();
@@ -13115,95 +13054,7 @@ namespace MyGpnSoftware
             //实例化窗体
             Req.ShowDialog();// 将窗体显示出来
         }
-        private void metroButGet_Click(object sender, EventArgs e)
-        {
-            // SNMP团体名称 
-            OctetString community = new OctetString(metroTextReadCommunity.Text);
-            //定义代理参数类 
-            AgentParameters param = new AgentParameters(community);
-            //将SNMP版本设置为1（或2） 
-            param.Version = SnmpVersion.Ver1;
-            //构造代理地址对象
-            //这里很容易使用IpAddress类，因为
-            //如果不
-            //解析为IP地址，它将尝试解析构造函数参数
-            IpAddress agent = new IpAddress(metroTextgpnip.Text);
-            IPAddress send = new IPAddress(agent);
-            //构建目标 
-            UdpTarget target = new UdpTarget(send, 161, 2000, 1);
-            //  用于所有请求PDU级 
-            Pdu pdu = new Pdu(PduType.Get);
-            pdu.VbList.Add("1.3.6.1.4.1.10072.6.2.1.1.1.24.1"); //设备NEID
-            pdu.VbList.Add("1.3.6.1.4.1.10072.6.2.1.1.1.8.1"); //设备版本
-            pdu.VbList.Add("1.3.6.1.4.1.10072.6.2.1.1.1.7.1"); //大包版本
-            pdu.VbList.Add("1.3.6.1.4.1.10072.6.2.1.1.1.3.1"); //设备型号
-            pdu.VbList.Add("1.3.6.1.4.1.10072.6.2.2.1.1.6.1.17"); //17槽位状态
-            pdu.VbList.Add("1.3.6.1.4.1.10072.6.2.2.1.1.6.1.18"); //18槽位状态
-            pdu.VbList.Add("1.3.6.1.4.1.10072.6.2.2.1.1.6.1.11"); //11槽位状态
-            pdu.VbList.Add("1.3.6.1.4.1.10072.6.2.2.1.1.6.1.12"); //12槽位状态
-            //使SNMP请求 
-            SnmpPacket result = null;
-            try
-            {
-                result = target.Request(pdu, param);
-            }
-            catch (SnmpException ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            catch
-            {
-                MessageBox.Show("请检查Oid项配置信息！");
-            }
-            //SnmpV1Packet result = (SnmpV1Packet)target.Request(pdu, param);
-            //如果结果为null，则座席未回复或我们无法解析回复。
-            if (result != null)
-            {
-                //其他的ErrorStatus然后0是通过返回一个错误
-                //代理-见SnmpConstants为错误定义
-                if (result.Pdu.ErrorStatus != 0)
-                {
-                    //代理报告与所述请求的错误 
-                    metroTextqueip.Text += string.Format("Error in SNMP reply. Error {0} index {1} \r\n",
-                            result.Pdu.ErrorStatus,
-                            result.Pdu.ErrorIndex);
-                }
-                else
-                {
-                    //返回变量的返回顺序与添加
-                    //到VbList
-                    this.metroTextqueip.Text += string.Format("设备NEID({0}) ({1}): {2} \r\n",
-                        result.Pdu.VbList[0].Oid.ToString(), SnmpConstants.GetTypeName(result.Pdu.VbList[0].Value.Type),
-                        result.Pdu.VbList[0].Value.ToString());
-                    this.metroTextqueip.Text += string.Format("设备版本({0}) ({1}): {2} \r\n",
-                        result.Pdu.VbList[1].Oid.ToString(), SnmpConstants.GetTypeName(result.Pdu.VbList[1].Value.Type),
-                        result.Pdu.VbList[1].Value.ToString());
-                    this.metroTextqueip.Text += string.Format("大包版本({0}) ({1}): {2} \r\n",
-                        result.Pdu.VbList[2].Oid.ToString(), SnmpConstants.GetTypeName(result.Pdu.VbList[2].Value.Type),
-                        result.Pdu.VbList[2].Value.ToString());
-                    this.metroTextqueip.Text += string.Format("设备型号({0}) ({1}): {2} \r\n",
-                        result.Pdu.VbList[3].Oid.ToString(), SnmpConstants.GetTypeName(result.Pdu.VbList[3].Value.Type),
-                        result.Pdu.VbList[3].Value.ToString());
-                    this.metroTextqueip.Text += string.Format("17槽位({0}) ({1}): {2} \r\n",
-                        result.Pdu.VbList[4].Oid.ToString(), SnmpConstants.GetTypeName(result.Pdu.VbList[4].Value.Type),
-                        result.Pdu.VbList[4].Value.ToString());
-                    this.metroTextqueip.Text += string.Format("18槽位({0}) ({1}): {2} \r\n",
-                        result.Pdu.VbList[5].Oid.ToString(), SnmpConstants.GetTypeName(result.Pdu.VbList[5].Value.Type),
-                        result.Pdu.VbList[5].Value.ToString());
-                    this.metroTextqueip.Text += string.Format("11槽位({0}) ({1}): {2} \r\n",
-                        result.Pdu.VbList[6].Oid.ToString(), SnmpConstants.GetTypeName(result.Pdu.VbList[6].Value.Type),
-                        result.Pdu.VbList[6].Value.ToString());
-                    this.metroTextqueip.Text += string.Format("12槽位({0}) ({1}): {2} \r\n",
-                        result.Pdu.VbList[7].Oid.ToString(), SnmpConstants.GetTypeName(result.Pdu.VbList[7].Value.Type),
-                        result.Pdu.VbList[7].Value.ToString());
-                }
-            }
-            else
-            {
-                this.metroTextqueip.Text += string.Format("No response received from SNMP agent. \r\n");
-            }
-            target.Close();
-        }
+
         private void metroButton1_Click(object sender, EventArgs e)
         {
             string host = metroTextgpnip.Text;
@@ -13211,21 +13062,28 @@ namespace MyGpnSoftware
             SimpleSnmp snmp = new SimpleSnmp(host, community);
             if (!snmp.Valid)
             {
-                metroTextqueip.Text = "SNMP agent host name/ip address is invalid.";
+                MessageBox.Show ("SNMP主机IP地址错误或者读写团体错误");
                 return;
             }
             Dictionary<Oid, AsnType> result = snmp.Get(SnmpVersion.Ver1, new string[] { metroTextoid.Text });
             if (result == null)
             {
-                metroTextqueip.Text = "No results received.";
-                MessageBox.Show("请求超时");
+                MessageBox.Show("请求后未收到回复");
                 return;
             }
             foreach (KeyValuePair<Oid, AsnType> kvp in result)
             {
-                metroTextqueip.Text += string.Format("NEID为:{0} {1} {2}", kvp.Key.ToString(),
-                                          SnmpConstants.GetTypeName(kvp.Value.Type),
-                                          kvp.Value.ToString() + "     OK" + "\r\n");
+
+                ListViewItem item = lv2.Items.Add((lv2.Items.Count + 1)+"");
+                item.SubItems.Add(host);
+                item.SubItems.Add(kvp.Key.ToString());
+                item.SubItems.Add(SnmpConstants.GetTypeName(kvp.Value.Type));
+                item.SubItems.Add(kvp.Value.ToString());
+                item.EnsureVisible();
+
+
+
+
             }
         }
         private void 获取本地软件SToolStripMenuItem_Click(object sender, EventArgs e)
@@ -13282,7 +13140,7 @@ namespace MyGpnSoftware
                 butguzhangsend.PerformClick();
                 richTextEnd.AppendText(comSBslot.Text + "/" + comSBport.Text + "激光器已关断！" + "\r\n");
                 butoptbackoff.Text = "备用激光器开启";
-               // MessageBox.Show(comSBslot.Text + "/" + comSBport.Text + "激光器已关断！");
+                // MessageBox.Show(comSBslot.Text + "/" + comSBport.Text + "激光器已关断！");
             }
             else
             {
@@ -13308,18 +13166,280 @@ namespace MyGpnSoftware
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            for (int i = 1; i < 20; i++) {
-                butoptoff.PerformClick();
-                Thread.Sleep(300);
-                butoptoff.PerformClick();
-                Thread.Sleep(3000);
-                butoptbackoff.PerformClick();
-                Thread.Sleep(300);
-                butoptbackoff.PerformClick();
-                Thread.Sleep(3000);
 
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            if (devtype == "")
+            {
+                return;
+            }
+            // SNMP团体名称 
+            OctetString community = new OctetString(textReadCommunity.Text);
+            //定义代理参数类 
+            AgentParameters param = new AgentParameters(community);
+            //将SNMP版本设置为1（或2） 
+            param.Version = SnmpVersion.Ver1;
+            //构造代理地址对象
+            //这里很容易使用IpAddress类，因为
+            //如果不
+            //解析为IP地址，它将尝试解析构造函数参数
+            IpAddress agent = new IpAddress(comip.Text);
+            IPAddress send = new IPAddress(agent);
+            //构建目标 
+            UdpTarget target = new UdpTarget(send, 161, 2000, 1);
+            //  用于所有请求PDU级 
+            Pdu pdu = new Pdu(PduType.Get);
+            if (slot17 == "ACTIVE")
+            {
+                pdu.VbList.Add("1.3.6.1.4.1.10072.6.2.2.1.1.23.1.17");  //17槽位CPU利用率
+                pdu.VbList.Add("1.3.6.1.4.1.10072.6.2.2.1.1.26.1.17");  //17槽位内存利用率
+                pdu.VbList.Add("1.3.6.1.4.1.10072.6.2.2.1.1.20.1.17");  //17槽位温度
+            }
+            if (slot18 == "ACTIVE")
+            {
+                pdu.VbList.Add("1.3.6.1.4.1.10072.6.2.2.1.1.23.1.18");  //18槽位CPU利用率
+                pdu.VbList.Add("1.3.6.1.4.1.10072.6.2.2.1.1.26.1.18");  //18槽位内存利用率
+                pdu.VbList.Add("1.3.6.1.4.1.10072.6.2.2.1.1.20.1.18");  //18槽位温度
+            }
+            if (devtype != "98" && devtype != "103" && devtype != "104" && devtype != "106" && devtype != "107"
+                && devtype != "108" && devtype != "109" && devtype != "110" && devtype != "111" && devtype != "112")
+            {
+                pdu.VbList.Add("1.3.6.1.4.1.10072.6.2.2.1.1.23.1.1");  //1槽位CPU利用率
+                pdu.VbList.Add("1.3.6.1.4.1.10072.6.2.2.1.1.26.1.1");  //1槽位内存利用率
+                pdu.VbList.Add("1.3.6.1.4.1.10072.6.2.2.1.1.20.1.1");  //1槽位温度
+            }
+
+
+
+            SnmpPacket result = null;
+            try
+            {
+                result = target.Request(pdu, param);
+
+            }
+            catch (SnmpException ex)
+            {
+                timer1.Stop();
+
+                MessageBox.Show("没有收到SNMP请求后的响应！");
+            }
+            catch
+            {
+                MessageBox.Show("请检查Oid项配置信息！");
+            }
+            //SnmpV1Packet result = (SnmpV1Packet)target.Request(pdu, param);
+            //如果结果为null，则座席未回复或我们无法解析回复。
+            if (result != null)
+            {
+                //其他的ErrorStatus然后0是通过返回一个错误
+                //代理-见SnmpConstants为错误定义
+                if (result.Pdu.ErrorStatus != 0)
+                {
+                    //代理报告与所述请求的错误 
+                    textDOS.Text += string.Format("\r\n" + "SNMP回复错误！错误 {0} 第 {1} 项\r\n",
+                            result.Pdu.ErrorStatus,
+                            result.Pdu.ErrorIndex);
+                }
+                else
+                {
+
+                    //返回变量的返回顺序与添加
+                    //到VbList
+                    toolStripStatusLabelcpu.Text = "CPU:" + result.Pdu.VbList[0].Value.ToString() + "%";
+                    toolStripStatusLabelmem.Text = "内存:" + result.Pdu.VbList[1].Value.ToString() + "%";
+                    toolStripStatusLabeltem.Text = "温度:" + result.Pdu.VbList[2].Value.ToString() + "°C";
+                    int cpu = int.Parse(result.Pdu.VbList[0].Value.ToString());
+                    int mem = int.Parse(result.Pdu.VbList[1].Value.ToString());
+                    int tem = int.Parse(result.Pdu.VbList[2].Value.ToString());
+                    if (cpu <= 75)
+                    {
+                        toolStripStatusLabelcpu.ForeColor = Color.DarkGreen;
+
+                    }
+                    else
+                    {
+                        toolStripStatusLabelcpu.ForeColor = Color.Red;
+                    }
+                    if (mem <= 75)
+                    {
+                        toolStripStatusLabelmem.ForeColor = Color.DarkGreen;
+
+                    }
+                    else
+                    {
+                        toolStripStatusLabelmem.ForeColor = Color.Red;
+                    }
+                    if (tem <= 75)
+                    {
+                        toolStripStatusLabeltem.ForeColor = Color.DarkGreen;
+
+                    }
+                    else
+                    {
+                        toolStripStatusLabeltem.ForeColor = Color.Red;
+                    }
+
+
+
+
+                }
+            }
+            else
+            {
+                textDOS.AppendText("\r\n" + "没有收到来自SNMP代理的响应！");
+            }
+            target.Close();
+        }
+
+        private void metroButoidclear_Click(object sender, EventArgs e)
+        {
+
+            this.lv2.Items.Clear();  //只移除所有的项。
+        }
+
+        private void metroButset_Click(object sender, EventArgs e)
+        {
+            string WriteType = "";
+            // SNMP团体名称 
+            OctetString community = new OctetString(metroTextReadCommunity.Text);
+            //定义代理参数类 
+            AgentParameters param = new AgentParameters(community);
+            //将SNMP版本设置为1（或2） 
+            param.Version = SnmpVersion.Ver1;
+            //构造代理地址对象
+            //这里很容易使用IpAddress类，因为
+            //如果不
+            //解析为IP地址，它将尝试解析构造函数参数
+            IpAddress agent = new IpAddress(metroTextgpnip.Text);
+            IPAddress send = new IPAddress(agent);
+            //构建目标 
+            UdpTarget target = new UdpTarget(send, 161, 2000, 1);
+            //  用于所有请求PDU级 
+            Pdu pdu = new Pdu(PduType.Get);
+            pdu.VbList.Add(metroTextoid.Text);   //11槽位主备状态
+
+
+            SnmpPacket result = null;
+            try
+            {
+                result = target.Request(pdu, param);
+            }
+            catch (SnmpException ex)
+            {
+               // MessageBox.Show(ex.Message);
+            }
+            //SnmpV1Packet result = (SnmpV1Packet)target.Request(pdu, param);
+            //如果结果为null，则座席未回复或我们无法解析回复。
+            if (result != null)
+            {
+                //其他的ErrorStatus然后0是通过返回一个错误
+                //代理-见SnmpConstants为错误定义
+                if (result.Pdu.ErrorStatus != 0)
+                {
+                    //代理报告与所述请求的错误 
+                    MessageBox.Show(String.Format( "SNMP回复错误！错误代码 {0} 。错误行数：第 {1} 行\r\n",
+                            result.Pdu.ErrorStatus,
+                            result.Pdu.ErrorIndex));
+                }
+                else
+                {
+
+                    //返回变量的返回顺序与添加
+                    //到VbList
+
+                    //toolStripStatusLabelver.Text = "APP:" + result.Pdu.VbList[4].Value.ToString();
+                    WriteType = SnmpConstants.GetTypeName(result.Pdu.VbList[0].Value.Type);
+
+
+
+
+                    //MessageBox.Show("ssss");
+                    //toolStripStatusLabelnms.ForeColor = Color.DarkGreen;
+
+                }
+            }
+            else
+            {
+                WriteType = "Integer32";
+                MessageBox.Show("请求后未收到回复");
+            }
+            target.Close();
+
+
+
+
+
+
+
+
+            // Prepare target
+            target = new UdpTarget((IPAddress)new IpAddress(metroTextgpnip.Text));
+            // Create a SET PDU
+            pdu = new Pdu(PduType.Set);
+            // Set sysLocation.0 to a new string
+            if (WriteType == "OctetString")
+            {
+                pdu.VbList.Add(new Oid(metroTextoid.Text), new OctetString(metroTextvalue.Text));
+
+            }
+            if (WriteType == "Integer32")
+            {
+                pdu.VbList.Add(new Oid(metroTextoid.Text), new Integer32(metroTextvalue.Text));
+            }
+            if (WriteType == "UInteger32")
+            {
+                pdu.VbList.Add(new Oid(metroTextoid.Text), new UInteger32(metroTextvalue.Text));
+            }
+            if (WriteType == "Gauge32")
+            {
+                pdu.VbList.Add(new Oid(metroTextoid.Text), new Gauge32(metroTextvalue.Text));
+            }
+            if (WriteType == "TimeTicks")
+            {
+                pdu.VbList.Add(new Oid(metroTextoid.Text), new TimeTicks(metroTextvalue.Text));
+            }
+            AgentParameters aparam = aparam = new AgentParameters(SnmpVersion.Ver2, new OctetString(metroTextSetCommunity.Text));
+
+
+            // Response packet
+            SnmpV2Packet response;
+            try
+            {
+                // Send request and wait for response
+                response = target.Request(pdu, aparam) as SnmpV2Packet;
+            }
+            catch (Exception ex)
+            {
+                // If exception happens, it will be returned here
+                MessageBox.Show("请求后未收到回复");
+                target.Close();
+                return;
+            }
+            // Make sure we received a response
+            if (response == null)
+            {
+                MessageBox.Show("发送错误的SNMP请求");
+            }
+            else
+            {
+                // Check if we received an SNMP error from the agent
+                if (response.Pdu.ErrorStatus != 0)
+                {
+                    MessageBox.Show(String.Format("SNMP返回错误状态: {0} on 第 {1}行",
+                        response.Pdu.ErrorStatus, response.Pdu.ErrorIndex));
+                }
+                else
+                {
+                    // Everything is ok. Agent will return the new value for the OID we changed
+                    ListViewItem item = lv2.Items.Add((lv2.Items.Count + 1) + "");
+                    item.SubItems.Add(metroTextgpnip.Text);
+                    item.SubItems.Add(response.Pdu[0].Oid.ToString());
+                    item.SubItems.Add(SnmpConstants.GetTypeName(response.Pdu[0].Value.Type));
+                    item.SubItems.Add(response.Pdu[0].Value.ToString());
+                    item.EnsureVisible();
+                    target.Close();
+                    
+                }
             }
         }
     }
