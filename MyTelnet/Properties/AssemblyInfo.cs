@@ -30,6 +30,7 @@ using System.Runtime.InteropServices;
                          + "2020.05.28 新增问题日志自动记录功能和问题反馈窗口" + "\r\n"
                          + "2020.05.30 优化升级和上传备份的代码，更稳定" + "\r\n"
                          + "2020.06.05 新增CPU、内存、温度实时状态显示" + "\r\n"
+                         + "2020.06.11 新增SNMP/MIB节点查询功能，支持Trap监听功能" + "\r\n"
 
                          + "")]
 [assembly: AssemblyConfiguration("")]
@@ -54,4 +55,4 @@ using System.Runtime.InteropServices;
 //      内部版本号
 //      修订号
 //
-[assembly: AssemblyVersion("4.1.1.48")]
+[assembly: AssemblyVersion("4.1.1.51")]

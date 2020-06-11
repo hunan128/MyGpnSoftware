@@ -226,6 +226,9 @@
             this.butlogin = new System.Windows.Forms.Button();
             this.tabControlDOS = new System.Windows.Forms.TabControl();
             this.tabPageSnmp = new System.Windows.Forms.TabPage();
+            this.metroButTrap = new MetroFramework.Controls.MetroButton();
+            this.metroLabel2 = new MetroFramework.Controls.MetroLabel();
+            this.metroComreadoid = new MetroFramework.Controls.MetroComboBox();
             this.metroTextvalue = new MetroFramework.Controls.MetroTextBox();
             this.metroTextoid = new MetroFramework.Controls.MetroTextBox();
             this.metroLabel6 = new MetroFramework.Controls.MetroLabel();
@@ -262,6 +265,12 @@
             this.获取本地软件SToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.metroProgressBar = new MetroFramework.Controls.MetroProgressBar();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.community = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.varbind = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.metroLabel7 = new MetroFramework.Controls.MetroLabel();
+            this.metroTextfilterip = new MetroFramework.Controls.MetroTextBox();
+            this.metroCheckfilter = new MetroFramework.Controls.MetroCheckBox();
+            this.Convert = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.statusStrip1.SuspendLayout();
             this.tabPageLog.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -2910,6 +2919,12 @@
             // tabPageSnmp
             // 
             this.tabPageSnmp.BackColor = System.Drawing.Color.LightBlue;
+            this.tabPageSnmp.Controls.Add(this.metroCheckfilter);
+            this.tabPageSnmp.Controls.Add(this.metroLabel7);
+            this.tabPageSnmp.Controls.Add(this.metroTextfilterip);
+            this.tabPageSnmp.Controls.Add(this.metroButTrap);
+            this.tabPageSnmp.Controls.Add(this.metroLabel2);
+            this.tabPageSnmp.Controls.Add(this.metroComreadoid);
             this.tabPageSnmp.Controls.Add(this.metroTextvalue);
             this.tabPageSnmp.Controls.Add(this.metroTextoid);
             this.tabPageSnmp.Controls.Add(this.metroLabel6);
@@ -2931,6 +2946,38 @@
             this.tabPageSnmp.TabIndex = 2;
             this.tabPageSnmp.Text = "SNMP/MIB功能";
             // 
+            // metroButTrap
+            // 
+            this.metroButTrap.Location = new System.Drawing.Point(430, 168);
+            this.metroButTrap.Name = "metroButTrap";
+            this.metroButTrap.Size = new System.Drawing.Size(128, 35);
+            this.metroButTrap.TabIndex = 22;
+            this.metroButTrap.Text = "使能Trap监听";
+            this.metroButTrap.UseSelectable = true;
+            this.metroButTrap.Click += new System.EventHandler(this.metroButTrap_Click);
+            // 
+            // metroLabel2
+            // 
+            this.metroLabel2.AutoSize = true;
+            this.metroLabel2.Location = new System.Drawing.Point(18, 123);
+            this.metroLabel2.Name = "metroLabel2";
+            this.metroLabel2.Size = new System.Drawing.Size(65, 19);
+            this.metroLabel2.TabIndex = 21;
+            this.metroLabel2.Text = "获取方法";
+            // 
+            // metroComreadoid
+            // 
+            this.metroComreadoid.FormattingEnabled = true;
+            this.metroComreadoid.ItemHeight = 23;
+            this.metroComreadoid.Items.AddRange(new object[] {
+            "GET",
+            "WALK"});
+            this.metroComreadoid.Location = new System.Drawing.Point(87, 118);
+            this.metroComreadoid.Name = "metroComreadoid";
+            this.metroComreadoid.Size = new System.Drawing.Size(281, 29);
+            this.metroComreadoid.TabIndex = 20;
+            this.metroComreadoid.UseSelectable = true;
+            // 
             // metroTextvalue
             // 
             // 
@@ -2948,7 +2995,7 @@
             this.metroTextvalue.FontSize = MetroFramework.MetroTextBoxSize.Medium;
             this.metroTextvalue.Lines = new string[] {
         "2"};
-            this.metroTextvalue.Location = new System.Drawing.Point(72, 155);
+            this.metroTextvalue.Location = new System.Drawing.Point(87, 146);
             this.metroTextvalue.MaxLength = 32767;
             this.metroTextvalue.Name = "metroTextvalue";
             this.metroTextvalue.PasswordChar = '\0';
@@ -2981,7 +3028,7 @@
             this.metroTextoid.FontSize = MetroFramework.MetroTextBoxSize.Medium;
             this.metroTextoid.Lines = new string[] {
         "1.3.6.1.4.1.10072.6.2.6.8.0"};
-            this.metroTextoid.Location = new System.Drawing.Point(72, 127);
+            this.metroTextoid.Location = new System.Drawing.Point(87, 90);
             this.metroTextoid.MaxLength = 32767;
             this.metroTextoid.Name = "metroTextoid";
             this.metroTextoid.PasswordChar = '\0';
@@ -3000,7 +3047,7 @@
             // metroLabel6
             // 
             this.metroLabel6.AutoSize = true;
-            this.metroLabel6.Location = new System.Drawing.Point(11, 159);
+            this.metroLabel6.Location = new System.Drawing.Point(26, 150);
             this.metroLabel6.Name = "metroLabel6";
             this.metroLabel6.Size = new System.Drawing.Size(51, 19);
             this.metroLabel6.TabIndex = 17;
@@ -3008,7 +3055,7 @@
             // 
             // metroButset
             // 
-            this.metroButset.Location = new System.Drawing.Point(490, 149);
+            this.metroButset.Location = new System.Drawing.Point(564, 127);
             this.metroButset.Name = "metroButset";
             this.metroButset.Size = new System.Drawing.Size(128, 35);
             this.metroButset.TabIndex = 15;
@@ -3018,22 +3065,28 @@
             // 
             // lv2
             // 
+            this.lv2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lv2.BackColor = System.Drawing.SystemColors.Window;
             this.lv2.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.index,
             this.ip,
+            this.community,
+            this.varbind,
             this.oid,
             this.type,
-            this.value});
+            this.value,
+            this.Convert});
             this.lv2.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lv2.ForeColor = System.Drawing.SystemColors.WindowFrame;
             this.lv2.FullRowSelect = true;
             this.lv2.GridLines = true;
             this.lv2.HideSelection = false;
             this.lv2.HoverSelection = true;
-            this.lv2.Location = new System.Drawing.Point(72, 198);
+            this.lv2.Location = new System.Drawing.Point(3, 218);
             this.lv2.Name = "lv2";
-            this.lv2.Size = new System.Drawing.Size(1063, 342);
+            this.lv2.Size = new System.Drawing.Size(1193, 355);
             this.lv2.TabIndex = 14;
             this.lv2.UseCompatibleStateImageBehavior = false;
             this.lv2.View = System.Windows.Forms.View.Details;
@@ -3047,13 +3100,13 @@
             // 
             this.ip.Text = "IP";
             this.ip.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.ip.Width = 154;
+            this.ip.Width = 185;
             // 
             // oid
             // 
             this.oid.Text = "节点";
             this.oid.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.oid.Width = 405;
+            this.oid.Width = 288;
             // 
             // type
             // 
@@ -3065,11 +3118,11 @@
             // 
             this.value.Text = "返回值";
             this.value.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.value.Width = 313;
+            this.value.Width = 228;
             // 
             // metroButoidclear
             // 
-            this.metroButoidclear.Location = new System.Drawing.Point(622, 149);
+            this.metroButoidclear.Location = new System.Drawing.Point(564, 168);
             this.metroButoidclear.Name = "metroButoidclear";
             this.metroButoidclear.Size = new System.Drawing.Size(128, 35);
             this.metroButoidclear.TabIndex = 12;
@@ -3079,7 +3132,7 @@
             // 
             // metroButton1
             // 
-            this.metroButton1.Location = new System.Drawing.Point(357, 149);
+            this.metroButton1.Location = new System.Drawing.Point(430, 127);
             this.metroButton1.Name = "metroButton1";
             this.metroButton1.Size = new System.Drawing.Size(128, 35);
             this.metroButton1.TabIndex = 11;
@@ -3090,7 +3143,7 @@
             // metroLabel5
             // 
             this.metroLabel5.AutoSize = true;
-            this.metroLabel5.Location = new System.Drawing.Point(11, 104);
+            this.metroLabel5.Location = new System.Drawing.Point(26, 67);
             this.metroLabel5.Name = "metroLabel5";
             this.metroLabel5.Size = new System.Drawing.Size(51, 19);
             this.metroLabel5.TabIndex = 10;
@@ -3113,7 +3166,7 @@
             this.metroTextSetCommunity.FontSize = MetroFramework.MetroTextBoxSize.Medium;
             this.metroTextSetCommunity.Lines = new string[] {
         "private"};
-            this.metroTextSetCommunity.Location = new System.Drawing.Point(72, 99);
+            this.metroTextSetCommunity.Location = new System.Drawing.Point(87, 62);
             this.metroTextSetCommunity.MaxLength = 32767;
             this.metroTextSetCommunity.Name = "metroTextSetCommunity";
             this.metroTextSetCommunity.PasswordChar = '\0';
@@ -3132,7 +3185,7 @@
             // metroLabel4
             // 
             this.metroLabel4.AutoSize = true;
-            this.metroLabel4.Location = new System.Drawing.Point(10, 75);
+            this.metroLabel4.Location = new System.Drawing.Point(25, 38);
             this.metroLabel4.Name = "metroLabel4";
             this.metroLabel4.Size = new System.Drawing.Size(51, 19);
             this.metroLabel4.TabIndex = 8;
@@ -3155,7 +3208,7 @@
             this.metroTextReadCommunity.FontSize = MetroFramework.MetroTextBoxSize.Medium;
             this.metroTextReadCommunity.Lines = new string[] {
         "public"};
-            this.metroTextReadCommunity.Location = new System.Drawing.Point(72, 71);
+            this.metroTextReadCommunity.Location = new System.Drawing.Point(87, 34);
             this.metroTextReadCommunity.MaxLength = 32767;
             this.metroTextReadCommunity.Name = "metroTextReadCommunity";
             this.metroTextReadCommunity.PasswordChar = '\0';
@@ -3174,7 +3227,7 @@
             // metroLabel3
             // 
             this.metroLabel3.AutoSize = true;
-            this.metroLabel3.Location = new System.Drawing.Point(6, 131);
+            this.metroLabel3.Location = new System.Drawing.Point(21, 94);
             this.metroLabel3.Name = "metroLabel3";
             this.metroLabel3.Size = new System.Drawing.Size(60, 19);
             this.metroLabel3.TabIndex = 6;
@@ -3183,7 +3236,7 @@
             // metroLabel1
             // 
             this.metroLabel1.AutoSize = true;
-            this.metroLabel1.Location = new System.Drawing.Point(12, 47);
+            this.metroLabel1.Location = new System.Drawing.Point(27, 10);
             this.metroLabel1.Name = "metroLabel1";
             this.metroLabel1.Size = new System.Drawing.Size(48, 19);
             this.metroLabel1.TabIndex = 4;
@@ -3206,7 +3259,7 @@
             this.metroTextgpnip.FontSize = MetroFramework.MetroTextBoxSize.Medium;
             this.metroTextgpnip.Lines = new string[] {
         "10.10.204.11"};
-            this.metroTextgpnip.Location = new System.Drawing.Point(72, 43);
+            this.metroTextgpnip.Location = new System.Drawing.Point(87, 6);
             this.metroTextgpnip.MaxLength = 32767;
             this.metroTextgpnip.Name = "metroTextgpnip";
             this.metroTextgpnip.PasswordChar = '\0';
@@ -3353,6 +3406,76 @@
             // 
             this.timer1.Interval = 5000;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
+            // community
+            // 
+            this.community.Text = "团体";
+            this.community.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.community.Width = 82;
+            // 
+            // varbind
+            // 
+            this.varbind.Text = "数量";
+            this.varbind.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.varbind.Width = 48;
+            // 
+            // metroLabel7
+            // 
+            this.metroLabel7.AutoSize = true;
+            this.metroLabel7.Location = new System.Drawing.Point(7, 180);
+            this.metroLabel7.Name = "metroLabel7";
+            this.metroLabel7.Size = new System.Drawing.Size(76, 19);
+            this.metroLabel7.TabIndex = 24;
+            this.metroLabel7.Text = "过滤IP地址";
+            // 
+            // metroTextfilterip
+            // 
+            // 
+            // 
+            // 
+            this.metroTextfilterip.CustomButton.Image = null;
+            this.metroTextfilterip.CustomButton.Location = new System.Drawing.Point(254, 1);
+            this.metroTextfilterip.CustomButton.Name = "";
+            this.metroTextfilterip.CustomButton.Size = new System.Drawing.Size(27, 27);
+            this.metroTextfilterip.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
+            this.metroTextfilterip.CustomButton.TabIndex = 1;
+            this.metroTextfilterip.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
+            this.metroTextfilterip.CustomButton.UseSelectable = true;
+            this.metroTextfilterip.CustomButton.Visible = false;
+            this.metroTextfilterip.FontSize = MetroFramework.MetroTextBoxSize.Medium;
+            this.metroTextfilterip.Lines = new string[] {
+        "10.10.204.15"};
+            this.metroTextfilterip.Location = new System.Drawing.Point(87, 174);
+            this.metroTextfilterip.MaxLength = 32767;
+            this.metroTextfilterip.Name = "metroTextfilterip";
+            this.metroTextfilterip.PasswordChar = '\0';
+            this.metroTextfilterip.ScrollBars = System.Windows.Forms.ScrollBars.None;
+            this.metroTextfilterip.SelectedText = "";
+            this.metroTextfilterip.SelectionLength = 0;
+            this.metroTextfilterip.SelectionStart = 0;
+            this.metroTextfilterip.ShortcutsEnabled = true;
+            this.metroTextfilterip.Size = new System.Drawing.Size(282, 29);
+            this.metroTextfilterip.TabIndex = 23;
+            this.metroTextfilterip.Text = "10.10.204.15";
+            this.metroTextfilterip.UseSelectable = true;
+            this.metroTextfilterip.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
+            this.metroTextfilterip.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
+            // 
+            // metroCheckfilter
+            // 
+            this.metroCheckfilter.AutoSize = true;
+            this.metroCheckfilter.Location = new System.Drawing.Point(375, 182);
+            this.metroCheckfilter.Name = "metroCheckfilter";
+            this.metroCheckfilter.Size = new System.Drawing.Size(49, 15);
+            this.metroCheckfilter.TabIndex = 25;
+            this.metroCheckfilter.Text = "过滤";
+            this.metroCheckfilter.UseSelectable = true;
+            // 
+            // Convert
+            // 
+            this.Convert.Text = "翻译转码";
+            this.Convert.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Convert.Width = 168;
             // 
             // GPN
             // 
@@ -3627,6 +3750,15 @@
         private MetroFramework.Controls.MetroButton metroButset;
         private MetroFramework.Controls.MetroTextBox metroTextvalue;
         private MetroFramework.Controls.MetroTextBox metroTextoid;
+        private MetroFramework.Controls.MetroLabel metroLabel2;
+        private MetroFramework.Controls.MetroComboBox metroComreadoid;
+        private MetroFramework.Controls.MetroButton metroButTrap;
+        private System.Windows.Forms.ColumnHeader community;
+        private System.Windows.Forms.ColumnHeader varbind;
+        private MetroFramework.Controls.MetroLabel metroLabel7;
+        private MetroFramework.Controls.MetroTextBox metroTextfilterip;
+        private MetroFramework.Controls.MetroCheckBox metroCheckfilter;
+        private System.Windows.Forms.ColumnHeader Convert;
     }
 }
 

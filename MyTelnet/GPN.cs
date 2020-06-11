@@ -5666,7 +5666,7 @@ namespace MyGpnSoftware
         {
             Mytimer = new System.Threading.Timer(new TimerCallback(TimerUp), null, Timeout.Infinite, 1000);
             btnFtpServerStartStop.PerformClick();
-
+            metroComreadoid.Text = "GET";
             //checkpssd.CheckedChanged = true;
             labelboard.Visible = false;
             labelslot.Visible = false;
@@ -5799,6 +5799,16 @@ namespace MyGpnSoftware
                 Gpnsetini();
                 ///////保存telnet 记录////////
                 Savecom();
+
+                if (metroButTrap.Text == "禁止Trap监听")
+                {
+                    run = false;
+                    trap.Abort();
+                    socket.Close();
+                }
+                //socket.Shutdown(SocketShutdown.Both);
+                //    Thread.Sleep(10);
+                //socket.Close();
                 //户选择确认的操作
             }
             else if (dr == DialogResult.Cancel)
@@ -5809,6 +5819,13 @@ namespace MyGpnSoftware
             if (dr == DialogResult.No)
             {
                 Gpnsetini();
+               
+                if (metroButTrap.Text == "禁止Trap监听") {
+                    run = false;
+                    trap.Abort();
+                    socket.Close();
+                }
+
             }
         }
         #endregion
@@ -9872,6 +9889,11 @@ namespace MyGpnSoftware
                 MessageBox.Show("请勾选文件后进行比较！");
                 return;
             }
+            Thread checkfile = new Thread(CheckFile);
+            checkfile.Start();
+
+        }
+        private void CheckFile() {
             textDOS.AppendText("\r\n");
             if (checkconfig.Checked == true)
             {
@@ -9930,6 +9952,7 @@ namespace MyGpnSoftware
                 SysfileSize();
             }
             butsend.PerformClick();
+            toolStripStatusLabelzt.Text = "已完成";
         }
         bool UpLoadFile_Stop = true;
         bool UpLoadFile_On_Off = false;
@@ -13057,34 +13080,247 @@ namespace MyGpnSoftware
 
         private void metroButton1_Click(object sender, EventArgs e)
         {
-            string host = metroTextgpnip.Text;
-            string community = metroTextReadCommunity.Text;
-            SimpleSnmp snmp = new SimpleSnmp(host, community);
-            if (!snmp.Valid)
+            if (metroComreadoid.Text == "GET")
             {
-                MessageBox.Show ("SNMP主机IP地址错误或者读写团体错误");
-                return;
+                //string host = metroTextgpnip.Text;
+                //string community = metroTextReadCommunity.Text;
+                //SimpleSnmp snmp = new SimpleSnmp(host, community);
+                //if (!snmp.Valid)
+                //{
+                //    MessageBox.Show("SNMP主机IP地址错误或者读写团体错误");
+                //    return;
+                //}
+                //Dictionary<Oid, AsnType> result = snmp.Get(SnmpVersion.Ver2, new string[] { metroTextoid.Text });
+                //if (result == null)
+                //{
+                //    MessageBox.Show("请求后未收到回复");
+                //    return;
+                //}
+                //foreach (KeyValuePair<Oid, AsnType> kvp in result)
+                //{
+
+                //    ListViewItem item = lv2.Items.Add((lv2.Items.Count + 1) + "");
+                //    item.SubItems.Add(host);
+                //    item.SubItems.Add(kvp.Key.ToString());
+                //    item.SubItems.Add(SnmpConstants.GetTypeName(kvp.Value.Type));
+                //    item.SubItems.Add(kvp.Value.ToString());
+                //    item.EnsureVisible();
+
+
+
+
+                //}
+                // SNMP团体名称 
+                OctetString community = new OctetString(metroTextReadCommunity.Text);
+                //定义代理参数类 
+                AgentParameters param = new AgentParameters(community);
+                //将SNMP版本设置为1（或2） 
+                param.Version = SnmpVersion.Ver2;
+                //构造代理地址对象
+                //这里很容易使用IpAddress类，因为
+                //如果不
+                //解析为IP地址，它将尝试解析构造函数参数
+                IpAddress agent = new IpAddress(metroTextgpnip.Text);
+                IPAddress send = new IPAddress(agent);
+                //构建目标 
+                UdpTarget target = new UdpTarget(send, 161, 2000, 1);
+                //  用于所有请求PDU级 
+                Pdu pdu = new Pdu(PduType.Get);
+                pdu.VbList.Add(metroTextoid.Text);   //11槽位主备状态
+
+
+                SnmpPacket result = null;
+                try
+                {
+                    result = target.Request(pdu, param);
+                }
+                catch (SnmpException ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+                //SnmpV1Packet result = (SnmpV1Packet)target.Request(pdu, param);
+                //如果结果为null，则座席未回复或我们无法解析回复。
+                if (result != null)
+                {
+                    //其他的ErrorStatus然后0是通过返回一个错误
+                    //代理-见SnmpConstants为错误定义
+                    if (result.Pdu.ErrorStatus != 0)
+                    {
+                        //代理报告与所述请求的错误 
+                        MessageBox.Show(String.Format("SNMP回复错误！错误代码 {0} 。错误行数：第 {1} 行\r\n",
+                                result.Pdu.ErrorStatus,
+                                result.Pdu.ErrorIndex));
+                        return;
+                    }
+                    else
+                    {
+
+                        //返回变量的返回顺序与添加
+                        //到VbList
+
+                        ListViewItem item = lv2.Items.Add((lv2.Items.Count + 1) + "");
+                        item.SubItems.Add(metroTextgpnip.Text);
+                        item.SubItems.Add(metroTextReadCommunity.Text);
+                        item.SubItems.Add(result.Pdu.VbList.Count.ToString());
+                        item.SubItems.Add(result.Pdu.VbList[0].Oid.ToString());
+                        item.SubItems.Add(SnmpConstants.GetTypeName(result.Pdu.VbList[0].Value.Type));
+                        item.SubItems.Add(result.Pdu.VbList[0].Value.ToString());
+                        string[] hex = Regex.Split(result.Pdu.VbList[0].Value.ToString(), "\\s+", RegexOptions.IgnoreCase);
+                        if ((hex.Length >= 8) && (hex[0] == "07") || (hex[0] == "08"))
+                        {
+                            string a = hex[0];
+                            string b = hex[1];
+                            string year = int.Parse(a + b, NumberStyles.HexNumber).ToString();
+                            string month = int.Parse(hex[2], NumberStyles.HexNumber).ToString();
+                            string day = int.Parse(hex[3], NumberStyles.HexNumber).ToString();
+                            string hour = int.Parse(hex[4], NumberStyles.HexNumber).ToString();
+                            string min = int.Parse(hex[5], NumberStyles.HexNumber).ToString();
+                            string sed = int.Parse(hex[6], NumberStyles.HexNumber).ToString();
+                            string mil = int.Parse(hex[7], NumberStyles.HexNumber).ToString();
+                            item.SubItems.Add(year + "-" + month + "-" + day + "," + hour + ":" + min + ":" + sed + ":" + mil);
+
+                        }
+                        item.EnsureVisible();
+
+
+                        //MessageBox.Show("ssss");
+                        //toolStripStatusLabelnms.ForeColor = Color.DarkGreen;
+
+                    }
+
+                }
             }
-            Dictionary<Oid, AsnType> result = snmp.Get(SnmpVersion.Ver1, new string[] { metroTextoid.Text });
-            if (result == null)
-            {
-                MessageBox.Show("请求后未收到回复");
-                return;
+            if (metroComreadoid.Text == "WALK") {
+                this.lv2.Items.Clear();  //只移除所有的项。
+                // SNMP community name
+                OctetString community = new OctetString(metroTextReadCommunity.Text);
+                // Define agent parameters class
+                AgentParameters param = new AgentParameters(community);
+                // Set SNMP version to 2 (GET-BULK only works with SNMP ver 2 and 3)
+                param.Version = SnmpVersion.Ver2;
+                // Construct the agent address object
+                // IpAddress class is easy to use here because
+                //  it will try to resolve constructor parameter if it doesn't
+                //  parse to an IP address
+                IpAddress agent = new IpAddress(metroTextgpnip.Text);
+                // Construct target
+                UdpTarget target = new UdpTarget((IPAddress)agent, 161, 2000, 1);
+                // Define Oid that is the root of the MIB
+                //  tree you wish to retrieve
+                Oid rootOid = new Oid(metroTextoid.Text); // ifDescr
+                                                          // This Oid represents last Oid returned by
+                                                          //  the SNMP agent
+                Oid lastOid = (Oid)rootOid.Clone();
+                // Pdu class used for all requests
+                Pdu pdu = new Pdu(PduType.GetBulk);
+                // In this example, set NonRepeaters value to 0
+                pdu.NonRepeaters = 0;
+                // MaxRepetitions tells the agent how many Oid/Value pairs to return
+                // in the response.
+                pdu.MaxRepetitions = 5;
+                // Loop through results
+                while (lastOid != null)
+                {
+                    // When Pdu class is first constructed, RequestId is set to 0
+                    // and during encoding id will be set to the random value
+                    // for subsequent requests, id will be set to a value that
+                    // needs to be incremented to have unique request ids for each
+                    // packet
+                    if (pdu.RequestId != 0)
+                    {
+                        pdu.RequestId += 1;
+                    }
+                    // Clear Oids from the Pdu class.
+                    pdu.VbList.Clear();
+                    // Initialize request PDU with the last retrieved Oid
+                    pdu.VbList.Add(lastOid);
+                    // Make SNMP request
+                    SnmpPacket result = null;
+                    try
+                    {
+                        result = target.Request(pdu, param);
+                    }
+                    catch (SnmpException ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                        return;
+                    }
+                    // You should catch exceptions in the Request if using in real application.
+                    // If result is null then agent didn't reply or we couldn't parse the reply.
+                    if (result != null)
+                    {
+                        // ErrorStatus other then 0 is an error returned by
+                        // the Agent - see SnmpConstants for error definitions
+                        if (result.Pdu.ErrorStatus != 0)
+                        {
+                            // agent reported an error with the request
+                            MessageBox.Show(string.Format("Error in SNMP reply. Error {0} index {1}",
+                                result.Pdu.ErrorStatus,
+                                result.Pdu.ErrorIndex));
+                            lastOid = null;
+                            break;
+                        }
+                        else
+                        {
+                            // Walk through returned variable bindings
+                            foreach (Vb v in result.Pdu.VbList)
+                            {
+                                // Check that retrieved Oid is "child" of the root OID
+                                if (rootOid.IsRootOf(v.Oid))
+                                {
+                                    //Console.WriteLine("{0} ({1}): {2}",
+                                    //    v.Oid.ToString(),
+                                    //    SnmpConstants.GetTypeName(v.Value.Type),
+                                    //    v.Value.ToString());
+
+                                    ListViewItem item = lv2.Items.Add((lv2.Items.Count + 1) + "");
+                                    item.SubItems.Add(metroTextgpnip.Text);
+                                    item.SubItems.Add(metroTextReadCommunity.Text);
+                                    item.SubItems.Add(result.Pdu.VbList.Count.ToString());
+                                    item.SubItems.Add(v.Oid.ToString());
+                                    item.SubItems.Add(SnmpConstants.GetTypeName(v.Value.Type));
+                                    item.SubItems.Add(v.Value.ToString());
+                                    string[] hex = Regex.Split(result.Pdu.VbList[0].Value.ToString(), "\\s+", RegexOptions.IgnoreCase);
+                                    if ((hex.Length >= 8) && (hex[0] == "07") || (hex[0] == "08"))
+                                    {
+                                        string a = hex[0];
+                                        string b = hex[1];
+                                        string year = int.Parse(a + b, NumberStyles.HexNumber).ToString();
+                                        string month = int.Parse(hex[2], NumberStyles.HexNumber).ToString();
+                                        string day = int.Parse(hex[3], NumberStyles.HexNumber).ToString();
+                                        string hour = int.Parse(hex[4], NumberStyles.HexNumber).ToString();
+                                        string min = int.Parse(hex[5], NumberStyles.HexNumber).ToString();
+                                        string sed = int.Parse(hex[6], NumberStyles.HexNumber).ToString();
+                                        string mil = int.Parse(hex[7], NumberStyles.HexNumber).ToString();
+                                        item.SubItems.Add(year + "-" + month + "-" + day + "," + hour + ":" + min + ":" + sed + ":" + mil);
+
+                                    }
+                                    item.EnsureVisible();
+
+
+                                    if (v.Value.Type == SnmpConstants.SMI_ENDOFMIBVIEW)
+                                        lastOid = null;
+                                    else
+                                        lastOid = v.Oid;
+                                }
+                                else
+                                {
+                                    // we have reached the end of the requested
+                                    // MIB tree. Set lastOid to null and exit loop
+                                    lastOid = null;
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("No response received from SNMP agent.");
+                    }
+                }
+                target.Close();
             }
-            foreach (KeyValuePair<Oid, AsnType> kvp in result)
-            {
-
-                ListViewItem item = lv2.Items.Add((lv2.Items.Count + 1)+"");
-                item.SubItems.Add(host);
-                item.SubItems.Add(kvp.Key.ToString());
-                item.SubItems.Add(SnmpConstants.GetTypeName(kvp.Value.Type));
-                item.SubItems.Add(kvp.Value.ToString());
-                item.EnsureVisible();
 
 
-
-
-            }
         }
         private void 获取本地软件SToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -13340,6 +13576,7 @@ namespace MyGpnSoftware
                     MessageBox.Show(String.Format( "SNMP回复错误！错误代码 {0} 。错误行数：第 {1} 行\r\n",
                             result.Pdu.ErrorStatus,
                             result.Pdu.ErrorIndex));
+                    return;
                 }
                 else
                 {
@@ -13433,6 +13670,8 @@ namespace MyGpnSoftware
                     // Everything is ok. Agent will return the new value for the OID we changed
                     ListViewItem item = lv2.Items.Add((lv2.Items.Count + 1) + "");
                     item.SubItems.Add(metroTextgpnip.Text);
+                    item.SubItems.Add(metroTextSetCommunity.Text);
+                    item.SubItems.Add(result.Pdu.VbList.Count.ToString());
                     item.SubItems.Add(response.Pdu[0].Oid.ToString());
                     item.SubItems.Add(SnmpConstants.GetTypeName(response.Pdu[0].Value.Type));
                     item.SubItems.Add(response.Pdu[0].Value.ToString());
@@ -13441,6 +13680,198 @@ namespace MyGpnSoftware
                     
                 }
             }
+        }
+        Thread trap;
+        bool run = false;
+        private void metroButTrap_Click(object sender, EventArgs e)
+        {
+           
+            if (metroButTrap.Text == "使能Trap监听")
+            {
+                IPGlobalProperties ipProperties = IPGlobalProperties.GetIPGlobalProperties();
+                IPEndPoint[] ipEndPoints = ipProperties.GetActiveUdpListeners();
+                foreach (IPEndPoint endPoint in ipEndPoints)
+                {
+                    int A = 162;
+                    if (endPoint.Port == A)
+                    {
+                        MessageBox.Show(A + "号端口已占用，请关闭其它SNMP软件后，再次尝试！");
+                        return;
+                    }
+                }
+
+
+
+
+                trap = new Thread(Trap);
+                run = true;
+                trap.Start();
+                metroButTrap.Text = "禁止Trap监听";
+            }
+            else {
+                run = false;
+                metroButTrap.Text = "使能Trap监听";
+                trap.Abort();
+                //socket.Shutdown(SocketShutdown.Both);
+                //    Thread.Sleep(10);
+                socket.Close();
+                MessageBox.Show("关闭");
+                //
+
+            }
+
+ 
+        }
+        Socket socket; //目标socket
+        //EndPoint ep; //客户端
+        IPEndPoint ipep; //侦听端口
+
+        private void Trap() {
+
+            if (run == true) {
+                ipep = new IPEndPoint(IPAddress.Any, 162);
+                //定义套接字类型,在主线程中定义
+                socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+                //服务端需要绑定ip
+                try
+                {
+                    socket.Bind(ipep);
+                }
+                catch (Exception ex)
+                {
+
+                }
+            }
+                //定义侦听端口,侦听任何IP
+
+            int inlen = -1;
+            while (run)
+            {
+                byte[] indata = new byte[16 * 1024];
+                // 16KB receive buffer int inlen = 0;
+                IPEndPoint peer = new IPEndPoint(IPAddress.Any, 0);
+                EndPoint inep = peer;
+                try
+                {
+                    inlen = socket.ReceiveFrom(indata, ref inep);
+                }
+                catch (Exception ex)
+                {
+                   // MessageBox.Show("Exception {0}", ex.Message);
+                    inlen = -1;
+                }
+                if (inlen > 0)
+                {
+                    // Check protocol version int
+                    int ver = SnmpPacket.GetProtocolVersion(indata, inlen);
+                    if (ver == (int)SnmpVersion.Ver1)
+                    {
+                        // Parse SNMP Version 1 TRAP packet
+                        //SnmpV1TrapPacket pkt = new SnmpV1TrapPacket();
+                        //pkt.decode(indata, inlen);
+                        //metroTextBox1.AppendText(string.Format("** SNMP Version 1 TRAP received from {0}:", inep.ToString()));
+                        //metroTextBox1.AppendText(string.Format("*** Trap generic: {0}", pkt.Pdu.Generic));
+                        //metroTextBox1.AppendText(string.Format("*** Trap specific: {0}", pkt.Pdu.Specific));
+                        //metroTextBox1.AppendText(string.Format("*** Agent address: {0}", pkt.Pdu.AgentAddress.ToString()));
+                        //metroTextBox1.AppendText(string.Format("*** Timestamp: {0}", pkt.Pdu.TimeStamp.ToString()));
+                        //metroTextBox1.AppendText(string.Format("*** VarBind count: {0}", pkt.Pdu.VbList.Count));
+                        //metroTextBox1.AppendText("*** VarBind content:");
+                        //foreach (Vb v in pkt.Pdu.VbList)
+                        //{
+                        //    metroTextBox1.AppendText(string.Format("**** {0} {1}: {2}", v.Oid.ToString(), SnmpConstants.GetTypeName(v.Value.Type), v.Value.ToString()));
+                        //}
+                        //metroTextBox1.AppendText("** End of SNMP Version 1 TRAP data.");
+                    }
+                    else
+                    {
+                        // Parse SNMP Version 2 TRAP packet
+                        SnmpV2Packet pkt = new SnmpV2Packet();
+                        pkt.decode(indata, inlen);
+                        if (pkt.Pdu.Type != PduType.V2Trap)
+                        {
+                            MessageBox.Show("*** NOT an SNMPv2 trap ****" + "\r\n");
+                        }
+                        else
+                        {
+
+                            foreach (Vb v in pkt.Pdu.VbList)
+                            {
+                                if (metroCheckfilter.Checked == false)
+                                {
+                                    ListViewItem item = lv2.Items.Add((lv2.Items.Count + 1) + "");
+                                    item.SubItems.Add(inep.ToString());
+                                    item.SubItems.Add(pkt.Community.ToString());
+                                    item.SubItems.Add(pkt.Pdu.VbList.Count.ToString());
+                                    item.SubItems.Add(v.Oid.ToString());
+                                    item.SubItems.Add(SnmpConstants.GetTypeName(v.Value.Type));
+                                    item.SubItems.Add(v.Value.ToString());
+
+                                    string[] hex = Regex.Split(v.Value.ToString(), "\\s+", RegexOptions.IgnoreCase);
+                                    if ((hex.Length >= 8) && (hex[0] == "07") || (hex[0] == "08"))
+                                    {
+                                        string a = hex[0];
+                                        string b = hex[1];
+                                        string year = int.Parse(a+b, NumberStyles.HexNumber).ToString();
+                                        string month = int.Parse(hex[2], NumberStyles.HexNumber).ToString();
+                                        string day = int.Parse(hex[3], NumberStyles.HexNumber).ToString();
+                                        string hour = int.Parse(hex[4], NumberStyles.HexNumber).ToString();
+                                        string min = int.Parse(hex[5], NumberStyles.HexNumber).ToString();
+                                        string sed = int.Parse(hex[6], NumberStyles.HexNumber).ToString();
+                                        string mil = int.Parse(hex[7], NumberStyles.HexNumber).ToString();
+                                        item.SubItems.Add(year + "-" + month + "-" + day + "," + hour + ":" + min + ":" + sed + ":" + mil);
+
+                                    }
+
+                                    item.EnsureVisible();
+                                }
+                                else {
+                                    if (inep.ToString().Contains(metroTextfilterip.Text))
+                                    {
+                                        ListViewItem item = lv2.Items.Add((lv2.Items.Count + 1) + "");
+                                        item.SubItems.Add(inep.ToString());
+                                        item.SubItems.Add(pkt.Community.ToString());
+                                        item.SubItems.Add(pkt.Pdu.VbList.Count.ToString());
+                                        item.SubItems.Add(v.Oid.ToString());
+                                        item.SubItems.Add(SnmpConstants.GetTypeName(v.Value.Type));
+                                        item.SubItems.Add(v.Value.ToString());
+                                        string[] hex = Regex.Split(v.Value.ToString(), "\\s+", RegexOptions.IgnoreCase);
+                                        if ((hex.Length >= 8)&&(hex[0]=="07") || (hex[0] == "08"))
+                                        {
+                                            string a = hex[0];
+                                            string b = hex[1];
+                                            string year = int.Parse(a + b, NumberStyles.HexNumber).ToString();
+                                            string month = int.Parse(hex[2], NumberStyles.HexNumber).ToString();
+                                            string day = int.Parse(hex[3], NumberStyles.HexNumber).ToString();
+                                            string hour = int.Parse(hex[4], NumberStyles.HexNumber).ToString();
+                                            string min = int.Parse(hex[5], NumberStyles.HexNumber).ToString();
+                                            string sed = int.Parse(hex[6], NumberStyles.HexNumber).ToString();
+                                            string mil = int.Parse(hex[7], NumberStyles.HexNumber).ToString();
+                                            item.SubItems.Add(year + "-" + month + "-" + day + "," + hour + ":" + min + ":" + sed + ":" + mil);
+
+                                        }
+                                        item.EnsureVisible();
+                                    }
+                                }
+
+
+
+ 
+
+
+                            }
+                            //metroTextBox1.AppendText("** End of SNMP Version 2 TRAP data." + "\r\n");
+                        }
+                    }
+                }
+                else
+                {
+                    if (inlen == 0)
+                        MessageBox.Show("Zero length packet received.");
+                }
+            }
+
+
+
         }
     }
 }
