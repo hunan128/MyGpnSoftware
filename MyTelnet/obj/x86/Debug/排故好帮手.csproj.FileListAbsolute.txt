@@ -55,3 +55,5 @@ D:\VS项目\排故好帮手\MyTelnet\obj\x86\Debug\排故好帮手.exe
 D:\VS项目\排故好帮手\MyTelnet\obj\x86\Debug\排故好帮手.pdb
 D:\VS项目\排故好帮手\MyTelnet\obj\x86\Debug\MyGpnSoftware.Software.resources
 D:\VS项目\排故好帮手\MyTelnet\obj\x86\Debug\排故好帮手.csprojAssemblyReference.cache
+D:\VS项目\排故好帮手\MyTelnet\bin\x86\Debug\Renci.SshNet.dll
+D:\VS项目\排故好帮手\MyTelnet\bin\x86\Debug\Renci.SshNet.xml
