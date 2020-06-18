@@ -63,6 +63,7 @@ namespace MyGpnSoftware
                 wb.Write(fs);
             }
             MessageBox.Show("导出成功！", "导出提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            wb.Close();
         }
     }
 }

@@ -58,7 +58,6 @@
             this.toolStripStatusLabeltime = new System.Windows.Forms.ToolStripStatusLabel();
             this.butsave = new System.Windows.Forms.Button();
             this.butout = new System.Windows.Forms.Button();
-            this.butshow = new System.Windows.Forms.Button();
             this.comtype = new System.Windows.Forms.ComboBox();
             this.butlink = new System.Windows.Forms.Button();
             this.butip = new System.Windows.Forms.Button();
@@ -67,15 +66,16 @@
             this.label9 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.metroLabel1 = new MetroFramework.Controls.MetroLabel();
+            this.metroCom603gsysfile = new MetroFramework.Controls.MetroComboBox();
+            this.butcheckver = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.comtime = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.TextStopIp = new System.Windows.Forms.TextBox();
             this.TextStartIp = new System.Windows.Forms.TextBox();
             this.dataGridView2 = new System.Windows.Forms.DataGridView();
-            this.butcheckver = new System.Windows.Forms.Button();
-            this.metroCom603gsysfile = new MetroFramework.Controls.MetroComboBox();
-            this.metroLabel1 = new MetroFramework.Controls.MetroLabel();
+            this.butUtility = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.statusStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -334,23 +334,6 @@
             this.butout.UseVisualStyleBackColor = false;
             this.butout.Click += new System.EventHandler(this.Butout_Click);
             // 
-            // butshow
-            // 
-            this.butshow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.butshow.BackColor = System.Drawing.Color.DodgerBlue;
-            this.butshow.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.butshow.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.butshow.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.butshow.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butshow.ForeColor = System.Drawing.Color.White;
-            this.butshow.Location = new System.Drawing.Point(343, 3);
-            this.butshow.Name = "butshow";
-            this.butshow.Size = new System.Drawing.Size(85, 34);
-            this.butshow.TabIndex = 1;
-            this.butshow.Text = "导入Excel";
-            this.butshow.UseVisualStyleBackColor = false;
-            this.butshow.Click += new System.EventHandler(this.Butshow_Click);
-            // 
             // comtype
             // 
             this.comtype.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -460,6 +443,7 @@
             // panel2
             // 
             this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.panel2.Controls.Add(this.butUtility);
             this.panel2.Controls.Add(this.metroLabel1);
             this.panel2.Controls.Add(this.metroCom603gsysfile);
             this.panel2.Controls.Add(this.butcheckver);
@@ -472,7 +456,6 @@
             this.panel2.Controls.Add(this.label9);
             this.panel2.Controls.Add(this.comtype);
             this.panel2.Controls.Add(this.butreboot);
-            this.panel2.Controls.Add(this.butshow);
             this.panel2.Controls.Add(this.label8);
             this.panel2.Controls.Add(this.butdown);
             this.panel2.Controls.Add(this.butlink);
@@ -486,7 +469,45 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(1066, 75);
             this.panel2.TabIndex = 69;
-            this.panel2.Paint += new System.Windows.Forms.PaintEventHandler(this.panel2_Paint);
+            // 
+            // metroLabel1
+            // 
+            this.metroLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.metroLabel1.AutoSize = true;
+            this.metroLabel1.Location = new System.Drawing.Point(849, 48);
+            this.metroLabel1.Name = "metroLabel1";
+            this.metroLabel1.Size = new System.Drawing.Size(144, 19);
+            this.metroLabel1.TabIndex = 75;
+            this.metroLabel1.Text = "是否删除603G的Sysfile";
+            // 
+            // metroCom603gsysfile
+            // 
+            this.metroCom603gsysfile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.metroCom603gsysfile.FormattingEnabled = true;
+            this.metroCom603gsysfile.ItemHeight = 23;
+            this.metroCom603gsysfile.Items.AddRange(new object[] {
+            "否",
+            "是"});
+            this.metroCom603gsysfile.Location = new System.Drawing.Point(1000, 40);
+            this.metroCom603gsysfile.Name = "metroCom603gsysfile";
+            this.metroCom603gsysfile.Size = new System.Drawing.Size(66, 29);
+            this.metroCom603gsysfile.TabIndex = 74;
+            this.metroCom603gsysfile.UseSelectable = true;
+            // 
+            // butcheckver
+            // 
+            this.butcheckver.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.butcheckver.BackColor = System.Drawing.Color.DodgerBlue;
+            this.butcheckver.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.butcheckver.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.butcheckver.ForeColor = System.Drawing.Color.White;
+            this.butcheckver.Location = new System.Drawing.Point(990, 0);
+            this.butcheckver.Name = "butcheckver";
+            this.butcheckver.Size = new System.Drawing.Size(75, 34);
+            this.butcheckver.TabIndex = 73;
+            this.butcheckver.Text = "检查603G版本";
+            this.butcheckver.UseVisualStyleBackColor = false;
+            this.butcheckver.Click += new System.EventHandler(this.butcheckver_Click);
             // 
             // label2
             // 
@@ -587,44 +608,22 @@
             this.dataGridView2.Size = new System.Drawing.Size(1071, 62);
             this.dataGridView2.TabIndex = 0;
             // 
-            // butcheckver
+            // butUtility
             // 
-            this.butcheckver.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.butcheckver.BackColor = System.Drawing.Color.DodgerBlue;
-            this.butcheckver.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.butcheckver.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butcheckver.ForeColor = System.Drawing.Color.White;
-            this.butcheckver.Location = new System.Drawing.Point(990, 0);
-            this.butcheckver.Name = "butcheckver";
-            this.butcheckver.Size = new System.Drawing.Size(75, 34);
-            this.butcheckver.TabIndex = 73;
-            this.butcheckver.Text = "检查603G版本";
-            this.butcheckver.UseVisualStyleBackColor = false;
-            this.butcheckver.Click += new System.EventHandler(this.butcheckver_Click);
-            // 
-            // metroCom603gsysfile
-            // 
-            this.metroCom603gsysfile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.metroCom603gsysfile.FormattingEnabled = true;
-            this.metroCom603gsysfile.ItemHeight = 23;
-            this.metroCom603gsysfile.Items.AddRange(new object[] {
-            "否",
-            "是"});
-            this.metroCom603gsysfile.Location = new System.Drawing.Point(1000, 40);
-            this.metroCom603gsysfile.Name = "metroCom603gsysfile";
-            this.metroCom603gsysfile.Size = new System.Drawing.Size(66, 29);
-            this.metroCom603gsysfile.TabIndex = 74;
-            this.metroCom603gsysfile.UseSelectable = true;
-            // 
-            // metroLabel1
-            // 
-            this.metroLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.metroLabel1.AutoSize = true;
-            this.metroLabel1.Location = new System.Drawing.Point(849, 48);
-            this.metroLabel1.Name = "metroLabel1";
-            this.metroLabel1.Size = new System.Drawing.Size(144, 19);
-            this.metroLabel1.TabIndex = 75;
-            this.metroLabel1.Text = "是否删除603G的Sysfile";
+            this.butUtility.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.butUtility.BackColor = System.Drawing.Color.DodgerBlue;
+            this.butUtility.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.butUtility.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.butUtility.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.butUtility.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.butUtility.ForeColor = System.Drawing.Color.White;
+            this.butUtility.Location = new System.Drawing.Point(343, 3);
+            this.butUtility.Name = "butUtility";
+            this.butUtility.Size = new System.Drawing.Size(85, 34);
+            this.butUtility.TabIndex = 76;
+            this.butUtility.Text = "导入Excel";
+            this.butUtility.UseVisualStyleBackColor = false;
+            this.butUtility.Click += new System.EventHandler(this.butUtility_Click);
             // 
             // Batch
             // 
@@ -654,7 +653,6 @@
         #endregion
 
         private System.Windows.Forms.DataGridView dataGridView1;
-        private System.Windows.Forms.Button butshow;
         private System.Windows.Forms.Button butout;
         private System.Windows.Forms.Button butsave;
         private System.Windows.Forms.ComboBox comMaxThreads;
@@ -693,5 +691,6 @@
         private System.Windows.Forms.Button butcheckver;
         private MetroFramework.Controls.MetroLabel metroLabel1;
         private MetroFramework.Controls.MetroComboBox metroCom603gsysfile;
+        private System.Windows.Forms.Button butUtility;
     }
 }

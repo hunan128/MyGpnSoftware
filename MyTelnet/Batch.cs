@@ -3369,9 +3369,88 @@ namespace MyGpnSoftware
 
         }
 
-        private void panel2_Paint(object sender, PaintEventArgs e)
-        {
 
+        private void butUtility_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("导出「网管资源列表的Excel表格」尝试导入！");
+            dataGridView1.DataSource = null;
+            dataGridView1.Columns.Clear();
+            OpenFileDialog ofd = new OpenFileDialog();
+            string strPath;//完整的路径名
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+
+                    strPath = ofd.FileName;
+                    DataTable dataTable = null;
+                    dataTable = ExcelUtility.ExcelToDataTable(strPath, true);
+                    //DataView dv = ds.Tables[0].DefaultView;
+                    dataTable.DefaultView.RowFilter = "类型 = '" + comtype.Text + "'";
+                    dataGridView1.DataSource = dataTable;
+                    if (dataGridView1.Columns["开始时间"] == null)
+                    {
+
+                        this.dataGridView1.Columns.Add("开始时间", "开始时间");
+                        this.dataGridView1.Columns["开始时间"].FillWeight = 150;
+                    }
+                    else
+                    {
+                        this.dataGridView1.Columns.Remove("开始时间");
+                        this.dataGridView1.Columns.Add("开始时间", "开始时间");
+                        this.dataGridView1.Columns["开始时间"].FillWeight = 150;
+                    }
+                    if (dataGridView1.Columns["ping测试"] == null)
+                    {
+
+                        this.dataGridView1.Columns.Add("ping测试", "ping测试");
+                    }
+                    else
+                    {
+                        this.dataGridView1.Columns.Remove("ping测试");
+                        this.dataGridView1.Columns.Add("ping测试", "ping测试");
+                    }
+                    if (dataGridView1.Columns["最终结果"] == null)
+                    {
+                        this.dataGridView1.Columns.Add("最终结果", "最终结果");
+                    }
+                    else
+                    {
+                        this.dataGridView1.Columns.Remove("最终结果");
+                        this.dataGridView1.Columns.Add("最终结果", "最终结果");
+                    }
+
+                    if (dataGridView1.Columns["结束时间"] == null)
+                    {
+
+                        this.dataGridView1.Columns.Add("结束时间", "结束时间");
+                        this.dataGridView1.Columns["结束时间"].FillWeight = 150;
+                    }
+                    else
+                    {
+                        this.dataGridView1.Columns.Remove("结束时间");
+                        this.dataGridView1.Columns.Add("结束时间", "结束时间");
+                        this.dataGridView1.Columns["结束时间"].FillWeight = 150;
+                    }
+
+
+
+
+
+                    this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+                    foreach (DataGridViewColumn column in dataGridView1.Columns)
+                    {
+                        column.SortMode = DataGridViewColumnSortMode.NotSortable;
+                    }
+                    toolStripStatusLabelzonggong.Text = (dataGridView1.Rows.Count - 1).ToString();
+                    toolStripStatusLabelshengyu.Text = toolStripStatusLabelzonggong.Text;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);//捕捉异常
+                    MessageBox.Show("请使用Office2003或者更新版本格式内容，如.xls或者.xlsx格式");
+                }
+            }
         }
     }
 

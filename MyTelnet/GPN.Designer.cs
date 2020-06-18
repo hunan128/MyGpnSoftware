@@ -268,8 +268,6 @@
             this.关于软件OToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.metroProgressBar = new MetroFramework.Controls.MetroProgressBar();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.metroButton2 = new MetroFramework.Controls.MetroButton();
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.statusStrip1.SuspendLayout();
             this.tabPageLog.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -708,6 +706,7 @@
             this.butgaizhi.TabIndex = 281;
             this.butgaizhi.Text = "一键改制";
             this.butgaizhi.UseVisualStyleBackColor = false;
+            this.butgaizhi.Click += new System.EventHandler(this.butgaizhi_Click);
             // 
             // comotnslot
             // 
@@ -1346,7 +1345,7 @@
             this.comethslot.Name = "comethslot";
             this.comethslot.Size = new System.Drawing.Size(95, 20);
             this.comethslot.TabIndex = 213;
-            this.comethslot.Text = "1";
+            this.comethslot.Text = "7";
             // 
             // comethboard
             // 
@@ -1361,7 +1360,7 @@
             this.comethboard.Name = "comethboard";
             this.comethboard.Size = new System.Drawing.Size(98, 20);
             this.comethboard.TabIndex = 212;
-            this.comethboard.Text = "7";
+            this.comethboard.Text = "DMD-8GE";
             // 
             // labeleth
             // 
@@ -1473,7 +1472,7 @@
             this.comslot.Name = "comslot";
             this.comslot.Size = new System.Drawing.Size(95, 20);
             this.comslot.TabIndex = 205;
-            this.comslot.Text = "1";
+            this.comslot.Text = "7";
             // 
             // comboard
             // 
@@ -1490,7 +1489,7 @@
             this.comboard.Name = "comboard";
             this.comboard.Size = new System.Drawing.Size(98, 20);
             this.comboard.TabIndex = 204;
-            this.comboard.Text = "7";
+            this.comboard.Text = "DMD-8GE";
             // 
             // richTextEnd
             // 
@@ -1702,10 +1701,9 @@
             this.tbxFtpServerPort.FormattingEnabled = true;
             this.tbxFtpServerPort.Items.AddRange(new object[] {
             "21",
-            "22",
-            "10000",
-            "20000",
-            "30000"});
+            "33333",
+            "33334",
+            "33335"});
             this.tbxFtpServerPort.Location = new System.Drawing.Point(1256, 1);
             this.tbxFtpServerPort.Name = "tbxFtpServerPort";
             this.tbxFtpServerPort.Size = new System.Drawing.Size(55, 20);
@@ -2903,8 +2901,6 @@
             // tabPageSnmp
             // 
             this.tabPageSnmp.BackColor = System.Drawing.Color.LightBlue;
-            this.tabPageSnmp.Controls.Add(this.richTextBox1);
-            this.tabPageSnmp.Controls.Add(this.metroButton2);
             this.tabPageSnmp.Controls.Add(this.metroCheckfilter);
             this.tabPageSnmp.Controls.Add(this.metroLabel7);
             this.tabPageSnmp.Controls.Add(this.metroTextfilterip);
@@ -3064,7 +3060,7 @@
             this.metroTextoid.CustomButton.Visible = false;
             this.metroTextoid.FontSize = MetroFramework.MetroTextBoxSize.Medium;
             this.metroTextoid.Lines = new string[] {
-        "1.3.6.1.4.1.10072.6.2.6.8.0"};
+        "1.3.6.1.4.1.10072.6.2.1.1.1.3.1"};
             this.metroTextoid.Location = new System.Drawing.Point(87, 87);
             this.metroTextoid.MaxLength = 32767;
             this.metroTextoid.Name = "metroTextoid";
@@ -3076,7 +3072,7 @@
             this.metroTextoid.ShortcutsEnabled = true;
             this.metroTextoid.Size = new System.Drawing.Size(282, 29);
             this.metroTextoid.TabIndex = 18;
-            this.metroTextoid.Text = "1.3.6.1.4.1.10072.6.2.6.8.0";
+            this.metroTextoid.Text = "1.3.6.1.4.1.10072.6.2.1.1.1.3.1";
             this.metroTextoid.UseSelectable = true;
             this.metroTextoid.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
             this.metroTextoid.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
@@ -3454,29 +3450,6 @@
             this.timer1.Interval = 5000;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // metroButton2
-            // 
-            this.metroButton2.Location = new System.Drawing.Point(719, 48);
-            this.metroButton2.Name = "metroButton2";
-            this.metroButton2.Size = new System.Drawing.Size(128, 35);
-            this.metroButton2.TabIndex = 26;
-            this.metroButton2.Text = "写入";
-            this.metroButton2.UseSelectable = true;
-            this.metroButton2.Click += new System.EventHandler(this.metroButton2_Click);
-            // 
-            // richTextBox1
-            // 
-            this.richTextBox1.BackColor = System.Drawing.Color.Black;
-            this.richTextBox1.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.richTextBox1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.richTextBox1.Location = new System.Drawing.Point(863, 20);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.ReadOnly = true;
-            this.richTextBox1.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedVertical;
-            this.richTextBox1.Size = new System.Drawing.Size(279, 352);
-            this.richTextBox1.TabIndex = 109;
-            this.richTextBox1.Text = "故障排查结果：";
-            // 
             // GPN
             // 
             this.AcceptButton = this.butlogin;
@@ -3756,8 +3729,6 @@
         private System.Windows.Forms.Label labgaizhislot;
         private System.Windows.Forms.Label labgaizhitype;
         private System.Windows.Forms.ToolStripMenuItem 关于软件OToolStripMenuItem;
-        private System.Windows.Forms.RichTextBox richTextBox1;
-        private MetroFramework.Controls.MetroButton metroButton2;
     }
 }
 

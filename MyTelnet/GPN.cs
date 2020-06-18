@@ -2083,50 +2083,7 @@ namespace MyGpnSoftware
                 }
                 Thread.Sleep(XHTime);
                 string canyu = mysocket.ReceiveData(int.Parse(ts));
-                if (checkapp.Checked == true)
-                {
-                    AppSize();
-                }
-                if (checkcode.Checked == true)
-                {
-                    CodeSize();
-                }
-                if (checknms.Checked == true)
-                {
-                    NmsSize();
-                }
-                if (checksw.Checked == true)
-                {
-                    SwSize();
-                }
-                if (check760a.Checked == true)
-                {
-                    Fpga760aSize();
-                }
-                if (check760b.Checked == true)
-                {
-                    Fpga760bSize();
-                }
-                if (check760c.Checked == true)
-                {
-                    Fpga760cSize();
-                }
-                if (check760d.Checked == true)
-                {
-                    Fpga760dSIze();
-                }
-                if (check760e.Checked == true)
-                {
-                    Fpga760eSize();
-                }
-                if (checkotnpack.Checked == true)
-                {
-                    OtnPackSize();
-                }
-                if (checksysfile.Checked == true)
-                {
-                    SysfileSize();
-                }
+                CheckFile();
                 Thread.Sleep(XHTime);
                 string canyu2 = mysocket.ReceiveData(int.Parse(ts));
                 toolStripStatusLabelzt.Text = "已完成";
@@ -2167,6 +2124,7 @@ namespace MyGpnSoftware
 
         private void Butlogin_Click(object sender, EventArgs e)
         {
+            Thread Linkgpn = new Thread(LinkGpn);
             if (string.Compare(butlogin.Text, "①断开设备") == 0)
             {
                 butlogin.Text = "①连接设备";
@@ -2205,11 +2163,15 @@ namespace MyGpnSoftware
                 this.AcceptButton = butlogin;
                 mysocket.Close();
                 toolStripStatusLabellinkstat.Text = "未连接";
+                Linkgpn.Abort();
                 return;
             }
             if (string.Compare(butlogin.Text, "①连接设备") == 0)
             {
-                LinkGpn();
+
+                Linkgpn.Start();
+                timer1.Start();
+              //  LinkGpn();
             }
         }
         #endregion
@@ -2391,7 +2353,7 @@ namespace MyGpnSoftware
                     //定义代理参数类 
                     AgentParameters param = new AgentParameters(community);
                     //将SNMP版本设置为1（或2） 
-                    param.Version = SnmpVersion.Ver1;
+                    param.Version = SnmpVersion.Ver2;
                     //构造代理地址对象
                     //这里很容易使用IpAddress类，因为
                     //如果不
@@ -2748,7 +2710,6 @@ namespace MyGpnSoftware
                     ////mysocket.SendDate("\x03");
                     ////Thread.Sleep(XHTime);
                     ////string meiryong = textDOS.Text + "\r\n" + mysocket.ReceiveData(int.Parse(ts));
-                    timer1.Start();
                     textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "登录成功可以使用========================================OK" + "\r\n");
                     this.butsend.PerformClick();
                     //butguzhangsend.PerformClick();
@@ -6738,7 +6699,7 @@ namespace MyGpnSoftware
                                 richTextEnd.AppendText("业务级别：VC4" + "\r\n");
                                 if (textcurrent.Text.Contains("nul:"))
                                 {
-                                    Regex Ts = new Regex(@"nul:\s*(\d\/\d\-\d+)*", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                                    Regex Ts = new Regex(@"nul:\s*(([\d]+)\/\d\-\d+)*", RegexOptions.IgnoreCase | RegexOptions.Multiline);
                                     string Ts0 = Ts.Match(textcurrent.Text).Groups[1].Value;
                                     Tsvc4 = Ts0.Replace("-", "/");
                                     Regex Port0 = new Regex(@"nul:\s*([\d\/\d]+)", RegexOptions.IgnoreCase | RegexOptions.Multiline);
@@ -6758,7 +6719,7 @@ namespace MyGpnSoftware
                                 }
                                 if (textcurrent.Text.Contains("sdh:"))
                                 {
-                                    Regex Ts = new Regex(@"sdh:\s*(\d\/\d\-\d+)*", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                                    Regex Ts = new Regex(@"sdh:\s*(([\d]+)\/\d\-\d+)*", RegexOptions.IgnoreCase | RegexOptions.Multiline);
                                     string Ts0 = Ts.Match(textcurrent.Text).Groups[1].Value;
                                     Tsvc4 = Ts0.Replace("-", "/");
                                     Regex Port0 = new Regex(@"sdh:\s*([\d\/\d]+)", RegexOptions.IgnoreCase | RegexOptions.Multiline);
@@ -7458,7 +7419,7 @@ namespace MyGpnSoftware
                             {
                                 Thread.Sleep(XHTime);
                                 string[] VCGINFOFengGe = textcurrent.Text.Split(new string[] { "\r\n" }, StringSplitOptions.None);
-                                string VCGinfo = VCGINFOFengGe[3];
+                                string VCGinfo = VCGINFOFengGe[4];
                                 textlog.AppendText(VCGinfo.ToString() + "\r\n");
                                 VCGINFOFengGe = Regex.Split(VCGinfo, "\\s+", RegexOptions.IgnoreCase);
                                 string MemberSum = VCGINFOFengGe[4];
@@ -7488,6 +7449,7 @@ namespace MyGpnSoftware
                                 textlog.AppendText(textcurrent.Text);
                                 textcurrent.Text = "";
                                 break;
+                                
                             }
                             Thread.Sleep(XHTime);
                         }
@@ -8565,8 +8527,7 @@ namespace MyGpnSoftware
             }
         }
         #endregion
-        #region 下载配置按钮
-        #endregion
+
         #region 检查flash文件对比大小
         private void ConfigSize()
         {
@@ -9553,7 +9514,7 @@ namespace MyGpnSoftware
         }
         private void Fpga760dSIze()
         {
-            toolStripStatusLabelzt.Text = "检查FPGA760A大小中";
+            toolStripStatusLabelzt.Text = "检查FPGA760D大小中";
             mysocket.SendData("dosfs");
             for (int a = 1; a <= 200; a++)
             {
@@ -9966,71 +9927,84 @@ namespace MyGpnSoftware
         }
         private void CheckFile()
         {
+
             try
             {
-                textDOS.AppendText("\r\n");
-                if (checkconfig.Checked == true)
+                if (devtype == "98" || devtype == "2859" || devtype == "2860" || devtype == "2861" || devtype == "2862" || devtype == "2863" || devtype == "2864" || devtype == "2865")
                 {
-                    ConfigSize();
+
+                    textDOS.AppendText("\r\n");
+                    if (checkconfig.Checked == true)
+                    {
+                        ConfigSize();
+                    }
+                    if (checkslotconfig.Checked == true)
+                    {
+                        SlotconfigSize();
+                    }
+                    if (checkdb.Checked == true)
+                    {
+                        DbSize();
+                    }
+                    if (checkapp.Checked == true)
+                    {
+                        AppSize();
+                    }
+                    if (checkcode.Checked == true)
+                    {
+                        CodeSize();
+                    }
+                    if (checknms.Checked == true)
+                    {
+                        NmsSize();
+                    }
+                    if (checksw.Checked == true)
+                    {
+                        SwSize();
+                    }
+                    if (check760a.Checked == true)
+                    {
+                        Fpga760aSize();
+                    }
+                    if (check760b.Checked == true)
+                    {
+                        Fpga760bSize();
+                    }
+                    if (check760c.Checked == true)
+                    {
+                        Fpga760cSize();
+                    }
+                    if (check760d.Checked == true)
+                    {
+                        Fpga760dSIze();
+                    }
+                    if (check760e.Checked == true)
+                    {
+                        Fpga760eSize();
+                    }
+                    if (checkotnpack.Checked == true)
+                    {
+                        OtnPackSize();
+                    }
+                    if (checksysfile.Checked == true)
+                    {
+                        SysfileSize();
+                    }
+
+
                 }
-                if (checkslotconfig.Checked == true)
-                {
-                    SlotconfigSize();
+                else {
+                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " "+ "该设备不支持检查flash文件大小进行比对！");
+                    return;
                 }
-                if (checkdb.Checked == true)
-                {
-                    DbSize();
-                }
-                if (checkapp.Checked == true)
-                {
-                    AppSize();
-                }
-                if (checkcode.Checked == true)
-                {
-                    CodeSize();
-                }
-                if (checknms.Checked == true)
-                {
-                    NmsSize();
-                }
-                if (checksw.Checked == true)
-                {
-                    SwSize();
-                }
-                if (check760a.Checked == true)
-                {
-                    Fpga760aSize();
-                }
-                if (check760b.Checked == true)
-                {
-                    Fpga760bSize();
-                }
-                if (check760c.Checked == true)
-                {
-                    Fpga760cSize();
-                }
-                if (check760d.Checked == true)
-                {
-                    Fpga760dSIze();
-                }
-                if (check760e.Checked == true)
-                {
-                    Fpga760eSize();
-                }
-                if (checkotnpack.Checked == true)
-                {
-                    OtnPackSize();
-                }
-                if (checksysfile.Checked == true)
-                {
-                    SysfileSize();
-                }
-                butsend.PerformClick();
-                toolStripStatusLabelzt.Text = "已完成";
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
+            }
+            finally {
+                butsend.PerformClick();
+                toolStripStatusLabelzt.Text = "已完成";
             }
         }
         bool UpLoadFile_Stop = true;
@@ -10090,1084 +10064,1095 @@ check760e.Checked == false)
             //立即开始计时，时间间隔1000毫秒
             try
             {
-                TimeCount = 0;
-                Mytimer.Change(0, 1000);
-                Control.CheckForIllegalCrossThreadCalls = false;
-                uploading = true;
-                Testftpser();
-                if (DownLoadFile_Stop)
+                if (devtype == "98" || devtype == "2859" || devtype == "2860" || devtype == "2861" || devtype == "2862" || devtype == "2863" || devtype == "2864" || devtype == "2865")
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("\r\n" + "yyyy-MM-dd HH:mm:ss.fff") + " " + "下载升级已停止！");
+
+
+
+                    TimeCount = 0;
+                    Mytimer.Change(0, 1000);
+                    Control.CheckForIllegalCrossThreadCalls = false;
+                    uploading = true;
+                    Testftpser();
+                    if (DownLoadFile_Stop)
+                    {
+                        textDOS.AppendText(DateTime.Now.ToString("\r\n" + "yyyy-MM-dd HH:mm:ss.fff") + " " + "下载升级已停止！");
+                        return;
+                    }
+                    Uploadsave();
+                    int a = 0;
+                    int p = 0;
+                    if (checkapp.Checked == true)
+                    {
+                        a++;
+                    }
+                    if (checkcode.Checked == true)
+                    {
+                        a++;
+                    }
+                    if (checknms.Checked == true)
+                    {
+                        a++;
+                    }
+                    if (checksw.Checked == true)
+                    {
+                        a++;
+                    }
+                    if (check760a.Checked == true)
+                    {
+                        a++;
+                    }
+                    if (check760b.Checked == true)
+                    {
+                        a++;
+                    }
+                    if (check760c.Checked == true)
+                    {
+                        a++;
+                    }
+                    if (check760d.Checked == true)
+                    {
+                        a++;
+                    }
+                    if (check760e.Checked == true)
+                    {
+                        a++;
+                    }
+                    if (checkotnpack.Checked == true)
+                    {
+                        a++;
+                    }
+                    if (checksysfile.Checked == true)
+                    {
+                        a++;
+                    }
+                    if (checkflash.Checked == true)
+                    {
+                        a++;
+                    }
+                    if (checkyaffs.Checked == true)
+                    {
+                        a++;
+                    }
+                    if (checkconfig.Checked == true)
+                    {
+                        a++;
+                    }
+                    if (checkdb.Checked == true)
+                    {
+                        a++;
+                    }
+                    if (checkslotconfig.Checked == true)
+                    {
+                        a++;
+                    }
+                    int s = (int)Math.Floor((double)100 / a);
+                    p = (int)Math.Floor((double)100 / a);
+                    if (checkconfig.Checked == true)
+                    {
+                        ConfigSize();
+                        UploadConfig();
+                        if (s == p)
+                        {
+                            if (UpLoadFile_Stop)
+                            {
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                return;
+                            }
+                            if (UpLoadFile_On_Off)
+                            {
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                UpLoadFilePause = new ManualResetEvent(false);
+                                UpLoadFilePause.WaitOne();
+                            }
+                            metroProgressBar.Value = p;
+                            toolStripStatusLabelbar.Text = p + "%";
+                            System.Threading.Thread.Sleep(XHTime);
+                            p = s + p;
+                        }
+                        else
+                        {
+                            if (p > 95 && p <= 100)
+                            {
+                                p = 100;
+                                if (UpLoadFile_Stop)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    return;
+                                }
+                                if (UpLoadFile_On_Off)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    UpLoadFilePause = new ManualResetEvent(false);
+                                    UpLoadFilePause.WaitOne();
+                                }
+                                metroProgressBar.Value = p;
+                                toolStripStatusLabelbar.Text = p + "%";
+                                System.Threading.Thread.Sleep(XHTime);
+                            }
+                            else
+                            {
+                                if (UpLoadFile_Stop)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    return;
+                                }
+                                if (UpLoadFile_On_Off)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    UpLoadFilePause = new ManualResetEvent(false);
+                                    UpLoadFilePause.WaitOne();
+                                }
+                                metroProgressBar.Value = p;
+                                toolStripStatusLabelbar.Text = p + "%";
+                                System.Threading.Thread.Sleep(XHTime);
+                                p = s + p;
+                            }
+                        }
+                    }
+                    if (checkslotconfig.Checked == true)
+                    {
+                        SlotconfigSize();
+                        UploadSlotConfig();
+                        if (s == p)
+                        {
+                            if (UpLoadFile_Stop)
+                            {
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                return;
+                            }
+                            if (UpLoadFile_On_Off)
+                            {
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                UpLoadFilePause = new ManualResetEvent(false);
+                                UpLoadFilePause.WaitOne();
+                            }
+                            metroProgressBar.Value = p;
+                            toolStripStatusLabelbar.Text = p + "%";
+                            System.Threading.Thread.Sleep(XHTime);
+                            p = s + p;
+                        }
+                        else
+                        {
+                            if (p > 95 && p <= 100)
+                            {
+                                p = 100;
+                                if (UpLoadFile_Stop)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    return;
+                                }
+                                if (UpLoadFile_On_Off)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    UpLoadFilePause = new ManualResetEvent(false);
+                                    UpLoadFilePause.WaitOne();
+                                }
+                                metroProgressBar.Value = p;
+                                toolStripStatusLabelbar.Text = p + "%";
+                                System.Threading.Thread.Sleep(XHTime);
+                            }
+                            else
+                            {
+                                if (UpLoadFile_Stop)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    return;
+                                }
+                                if (UpLoadFile_On_Off)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    UpLoadFilePause = new ManualResetEvent(false);
+                                    UpLoadFilePause.WaitOne();
+                                }
+                                metroProgressBar.Value = p;
+                                toolStripStatusLabelbar.Text = p + "%";
+                                System.Threading.Thread.Sleep(XHTime);
+                                p = s + p;
+                            }
+                        }
+                    }
+                    if (checkdb.Checked == true)
+                    {
+                        DbSize();
+                        UploadDb();
+                        if (s == p)
+                        {
+                            if (UpLoadFile_Stop)
+                            {
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                return;
+                            }
+                            if (UpLoadFile_On_Off)
+                            {
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                UpLoadFilePause = new ManualResetEvent(false);
+                                UpLoadFilePause.WaitOne();
+                            }
+                            metroProgressBar.Value = p;
+                            toolStripStatusLabelbar.Text = p + "%";
+                            System.Threading.Thread.Sleep(XHTime);
+                            p = s + p;
+                        }
+                        else
+                        {
+                            if (p > 95 && p <= 100)
+                            {
+                                p = 100;
+                                if (UpLoadFile_Stop)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    return;
+                                }
+                                if (UpLoadFile_On_Off)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    UpLoadFilePause = new ManualResetEvent(false);
+                                    UpLoadFilePause.WaitOne();
+                                }
+                                metroProgressBar.Value = p;
+                                toolStripStatusLabelbar.Text = p + "%";
+                                System.Threading.Thread.Sleep(XHTime);
+                            }
+                            else
+                            {
+                                if (UpLoadFile_Stop)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    return;
+                                }
+                                if (UpLoadFile_On_Off)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    UpLoadFilePause = new ManualResetEvent(false);
+                                    UpLoadFilePause.WaitOne();
+                                }
+                                metroProgressBar.Value = p;
+                                toolStripStatusLabelbar.Text = p + "%";
+                                System.Threading.Thread.Sleep(XHTime);
+                                p = s + p;
+                            }
+                        }
+                    }
+                    if (checkapp.Checked == true)
+                    {
+                        AppSize();
+                        UploadApp();
+                        if (s == p)
+                        {
+                            if (UpLoadFile_Stop)
+                            {
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                return;
+                            }
+                            if (UpLoadFile_On_Off)
+                            {
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                UpLoadFilePause = new ManualResetEvent(false);
+                                UpLoadFilePause.WaitOne();
+                            }
+                            metroProgressBar.Value = p;
+                            toolStripStatusLabelbar.Text = p + "%";
+                            System.Threading.Thread.Sleep(XHTime);
+                            p = s + p;
+                        }
+                        else
+                        {
+                            if (p > 95 && p <= 100)
+                            {
+                                p = 100;
+                                if (UpLoadFile_Stop)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    return;
+                                }
+                                if (UpLoadFile_On_Off)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    UpLoadFilePause = new ManualResetEvent(false);
+                                    UpLoadFilePause.WaitOne();
+                                }
+                                metroProgressBar.Value = p;
+                                toolStripStatusLabelbar.Text = p + "%";
+                                System.Threading.Thread.Sleep(XHTime);
+                            }
+                            else
+                            {
+                                if (UpLoadFile_Stop)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    return;
+                                }
+                                if (UpLoadFile_On_Off)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    UpLoadFilePause = new ManualResetEvent(false);
+                                    UpLoadFilePause.WaitOne();
+                                }
+                                metroProgressBar.Value = p;
+                                toolStripStatusLabelbar.Text = p + "%";
+                                System.Threading.Thread.Sleep(XHTime);
+                                p = s + p;
+                            }
+                        }
+                    }
+                    if (checkcode.Checked == true)
+                    {
+                        CodeSize();
+                        UploadCode();
+                        if (s == p)
+                        {
+                            if (UpLoadFile_Stop)
+                            {
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                return;
+                            }
+                            if (UpLoadFile_On_Off)
+                            {
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                UpLoadFilePause = new ManualResetEvent(false);
+                                UpLoadFilePause.WaitOne();
+                            }
+                            toolStripStatusLabelbar.Text = p + "%";
+                            System.Threading.Thread.Sleep(XHTime);
+                            p = s + p;
+                        }
+                        else
+                        {
+                            if (p > 95 && p <= 100)
+                            {
+                                p = 100;
+                                if (UpLoadFile_Stop)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    return;
+                                }
+                                if (UpLoadFile_On_Off)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    UpLoadFilePause = new ManualResetEvent(false);
+                                    UpLoadFilePause.WaitOne();
+                                }
+                                metroProgressBar.Value = p;
+                                toolStripStatusLabelbar.Text = p + "%";
+                                System.Threading.Thread.Sleep(XHTime);
+                            }
+                            else
+                            {
+                                if (UpLoadFile_Stop)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    return;
+                                }
+                                if (UpLoadFile_On_Off)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    UpLoadFilePause = new ManualResetEvent(false);
+                                    UpLoadFilePause.WaitOne();
+                                }
+                                metroProgressBar.Value = p;
+                                toolStripStatusLabelbar.Text = p + "%";
+                                System.Threading.Thread.Sleep(XHTime);
+                                p = s + p;
+                            }
+                        }
+                    }
+                    if (checknms.Checked == true)
+                    {
+                        NmsSize();
+                        UploadNms();
+                        if (s == p)
+                        {
+                            if (UpLoadFile_Stop)
+                            {
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                return;
+                            }
+                            if (UpLoadFile_On_Off)
+                            {
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                UpLoadFilePause = new ManualResetEvent(false);
+                                UpLoadFilePause.WaitOne();
+                            }
+                            metroProgressBar.Value = p;
+                            toolStripStatusLabelbar.Text = p + "%";
+                            System.Threading.Thread.Sleep(XHTime);
+                            p = s + p;
+                        }
+                        else
+                        {
+                            if (p > 95 && p <= 100)
+                            {
+                                p = 100;
+                                if (UpLoadFile_Stop)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    return;
+                                }
+                                if (UpLoadFile_On_Off)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    UpLoadFilePause = new ManualResetEvent(false);
+                                    UpLoadFilePause.WaitOne();
+                                }
+                                metroProgressBar.Value = p;
+                                toolStripStatusLabelbar.Text = p + "%";
+                                System.Threading.Thread.Sleep(XHTime);
+                            }
+                            else
+                            {
+                                if (UpLoadFile_Stop)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    return;
+                                }
+                                if (UpLoadFile_On_Off)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    UpLoadFilePause = new ManualResetEvent(false);
+                                    UpLoadFilePause.WaitOne();
+                                }
+                                metroProgressBar.Value = p;
+                                toolStripStatusLabelbar.Text = p + "%";
+                                System.Threading.Thread.Sleep(XHTime);
+                                p = s + p;
+                            }
+                        }
+                    }
+                    if (checksw.Checked == true)
+                    {
+                        SwSize();
+                        UploadSw();
+                        if (s == p)
+                        {
+                            if (UpLoadFile_Stop)
+                            {
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                return;
+                            }
+                            if (UpLoadFile_On_Off)
+                            {
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                UpLoadFilePause = new ManualResetEvent(false);
+                                UpLoadFilePause.WaitOne();
+                            }
+                            metroProgressBar.Value = p;
+                            toolStripStatusLabelbar.Text = p + "%";
+                            System.Threading.Thread.Sleep(XHTime);
+                            p = s + p;
+                        }
+                        else
+                        {
+                            if (p > 95 && p <= 100)
+                            {
+                                p = 100;
+                                if (UpLoadFile_Stop)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    return;
+                                }
+                                if (UpLoadFile_On_Off)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    UpLoadFilePause = new ManualResetEvent(false);
+                                    UpLoadFilePause.WaitOne();
+                                }
+                                metroProgressBar.Value = p;
+                                toolStripStatusLabelbar.Text = p + "%";
+                                System.Threading.Thread.Sleep(XHTime);
+                            }
+                            else
+                            {
+                                if (UpLoadFile_Stop)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    return;
+                                }
+                                if (UpLoadFile_On_Off)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    UpLoadFilePause = new ManualResetEvent(false);
+                                    UpLoadFilePause.WaitOne();
+                                }
+                                metroProgressBar.Value = p;
+                                toolStripStatusLabelbar.Text = p + "%";
+                                System.Threading.Thread.Sleep(XHTime);
+                                p = s + p;
+                            }
+                        }
+                    }
+                    if (check760a.Checked == true)
+                    {
+                        Fpga760aSize();
+                        Upload760a();
+                        if (s == p)
+                        {
+                            if (UpLoadFile_Stop)
+                            {
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                return;
+                            }
+                            if (UpLoadFile_On_Off)
+                            {
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                UpLoadFilePause = new ManualResetEvent(false);
+                                UpLoadFilePause.WaitOne();
+                            }
+                            metroProgressBar.Value = p;
+                            toolStripStatusLabelbar.Text = p + "%";
+                            System.Threading.Thread.Sleep(XHTime);
+                            p = s + p;
+                        }
+                        else
+                        {
+                            if (p > 95 && p <= 100)
+                            {
+                                p = 100;
+                                if (UpLoadFile_Stop)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    return;
+                                }
+                                if (UpLoadFile_On_Off)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    UpLoadFilePause = new ManualResetEvent(false);
+                                    UpLoadFilePause.WaitOne();
+                                }
+                                metroProgressBar.Value = p;
+                                toolStripStatusLabelbar.Text = p + "%";
+                                System.Threading.Thread.Sleep(XHTime);
+                            }
+                            else
+                            {
+                                if (UpLoadFile_Stop)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    return;
+                                }
+                                if (UpLoadFile_On_Off)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    UpLoadFilePause = new ManualResetEvent(false);
+                                    UpLoadFilePause.WaitOne();
+                                }
+                                metroProgressBar.Value = p;
+                                toolStripStatusLabelbar.Text = p + "%";
+                                System.Threading.Thread.Sleep(XHTime);
+                                p = s + p;
+                            }
+                        }
+                    }
+                    if (check760b.Checked == true)
+                    {
+                        Fpga760bSize();
+                        Upload760b();
+                        if (s == p)
+                        {
+                            if (UpLoadFile_Stop)
+                            {
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                return;
+                            }
+                            if (UpLoadFile_On_Off)
+                            {
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                UpLoadFilePause = new ManualResetEvent(false);
+                                UpLoadFilePause.WaitOne();
+                            }
+                            metroProgressBar.Value = p;
+                            toolStripStatusLabelbar.Text = p + "%";
+                            System.Threading.Thread.Sleep(XHTime);
+                            p = s + p;
+                        }
+                        else
+                        {
+                            if (p > 95 && p <= 100)
+                            {
+                                p = 100;
+                                if (UpLoadFile_Stop)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    return;
+                                }
+                                if (UpLoadFile_On_Off)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    UpLoadFilePause = new ManualResetEvent(false);
+                                    UpLoadFilePause.WaitOne();
+                                }
+                                metroProgressBar.Value = p;
+                                toolStripStatusLabelbar.Text = p + "%";
+                                System.Threading.Thread.Sleep(XHTime);
+                            }
+                            else
+                            {
+                                if (UpLoadFile_Stop)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    return;
+                                }
+                                if (UpLoadFile_On_Off)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    UpLoadFilePause = new ManualResetEvent(false);
+                                    UpLoadFilePause.WaitOne();
+                                }
+                                metroProgressBar.Value = p;
+                                toolStripStatusLabelbar.Text = p + "%";
+                                System.Threading.Thread.Sleep(XHTime);
+                                p = s + p;
+                            }
+                        }
+                    }
+                    if (check760c.Checked == true)
+                    {
+                        Fpga760cSize();
+                        Upload760c();
+                        if (s == p)
+                        {
+                            if (UpLoadFile_Stop)
+                            {
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                return;
+                            }
+                            if (UpLoadFile_On_Off)
+                            {
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                UpLoadFilePause = new ManualResetEvent(false);
+                                UpLoadFilePause.WaitOne();
+                            }
+                            metroProgressBar.Value = p;
+                            toolStripStatusLabelbar.Text = p + "%";
+                            System.Threading.Thread.Sleep(XHTime);
+                            p = s + p;
+                        }
+                        else
+                        {
+                            if (p > 95 && p <= 100)
+                            {
+                                p = 100;
+                                if (UpLoadFile_Stop)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    return;
+                                }
+                                if (UpLoadFile_On_Off)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    UpLoadFilePause = new ManualResetEvent(false);
+                                    UpLoadFilePause.WaitOne();
+                                }
+                                metroProgressBar.Value = p;
+                                toolStripStatusLabelbar.Text = p + "%";
+                                System.Threading.Thread.Sleep(XHTime);
+                            }
+                            else
+                            {
+                                if (UpLoadFile_Stop)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    return;
+                                }
+                                if (UpLoadFile_On_Off)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    UpLoadFilePause = new ManualResetEvent(false);
+                                    UpLoadFilePause.WaitOne();
+                                }
+                                metroProgressBar.Value = p;
+                                toolStripStatusLabelbar.Text = p + "%";
+                                System.Threading.Thread.Sleep(XHTime);
+                                p = s + p;
+                            }
+                        }
+                    }
+                    if (check760d.Checked == true)
+                    {
+                        Fpga760dSIze();
+                        Upload760d();
+                        if (s == p)
+                        {
+                            if (UpLoadFile_Stop)
+                            {
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                return;
+                            }
+                            if (UpLoadFile_On_Off)
+                            {
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                UpLoadFilePause = new ManualResetEvent(false);
+                                UpLoadFilePause.WaitOne();
+                            }
+                            metroProgressBar.Value = p;
+                            toolStripStatusLabelbar.Text = p + "%";
+                            System.Threading.Thread.Sleep(XHTime);
+                            p = s + p;
+                        }
+                        else
+                        {
+                            if (p > 95 && p <= 100)
+                            {
+                                p = 100;
+                                if (UpLoadFile_Stop)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    return;
+                                }
+                                if (UpLoadFile_On_Off)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    UpLoadFilePause = new ManualResetEvent(false);
+                                    UpLoadFilePause.WaitOne();
+                                }
+                                metroProgressBar.Value = p;
+                                toolStripStatusLabelbar.Text = p + "%";
+                                System.Threading.Thread.Sleep(XHTime);
+                            }
+                            else
+                            {
+                                if (UpLoadFile_Stop)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    return;
+                                }
+                                if (UpLoadFile_On_Off)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    UpLoadFilePause = new ManualResetEvent(false);
+                                    UpLoadFilePause.WaitOne();
+                                }
+                                metroProgressBar.Value = p;
+                                toolStripStatusLabelbar.Text = p + "%";
+                                System.Threading.Thread.Sleep(XHTime);
+                                p = s + p;
+                            }
+                        }
+                    }
+                    if (check760e.Checked == true)
+                    {
+                        Fpga760eSize();
+                        Upload760e();
+                        if (s == p)
+                        {
+                            if (UpLoadFile_Stop)
+                            {
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                return;
+                            }
+                            if (UpLoadFile_On_Off)
+                            {
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                UpLoadFilePause = new ManualResetEvent(false);
+                                UpLoadFilePause.WaitOne();
+                            }
+                            metroProgressBar.Value = p;
+                            toolStripStatusLabelbar.Text = p + "%";
+                            System.Threading.Thread.Sleep(XHTime);
+                            p = s + p;
+                        }
+                        else
+                        {
+                            if (p > 95 && p <= 100)
+                            {
+                                p = 100;
+                                if (UpLoadFile_Stop)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    return;
+                                }
+                                if (UpLoadFile_On_Off)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    UpLoadFilePause = new ManualResetEvent(false);
+                                    UpLoadFilePause.WaitOne();
+                                }
+                                metroProgressBar.Value = p;
+                                toolStripStatusLabelbar.Text = p + "%";
+                                System.Threading.Thread.Sleep(XHTime);
+                            }
+                            else
+                            {
+                                if (UpLoadFile_Stop)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    return;
+                                }
+                                if (UpLoadFile_On_Off)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    UpLoadFilePause = new ManualResetEvent(false);
+                                    UpLoadFilePause.WaitOne();
+                                }
+                                metroProgressBar.Value = p;
+                                toolStripStatusLabelbar.Text = p + "%";
+                                System.Threading.Thread.Sleep(XHTime);
+                                p = s + p;
+                            }
+                        }
+                    }
+                    if (checkotnpack.Checked == true)
+                    {
+                        OtnPackSize();
+                        UploadOtnPack();
+                        if (s == p)
+                        {
+                            if (UpLoadFile_Stop)
+                            {
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                return;
+                            }
+                            if (UpLoadFile_On_Off)
+                            {
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                UpLoadFilePause = new ManualResetEvent(false);
+                                UpLoadFilePause.WaitOne();
+                            }
+                            metroProgressBar.Value = p;
+                            toolStripStatusLabelbar.Text = p + "%";
+                            System.Threading.Thread.Sleep(XHTime);
+                            p = s + p;
+                        }
+                        else
+                        {
+                            if (p > 95 && p <= 100)
+                            {
+                                p = 100;
+                                if (UpLoadFile_Stop)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    return;
+                                }
+                                if (UpLoadFile_On_Off)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    UpLoadFilePause = new ManualResetEvent(false);
+                                    UpLoadFilePause.WaitOne();
+                                }
+                                metroProgressBar.Value = p;
+                                toolStripStatusLabelbar.Text = p + "%";
+                                System.Threading.Thread.Sleep(XHTime);
+                            }
+                            else
+                            {
+                                if (UpLoadFile_Stop)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    return;
+                                }
+                                if (UpLoadFile_On_Off)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    UpLoadFilePause = new ManualResetEvent(false);
+                                    UpLoadFilePause.WaitOne();
+                                }
+                                metroProgressBar.Value = p;
+                                toolStripStatusLabelbar.Text = p + "%";
+                                System.Threading.Thread.Sleep(XHTime);
+                                p = s + p;
+                            }
+                        }
+                    }
+                    if (checksysfile.Checked == true)
+                    {
+                        SysfileSize();
+                        UploadSysfile();
+                        if (s == p)
+                        {
+                            if (UpLoadFile_Stop)
+                            {
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                return;
+                            }
+                            if (UpLoadFile_On_Off)
+                            {
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                UpLoadFilePause = new ManualResetEvent(false);
+                                UpLoadFilePause.WaitOne();
+                            }
+                            metroProgressBar.Value = p;
+                            toolStripStatusLabelbar.Text = p + "%";
+                            System.Threading.Thread.Sleep(XHTime);
+                            p = s + p;
+                        }
+                        else
+                        {
+                            if (p > 95 && p <= 100)
+                            {
+                                p = 100;
+                                if (UpLoadFile_Stop)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    return;
+                                }
+                                if (UpLoadFile_On_Off)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    UpLoadFilePause = new ManualResetEvent(false);
+                                    UpLoadFilePause.WaitOne();
+                                }
+                                metroProgressBar.Value = p;
+                                toolStripStatusLabelbar.Text = p + "%";
+                                System.Threading.Thread.Sleep(XHTime);
+                            }
+                            else
+                            {
+                                if (UpLoadFile_Stop)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    return;
+                                }
+                                if (UpLoadFile_On_Off)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    UpLoadFilePause = new ManualResetEvent(false);
+                                    UpLoadFilePause.WaitOne();
+                                }
+                                metroProgressBar.Value = p;
+                                toolStripStatusLabelbar.Text = p + "%";
+                                System.Threading.Thread.Sleep(XHTime);
+                                p = s + p;
+                            }
+                        }
+                    }
+                    if (checkflash.Checked == true)
+                    {
+                        Filesize = 33554432;
+                        UploadFlash();
+                        if (s == p)
+                        {
+                            if (UpLoadFile_Stop)
+                            {
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                return;
+                            }
+                            if (UpLoadFile_On_Off)
+                            {
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                UpLoadFilePause = new ManualResetEvent(false);
+                                UpLoadFilePause.WaitOne();
+                            }
+                            metroProgressBar.Value = p;
+                            toolStripStatusLabelbar.Text = p + "%";
+                            System.Threading.Thread.Sleep(XHTime);
+                            p = s + p;
+                        }
+                        else
+                        {
+                            if (p > 95 && p <= 100)
+                            {
+                                p = 100;
+                                if (UpLoadFile_Stop)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    return;
+                                }
+                                if (UpLoadFile_On_Off)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    UpLoadFilePause = new ManualResetEvent(false);
+                                    UpLoadFilePause.WaitOne();
+                                }
+                                metroProgressBar.Value = p;
+                                toolStripStatusLabelbar.Text = p + "%";
+                                System.Threading.Thread.Sleep(XHTime);
+                            }
+                            else
+                            {
+                                if (UpLoadFile_Stop)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    return;
+                                }
+                                if (UpLoadFile_On_Off)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    UpLoadFilePause = new ManualResetEvent(false);
+                                    UpLoadFilePause.WaitOne();
+                                }
+                                metroProgressBar.Value = p;
+                                toolStripStatusLabelbar.Text = p + "%";
+                                System.Threading.Thread.Sleep(XHTime);
+                                p = s + p;
+                            }
+                        }
+                    }
+                    if (checkyaffs.Checked == true)
+                    {
+                        Filesize = 553648128;
+                        UploadYaffs();
+                        if (s == p)
+                        {
+                            if (UpLoadFile_Stop)
+                            {
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                return;
+                            }
+                            if (UpLoadFile_On_Off)
+                            {
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                UpLoadFilePause = new ManualResetEvent(false);
+                                UpLoadFilePause.WaitOne();
+                            }
+                            metroProgressBar.Value = p;
+                            toolStripStatusLabelbar.Text = p + "%";
+                            System.Threading.Thread.Sleep(XHTime);
+                            p = s + p;
+                        }
+                        else
+                        {
+                            if (p > 95 && p <= 100)
+                            {
+                                p = 100;
+                                if (UpLoadFile_Stop)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    return;
+                                }
+                                if (UpLoadFile_On_Off)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    UpLoadFilePause = new ManualResetEvent(false);
+                                    UpLoadFilePause.WaitOne();
+                                }
+                                metroProgressBar.Value = p;
+                                toolStripStatusLabelbar.Text = p + "%";
+                                System.Threading.Thread.Sleep(XHTime);
+                            }
+                            else
+                            {
+                                if (UpLoadFile_Stop)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    return;
+                                }
+                                if (UpLoadFile_On_Off)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    UpLoadFilePause = new ManualResetEvent(false);
+                                    UpLoadFilePause.WaitOne();
+                                }
+                                metroProgressBar.Value = p;
+                                toolStripStatusLabelbar.Text = p + "%";
+                                System.Threading.Thread.Sleep(XHTime);
+                                p = s + p;
+                            }
+                        }
+                    }
+                    Thread.Sleep(XHTime);
+                    string canyu = mysocket.ReceiveData(int.Parse(ts));
+                    toolStripStatusLabelzt.Text = "已完成";
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份结束" + "================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    butsend.PerformClick();
+                    UpLoadFile_Stop = true;
+                    butupload.Text = "⑤上传备份";
+                    Mytimer.Change(Timeout.Infinite, 1000);
+                }
+                else {
+                    textDOS.AppendText("\r\n" + "该设备不支持文件上传，请使用其方式！");
                     return;
+
                 }
-                Uploadsave();
-                int a = 0;
-                int p = 0;
-                if (checkapp.Checked == true)
-                {
-                    a++;
-                }
-                if (checkcode.Checked == true)
-                {
-                    a++;
-                }
-                if (checknms.Checked == true)
-                {
-                    a++;
-                }
-                if (checksw.Checked == true)
-                {
-                    a++;
-                }
-                if (check760a.Checked == true)
-                {
-                    a++;
-                }
-                if (check760b.Checked == true)
-                {
-                    a++;
-                }
-                if (check760c.Checked == true)
-                {
-                    a++;
-                }
-                if (check760d.Checked == true)
-                {
-                    a++;
-                }
-                if (check760e.Checked == true)
-                {
-                    a++;
-                }
-                if (checkotnpack.Checked == true)
-                {
-                    a++;
-                }
-                if (checksysfile.Checked == true)
-                {
-                    a++;
-                }
-                if (checkflash.Checked == true)
-                {
-                    a++;
-                }
-                if (checkyaffs.Checked == true)
-                {
-                    a++;
-                }
-                if (checkconfig.Checked == true)
-                {
-                    a++;
-                }
-                if (checkdb.Checked == true)
-                {
-                    a++;
-                }
-                if (checkslotconfig.Checked == true)
-                {
-                    a++;
-                }
-                int s = (int)Math.Floor((double)100 / a);
-                p = (int)Math.Floor((double)100 / a);
-                if (checkconfig.Checked == true)
-                {
-                    ConfigSize();
-                    UploadConfig();
-                    if (s == p)
-                    {
-                        if (UpLoadFile_Stop)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
-                            return;
-                        }
-                        if (UpLoadFile_On_Off)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
-                            UpLoadFilePause = new ManualResetEvent(false);
-                            UpLoadFilePause.WaitOne();
-                        }
-                        metroProgressBar.Value = p;
-                        toolStripStatusLabelbar.Text = p + "%";
-                        System.Threading.Thread.Sleep(XHTime);
-                        p = s + p;
-                    }
-                    else
-                    {
-                        if (p > 95 && p <= 100)
-                        {
-                            p = 100;
-                            if (UpLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (UpLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
-                                UpLoadFilePause = new ManualResetEvent(false);
-                                UpLoadFilePause.WaitOne();
-                            }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                        }
-                        else
-                        {
-                            if (UpLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (UpLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
-                                UpLoadFilePause = new ManualResetEvent(false);
-                                UpLoadFilePause.WaitOne();
-                            }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                            p = s + p;
-                        }
-                    }
-                }
-                if (checkslotconfig.Checked == true)
-                {
-                    SlotconfigSize();
-                    UploadSlotConfig();
-                    if (s == p)
-                    {
-                        if (UpLoadFile_Stop)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
-                            return;
-                        }
-                        if (UpLoadFile_On_Off)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
-                            UpLoadFilePause = new ManualResetEvent(false);
-                            UpLoadFilePause.WaitOne();
-                        }
-                        metroProgressBar.Value = p;
-                        toolStripStatusLabelbar.Text = p + "%";
-                        System.Threading.Thread.Sleep(XHTime);
-                        p = s + p;
-                    }
-                    else
-                    {
-                        if (p > 95 && p <= 100)
-                        {
-                            p = 100;
-                            if (UpLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (UpLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
-                                UpLoadFilePause = new ManualResetEvent(false);
-                                UpLoadFilePause.WaitOne();
-                            }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                        }
-                        else
-                        {
-                            if (UpLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (UpLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
-                                UpLoadFilePause = new ManualResetEvent(false);
-                                UpLoadFilePause.WaitOne();
-                            }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                            p = s + p;
-                        }
-                    }
-                }
-                if (checkdb.Checked == true)
-                {
-                    DbSize();
-                    UploadDb();
-                    if (s == p)
-                    {
-                        if (UpLoadFile_Stop)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
-                            return;
-                        }
-                        if (UpLoadFile_On_Off)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
-                            UpLoadFilePause = new ManualResetEvent(false);
-                            UpLoadFilePause.WaitOne();
-                        }
-                        metroProgressBar.Value = p;
-                        toolStripStatusLabelbar.Text = p + "%";
-                        System.Threading.Thread.Sleep(XHTime);
-                        p = s + p;
-                    }
-                    else
-                    {
-                        if (p > 95 && p <= 100)
-                        {
-                            p = 100;
-                            if (UpLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (UpLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
-                                UpLoadFilePause = new ManualResetEvent(false);
-                                UpLoadFilePause.WaitOne();
-                            }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                        }
-                        else
-                        {
-                            if (UpLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (UpLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
-                                UpLoadFilePause = new ManualResetEvent(false);
-                                UpLoadFilePause.WaitOne();
-                            }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                            p = s + p;
-                        }
-                    }
-                }
-                if (checkapp.Checked == true)
-                {
-                    AppSize();
-                    UploadApp();
-                    if (s == p)
-                    {
-                        if (UpLoadFile_Stop)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
-                            return;
-                        }
-                        if (UpLoadFile_On_Off)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
-                            UpLoadFilePause = new ManualResetEvent(false);
-                            UpLoadFilePause.WaitOne();
-                        }
-                        metroProgressBar.Value = p;
-                        toolStripStatusLabelbar.Text = p + "%";
-                        System.Threading.Thread.Sleep(XHTime);
-                        p = s + p;
-                    }
-                    else
-                    {
-                        if (p > 95 && p <= 100)
-                        {
-                            p = 100;
-                            if (UpLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (UpLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
-                                UpLoadFilePause = new ManualResetEvent(false);
-                                UpLoadFilePause.WaitOne();
-                            }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                        }
-                        else
-                        {
-                            if (UpLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (UpLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
-                                UpLoadFilePause = new ManualResetEvent(false);
-                                UpLoadFilePause.WaitOne();
-                            }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                            p = s + p;
-                        }
-                    }
-                }
-                if (checkcode.Checked == true)
-                {
-                    CodeSize();
-                    UploadCode();
-                    if (s == p)
-                    {
-                        if (UpLoadFile_Stop)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
-                            return;
-                        }
-                        if (UpLoadFile_On_Off)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
-                            UpLoadFilePause = new ManualResetEvent(false);
-                            UpLoadFilePause.WaitOne();
-                        }
-                        toolStripStatusLabelbar.Text = p + "%";
-                        System.Threading.Thread.Sleep(XHTime);
-                        p = s + p;
-                    }
-                    else
-                    {
-                        if (p > 95 && p <= 100)
-                        {
-                            p = 100;
-                            if (UpLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (UpLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
-                                UpLoadFilePause = new ManualResetEvent(false);
-                                UpLoadFilePause.WaitOne();
-                            }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                        }
-                        else
-                        {
-                            if (UpLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (UpLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
-                                UpLoadFilePause = new ManualResetEvent(false);
-                                UpLoadFilePause.WaitOne();
-                            }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                            p = s + p;
-                        }
-                    }
-                }
-                if (checknms.Checked == true)
-                {
-                    NmsSize();
-                    UploadNms();
-                    if (s == p)
-                    {
-                        if (UpLoadFile_Stop)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
-                            return;
-                        }
-                        if (UpLoadFile_On_Off)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
-                            UpLoadFilePause = new ManualResetEvent(false);
-                            UpLoadFilePause.WaitOne();
-                        }
-                        metroProgressBar.Value = p;
-                        toolStripStatusLabelbar.Text = p + "%";
-                        System.Threading.Thread.Sleep(XHTime);
-                        p = s + p;
-                    }
-                    else
-                    {
-                        if (p > 95 && p <= 100)
-                        {
-                            p = 100;
-                            if (UpLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (UpLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
-                                UpLoadFilePause = new ManualResetEvent(false);
-                                UpLoadFilePause.WaitOne();
-                            }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                        }
-                        else
-                        {
-                            if (UpLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (UpLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
-                                UpLoadFilePause = new ManualResetEvent(false);
-                                UpLoadFilePause.WaitOne();
-                            }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                            p = s + p;
-                        }
-                    }
-                }
-                if (checksw.Checked == true)
-                {
-                    SwSize();
-                    UploadSw();
-                    if (s == p)
-                    {
-                        if (UpLoadFile_Stop)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
-                            return;
-                        }
-                        if (UpLoadFile_On_Off)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
-                            UpLoadFilePause = new ManualResetEvent(false);
-                            UpLoadFilePause.WaitOne();
-                        }
-                        metroProgressBar.Value = p;
-                        toolStripStatusLabelbar.Text = p + "%";
-                        System.Threading.Thread.Sleep(XHTime);
-                        p = s + p;
-                    }
-                    else
-                    {
-                        if (p > 95 && p <= 100)
-                        {
-                            p = 100;
-                            if (UpLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (UpLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
-                                UpLoadFilePause = new ManualResetEvent(false);
-                                UpLoadFilePause.WaitOne();
-                            }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                        }
-                        else
-                        {
-                            if (UpLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (UpLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
-                                UpLoadFilePause = new ManualResetEvent(false);
-                                UpLoadFilePause.WaitOne();
-                            }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                            p = s + p;
-                        }
-                    }
-                }
-                if (check760a.Checked == true)
-                {
-                    Fpga760aSize();
-                    Upload760a();
-                    if (s == p)
-                    {
-                        if (UpLoadFile_Stop)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
-                            return;
-                        }
-                        if (UpLoadFile_On_Off)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
-                            UpLoadFilePause = new ManualResetEvent(false);
-                            UpLoadFilePause.WaitOne();
-                        }
-                        metroProgressBar.Value = p;
-                        toolStripStatusLabelbar.Text = p + "%";
-                        System.Threading.Thread.Sleep(XHTime);
-                        p = s + p;
-                    }
-                    else
-                    {
-                        if (p > 95 && p <= 100)
-                        {
-                            p = 100;
-                            if (UpLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (UpLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
-                                UpLoadFilePause = new ManualResetEvent(false);
-                                UpLoadFilePause.WaitOne();
-                            }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                        }
-                        else
-                        {
-                            if (UpLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (UpLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
-                                UpLoadFilePause = new ManualResetEvent(false);
-                                UpLoadFilePause.WaitOne();
-                            }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                            p = s + p;
-                        }
-                    }
-                }
-                if (check760b.Checked == true)
-                {
-                    Fpga760bSize();
-                    Upload760b();
-                    if (s == p)
-                    {
-                        if (UpLoadFile_Stop)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
-                            return;
-                        }
-                        if (UpLoadFile_On_Off)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
-                            UpLoadFilePause = new ManualResetEvent(false);
-                            UpLoadFilePause.WaitOne();
-                        }
-                        metroProgressBar.Value = p;
-                        toolStripStatusLabelbar.Text = p + "%";
-                        System.Threading.Thread.Sleep(XHTime);
-                        p = s + p;
-                    }
-                    else
-                    {
-                        if (p > 95 && p <= 100)
-                        {
-                            p = 100;
-                            if (UpLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (UpLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
-                                UpLoadFilePause = new ManualResetEvent(false);
-                                UpLoadFilePause.WaitOne();
-                            }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                        }
-                        else
-                        {
-                            if (UpLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (UpLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
-                                UpLoadFilePause = new ManualResetEvent(false);
-                                UpLoadFilePause.WaitOne();
-                            }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                            p = s + p;
-                        }
-                    }
-                }
-                if (check760c.Checked == true)
-                {
-                    Fpga760cSize();
-                    Upload760c();
-                    if (s == p)
-                    {
-                        if (UpLoadFile_Stop)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
-                            return;
-                        }
-                        if (UpLoadFile_On_Off)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
-                            UpLoadFilePause = new ManualResetEvent(false);
-                            UpLoadFilePause.WaitOne();
-                        }
-                        metroProgressBar.Value = p;
-                        toolStripStatusLabelbar.Text = p + "%";
-                        System.Threading.Thread.Sleep(XHTime);
-                        p = s + p;
-                    }
-                    else
-                    {
-                        if (p > 95 && p <= 100)
-                        {
-                            p = 100;
-                            if (UpLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (UpLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
-                                UpLoadFilePause = new ManualResetEvent(false);
-                                UpLoadFilePause.WaitOne();
-                            }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                        }
-                        else
-                        {
-                            if (UpLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (UpLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
-                                UpLoadFilePause = new ManualResetEvent(false);
-                                UpLoadFilePause.WaitOne();
-                            }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                            p = s + p;
-                        }
-                    }
-                }
-                if (check760d.Checked == true)
-                {
-                    Fpga760dSIze();
-                    Upload760d();
-                    if (s == p)
-                    {
-                        if (UpLoadFile_Stop)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
-                            return;
-                        }
-                        if (UpLoadFile_On_Off)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
-                            UpLoadFilePause = new ManualResetEvent(false);
-                            UpLoadFilePause.WaitOne();
-                        }
-                        metroProgressBar.Value = p;
-                        toolStripStatusLabelbar.Text = p + "%";
-                        System.Threading.Thread.Sleep(XHTime);
-                        p = s + p;
-                    }
-                    else
-                    {
-                        if (p > 95 && p <= 100)
-                        {
-                            p = 100;
-                            if (UpLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (UpLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
-                                UpLoadFilePause = new ManualResetEvent(false);
-                                UpLoadFilePause.WaitOne();
-                            }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                        }
-                        else
-                        {
-                            if (UpLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (UpLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
-                                UpLoadFilePause = new ManualResetEvent(false);
-                                UpLoadFilePause.WaitOne();
-                            }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                            p = s + p;
-                        }
-                    }
-                }
-                if (check760e.Checked == true)
-                {
-                    Fpga760eSize();
-                    Upload760e();
-                    if (s == p)
-                    {
-                        if (UpLoadFile_Stop)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
-                            return;
-                        }
-                        if (UpLoadFile_On_Off)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
-                            UpLoadFilePause = new ManualResetEvent(false);
-                            UpLoadFilePause.WaitOne();
-                        }
-                        metroProgressBar.Value = p;
-                        toolStripStatusLabelbar.Text = p + "%";
-                        System.Threading.Thread.Sleep(XHTime);
-                        p = s + p;
-                    }
-                    else
-                    {
-                        if (p > 95 && p <= 100)
-                        {
-                            p = 100;
-                            if (UpLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (UpLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
-                                UpLoadFilePause = new ManualResetEvent(false);
-                                UpLoadFilePause.WaitOne();
-                            }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                        }
-                        else
-                        {
-                            if (UpLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (UpLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
-                                UpLoadFilePause = new ManualResetEvent(false);
-                                UpLoadFilePause.WaitOne();
-                            }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                            p = s + p;
-                        }
-                    }
-                }
-                if (checkotnpack.Checked == true)
-                {
-                    OtnPackSize();
-                    UploadOtnPack();
-                    if (s == p)
-                    {
-                        if (UpLoadFile_Stop)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
-                            return;
-                        }
-                        if (UpLoadFile_On_Off)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
-                            UpLoadFilePause = new ManualResetEvent(false);
-                            UpLoadFilePause.WaitOne();
-                        }
-                        metroProgressBar.Value = p;
-                        toolStripStatusLabelbar.Text = p + "%";
-                        System.Threading.Thread.Sleep(XHTime);
-                        p = s + p;
-                    }
-                    else
-                    {
-                        if (p > 95 && p <= 100)
-                        {
-                            p = 100;
-                            if (UpLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (UpLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
-                                UpLoadFilePause = new ManualResetEvent(false);
-                                UpLoadFilePause.WaitOne();
-                            }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                        }
-                        else
-                        {
-                            if (UpLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (UpLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
-                                UpLoadFilePause = new ManualResetEvent(false);
-                                UpLoadFilePause.WaitOne();
-                            }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                            p = s + p;
-                        }
-                    }
-                }
-                if (checksysfile.Checked == true)
-                {
-                    SysfileSize();
-                    UploadSysfile();
-                    if (s == p)
-                    {
-                        if (UpLoadFile_Stop)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
-                            return;
-                        }
-                        if (UpLoadFile_On_Off)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
-                            UpLoadFilePause = new ManualResetEvent(false);
-                            UpLoadFilePause.WaitOne();
-                        }
-                        metroProgressBar.Value = p;
-                        toolStripStatusLabelbar.Text = p + "%";
-                        System.Threading.Thread.Sleep(XHTime);
-                        p = s + p;
-                    }
-                    else
-                    {
-                        if (p > 95 && p <= 100)
-                        {
-                            p = 100;
-                            if (UpLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (UpLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
-                                UpLoadFilePause = new ManualResetEvent(false);
-                                UpLoadFilePause.WaitOne();
-                            }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                        }
-                        else
-                        {
-                            if (UpLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (UpLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
-                                UpLoadFilePause = new ManualResetEvent(false);
-                                UpLoadFilePause.WaitOne();
-                            }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                            p = s + p;
-                        }
-                    }
-                }
-                if (checkflash.Checked == true)
-                {
-                    Filesize = 33554432;
-                    UploadFlash();
-                    if (s == p)
-                    {
-                        if (UpLoadFile_Stop)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
-                            return;
-                        }
-                        if (UpLoadFile_On_Off)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
-                            UpLoadFilePause = new ManualResetEvent(false);
-                            UpLoadFilePause.WaitOne();
-                        }
-                        metroProgressBar.Value = p;
-                        toolStripStatusLabelbar.Text = p + "%";
-                        System.Threading.Thread.Sleep(XHTime);
-                        p = s + p;
-                    }
-                    else
-                    {
-                        if (p > 95 && p <= 100)
-                        {
-                            p = 100;
-                            if (UpLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (UpLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
-                                UpLoadFilePause = new ManualResetEvent(false);
-                                UpLoadFilePause.WaitOne();
-                            }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                        }
-                        else
-                        {
-                            if (UpLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (UpLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
-                                UpLoadFilePause = new ManualResetEvent(false);
-                                UpLoadFilePause.WaitOne();
-                            }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                            p = s + p;
-                        }
-                    }
-                }
-                if (checkyaffs.Checked == true)
-                {
-                    Filesize = 553648128;
-                    UploadYaffs();
-                    if (s == p)
-                    {
-                        if (UpLoadFile_Stop)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
-                            return;
-                        }
-                        if (UpLoadFile_On_Off)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
-                            UpLoadFilePause = new ManualResetEvent(false);
-                            UpLoadFilePause.WaitOne();
-                        }
-                        metroProgressBar.Value = p;
-                        toolStripStatusLabelbar.Text = p + "%";
-                        System.Threading.Thread.Sleep(XHTime);
-                        p = s + p;
-                    }
-                    else
-                    {
-                        if (p > 95 && p <= 100)
-                        {
-                            p = 100;
-                            if (UpLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (UpLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
-                                UpLoadFilePause = new ManualResetEvent(false);
-                                UpLoadFilePause.WaitOne();
-                            }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                        }
-                        else
-                        {
-                            if (UpLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (UpLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
-                                UpLoadFilePause = new ManualResetEvent(false);
-                                UpLoadFilePause.WaitOne();
-                            }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                            p = s + p;
-                        }
-                    }
-                }
-                Thread.Sleep(XHTime);
-                string canyu = mysocket.ReceiveData(int.Parse(ts));
-                toolStripStatusLabelzt.Text = "已完成";
-                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份结束" + "================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                butsend.PerformClick();
-                UpLoadFile_Stop = true;
-                butupload.Text = "⑤上传备份";
-                Mytimer.Change(Timeout.Infinite, 1000);
             }
             catch (Exception ex)
             {
@@ -13503,6 +13488,7 @@ check760e.Checked == false)
 
         private void timer1_Tick(object sender, EventArgs e)
         {
+            //MessageBox.Show("");
             try
             {
                 if (devtype == "")
@@ -13514,7 +13500,7 @@ check760e.Checked == false)
                 //定义代理参数类 
                 AgentParameters param = new AgentParameters(community);
                 //将SNMP版本设置为1（或2） 
-                param.Version = SnmpVersion.Ver1;
+                param.Version = SnmpVersion.Ver2;
                 //构造代理地址对象
                 //这里很容易使用IpAddress类，因为
                 //如果不
@@ -13998,14 +13984,5 @@ check760e.Checked == false)
             Help.ShowDialog();// 将窗体显示出来
         }
 
-        private void metroButton2_Click(object sender, EventArgs e)
-        {
-            Process[] pro = Process.GetProcesses();
-            foreach (var item in pro)
-            {
-                richTextBox1.AppendText(item.ProcessName + "\r\n");
-
-            }
-        }
     }
 }
