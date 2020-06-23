@@ -21,6 +21,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
+using MySql.Data.MySqlClient;
 namespace MyGpnSoftware
 {
     public partial class GPN : MetroForm
@@ -693,7 +694,7 @@ namespace MyGpnSoftware
             }
             RepleyCommandToUser(user, sendString);
             InitDataSession(user);
-            ReadFileByUserSession(user, fs, filename);
+            ReadFileByUserSession(user, fs);
             RepleyCommandToUser(user, "226 Transfer complete");
         }
         // 处理DELE命令，提供删除功能，删除服务器上的文件
@@ -826,6 +827,7 @@ namespace MyGpnSoftware
         private void SendFileByUserSession(User user, FileStream fs, string path)
         {
             AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " 向用户发送(文件流)：[........................");
+            string ipadd = comip.Text;
             try
             {
                 if (user.IsBinary)
@@ -842,14 +844,16 @@ namespace MyGpnSoftware
                         user.DataSession.binaryWriter.Flush();
                         count = binaryReader.Read(bytes, 0, bytes.Length);
                         totalDownloadedByte = count + totalDownloadedByte;
-                        percent = (int)Math.Floor((float)totalDownloadedByte / (float)Filesize * 100);
-                        // textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") +" "+percent.ToString() + "\r\np");
-                        //textDOS.AppendText("d:"+totalDownloadedByte.ToString() + "\r\n");
-                        toolStripStatusLabjindu.Text = percent.ToString() + "%";
-                        if (percent >= 0 && percent <= 100)
-                        {
-                            metroProgressBar.Value = percent;
+                        if (user.CommandSession.tcpClient.Client.RemoteEndPoint.ToString().Contains(ipadd)){
+                            
+                            percent = (int)Math.Floor((float)totalDownloadedByte / (float)Filesize * 100);
+                            //labjindu.Text = percent.ToString() + "%";
+                            if (percent >= 0 && percent <= 100)
+                            {
+                                myProgressBarjindu.Value = percent;
+                            }
                         }
+
                     }
                 }
                 else
@@ -860,8 +864,12 @@ namespace MyGpnSoftware
                         user.DataSession.streamWriter.WriteLine(streamReader.ReadLine());
                     }
                 }
-                metroProgressBar.Value = 100;
-                toolStripStatusLabjindu.Text = 100 + "%";
+                if (user.CommandSession.tcpClient.Client.RemoteEndPoint.ToString().Contains(ipadd))
+                {
+                    myProgressBarjindu.Value = 100;
+                    //labjindu.Text = 100 + "%";
+                }
+
                 AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + "                                              ...................]发送完毕！");
             }
             finally
@@ -873,33 +881,39 @@ namespace MyGpnSoftware
         #endregion
         #region 使数据连接接收文件流
         // 使数据连接接收文件流(客户端发送上传文件功能)
-        private void ReadFileByUserSession(User user, FileStream fs, string filename)
+        private void ReadFileByUserSession(User user, FileStream fs)
         {
             AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " 接收用户上传数据（文件流）：[..................");
+            string ipadd = comip.Text;
             try
             {
                 if (user.IsBinary)
                 {
+                    
                     byte[] bytes = new byte[1024];
                     long totalDownloadedByte = 0;
                     int percent = 0;
                     BinaryWriter binaryWriter = new BinaryWriter(fs);
-                    //textDOS.AppendText("t:"+ Filesize.ToString() + "\r\n");
                     int count = user.DataSession.binaryReader.Read(bytes, 0, bytes.Length);
                     while (count > 0)
                     {
-                        totalDownloadedByte = count + totalDownloadedByte;
+                       
                         binaryWriter.Write(bytes, 0, count);
-                        binaryWriter.Flush();
+                        totalDownloadedByte = count + totalDownloadedByte;
                         count = user.DataSession.binaryReader.Read(bytes, 0, bytes.Length);
-                        //textDOS.AppendText("t2:"+totalBytes.ToString() + "\r\n");
-                        percent = (int)Math.Floor((float)totalDownloadedByte / (float)Filesize * 100);
-                        // textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") +" "+percent.ToString() + "\r\np");
-                        //textDOS.AppendText("d:"+totalDownloadedByte.ToString() + "\r\n");
-                        toolStripStatusLabjindu.Text = percent.ToString() + "%";
-                        if (percent >= 0 && percent <= 100)
+                        binaryWriter.Flush();
+                        if (user.CommandSession.tcpClient.Client.RemoteEndPoint.ToString().Contains(ipadd))
                         {
-                            metroProgressBar.Value = percent;
+
+                            //textDOS.AppendText("t2:"+totalBytes.ToString() + "\r\n");
+                            percent = (int)Math.Floor((float)totalDownloadedByte / (float)Filesize * 100);
+                            // textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") +" "+percent.ToString() + "\r\np");
+                            //textDOS.AppendText("d:"+totalDownloadedByte.ToString() + "\r\n");
+                            //labjindu.Text = percent.ToString() + "%";
+                            if (percent >= 0 && percent <= 100)
+                            {
+                                myProgressBarjindu.Value = percent;
+                            }
                         }
                     }
                 }
@@ -912,8 +926,11 @@ namespace MyGpnSoftware
                         streamWriter.Flush();
                     }
                 }
-                metroProgressBar.Value = 100;
-                toolStripStatusLabjindu.Text = 100 + "%";
+                if (user.CommandSession.tcpClient.Client.RemoteEndPoint.ToString().Contains(ipadd))
+                {
+                    myProgressBarjindu.Value = 100;
+                    //labjindu.Text = 100 + "%";
+                }
                 AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + "                                              ...................]接收完毕！");
             }
             finally
@@ -1114,8 +1131,8 @@ namespace MyGpnSoftware
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
-                        metroProgressBar.Value = p;
-                        toolStripStatusLabelbar.Text = p + "%";
+                        myProgressBarjindu.Value = p;
+                        //toolStripStatusLabelbar.Text = p + "%";
                         System.Threading.Thread.Sleep(XHTime);
                         p = s + p;
                     }
@@ -1135,8 +1152,8 @@ namespace MyGpnSoftware
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
+                            myProgressBarjindu.Value = p;
+                            //toolStripStatusLabelbar.Text = p + "%";
                             System.Threading.Thread.Sleep(XHTime);
                         }
                         else
@@ -1152,8 +1169,8 @@ namespace MyGpnSoftware
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
+                            myProgressBarjindu.Value = p;
+                            //toolStripStatusLabelbar.Text = p + "%";
                             System.Threading.Thread.Sleep(XHTime);
                             p = s + p;
                         }
@@ -1175,8 +1192,8 @@ namespace MyGpnSoftware
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
-                        metroProgressBar.Value = p;
-                        toolStripStatusLabelbar.Text = p + "%";
+                        myProgressBarjindu.Value = p;
+                        //toolStripStatusLabelbar.Text = p + "%";
                         System.Threading.Thread.Sleep(XHTime);
                         p = s + p;
                     }
@@ -1196,8 +1213,8 @@ namespace MyGpnSoftware
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
+                            myProgressBarjindu.Value = p;
+                            //toolStripStatusLabelbar.Text = p + "%";
                             System.Threading.Thread.Sleep(XHTime);
                         }
                         else
@@ -1213,8 +1230,8 @@ namespace MyGpnSoftware
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
+                            myProgressBarjindu.Value = p;
+                            //toolStripStatusLabelbar.Text = p + "%";
                             System.Threading.Thread.Sleep(XHTime);
                             p = s + p;
                         }
@@ -1236,8 +1253,8 @@ namespace MyGpnSoftware
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
-                        metroProgressBar.Value = p;
-                        toolStripStatusLabelbar.Text = p + "%";
+                        myProgressBarjindu.Value = p;
+                        //toolStripStatusLabelbar.Text = p + "%";
                         System.Threading.Thread.Sleep(XHTime);
                         p = s + p;
                     }
@@ -1257,8 +1274,8 @@ namespace MyGpnSoftware
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
+                            myProgressBarjindu.Value = p;
+                            //toolStripStatusLabelbar.Text = p + "%";
                             System.Threading.Thread.Sleep(XHTime);
                         }
                         else
@@ -1274,8 +1291,8 @@ namespace MyGpnSoftware
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
+                            myProgressBarjindu.Value = p;
+                            //toolStripStatusLabelbar.Text = p + "%";
                             System.Threading.Thread.Sleep(XHTime);
                             p = s + p;
                         }
@@ -1304,8 +1321,8 @@ namespace MyGpnSoftware
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
-                        metroProgressBar.Value = p;
-                        toolStripStatusLabelbar.Text = p + "%";
+                        myProgressBarjindu.Value = p;
+                        //toolStripStatusLabelbar.Text = p + "%";
                         System.Threading.Thread.Sleep(XHTime);
                         p = s + p;
                     }
@@ -1325,8 +1342,8 @@ namespace MyGpnSoftware
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
+                            myProgressBarjindu.Value = p;
+                            //toolStripStatusLabelbar.Text = p + "%";
                             System.Threading.Thread.Sleep(XHTime);
                         }
                         else
@@ -1342,8 +1359,8 @@ namespace MyGpnSoftware
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
+                            myProgressBarjindu.Value = p;
+                            //toolStripStatusLabelbar.Text = p + "%";
                             System.Threading.Thread.Sleep(XHTime);
                             p = s + p;
                         }
@@ -1365,8 +1382,8 @@ namespace MyGpnSoftware
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
-                        metroProgressBar.Value = p;
-                        toolStripStatusLabelbar.Text = p + "%";
+                        myProgressBarjindu.Value = p;
+                        //toolStripStatusLabelbar.Text = p + "%";
                         System.Threading.Thread.Sleep(XHTime);
                         p = s + p;
                     }
@@ -1386,8 +1403,8 @@ namespace MyGpnSoftware
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
+                            myProgressBarjindu.Value = p;
+                            //toolStripStatusLabelbar.Text = p + "%";
                             System.Threading.Thread.Sleep(XHTime);
                         }
                         else
@@ -1403,8 +1420,8 @@ namespace MyGpnSoftware
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
+                            myProgressBarjindu.Value = p;
+                            //toolStripStatusLabelbar.Text = p + "%";
                             System.Threading.Thread.Sleep(XHTime);
                             p = s + p;
                         }
@@ -1426,8 +1443,8 @@ namespace MyGpnSoftware
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
-                        metroProgressBar.Value = p;
-                        toolStripStatusLabelbar.Text = p + "%";
+                        myProgressBarjindu.Value = p;
+                        //toolStripStatusLabelbar.Text = p + "%";
                         System.Threading.Thread.Sleep(XHTime);
                         p = s + p;
                     }
@@ -1447,8 +1464,8 @@ namespace MyGpnSoftware
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
+                            myProgressBarjindu.Value = p;
+                            //toolStripStatusLabelbar.Text = p + "%";
                             System.Threading.Thread.Sleep(XHTime);
                         }
                         else
@@ -1464,8 +1481,8 @@ namespace MyGpnSoftware
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
+                            myProgressBarjindu.Value = p;
+                            //toolStripStatusLabelbar.Text = p + "%";
                             System.Threading.Thread.Sleep(XHTime);
                             p = s + p;
                         }
@@ -1487,8 +1504,8 @@ namespace MyGpnSoftware
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
-                        metroProgressBar.Value = p;
-                        toolStripStatusLabelbar.Text = p + "%";
+                        myProgressBarjindu.Value = p;
+                        //toolStripStatusLabelbar.Text = p + "%";
                         System.Threading.Thread.Sleep(XHTime);
                         p = s + p;
                     }
@@ -1508,8 +1525,8 @@ namespace MyGpnSoftware
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
+                            myProgressBarjindu.Value = p;
+                            //toolStripStatusLabelbar.Text = p + "%";
                             System.Threading.Thread.Sleep(XHTime);
                         }
                         else
@@ -1525,8 +1542,8 @@ namespace MyGpnSoftware
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
+                            myProgressBarjindu.Value = p;
+                            //toolStripStatusLabelbar.Text = p + "%";
                             System.Threading.Thread.Sleep(XHTime);
                             p = s + p;
                         }
@@ -1548,8 +1565,8 @@ namespace MyGpnSoftware
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
-                        metroProgressBar.Value = p;
-                        toolStripStatusLabelbar.Text = p + "%";
+                        myProgressBarjindu.Value = p;
+                        //toolStripStatusLabelbar.Text = p + "%";
                         System.Threading.Thread.Sleep(XHTime);
                         p = s + p;
                     }
@@ -1569,8 +1586,8 @@ namespace MyGpnSoftware
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
+                            myProgressBarjindu.Value = p;
+                            //toolStripStatusLabelbar.Text = p + "%";
                             System.Threading.Thread.Sleep(XHTime);
                         }
                         else
@@ -1586,8 +1603,8 @@ namespace MyGpnSoftware
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
+                            myProgressBarjindu.Value = p;
+                            //toolStripStatusLabelbar.Text = p + "%";
                             System.Threading.Thread.Sleep(XHTime);
                             p = s + p;
                         }
@@ -1609,8 +1626,8 @@ namespace MyGpnSoftware
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
-                        metroProgressBar.Value = p;
-                        toolStripStatusLabelbar.Text = p + "%";
+                        myProgressBarjindu.Value = p;
+                        //toolStripStatusLabelbar.Text = p + "%";
                         System.Threading.Thread.Sleep(XHTime);
                         p = s + p;
                     }
@@ -1630,8 +1647,8 @@ namespace MyGpnSoftware
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
+                            myProgressBarjindu.Value = p;
+                            //toolStripStatusLabelbar.Text = p + "%";
                             System.Threading.Thread.Sleep(XHTime);
                         }
                         else
@@ -1647,8 +1664,8 @@ namespace MyGpnSoftware
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
+                            myProgressBarjindu.Value = p;
+                            //toolStripStatusLabelbar.Text = p + "%";
                             System.Threading.Thread.Sleep(XHTime);
                             p = s + p;
                         }
@@ -1670,8 +1687,8 @@ namespace MyGpnSoftware
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
-                        metroProgressBar.Value = p;
-                        toolStripStatusLabelbar.Text = p + "%";
+                        myProgressBarjindu.Value = p;
+                        //toolStripStatusLabelbar.Text = p + "%";
                         System.Threading.Thread.Sleep(XHTime);
                         p = s + p;
                     }
@@ -1691,8 +1708,8 @@ namespace MyGpnSoftware
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
+                            myProgressBarjindu.Value = p;
+                            //toolStripStatusLabelbar.Text = p + "%";
                             System.Threading.Thread.Sleep(XHTime);
                         }
                         else
@@ -1708,8 +1725,8 @@ namespace MyGpnSoftware
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
+                            myProgressBarjindu.Value = p;
+                            //toolStripStatusLabelbar.Text = p + "%";
                             System.Threading.Thread.Sleep(XHTime);
                             p = s + p;
                         }
@@ -1731,8 +1748,8 @@ namespace MyGpnSoftware
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
-                        metroProgressBar.Value = p;
-                        toolStripStatusLabelbar.Text = p + "%";
+                        myProgressBarjindu.Value = p;
+                        //toolStripStatusLabelbar.Text = p + "%";
                         System.Threading.Thread.Sleep(XHTime);
                         p = s + p;
                     }
@@ -1752,8 +1769,8 @@ namespace MyGpnSoftware
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
+                            myProgressBarjindu.Value = p;
+                            //toolStripStatusLabelbar.Text = p + "%";
                             System.Threading.Thread.Sleep(XHTime);
                         }
                         else
@@ -1769,8 +1786,8 @@ namespace MyGpnSoftware
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
+                            myProgressBarjindu.Value = p;
+                            //toolStripStatusLabelbar.Text = p + "%";
                             System.Threading.Thread.Sleep(XHTime);
                             p = s + p;
                         }
@@ -1792,8 +1809,8 @@ namespace MyGpnSoftware
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
-                        metroProgressBar.Value = p;
-                        toolStripStatusLabelbar.Text = p + "%";
+                        myProgressBarjindu.Value = p;
+                        //toolStripStatusLabelbar.Text = p + "%";
                         System.Threading.Thread.Sleep(XHTime);
                         p = s + p;
                     }
@@ -1813,8 +1830,8 @@ namespace MyGpnSoftware
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
+                            myProgressBarjindu.Value = p;
+                            //toolStripStatusLabelbar.Text = p + "%";
                             System.Threading.Thread.Sleep(XHTime);
                         }
                         else
@@ -1830,8 +1847,8 @@ namespace MyGpnSoftware
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
+                            myProgressBarjindu.Value = p;
+                            //toolStripStatusLabelbar.Text = p + "%";
                             System.Threading.Thread.Sleep(XHTime);
                             p = s + p;
                         }
@@ -1853,8 +1870,8 @@ namespace MyGpnSoftware
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
-                        metroProgressBar.Value = p;
-                        toolStripStatusLabelbar.Text = p + "%";
+                        myProgressBarjindu.Value = p;
+                        //toolStripStatusLabelbar.Text = p + "%";
                         System.Threading.Thread.Sleep(XHTime);
                         p = s + p;
                     }
@@ -1874,8 +1891,8 @@ namespace MyGpnSoftware
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
+                            myProgressBarjindu.Value = p;
+                            //toolStripStatusLabelbar.Text = p + "%";
                             System.Threading.Thread.Sleep(XHTime);
                         }
                         else
@@ -1891,8 +1908,8 @@ namespace MyGpnSoftware
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
+                            myProgressBarjindu.Value = p;
+                            //toolStripStatusLabelbar.Text = p + "%";
                             System.Threading.Thread.Sleep(XHTime);
                             p = s + p;
                         }
@@ -1914,8 +1931,8 @@ namespace MyGpnSoftware
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
-                        metroProgressBar.Value = p;
-                        toolStripStatusLabelbar.Text = p + "%";
+                        myProgressBarjindu.Value = p;
+                        //toolStripStatusLabelbar.Text = p + "%";
                         System.Threading.Thread.Sleep(XHTime);
                         p = s + p;
                     }
@@ -1935,8 +1952,8 @@ namespace MyGpnSoftware
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
+                            myProgressBarjindu.Value = p;
+                            //toolStripStatusLabelbar.Text = p + "%";
                             System.Threading.Thread.Sleep(XHTime);
                         }
                         else
@@ -1952,8 +1969,8 @@ namespace MyGpnSoftware
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
+                            myProgressBarjindu.Value = p;
+                            //toolStripStatusLabelbar.Text = p + "%";
                             System.Threading.Thread.Sleep(XHTime);
                             p = s + p;
                         }
@@ -1975,8 +1992,8 @@ namespace MyGpnSoftware
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
-                        metroProgressBar.Value = p;
-                        toolStripStatusLabelbar.Text = p + "%";
+                        myProgressBarjindu.Value = p;
+                        //toolStripStatusLabelbar.Text = p + "%";
                         System.Threading.Thread.Sleep(XHTime);
                         p = s + p;
                     }
@@ -1996,8 +2013,8 @@ namespace MyGpnSoftware
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
+                            myProgressBarjindu.Value = p;
+                            //toolStripStatusLabelbar.Text = p + "%";
                             System.Threading.Thread.Sleep(XHTime);
                         }
                         else
@@ -2013,8 +2030,8 @@ namespace MyGpnSoftware
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
+                            myProgressBarjindu.Value = p;
+                            //toolStripStatusLabelbar.Text = p + "%";
                             System.Threading.Thread.Sleep(XHTime);
                             p = s + p;
                         }
@@ -2036,8 +2053,8 @@ namespace MyGpnSoftware
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
-                        metroProgressBar.Value = p;
-                        toolStripStatusLabelbar.Text = p + "%";
+                        myProgressBarjindu.Value = p;
+                        //toolStripStatusLabelbar.Text = p + "%";
                         Thread.Sleep(XHTime);
                         p = s + p;
                     }
@@ -2057,8 +2074,8 @@ namespace MyGpnSoftware
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
+                            myProgressBarjindu.Value = p;
+                            //toolStripStatusLabelbar.Text = p + "%";
                             System.Threading.Thread.Sleep(XHTime);
                         }
                         else
@@ -2074,8 +2091,8 @@ namespace MyGpnSoftware
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
+                            myProgressBarjindu.Value = p;
+                            //toolStripStatusLabelbar.Text = p + "%";
                             System.Threading.Thread.Sleep(XHTime);
                             p = s + p;
                         }
@@ -4957,7 +4974,7 @@ namespace MyGpnSoftware
                             if (syncotn.Contains(sync))
                             {
                                 textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "同步sysfile============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                Thread.Sleep(XHTime);
+                                Thread.Sleep(5000);
                                 break;
                             }
                             Thread.Sleep(XHTime);
@@ -5005,8 +5022,8 @@ namespace MyGpnSoftware
                     str = str.Substring(0, str.Length - 3);
                     textDOS.Text = str; //赋回已删除最后一个字符的字符串给textBox
                     textDOS.AppendText(box);
-                    metroProgressBar.Value = int.Parse(strjinfu);
-                    toolStripStatusLabjindu.Text = jindu;
+                    myProgressBarjindu.Value = int.Parse(strjinfu);
+                    //labjindu.Text = jindu;
                 }
                 if (box.Contains(ok))
                 {
@@ -5054,8 +5071,8 @@ namespace MyGpnSoftware
                     //str = str.Substring(0, str.Length - 4);
                     //textDOS.Text = str; //赋回已删除最后一个字符的字符串给textBox
                     //textDOS.AppendText(box);
-                    metroProgressBar.Value = int.Parse(strjinfu);
-                    toolStripStatusLabjindu.Text = jindu;
+                    myProgressBarjindu.Value = int.Parse(strjinfu);
+                    //labjindu.Text = jindu;
                 }
                 if (box.Contains(ok))
                 {
@@ -7959,8 +7976,139 @@ namespace MyGpnSoftware
                     ma = new ManualResetEvent(false);
                     ma.WaitOne();
                 }
-                textguzhangmingling.Text = textcyclemingling.Text;
-                butguzhangsend.PerformClick();
+
+                //LinkGpn();
+                //textcurrent.AppendText("//////////////////复位5槽位后检查oduk");
+                //textguzhangmingling.Text = "config otn";
+                //butguzhangsend.PerformClick();
+                //Thread.Sleep(300);
+                //textguzhangmingling.Text = "show oduk";
+                //butguzhangsend.PerformClick();
+                //Thread.Sleep(300);
+                //butguzhangsend.PerformClick();
+                //Thread.Sleep(300);
+                //textguzhangmingling.Text = "exit";
+                //butguzhangsend.PerformClick();
+                //Thread.Sleep(300);
+                //textguzhangmingling.Text = "reboot 5";
+                //butguzhangsend.PerformClick();
+                //Thread.Sleep(300);
+                //textguzhangmingling.Text = "y";
+                //butguzhangsend.PerformClick();
+                //textlog.AppendText(textcurrent.Text);
+                //textcurrent.Text = "";
+                //Thread.Sleep(120000);
+                //textcurrent.AppendText("//////////////////复位6槽位后检查oduk");
+                //textguzhangmingling.Text = "config otn";
+                //butguzhangsend.PerformClick();
+                //Thread.Sleep(300);
+                //textguzhangmingling.Text = "show oduk";
+                //butguzhangsend.PerformClick();
+                //Thread.Sleep(300);
+                //butguzhangsend.PerformClick();
+                //Thread.Sleep(300);
+                //textguzhangmingling.Text = "exit";
+                //butguzhangsend.PerformClick();
+                //Thread.Sleep(300);
+                //textguzhangmingling.Text = "reboot 6";
+                //butguzhangsend.PerformClick();
+                //Thread.Sleep(300);
+                //textguzhangmingling.Text = "y";
+                //butguzhangsend.PerformClick();
+                //textlog.AppendText(textcurrent.Text);
+                //textcurrent.Text = "";
+                //Thread.Sleep(120000);
+                //textcurrent.AppendText("//////////////////复位11槽位后检查oduk");
+                //textguzhangmingling.Text = "config otn";
+                //butguzhangsend.PerformClick();
+                //Thread.Sleep(300);
+                //textguzhangmingling.Text = "show oduk";
+                //butguzhangsend.PerformClick();
+                //Thread.Sleep(300);
+                //butguzhangsend.PerformClick();
+                //Thread.Sleep(300);
+                //textguzhangmingling.Text = "exit";
+                //butguzhangsend.PerformClick();
+                //Thread.Sleep(300);
+                //textguzhangmingling.Text = "reboot 11";
+                //butguzhangsend.PerformClick();
+                //Thread.Sleep(300);
+                //textguzhangmingling.Text = "y";
+                //butguzhangsend.PerformClick();
+                //textlog.AppendText(textcurrent.Text);
+                //textcurrent.Text = "";
+                //Thread.Sleep(500000);
+                //textcurrent.AppendText("//////////////////复位12槽位后检查oduk");
+                //textguzhangmingling.Text = "config otn";
+                //butguzhangsend.PerformClick();
+                //Thread.Sleep(300);
+                //textguzhangmingling.Text = "show oduk";
+                //butguzhangsend.PerformClick();
+                //Thread.Sleep(300);
+                //butguzhangsend.PerformClick();
+                //Thread.Sleep(300);
+                //textguzhangmingling.Text = "exit";
+                //butguzhangsend.PerformClick();
+                //Thread.Sleep(300);
+                //textguzhangmingling.Text = "reboot 12";
+                //butguzhangsend.PerformClick();
+                //Thread.Sleep(300);
+                //textguzhangmingling.Text = "y";
+                //butguzhangsend.PerformClick();
+                //textlog.AppendText(textcurrent.Text);
+                //textcurrent.Text = "";
+                //Thread.Sleep(500000);
+                //textcurrent.AppendText("//////////////////复位17槽位后检查oduk");
+                //textguzhangmingling.Text = "config otn";
+                //butguzhangsend.PerformClick();
+                //Thread.Sleep(300);
+                //textguzhangmingling.Text = "show oduk";
+                //butguzhangsend.PerformClick();
+                //Thread.Sleep(300);
+                //butguzhangsend.PerformClick();
+                //Thread.Sleep(300);
+                //textguzhangmingling.Text = "exit";
+                //butguzhangsend.PerformClick();
+                //Thread.Sleep(300);
+                //textguzhangmingling.Text = "reboot 17";
+                //butguzhangsend.PerformClick();
+                //Thread.Sleep(300);
+                //textguzhangmingling.Text = "y";
+                //butguzhangsend.PerformClick();
+                //textlog.AppendText(textcurrent.Text);
+                //textcurrent.Text = "";
+                //mysocket.Close();
+                //Thread.Sleep(1200000);
+
+                //LinkGpn();
+                //textcurrent.AppendText("//////////////////复位18槽位后检查oduk");
+                //textguzhangmingling.Text = "config otn";
+                //butguzhangsend.PerformClick();
+                //Thread.Sleep(300);
+                //textguzhangmingling.Text = "show oduk";
+                //butguzhangsend.PerformClick();
+                //Thread.Sleep(300);
+                //butguzhangsend.PerformClick();
+                //Thread.Sleep(300);
+                //textguzhangmingling.Text = "exit";
+                //butguzhangsend.PerformClick();
+                //Thread.Sleep(300);
+                //textguzhangmingling.Text = "reboot 18";
+                //butguzhangsend.PerformClick();
+                //Thread.Sleep(300);
+                //textguzhangmingling.Text = "y";
+                //butguzhangsend.PerformClick();
+                //textlog.AppendText(textcurrent.Text);
+                //textcurrent.Text = "";
+                //mysocket.Close();
+                //Thread.Sleep(1200000);
+
+
+
+
+
+
+
                 //LinkGpn();
                 //textcurrent.AppendText("//////////////////Telnet登录后开始检查NEID变化");
                 //textguzhangmingling.Text = textcyclemingling.Text;
@@ -8068,6 +8216,8 @@ namespace MyGpnSoftware
                 //    }
                 //    //Thread.Sleep(XHTime/10);
                 //}
+                textguzhangmingling.Text = textcyclemingling.Text;
+                butguzhangsend.PerformClick();
                 textlog.AppendText(textcurrent.Text);
                 textcurrent.Text = "";
                 int time = int.Parse(comshijian.Text.Trim()) * 1000;
@@ -8276,8 +8426,8 @@ namespace MyGpnSoftware
                     //p = (int)Math.Floor((double)100 / a);
                     percent = (int)Math.Floor((float)totalDownloadedByte / (float)totalBytes * 100);
                     // textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") +" "+percent.ToString() + "\r\n");
-                    toolStripStatusLabjindu.Text = percent.ToString() + "%";
-                    metroProgressBar.Value = percent;
+                    //labjindu.Text = percent.ToString() + "%";
+                    myProgressBarjindu.Value = percent;
                     // System.Windows.Forms.Application.DoEvents();
                 }
                 stream.Close();
@@ -10003,7 +10153,7 @@ namespace MyGpnSoftware
                 MessageBox.Show(ex.Message);
             }
             finally {
-                butsend.PerformClick();
+               // butsend.PerformClick();
                 toolStripStatusLabelzt.Text = "已完成";
             }
         }
@@ -10074,9 +10224,9 @@ check760e.Checked == false)
                     Control.CheckForIllegalCrossThreadCalls = false;
                     uploading = true;
                     Testftpser();
-                    if (DownLoadFile_Stop)
+                    if (UpLoadFile_Stop)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("\r\n" + "yyyy-MM-dd HH:mm:ss.fff") + " " + "下载升级已停止！");
+                        textDOS.AppendText(DateTime.Now.ToString("\r\n" + "yyyy-MM-dd HH:mm:ss.fff") + " " + "上传备份已停止！");
                         return;
                     }
                     Uploadsave();
@@ -10165,8 +10315,8 @@ check760e.Checked == false)
                                 UpLoadFilePause = new ManualResetEvent(false);
                                 UpLoadFilePause.WaitOne();
                             }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
+                            myProgressBarjindu.Value = p;
+                            //toolStripStatusLabelbar.Text = p + "%";
                             System.Threading.Thread.Sleep(XHTime);
                             p = s + p;
                         }
@@ -10186,8 +10336,8 @@ check760e.Checked == false)
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
-                                metroProgressBar.Value = p;
-                                toolStripStatusLabelbar.Text = p + "%";
+                                myProgressBarjindu.Value = p;
+                                //toolStripStatusLabelbar.Text = p + "%";
                                 System.Threading.Thread.Sleep(XHTime);
                             }
                             else
@@ -10203,8 +10353,8 @@ check760e.Checked == false)
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
-                                metroProgressBar.Value = p;
-                                toolStripStatusLabelbar.Text = p + "%";
+                                myProgressBarjindu.Value = p;
+                                //toolStripStatusLabelbar.Text = p + "%";
                                 System.Threading.Thread.Sleep(XHTime);
                                 p = s + p;
                             }
@@ -10227,8 +10377,8 @@ check760e.Checked == false)
                                 UpLoadFilePause = new ManualResetEvent(false);
                                 UpLoadFilePause.WaitOne();
                             }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
+                            myProgressBarjindu.Value = p;
+                            //toolStripStatusLabelbar.Text = p + "%";
                             System.Threading.Thread.Sleep(XHTime);
                             p = s + p;
                         }
@@ -10248,8 +10398,8 @@ check760e.Checked == false)
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
-                                metroProgressBar.Value = p;
-                                toolStripStatusLabelbar.Text = p + "%";
+                                myProgressBarjindu.Value = p;
+                                //toolStripStatusLabelbar.Text = p + "%";
                                 System.Threading.Thread.Sleep(XHTime);
                             }
                             else
@@ -10265,8 +10415,8 @@ check760e.Checked == false)
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
-                                metroProgressBar.Value = p;
-                                toolStripStatusLabelbar.Text = p + "%";
+                                myProgressBarjindu.Value = p;
+                                //toolStripStatusLabelbar.Text = p + "%";
                                 System.Threading.Thread.Sleep(XHTime);
                                 p = s + p;
                             }
@@ -10289,8 +10439,8 @@ check760e.Checked == false)
                                 UpLoadFilePause = new ManualResetEvent(false);
                                 UpLoadFilePause.WaitOne();
                             }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
+                            myProgressBarjindu.Value = p;
+                            //toolStripStatusLabelbar.Text = p + "%";
                             System.Threading.Thread.Sleep(XHTime);
                             p = s + p;
                         }
@@ -10310,8 +10460,8 @@ check760e.Checked == false)
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
-                                metroProgressBar.Value = p;
-                                toolStripStatusLabelbar.Text = p + "%";
+                                myProgressBarjindu.Value = p;
+                                //toolStripStatusLabelbar.Text = p + "%";
                                 System.Threading.Thread.Sleep(XHTime);
                             }
                             else
@@ -10327,8 +10477,8 @@ check760e.Checked == false)
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
-                                metroProgressBar.Value = p;
-                                toolStripStatusLabelbar.Text = p + "%";
+                                myProgressBarjindu.Value = p;
+                                //toolStripStatusLabelbar.Text = p + "%";
                                 System.Threading.Thread.Sleep(XHTime);
                                 p = s + p;
                             }
@@ -10351,8 +10501,8 @@ check760e.Checked == false)
                                 UpLoadFilePause = new ManualResetEvent(false);
                                 UpLoadFilePause.WaitOne();
                             }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
+                            myProgressBarjindu.Value = p;
+                            //toolStripStatusLabelbar.Text = p + "%";
                             System.Threading.Thread.Sleep(XHTime);
                             p = s + p;
                         }
@@ -10372,8 +10522,8 @@ check760e.Checked == false)
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
-                                metroProgressBar.Value = p;
-                                toolStripStatusLabelbar.Text = p + "%";
+                                myProgressBarjindu.Value = p;
+                                //toolStripStatusLabelbar.Text = p + "%";
                                 System.Threading.Thread.Sleep(XHTime);
                             }
                             else
@@ -10389,8 +10539,8 @@ check760e.Checked == false)
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
-                                metroProgressBar.Value = p;
-                                toolStripStatusLabelbar.Text = p + "%";
+                                myProgressBarjindu.Value = p;
+                                //toolStripStatusLabelbar.Text = p + "%";
                                 System.Threading.Thread.Sleep(XHTime);
                                 p = s + p;
                             }
@@ -10413,7 +10563,7 @@ check760e.Checked == false)
                                 UpLoadFilePause = new ManualResetEvent(false);
                                 UpLoadFilePause.WaitOne();
                             }
-                            toolStripStatusLabelbar.Text = p + "%";
+                            //toolStripStatusLabelbar.Text = p + "%";
                             System.Threading.Thread.Sleep(XHTime);
                             p = s + p;
                         }
@@ -10433,8 +10583,8 @@ check760e.Checked == false)
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
-                                metroProgressBar.Value = p;
-                                toolStripStatusLabelbar.Text = p + "%";
+                                myProgressBarjindu.Value = p;
+                                //toolStripStatusLabelbar.Text = p + "%";
                                 System.Threading.Thread.Sleep(XHTime);
                             }
                             else
@@ -10450,8 +10600,8 @@ check760e.Checked == false)
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
-                                metroProgressBar.Value = p;
-                                toolStripStatusLabelbar.Text = p + "%";
+                                myProgressBarjindu.Value = p;
+                                //toolStripStatusLabelbar.Text = p + "%";
                                 System.Threading.Thread.Sleep(XHTime);
                                 p = s + p;
                             }
@@ -10474,8 +10624,8 @@ check760e.Checked == false)
                                 UpLoadFilePause = new ManualResetEvent(false);
                                 UpLoadFilePause.WaitOne();
                             }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
+                            myProgressBarjindu.Value = p;
+                            //toolStripStatusLabelbar.Text = p + "%";
                             System.Threading.Thread.Sleep(XHTime);
                             p = s + p;
                         }
@@ -10495,8 +10645,8 @@ check760e.Checked == false)
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
-                                metroProgressBar.Value = p;
-                                toolStripStatusLabelbar.Text = p + "%";
+                                myProgressBarjindu.Value = p;
+                                //toolStripStatusLabelbar.Text = p + "%";
                                 System.Threading.Thread.Sleep(XHTime);
                             }
                             else
@@ -10512,8 +10662,8 @@ check760e.Checked == false)
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
-                                metroProgressBar.Value = p;
-                                toolStripStatusLabelbar.Text = p + "%";
+                                myProgressBarjindu.Value = p;
+                                //toolStripStatusLabelbar.Text = p + "%";
                                 System.Threading.Thread.Sleep(XHTime);
                                 p = s + p;
                             }
@@ -10536,8 +10686,8 @@ check760e.Checked == false)
                                 UpLoadFilePause = new ManualResetEvent(false);
                                 UpLoadFilePause.WaitOne();
                             }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
+                            myProgressBarjindu.Value = p;
+                            //toolStripStatusLabelbar.Text = p + "%";
                             System.Threading.Thread.Sleep(XHTime);
                             p = s + p;
                         }
@@ -10557,8 +10707,8 @@ check760e.Checked == false)
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
-                                metroProgressBar.Value = p;
-                                toolStripStatusLabelbar.Text = p + "%";
+                                myProgressBarjindu.Value = p;
+                                //toolStripStatusLabelbar.Text = p + "%";
                                 System.Threading.Thread.Sleep(XHTime);
                             }
                             else
@@ -10574,8 +10724,8 @@ check760e.Checked == false)
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
-                                metroProgressBar.Value = p;
-                                toolStripStatusLabelbar.Text = p + "%";
+                                myProgressBarjindu.Value = p;
+                                //toolStripStatusLabelbar.Text = p + "%";
                                 System.Threading.Thread.Sleep(XHTime);
                                 p = s + p;
                             }
@@ -10598,8 +10748,8 @@ check760e.Checked == false)
                                 UpLoadFilePause = new ManualResetEvent(false);
                                 UpLoadFilePause.WaitOne();
                             }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
+                            myProgressBarjindu.Value = p;
+                            //toolStripStatusLabelbar.Text = p + "%";
                             System.Threading.Thread.Sleep(XHTime);
                             p = s + p;
                         }
@@ -10619,8 +10769,8 @@ check760e.Checked == false)
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
-                                metroProgressBar.Value = p;
-                                toolStripStatusLabelbar.Text = p + "%";
+                                myProgressBarjindu.Value = p;
+                                //toolStripStatusLabelbar.Text = p + "%";
                                 System.Threading.Thread.Sleep(XHTime);
                             }
                             else
@@ -10636,8 +10786,8 @@ check760e.Checked == false)
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
-                                metroProgressBar.Value = p;
-                                toolStripStatusLabelbar.Text = p + "%";
+                                myProgressBarjindu.Value = p;
+                                //toolStripStatusLabelbar.Text = p + "%";
                                 System.Threading.Thread.Sleep(XHTime);
                                 p = s + p;
                             }
@@ -10660,8 +10810,8 @@ check760e.Checked == false)
                                 UpLoadFilePause = new ManualResetEvent(false);
                                 UpLoadFilePause.WaitOne();
                             }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
+                            myProgressBarjindu.Value = p;
+                            //toolStripStatusLabelbar.Text = p + "%";
                             System.Threading.Thread.Sleep(XHTime);
                             p = s + p;
                         }
@@ -10681,8 +10831,8 @@ check760e.Checked == false)
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
-                                metroProgressBar.Value = p;
-                                toolStripStatusLabelbar.Text = p + "%";
+                                myProgressBarjindu.Value = p;
+                                //toolStripStatusLabelbar.Text = p + "%";
                                 System.Threading.Thread.Sleep(XHTime);
                             }
                             else
@@ -10698,8 +10848,8 @@ check760e.Checked == false)
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
-                                metroProgressBar.Value = p;
-                                toolStripStatusLabelbar.Text = p + "%";
+                                myProgressBarjindu.Value = p;
+                                //toolStripStatusLabelbar.Text = p + "%";
                                 System.Threading.Thread.Sleep(XHTime);
                                 p = s + p;
                             }
@@ -10722,8 +10872,8 @@ check760e.Checked == false)
                                 UpLoadFilePause = new ManualResetEvent(false);
                                 UpLoadFilePause.WaitOne();
                             }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
+                            myProgressBarjindu.Value = p;
+                            //toolStripStatusLabelbar.Text = p + "%";
                             System.Threading.Thread.Sleep(XHTime);
                             p = s + p;
                         }
@@ -10743,8 +10893,8 @@ check760e.Checked == false)
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
-                                metroProgressBar.Value = p;
-                                toolStripStatusLabelbar.Text = p + "%";
+                                myProgressBarjindu.Value = p;
+                                //toolStripStatusLabelbar.Text = p + "%";
                                 System.Threading.Thread.Sleep(XHTime);
                             }
                             else
@@ -10760,8 +10910,8 @@ check760e.Checked == false)
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
-                                metroProgressBar.Value = p;
-                                toolStripStatusLabelbar.Text = p + "%";
+                                myProgressBarjindu.Value = p;
+                                //toolStripStatusLabelbar.Text = p + "%";
                                 System.Threading.Thread.Sleep(XHTime);
                                 p = s + p;
                             }
@@ -10784,8 +10934,8 @@ check760e.Checked == false)
                                 UpLoadFilePause = new ManualResetEvent(false);
                                 UpLoadFilePause.WaitOne();
                             }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
+                            myProgressBarjindu.Value = p;
+                            //toolStripStatusLabelbar.Text = p + "%";
                             System.Threading.Thread.Sleep(XHTime);
                             p = s + p;
                         }
@@ -10805,8 +10955,8 @@ check760e.Checked == false)
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
-                                metroProgressBar.Value = p;
-                                toolStripStatusLabelbar.Text = p + "%";
+                                myProgressBarjindu.Value = p;
+                                //toolStripStatusLabelbar.Text = p + "%";
                                 System.Threading.Thread.Sleep(XHTime);
                             }
                             else
@@ -10822,8 +10972,8 @@ check760e.Checked == false)
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
-                                metroProgressBar.Value = p;
-                                toolStripStatusLabelbar.Text = p + "%";
+                                myProgressBarjindu.Value = p;
+                                //toolStripStatusLabelbar.Text = p + "%";
                                 System.Threading.Thread.Sleep(XHTime);
                                 p = s + p;
                             }
@@ -10846,8 +10996,8 @@ check760e.Checked == false)
                                 UpLoadFilePause = new ManualResetEvent(false);
                                 UpLoadFilePause.WaitOne();
                             }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
+                            myProgressBarjindu.Value = p;
+                            //toolStripStatusLabelbar.Text = p + "%";
                             System.Threading.Thread.Sleep(XHTime);
                             p = s + p;
                         }
@@ -10867,8 +11017,8 @@ check760e.Checked == false)
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
-                                metroProgressBar.Value = p;
-                                toolStripStatusLabelbar.Text = p + "%";
+                                myProgressBarjindu.Value = p;
+                                //toolStripStatusLabelbar.Text = p + "%";
                                 System.Threading.Thread.Sleep(XHTime);
                             }
                             else
@@ -10884,8 +11034,8 @@ check760e.Checked == false)
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
-                                metroProgressBar.Value = p;
-                                toolStripStatusLabelbar.Text = p + "%";
+                                myProgressBarjindu.Value = p;
+                                //toolStripStatusLabelbar.Text = p + "%";
                                 System.Threading.Thread.Sleep(XHTime);
                                 p = s + p;
                             }
@@ -10908,8 +11058,8 @@ check760e.Checked == false)
                                 UpLoadFilePause = new ManualResetEvent(false);
                                 UpLoadFilePause.WaitOne();
                             }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
+                            myProgressBarjindu.Value = p;
+                            //toolStripStatusLabelbar.Text = p + "%";
                             System.Threading.Thread.Sleep(XHTime);
                             p = s + p;
                         }
@@ -10929,8 +11079,8 @@ check760e.Checked == false)
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
-                                metroProgressBar.Value = p;
-                                toolStripStatusLabelbar.Text = p + "%";
+                                myProgressBarjindu.Value = p;
+                                //toolStripStatusLabelbar.Text = p + "%";
                                 System.Threading.Thread.Sleep(XHTime);
                             }
                             else
@@ -10946,8 +11096,8 @@ check760e.Checked == false)
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
-                                metroProgressBar.Value = p;
-                                toolStripStatusLabelbar.Text = p + "%";
+                                myProgressBarjindu.Value = p;
+                                //toolStripStatusLabelbar.Text = p + "%";
                                 System.Threading.Thread.Sleep(XHTime);
                                 p = s + p;
                             }
@@ -10970,8 +11120,8 @@ check760e.Checked == false)
                                 UpLoadFilePause = new ManualResetEvent(false);
                                 UpLoadFilePause.WaitOne();
                             }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
+                            myProgressBarjindu.Value = p;
+                            //toolStripStatusLabelbar.Text = p + "%";
                             System.Threading.Thread.Sleep(XHTime);
                             p = s + p;
                         }
@@ -10991,8 +11141,8 @@ check760e.Checked == false)
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
-                                metroProgressBar.Value = p;
-                                toolStripStatusLabelbar.Text = p + "%";
+                                myProgressBarjindu.Value = p;
+                                //toolStripStatusLabelbar.Text = p + "%";
                                 System.Threading.Thread.Sleep(XHTime);
                             }
                             else
@@ -11008,8 +11158,8 @@ check760e.Checked == false)
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
-                                metroProgressBar.Value = p;
-                                toolStripStatusLabelbar.Text = p + "%";
+                                myProgressBarjindu.Value = p;
+                                //toolStripStatusLabelbar.Text = p + "%";
                                 System.Threading.Thread.Sleep(XHTime);
                                 p = s + p;
                             }
@@ -11032,8 +11182,8 @@ check760e.Checked == false)
                                 UpLoadFilePause = new ManualResetEvent(false);
                                 UpLoadFilePause.WaitOne();
                             }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
+                            myProgressBarjindu.Value = p;
+                            //toolStripStatusLabelbar.Text = p + "%";
                             System.Threading.Thread.Sleep(XHTime);
                             p = s + p;
                         }
@@ -11053,8 +11203,8 @@ check760e.Checked == false)
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
-                                metroProgressBar.Value = p;
-                                toolStripStatusLabelbar.Text = p + "%";
+                                myProgressBarjindu.Value = p;
+                                //toolStripStatusLabelbar.Text = p + "%";
                                 System.Threading.Thread.Sleep(XHTime);
                             }
                             else
@@ -11070,8 +11220,8 @@ check760e.Checked == false)
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
-                                metroProgressBar.Value = p;
-                                toolStripStatusLabelbar.Text = p + "%";
+                                myProgressBarjindu.Value = p;
+                                //toolStripStatusLabelbar.Text = p + "%";
                                 System.Threading.Thread.Sleep(XHTime);
                                 p = s + p;
                             }
@@ -11094,8 +11244,8 @@ check760e.Checked == false)
                                 UpLoadFilePause = new ManualResetEvent(false);
                                 UpLoadFilePause.WaitOne();
                             }
-                            metroProgressBar.Value = p;
-                            toolStripStatusLabelbar.Text = p + "%";
+                            myProgressBarjindu.Value = p;
+                            //toolStripStatusLabelbar.Text = p + "%";
                             System.Threading.Thread.Sleep(XHTime);
                             p = s + p;
                         }
@@ -11115,8 +11265,8 @@ check760e.Checked == false)
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
-                                metroProgressBar.Value = p;
-                                toolStripStatusLabelbar.Text = p + "%";
+                                myProgressBarjindu.Value = p;
+                                //toolStripStatusLabelbar.Text = p + "%";
                                 System.Threading.Thread.Sleep(XHTime);
                             }
                             else
@@ -11132,8 +11282,8 @@ check760e.Checked == false)
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
-                                metroProgressBar.Value = p;
-                                toolStripStatusLabelbar.Text = p + "%";
+                                myProgressBarjindu.Value = p;
+                                //toolStripStatusLabelbar.Text = p + "%";
                                 System.Threading.Thread.Sleep(XHTime);
                                 p = s + p;
                             }
@@ -13543,11 +13693,11 @@ check760e.Checked == false)
                 {
                     timer1.Stop();
 
-                    MessageBox.Show("没有收到SNMP请求后的响应！");
+                    textDOS.AppendText("没有收到SNMP请求后的响应！");
                 }
                 catch
                 {
-                    MessageBox.Show("请检查Oid项配置信息！");
+                    textDOS.AppendText("请检查Oid项配置信息！");
                 }
                 //SnmpV1Packet result = (SnmpV1Packet)target.Request(pdu, param);
                 //如果结果为null，则座席未回复或我们无法解析回复。
@@ -13617,7 +13767,7 @@ check760e.Checked == false)
             {
                 timer1.Stop();
 
-                MessageBox.Show(ex.Message);
+                textDOS.AppendText(ex.Message);
             }
         }
 
@@ -13982,6 +14132,161 @@ check760e.Checked == false)
         {
             Help Help = new Help();//实例化窗体
             Help.ShowDialog();// 将窗体显示出来
+        }
+
+        private void metroButConSql_Click(object sender, EventArgs e)
+        {
+            String connetStr = "server=60.205.155.127;port=3306;user=root;password=Hunan7420716.; database=mib;charset=utf8;";
+            // server=127.0.0.1/localhost 代表本机，端口号port默认是3306可以不写
+            MySqlConnection conn = new MySqlConnection(connetStr);
+            try
+            {
+                conn.Open();//打开通道，建立连接，可能出现异常,使用try catch语句
+               // MessageBox.Show("已经建立连接");
+                //在这里使用代码对数据库进行增删查改
+                //设置查询命令
+                string sql = "select distinct table_class from mib;";
+                MySqlCommand cmd = new MySqlCommand(sql, conn);
+                //查询结果读取器
+                MySqlDataReader reader = cmd.ExecuteReader();
+                metroComTableClass.Items.Clear();
+                while (reader.Read())
+                {
+                    
+                    metroComTableClass.Items.Add(reader[0].ToString());
+
+                        
+
+                }
+                metroComTableClass.SelectedIndex = metroComTableClass.Items.Count - 1;
+            }
+            catch (MySqlException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
+
+        private void metroComTableClass_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            String connetStr = "server=60.205.155.127;port=3306;user=root;password=Hunan7420716.; database=mib;charset=utf8;";
+            // server=127.0.0.1/localhost 代表本机，端口号port默认是3306可以不写
+            MySqlConnection conn = new MySqlConnection(connetStr);
+            try
+            {
+                conn.Open();//打开通道，建立连接，可能出现异常,使用try catch语句
+              // MessageBox.Show("已经建立连接");
+                //在这里使用代码对数据库进行增删查改
+                //设置查询命令
+                string sql = "SELECT mib.table_name from mib WHERE table_class = '"+metroComTableClass.Text+"' GROUP BY table_name";
+                MySqlCommand cmd = new MySqlCommand(sql, conn);
+                //查询结果读取器
+                MySqlDataReader reader = cmd.ExecuteReader();
+                // MessageBox.Show(reader[0].ToString());
+                metroComTableName.Items.Clear();
+                while (reader.Read())
+                {
+                    
+                    metroComTableName.Items.Add(reader[0].ToString());
+
+                     
+
+                }
+                metroComTableName.SelectedIndex = metroComTableName.Items.Count - 1;
+            }
+            catch (MySqlException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
+
+        private void metroComTableName_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            String connetStr = "server=60.205.155.127;port=3306;user=root;password=Hunan7420716.; database=mib;charset=utf8;";
+            // server=127.0.0.1/localhost 代表本机，端口号port默认是3306可以不写
+            MySqlConnection conn = new MySqlConnection(connetStr);
+            try
+            {
+                conn.Open();//打开通道，建立连接，可能出现异常,使用try catch语句
+                //MessageBox.Show("已经建立连接");
+                //在这里使用代码对数据库进行增删查改
+                //设置查询命令
+                string sql = "SELECT mib.name from mib WHERE table_name = '"+metroComTableName.Text+"' GROUP BY name";
+                MySqlCommand cmd = new MySqlCommand(sql, conn);
+                //查询结果读取器
+                MySqlDataReader reader = cmd.ExecuteReader();
+                metroComOidName.Items.Clear();
+                // MessageBox.Show(reader[0].ToString());
+                while (reader.Read())
+                {
+                    
+                    metroComOidName.Items.Add(reader[0].ToString());
+
+                      
+
+                }
+                metroComOidName.SelectedIndex = metroComOidName.Items.Count - 1;
+            }
+            catch (MySqlException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
+
+        private void metroComOidName_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            String connetStr = "server=60.205.155.127;port=3306;user=root;password=Hunan7420716.; database=mib;charset=utf8;";
+            // server=127.0.0.1/localhost 代表本机，端口号port默认是3306可以不写
+            MySqlConnection conn = new MySqlConnection(connetStr);
+            try
+            {
+                conn.Open();//打开通道，建立连接，可能出现异常,使用try catch语句
+                //MessageBox.Show("已经建立连接");
+                //在这里使用代码对数据库进行增删查改
+                //设置查询命令
+                string SQLoid = "SELECT mib.oid, mib.type, mib.permission, mib.value, mib.note  from mib WHERE name = '" + metroComOidName.Text + "'";
+                MySqlCommand oid = new MySqlCommand(SQLoid, conn);
+                //查询结果读取器
+                MySqlDataReader readeroid = oid.ExecuteReader();
+                metroTextoid.Text = "";
+                metroComOidType.Items.Clear();
+                metroComOidPermission.Items.Clear();
+                metroTextOidValue.Text = "";
+                metroTextOidNote.Text = "";
+                // MessageBox.Show(reader[0].ToString());
+                while (readeroid.Read())
+                {
+
+                    metroTextoid.AppendText(readeroid[0].ToString());
+                    metroComOidType.Items.Add(readeroid[1].ToString());
+                    metroComOidPermission.Items.Add(readeroid[2].ToString());
+                    metroTextOidValue.AppendText(readeroid[3].ToString());
+                    metroTextOidNote.AppendText(readeroid[4].ToString());
+
+
+                }
+                metroComOidType.SelectedIndex = metroComOidType.Items.Count - 1;
+                metroComOidPermission.SelectedIndex = metroComOidPermission.Items.Count - 1;
+            }
+            catch (MySqlException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                conn.Close();
+            }
         }
 
     }

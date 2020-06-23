@@ -1,4 +1,5 @@
 ﻿using MetroFramework.Forms;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -3450,6 +3451,161 @@ namespace MyGpnSoftware
                     MessageBox.Show(ex.Message);//捕捉异常
                     MessageBox.Show("请使用Office2003或者更新版本格式内容，如.xls或者.xlsx格式");
                 }
+            }
+        }
+
+        private void butoid_Click(object sender, EventArgs e)
+        {
+            dataGridView1.Rows.Clear();
+            if (dataGridView1.Columns["序号"] == null)
+            {
+
+                this.dataGridView1.Columns.Add("序号", "序号");
+                this.dataGridView1.Columns["序号"].Width = 50;
+            }
+            else
+            {
+                this.dataGridView1.Columns.Remove("序号");
+                this.dataGridView1.Columns.Add("序号", "序号");
+                this.dataGridView1.Columns["序号"].Width = 50;
+            }
+            if (dataGridView1.Columns["Mib类"] == null)
+            {
+
+                this.dataGridView1.Columns.Add("Mib类", "Mib类");
+                this.dataGridView1.Columns["Mib类"].Width = 100;
+            }
+            else
+            {
+                this.dataGridView1.Columns.Remove("Mib类");
+                this.dataGridView1.Columns.Add("Mib类", "Mib类");
+                this.dataGridView1.Columns["Mib类"].Width = 100;
+            }
+            if (dataGridView1.Columns["Mib表"] == null)
+            {
+
+                this.dataGridView1.Columns.Add("Mib表", "Mib表");
+                this.dataGridView1.Columns["Mib表"].Width = 100;
+            }
+            else
+            {
+                this.dataGridView1.Columns.Remove("Mib表");
+                this.dataGridView1.Columns.Add("Mib表", "Mib表");
+                this.dataGridView1.Columns["Mib表"].Width = 100;
+            }
+            if (dataGridView1.Columns["节点名称"] == null)
+            {
+
+                this.dataGridView1.Columns.Add("节点名称", "节点名称");
+                this.dataGridView1.Columns["节点名称"].Width = 150;
+            }
+            else
+            {
+                this.dataGridView1.Columns.Remove("节点名称");
+                this.dataGridView1.Columns.Add("节点名称", "节点名称");
+                this.dataGridView1.Columns["节点名称"].Width = 150;
+            }
+            if (dataGridView1.Columns["Mib节点"] == null)
+            {
+
+                this.dataGridView1.Columns.Add("Mib节点", "Mib节点");
+                this.dataGridView1.Columns["Mib节点"].Width = 200;
+            }
+            else
+            {
+                this.dataGridView1.Columns.Remove("Mib节点");
+                this.dataGridView1.Columns.Add("Mib节点", "Mib节点");
+                this.dataGridView1.Columns["Mib节点"].Width = 200;
+            }
+            if (dataGridView1.Columns["节点类型"] == null)
+            {
+
+                this.dataGridView1.Columns.Add("节点类型", "节点类型");
+                this.dataGridView1.Columns["节点类型"].Width = 100;
+            }
+            else
+            {
+                this.dataGridView1.Columns.Remove("节点类型");
+                this.dataGridView1.Columns.Add("节点类型", "节点类型");
+                this.dataGridView1.Columns["节点类型"].Width = 100;
+            }
+            if (dataGridView1.Columns["访问权限"] == null)
+            {
+
+                this.dataGridView1.Columns.Add("访问权限", "访问权限");
+                this.dataGridView1.Columns["访问权限"].Width = 100;
+            }
+            else
+            {
+                this.dataGridView1.Columns.Remove("访问权限");
+                this.dataGridView1.Columns.Add("访问权限", "访问权限");
+                this.dataGridView1.Columns["访问权限"].Width = 100;
+            }
+            if (dataGridView1.Columns["取值"] == null)
+            {
+
+                this.dataGridView1.Columns.Add("取值", "取值");
+                this.dataGridView1.Columns["取值"].Width = 100;
+            }
+            else
+            {
+                this.dataGridView1.Columns.Remove("取值");
+                this.dataGridView1.Columns.Add("取值", "取值");
+                this.dataGridView1.Columns["取值"].Width = 100;
+            }
+            if (dataGridView1.Columns["说明"] == null)
+            {
+
+                this.dataGridView1.Columns.Add("说明", "说明");
+                this.dataGridView1.Columns["说明"].Width = 100;
+            }
+            else
+            {
+                this.dataGridView1.Columns.Remove("说明");
+                this.dataGridView1.Columns.Add("说明", "说明");
+                this.dataGridView1.Columns["说明"].Width = 100;
+            }
+            String connetStr = "server=60.205.155.127;port=3306;user=root;password=Hunan7420716.; database=mib;charset=utf8;";
+            MySqlConnection conn = new MySqlConnection(connetStr);
+            try
+            {
+                conn.Open();//打开通道，建立连接，可能出现异常,使用try catch语句
+                Console.WriteLine("已经建立连接");
+                //在这里使用代码对数据库进行增删查改
+                string sql = "select* from mib where concat(table_class, table_name,name,oid,value,note) like '%" + textselect.Text + "%'";
+                MySqlCommand cmd = new MySqlCommand(sql, conn);
+                MySqlDataReader reader = cmd.ExecuteReader();//执行ExecuteReader()返回一个MySqlDataReader对象
+                 //设置自动换行
+
+                this.dataGridView1.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+
+                //设置自动调整高度
+
+                //this.dataGridView1.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+                while (reader.Read())
+                {
+                    int index = this.dataGridView1.Rows.Add();
+
+                    this.dataGridView1.Rows[index].Cells[0].Value = reader.GetString("index");
+                    this.dataGridView1.Rows[index].Cells[1].Value = reader.GetString("table_class");
+                    this.dataGridView1.Rows[index].Cells[2].Value = reader.GetString("table_name");
+                    this.dataGridView1.Rows[index].Cells[3].Value = reader.GetString("name");
+                    this.dataGridView1.Rows[index].Cells[4].Value = reader.GetString("oid");
+                    this.dataGridView1.Rows[index].Cells[5].Value = reader.GetString("type");
+                    this.dataGridView1.Rows[index].Cells[6].Value = reader.GetString("permission");
+                    this.dataGridView1.Rows[index].Cells[7].Value = reader.GetString("value");
+                    this.dataGridView1.Rows[index].Cells[8].Value = reader.GetString("note");
+
+                }
+
+            }
+            catch (MySqlException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                conn.Close();
             }
         }
     }

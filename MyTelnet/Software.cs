@@ -26,7 +26,7 @@ namespace MyGpnSoftware
 
         private void metroLink1_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("http://otrs.gw.com/ftp/publish.htm");
+            System.Diagnostics.Process.Start("http://60.205.155.127/ftp/index.htm");
 
         }
 

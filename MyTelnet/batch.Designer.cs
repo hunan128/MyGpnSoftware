@@ -66,6 +66,7 @@
             this.label9 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.butUtility = new System.Windows.Forms.Button();
             this.metroLabel1 = new MetroFramework.Controls.MetroLabel();
             this.metroCom603gsysfile = new MetroFramework.Controls.MetroComboBox();
             this.butcheckver = new System.Windows.Forms.Button();
@@ -75,7 +76,8 @@
             this.TextStopIp = new System.Windows.Forms.TextBox();
             this.TextStartIp = new System.Windows.Forms.TextBox();
             this.dataGridView2 = new System.Windows.Forms.DataGridView();
-            this.butUtility = new System.Windows.Forms.Button();
+            this.butoid = new System.Windows.Forms.Button();
+            this.textselect = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.statusStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -443,6 +445,8 @@
             // panel2
             // 
             this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.panel2.Controls.Add(this.textselect);
+            this.panel2.Controls.Add(this.butoid);
             this.panel2.Controls.Add(this.butUtility);
             this.panel2.Controls.Add(this.metroLabel1);
             this.panel2.Controls.Add(this.metroCom603gsysfile);
@@ -469,6 +473,23 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(1066, 75);
             this.panel2.TabIndex = 69;
+            // 
+            // butUtility
+            // 
+            this.butUtility.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.butUtility.BackColor = System.Drawing.Color.DodgerBlue;
+            this.butUtility.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.butUtility.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.butUtility.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.butUtility.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.butUtility.ForeColor = System.Drawing.Color.White;
+            this.butUtility.Location = new System.Drawing.Point(343, 3);
+            this.butUtility.Name = "butUtility";
+            this.butUtility.Size = new System.Drawing.Size(85, 34);
+            this.butUtility.TabIndex = 76;
+            this.butUtility.Text = "导入Excel";
+            this.butUtility.UseVisualStyleBackColor = false;
+            this.butUtility.Click += new System.EventHandler(this.butUtility_Click);
             // 
             // metroLabel1
             // 
@@ -513,7 +534,7 @@
             // 
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(449, 50);
+            this.label2.Location = new System.Drawing.Point(434, 48);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(155, 12);
             this.label2.TabIndex = 72;
@@ -531,7 +552,7 @@
             "3000",
             "5000",
             "10000"});
-            this.comtime.Location = new System.Drawing.Point(610, 42);
+            this.comtime.Location = new System.Drawing.Point(586, 41);
             this.comtime.Name = "comtime";
             this.comtime.Size = new System.Drawing.Size(72, 28);
             this.comtime.TabIndex = 71;
@@ -608,22 +629,31 @@
             this.dataGridView2.Size = new System.Drawing.Size(1071, 62);
             this.dataGridView2.TabIndex = 0;
             // 
-            // butUtility
+            // butoid
             // 
-            this.butUtility.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.butUtility.BackColor = System.Drawing.Color.DodgerBlue;
-            this.butUtility.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.butUtility.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.butUtility.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.butUtility.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butUtility.ForeColor = System.Drawing.Color.White;
-            this.butUtility.Location = new System.Drawing.Point(343, 3);
-            this.butUtility.Name = "butUtility";
-            this.butUtility.Size = new System.Drawing.Size(85, 34);
-            this.butUtility.TabIndex = 76;
-            this.butUtility.Text = "导入Excel";
-            this.butUtility.UseVisualStyleBackColor = false;
-            this.butUtility.Click += new System.EventHandler(this.butUtility_Click);
+            this.butoid.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.butoid.BackColor = System.Drawing.Color.DodgerBlue;
+            this.butoid.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.butoid.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.butoid.ForeColor = System.Drawing.Color.White;
+            this.butoid.Location = new System.Drawing.Point(762, 37);
+            this.butoid.Name = "butoid";
+            this.butoid.Size = new System.Drawing.Size(75, 34);
+            this.butoid.TabIndex = 77;
+            this.butoid.Text = "Mib查询";
+            this.butoid.UseVisualStyleBackColor = false;
+            this.butoid.Click += new System.EventHandler(this.butoid_Click);
+            // 
+            // textselect
+            // 
+            this.textselect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.textselect.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
+            this.textselect.Location = new System.Drawing.Point(664, 41);
+            this.textselect.Name = "textselect";
+            this.textselect.Size = new System.Drawing.Size(83, 26);
+            this.textselect.TabIndex = 78;
+            this.textselect.Text = "SSH";
+            this.textselect.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // Batch
             // 
@@ -692,5 +722,7 @@
         private MetroFramework.Controls.MetroLabel metroLabel1;
         private MetroFramework.Controls.MetroComboBox metroCom603gsysfile;
         private System.Windows.Forms.Button butUtility;
+        private System.Windows.Forms.TextBox textselect;
+        private System.Windows.Forms.Button butoid;
     }
 }

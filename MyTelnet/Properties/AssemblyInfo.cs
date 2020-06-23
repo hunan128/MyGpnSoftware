@@ -32,10 +32,11 @@ using System.Runtime.InteropServices;
                          + "2020.06.05 新增CPU、内存、温度实时状态显示" + "\r\n"
                          + "2020.06.11 新增SNMP/MIB节点查询功能，支持Trap监听功能" + "\r\n"
                          + "2020.06.13 新增Try命令完善下载、上传、EOS排故、OTN排故、检查文件、连接、打开窗口异常输出,防止软件卡死" + "\r\n"
+                         + "2020.06.22 新增Mib节点在线查询功能" + "\r\n"
 
                          + "")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("北京格林威尔科技发展有限公司")]
+[assembly: AssemblyCompany("排故好帮手")]
 [assembly: AssemblyProduct("排故好帮手")]
 [assembly: AssemblyCopyright("版权所有 (C) 胡楠 2018.06.08")]
 [assembly: AssemblyTrademark("")]
@@ -56,4 +57,4 @@ using System.Runtime.InteropServices;
 //      内部版本号
 //      修订号
 //
-[assembly: AssemblyVersion("4.1.1.53")]
+[assembly: AssemblyVersion("4.1.2.5")]
