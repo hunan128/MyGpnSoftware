@@ -10,10 +10,26 @@ namespace MyGpnSoftware
     {
         
         private string gpnIP;
+  
         public string GpnIP
         {
             get { return gpnIP; }
             set { gpnIP = value; }
         }
+        private int gpnPRY;
+
+        public int GpnPRY
+        {
+            get { return gpnPRY; }
+            set { gpnPRY = value; }
+        }
+        private bool gpnZX;
+
+        public bool GpnZX
+        {
+            get { return gpnZX; }
+            set { gpnZX = value; }
+        }
+
     }
 }

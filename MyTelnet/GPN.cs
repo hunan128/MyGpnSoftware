@@ -1,10 +1,15 @@
 ﻿using Ionic.Zip;
 using MetroFramework.Forms;
 using Microsoft.Win32;
+using MySql.Data.MySqlClient;
+using NPOI.HSSF.UserModel;
+using NPOI.SS.UserModel;
 using SnmpSharpNet;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -21,7 +26,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
-using MySql.Data.MySqlClient;
+
 namespace MyGpnSoftware
 {
     public partial class GPN : MetroForm
@@ -50,6 +55,10 @@ namespace MyGpnSoftware
         public bool backupfile = false;
         public bool FtpStatusEnable = false;            //FTPserver是否为使能状态
         public bool FtpPortEnable = false;            //FTP 接口是否为使能状态
+        public static string ftpCtrlFlagID = "";                //执行操作命令
+        public static int LoadCountany = 0;                //上传下载设备个数
+        public static int LoadCountsum = 0;                //上传下载设备个数
+        public static object PiLiangShengJi = new object(); //批量升级累计完成数量加锁
 
 
         // 保存户名和密码
@@ -93,6 +102,7 @@ namespace MyGpnSoftware
                     Directory.CreateDirectory(@"C:\gpn");
                 }
                 gpnurlupdate();
+                //   导入前俩列ToolStripMenuItem.PerformClick();
 
                 if (File.Exists(strFilePath))//读取时先要判读INI文件是否存在
                 {
@@ -113,33 +123,7 @@ namespace MyGpnSoftware
                     {
                         textWriteCommunity.Text = ContentValue(strSec, "WriteCommunity");
                     }
-                    FileStream fs = new FileStream(@"C:\gpn\gpnip.bin", FileMode.OpenOrCreate);
-                    if (fs.Length > 0)
-                    {
-                        try
-                        {
-                            BinaryFormatter bf = new BinaryFormatter();
-                            //读出存在Data.bin 里的用户信息
-                            userss = bf.Deserialize(fs) as Dictionary<string, Gpnip>;
-                            //循环添加到Combox1
-                            foreach (Gpnip user in userss.Values)
-                            {
-                                comip.Items.Add(user.GpnIP);
-                            }
-                            //combox1 用户名默认选中第一个
-                            if (comip.Items.Count > 0)
-                            {
-                                comip.SelectedIndex = comip.Items.Count - 1;
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            fs.Close();
-                            File.Delete(@"C:\gpn\gpnip.bin");
-                            MessageBox.Show(ex.Message);
-                        }
-                    }
-                    fs.Close();
+                    readgpnip();
                     if (ContentValue(strSec, "GPNip") != "")
                     {
                         comip.Text = ContentValue(strSec, "GPNip");
@@ -167,9 +151,9 @@ namespace MyGpnSoftware
                     {
                         comsw.Text = ContentValue(strSec, "SW");
                     }
-                    if (com760a.Items.Contains(ContentValue(strSec, "760A")))
+                    if (com760s.Items.Contains(ContentValue(strSec, "760S")))
                     {
-                        com760a.Text = ContentValue(strSec, "760A");
+                        com760s.Text = ContentValue(strSec, "760S");
                     }
                     if (com760b.Items.Contains(ContentValue(strSec, "760B")))
                     {
@@ -187,9 +171,9 @@ namespace MyGpnSoftware
                     {
                         com760e.Text = ContentValue(strSec, "760E");
                     }
-                    if (comotnpack.Items.Contains(ContentValue(strSec, "OtnPack")))
+                    if (com760f.Items.Contains(ContentValue(strSec, "760F")))
                     {
-                        comotnpack.Text = ContentValue(strSec, "OtnPack");
+                        com760f.Text = ContentValue(strSec, "760F");
                     }
                     if (comsysfile.Items.Contains(ContentValue(strSec, "sysfile")))
                     {
@@ -208,11 +192,147 @@ namespace MyGpnSoftware
             }
             catch (Exception ex)
             {
+
                 MessageBox.Show(ex.Message);
             }
             #endregion
         }
+        private Dictionary<string, Gpnip> userss = new Dictionary<string, Gpnip>();
+        private Dictionary<string, Batchip> batchipread = new Dictionary<string, Batchip>();
+        private void readgpnip()
+        {
+            //FileStream fs = new FileStream(@"C:\gpn\gpnip.bin", FileMode.OpenOrCreate);
+            //if (fs.Length > 0)
+            //{
+            //    try
+            //    {
+            //        BinaryFormatter bf = new BinaryFormatter();
+            //        //读出存在Data.bin 里的用户信息
+            //        userss = bf.Deserialize(fs) as Dictionary<string, Gpnip>;
+            //        //循环添加到Combox1
+            //        int n = 1;
+            //        foreach (Gpnip user in userss.Values)
+            //        {
+            //            int index = DGVSTATUS.Rows.Add();
+
+            //            comip.Items.Add(user.GpnIP);
+            //            DGVSTATUS.Rows[index].Cells["ip地址"].Value = user.GpnIP;
+            //            DGVSTATUS.Rows[index].Cells["优先级"].Value = n;
+            //            DGVSTATUS.Rows[index].Cells["执行"].Value = true;
+            //            n++;
+
+            //        }
+            //        //combox1 用户名默认选中第一个
+            //        if (comip.Items.Count > 0)
+            //        {
+            //            comip.SelectedIndex = comip.Items.Count - 1;
+            //        }
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        fs.Close();
+            //        File.Delete(@"C:\gpn\gpnip.bin");
+            //        MessageBox.Show(ex.Message);
+            //    }
+
+            //}
+            //DGVSTATUS.RowsDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+            //fs.Close();
+
+
+
+            FileStream fs = new FileStream(@"C:\gpn\gpnip.bin", FileMode.OpenOrCreate);
+            if (fs.Length > 0)
+            {
+                try
+                {
+                    BinaryFormatter bf = new BinaryFormatter();
+                    //读出存在Data.bin 里的用户信息
+                    userss = bf.Deserialize(fs) as Dictionary<string, Gpnip>;
+                    //循环添加到Combox1
+                    int n = 1;
+                    foreach (Gpnip user in userss.Values)
+                    {
+                        int index = DGVSTATUS.Rows.Add();
+
+                        comip.Items.Add(user.GpnIP);
+                        DGVSTATUS.Rows[index].Cells["ip地址"].Value = user.GpnIP;
+
+                            DGVSTATUS.Rows[index].Cells["优先级"].Value = user.GpnPRY;
+                            DGVSTATUS.Rows[index].Cells["执行"].Value = user.GpnZX;
+
+
+                        n++;
+
+                    }
+                    //combox1 用户名默认选中第一个
+                    if (comip.Items.Count > 0)
+                    {
+                        comip.SelectedIndex = comip.Items.Count - 1;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    fs.Close();
+                    File.Delete(@"C:\gpn\gpnip.bin");
+                    MessageBox.Show(ex.Message);
+                }
+
+            }
+            DGVSTATUS.RowsDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+            fs.Close();
+
+
+
+
+
+
+
+
+
+
+
+        }
+        private void readbatchip()
+        {
+            FileStream fs = new FileStream(@"C:\gpn\batchip.bin", FileMode.OpenOrCreate);
+            if (fs.Length > 0)
+            {
+                try
+                {
+                    BinaryFormatter bf = new BinaryFormatter();
+                    //读出存在Data.bin 里的用户信息
+                    batchipread = bf.Deserialize(fs) as Dictionary<string, Batchip>;
+                    //循环添加到Combox1
+
+                    foreach (Batchip ID in batchipread.Values)
+                    {
+
+                        int index = DGVSTATUS.Rows.Add();
+                        DGVSTATUS.Rows[index].Cells["ip地址"].Value = ID.BatchIP;
+
+                        DGVSTATUS.Rows[index].Cells["优先级"].Value = ID.Pry;
+                        MessageBox.Show(index.ToString());
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    fs.Close();
+                    File.Delete(@"C:\gpn\batchip.bin");
+                    MessageBox.Show(ex.Message);
+                }
+
+                DGVSTATUS.RowsDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            }
+            fs.Close();
+        }
         #region ③启动FTP服务器
+
+
+
         // 启动服务器
         private void BtnFtpServerStartStop_Click(object sender, EventArgs e)
         {
@@ -240,19 +360,29 @@ namespace MyGpnSoftware
                         {
                             FtpPortEnable = true;
                             Process[] pro = Process.GetProcesses();
+                            int cunt = 0;
                             foreach (var item in pro)
                             {
                                 if (item.ProcessName == "排故好帮手")
                                 {
-                                    FtpStatusEnable = true;
-                                    lstboxStatus.Items.Add(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " FTP服务器已经在另一个【排故好帮手】开启，无需再次开启，当前可以正常使用,FTP日志请在所在程序查看！");
-                                    return;
+                                    cunt++;
 
                                 }
 
                             }
-                            MessageBox.Show(A + "号端口已占用，请关闭其它FTP软件后，再次尝试！");
-                            return;
+                            if (cunt >= 2)
+                            {
+                                FtpStatusEnable = true;
+                                lstboxStatus.Items.Add(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " FTP服务器已经在另一个【排故好帮手】开启，日志信息请到所在FTP服务器中查看！");
+                                return;
+                            }
+                            if (cunt == 1 || cunt == 0)
+                            {
+                                lstboxStatus.Items.Add(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " ③启动FTP服务器失败!--------------21号端口已被占用！");
+                                MessageBox.Show(A + "号端口已占用，请关闭其它FTP软件后，再次尝试！");
+                                return;
+                            }
+
                         }
                     }
                     // 初始化户名和密码
@@ -276,7 +406,7 @@ namespace MyGpnSoftware
                     myTcpListener.Stop();
                     myTcpListener = null;
                     listenThread.Abort();
-                    lstboxStatus.Items.Add(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " ③断开FTP服务器成功!--------------IP地址是：" + comftpip.Text);
+                    lstboxStatus.Items.Add(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " ③断开FTP服务器成功!--------------IP地址是：" + comftpip.Text);
                     //lstboxStatus.TopIndex = lstboxStatus.Items.Count - 1;
                     FtpStatusEnable = false;
                     FtpPortEnable = false;
@@ -310,16 +440,16 @@ namespace MyGpnSoftware
                 myTcpListener = new TcpListener(IPAddress.Parse("0.0.0.0"), int.Parse(tbxFtpServerPort.Text));
                 // 开始监听传入的请求
                 myTcpListener.Start();
-                AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " ③启动FTP服务器成功!--------------IP地址是：" + comftpip.Text);
-                //AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")+"开始监听用户端请求....");
-                //          AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")+"Ftp服务器运行中...[点击”停止“按钮停止FTP服务]");
+                AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " ③启动FTP服务器成功!--------------IP地址是：" + comftpip.Text);
+                //AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"开始监听用户端请求....");
+                //          AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"Ftp服务器运行中...[点击”停止“按钮停止FTP服务]");
                 while (true)
                 {
                     try
                     {
                         // 接收连接请求
                         TcpClient tcpClient = myTcpListener.AcceptTcpClient();
-                        //AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")+string.Format("客户端（{0}）与本机（{1}）建立FTP连接", tcpClient.Client.RemoteEndPoint, myTcpListener.LocalEndpoint));
+                        //AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+string.Format("客户端（{0}）与本机（{1}）建立FTP连接", tcpClient.Client.RemoteEndPoint, myTcpListener.LocalEndpoint));
                         User user = new User
                         {
                             CommandSession = new UserSeesion(tcpClient),
@@ -338,7 +468,7 @@ namespace MyGpnSoftware
             }
             else
             {
-                lstboxStatus.Items.Add(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " FTP服务启动失败!--------------FTP服务启动失败!");
+                lstboxStatus.Items.Add(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " FTP服务启动失败!--------------FTP服务启动失败!");
                 btnFtpServerStartStop.Text = "③启动FTP服务器";
                 MessageBox.Show("请检查FTP服务器IP地址是否正确!，FTP服务器已关闭！");
             }
@@ -366,20 +496,20 @@ namespace MyGpnSoftware
                 {
                     if (user.CommandSession.tcpClient.Connected == false)
                     {
-                        AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + string.Format(" 客户端({0}断开连接！)", user.CommandSession.tcpClient.Client.RemoteEndPoint));
+                        AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + string.Format(" 客户端({0}断开连接！)", user.CommandSession.tcpClient.Client.RemoteEndPoint));
                     }
                     else
                     {
-                        AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " 接收命令失败！" + ex.Message);
+                        AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " 接收命令失败！" + ex.Message);
                     }
                     break;
                 }
                 if (receiveString == null)
                 {
-                    AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " 接收字符串为null,结束线程！");
+                    AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " 接收字符串为null,结束线程！");
                     break;
                 }
-                AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + string.Format(" 来自{0}：[{1}]", user.CommandSession.tcpClient.Client.RemoteEndPoint, receiveString));
+                AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + string.Format(" 来自{0}：[{1}]", user.CommandSession.tcpClient.Client.RemoteEndPoint, receiveString));
                 // 分解客户端发来的控制信息中的命令和参数
                 string command = receiveString;
                 string param = string.Empty;
@@ -469,11 +599,11 @@ namespace MyGpnSoftware
             try
             {
                 user.CommandSession.streamWriter.WriteLine(str);
-                //AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")+string.Format("向客户端（{0}）发送[{1}]", user.commandSession.tcpClient.Client.RemoteEndPoint, str));
+                //AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+string.Format("向客户端（{0}）发送[{1}]", user.commandSession.tcpClient.Client.RemoteEndPoint, str));
             }
             catch
             {
-                // AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")+string.Format("向客户端（{0}）发送信息失败", user.commandSession.tcpClient.Client.RemoteEndPoint));
+                // AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+string.Format("向客户端（{0}）发送信息失败", user.commandSession.tcpClient.Client.RemoteEndPoint));
             }
         }
         // 向屏幕输出显示状态信息（这里使了委托机制）
@@ -648,12 +778,15 @@ namespace MyGpnSoftware
         // 处理RETR命令，提供下载功能，将户请求的文件发送给户
         private void CommandRETR(User user, string filename)
         {
+            string sendString = "";
+            // 下载的文件全名
+            string path = user.CurrentDir + filename;
             try
             {
-                string sendString = "";
-                // 下载的文件全名
-                string path = user.CurrentDir + filename;
+
                 FileStream filestream = new FileStream(path, FileMode.Open, FileAccess.Read);
+
+
                 // 发送150到户，表示服务器文件状态良好，将要打开数据连接传输文件
                 if (user.IsBinary)
                 {
@@ -671,7 +804,7 @@ namespace MyGpnSoftware
             }
             catch (Exception ex)
             {
-                AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + ex);
+                AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " 来自"+ user.CommandSession.tcpClient.Client.RemoteEndPoint + "：[550 Directory " + path + " does not exist]");
             }
 
         }
@@ -694,7 +827,7 @@ namespace MyGpnSoftware
             }
             RepleyCommandToUser(user, sendString);
             InitDataSession(user);
-            ReadFileByUserSession(user, fs);
+            ReadFileByUserSession(user, fs, path);
             RepleyCommandToUser(user, "226 Transfer complete");
         }
         // 处理DELE命令，提供删除功能，删除服务器上的文件
@@ -703,9 +836,9 @@ namespace MyGpnSoftware
             string sendString = "";
             // 删除的文件全名
             string path = user.CurrentDir + filename;
-            AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " 正在删除文件" + filename + "...");
+            AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " 正在删除文件" + filename + "...");
             File.Delete(path);
-            AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " 删除成功");
+            AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " 删除成功");
             sendString = "250 File " + filename + " has been deleted.";
             RepleyCommandToUser(user, sendString);
         }
@@ -733,7 +866,7 @@ namespace MyGpnSoftware
                 try
                 {
                     user.DataListener = new TcpListener(localip, port);
-                    AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " TCP 数据连接已打开（被动模式）--" + localip.ToString() + "：" + port);
+                    AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " TCP 数据连接已打开（被动模式）--" + localip.ToString() + "：" + port);
                 }
                 catch
                 {
@@ -794,12 +927,12 @@ namespace MyGpnSoftware
             TcpClient client = null;
             if (user.IsPassive)
             {
-                //AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")+"采被动模式返回LIST目录和文件列表");
+                //AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"采被动模式返回LIST目录和文件列表");
                 client = user.DataListener.AcceptTcpClient();
             }
             else
             {
-                //AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")+"采主动模式向户发送LIST目录和文件列表");
+                //AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"采主动模式向户发送LIST目录和文件列表");
                 client = new TcpClient();
                 client.Connect(user.RemoteEndPoint);
             }
@@ -810,11 +943,11 @@ namespace MyGpnSoftware
         // 使数据连接发送字符串
         private void SendByUserSession(User user, string sendString)
         {
-            AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " 向户发送(字符串信息)：[" + sendString + "]");
+            AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " 向户发送(字符串信息)：[" + sendString + "]");
             try
             {
                 user.DataSession.streamWriter.WriteLine(sendString);
-                AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " 发送完毕");
+                AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " 发送完毕");
             }
             finally
             {
@@ -826,7 +959,7 @@ namespace MyGpnSoftware
         // 使数据连接发送文件流（客户端发送下载文件命令）
         private void SendFileByUserSession(User user, FileStream fs, string path)
         {
-            AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " 向用户发送(文件流)：[........................");
+            AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " 向用户发送(文件流)：[........................");
             string ipadd = comip.Text;
             try
             {
@@ -844,8 +977,9 @@ namespace MyGpnSoftware
                         user.DataSession.binaryWriter.Flush();
                         count = binaryReader.Read(bytes, 0, bytes.Length);
                         totalDownloadedByte = count + totalDownloadedByte;
-                        if (user.CommandSession.tcpClient.Client.RemoteEndPoint.ToString().Contains(ipadd)){
-                            
+                        if (user.CommandSession.tcpClient.Client.RemoteEndPoint.ToString().Contains(ipadd))
+                        {
+
                             percent = (int)Math.Floor((float)totalDownloadedByte / (float)Filesize * 100);
                             //labjindu.Text = percent.ToString() + "%";
                             if (percent >= 0 && percent <= 100)
@@ -870,7 +1004,7 @@ namespace MyGpnSoftware
                     //labjindu.Text = 100 + "%";
                 }
 
-                AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + "                                              ...................]发送完毕！");
+                AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "                                              ...................]发送完毕！");
             }
             finally
             {
@@ -881,15 +1015,16 @@ namespace MyGpnSoftware
         #endregion
         #region 使数据连接接收文件流
         // 使数据连接接收文件流(客户端发送上传文件功能)
-        private void ReadFileByUserSession(User user, FileStream fs)
+        private void ReadFileByUserSession(User user, FileStream fs, string path)
         {
-            AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " 接收用户上传数据（文件流）：[..................");
+
+            AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " 接收用户上传数据（文件流）：[..................");
             string ipadd = comip.Text;
             try
             {
                 if (user.IsBinary)
                 {
-                    
+
                     byte[] bytes = new byte[1024];
                     long totalDownloadedByte = 0;
                     int percent = 0;
@@ -897,7 +1032,7 @@ namespace MyGpnSoftware
                     int count = user.DataSession.binaryReader.Read(bytes, 0, bytes.Length);
                     while (count > 0)
                     {
-                       
+
                         binaryWriter.Write(bytes, 0, count);
                         totalDownloadedByte = count + totalDownloadedByte;
                         count = user.DataSession.binaryReader.Read(bytes, 0, bytes.Length);
@@ -907,7 +1042,7 @@ namespace MyGpnSoftware
 
                             //textDOS.AppendText("t2:"+totalBytes.ToString() + "\r\n");
                             percent = (int)Math.Floor((float)totalDownloadedByte / (float)Filesize * 100);
-                            // textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") +" "+percent.ToString() + "\r\np");
+                            // textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + header + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") +" "+percent.ToString() + "\r\np");
                             //textDOS.AppendText("d:"+totalDownloadedByte.ToString() + "\r\n");
                             //labjindu.Text = percent.ToString() + "%";
                             if (percent >= 0 && percent <= 100)
@@ -931,7 +1066,7 @@ namespace MyGpnSoftware
                     myProgressBarjindu.Value = 100;
                     //labjindu.Text = 100 + "%";
                 }
-                AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + "                                              ...................]接收完毕！");
+                AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "                                              ...................]接收完毕！");
             }
             finally
             {
@@ -948,25 +1083,25 @@ namespace MyGpnSoftware
         /////////////////////////////////////////////////////////////////////////////////////////////////////
         private void Butupgrade_Click(object sender, EventArgs e)
         {
-            if (butupgrade.Text == "④下载升级")
+            if (butupgrade.Text == "下载升级")
             {
 
-                    if (FtpPortEnable == false || FtpStatusEnable == false)
-                    {
-                        MessageBox.Show("请先③启动FTP服务器,进行后续操作！");
-                        return;
-                    }
+                if (FtpPortEnable == false || FtpStatusEnable == false)
+                {
+                    MessageBox.Show("请先③启动FTP服务器,进行后续操作！");
+                    return;
+                }
 
 
                 if (checkapp.Checked == false &&
                     checkcode.Checked == false &&
                     checknms.Checked == false &&
                     checksw.Checked == false &&
-                    check760a.Checked == false &&
+                    check760s.Checked == false &&
                     check760b.Checked == false &&
                     check760c.Checked == false &&
                     check760d.Checked == false &&
-                    checkotnpack.Checked == false &&
+                    check760f.Checked == false &&
                     checksysfile.Checked == false &&
                     checkflash.Checked == false &&
                     checkyaffs.Checked == false &&
@@ -988,7 +1123,7 @@ namespace MyGpnSoftware
                     };
                     DownLoadFileThread.Start();
                     backupfile = true;
-                    butupgrade.Text = "④停止升级";
+                    butupgrade.Text = "停止升级";
                     //户选择确认的操作
                 }
                 else if (dr == DialogResult.No)
@@ -1002,7 +1137,7 @@ namespace MyGpnSoftware
                     };
                     DownLoadFileThread.Start();
                     backupfile = false;
-                    butupgrade.Text = "④停止升级";
+                    butupgrade.Text = "停止升级";
                 }
                 if (dr == DialogResult.Cancel)
                 {
@@ -1014,14 +1149,14 @@ namespace MyGpnSoftware
             {
                 DownLoadFile_Stop = true;
                 backupfile = false;
-                butupgrade.Text = "④下载升级";
+                butupgrade.Text = "下载升级";
             }
         }
         #endregion
         #region 定时建立telnet连接
         private void timer2_Tick(object sender, EventArgs e)
         {
-            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + mysocket.ReceiveData(int.Parse(ts)));
+            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + mysocket.ReceiveData(int.Parse(ts)));
         }
         #endregion
 
@@ -1035,13 +1170,14 @@ namespace MyGpnSoftware
                 TimeCount = 0;
                 Mytimer.Change(0, 1000);
                 Control.CheckForIllegalCrossThreadCalls = false;
+                Save();
+                Thread.Sleep(XHTime);
                 Testftpser();
                 if (DownLoadFile_Stop)
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("\r\n" + "yyyy-MM-dd HH:mm:ss.fff") + " " + "下载升级已停止！");
+                    textDOS.AppendText(DateTime.Now.ToString("\r\n" + "yyyy-MM-dd HH:mm:ss") + " " + "下载升级已停止！");
                     return;
                 }
-                Save();
                 if (backupfile)
                 {
                     Backup();
@@ -1065,7 +1201,7 @@ namespace MyGpnSoftware
                 {
                     a++;
                 }
-                if (check760a.Checked == true)
+                if (check760s.Checked == true)
                 {
                     a++;
                 }
@@ -1085,7 +1221,7 @@ namespace MyGpnSoftware
                 {
                     a++;
                 }
-                if (checkotnpack.Checked == true)
+                if (check760f.Checked == true)
                 {
                     a++;
                 }
@@ -1122,12 +1258,12 @@ namespace MyGpnSoftware
                     {
                         if (DownLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                             return;
                         }
                         if (DownLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
@@ -1143,12 +1279,12 @@ namespace MyGpnSoftware
                             p = 100;
                             if (DownLoadFile_Stop)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                 return;
                             }
                             if (DownLoadFile_On_Off)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
@@ -1160,12 +1296,12 @@ namespace MyGpnSoftware
                         {
                             if (DownLoadFile_Stop)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                 return;
                             }
                             if (DownLoadFile_On_Off)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
@@ -1183,12 +1319,12 @@ namespace MyGpnSoftware
                     {
                         if (DownLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                             return;
                         }
                         if (DownLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
@@ -1204,12 +1340,12 @@ namespace MyGpnSoftware
                             p = 100;
                             if (DownLoadFile_Stop)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                 return;
                             }
                             if (DownLoadFile_On_Off)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
@@ -1221,12 +1357,12 @@ namespace MyGpnSoftware
                         {
                             if (DownLoadFile_Stop)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                 return;
                             }
                             if (DownLoadFile_On_Off)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
@@ -1244,12 +1380,12 @@ namespace MyGpnSoftware
                     {
                         if (DownLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                             return;
                         }
                         if (DownLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
@@ -1265,12 +1401,12 @@ namespace MyGpnSoftware
                             p = 100;
                             if (DownLoadFile_Stop)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                 return;
                             }
                             if (DownLoadFile_On_Off)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
@@ -1282,12 +1418,12 @@ namespace MyGpnSoftware
                         {
                             if (DownLoadFile_Stop)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                 return;
                             }
                             if (DownLoadFile_On_Off)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
@@ -1312,12 +1448,12 @@ namespace MyGpnSoftware
                     {
                         if (DownLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                             return;
                         }
                         if (DownLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
@@ -1333,12 +1469,12 @@ namespace MyGpnSoftware
                             p = 100;
                             if (DownLoadFile_Stop)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                 return;
                             }
                             if (DownLoadFile_On_Off)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
@@ -1350,12 +1486,12 @@ namespace MyGpnSoftware
                         {
                             if (DownLoadFile_Stop)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                 return;
                             }
                             if (DownLoadFile_On_Off)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
@@ -1373,12 +1509,12 @@ namespace MyGpnSoftware
                     {
                         if (DownLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                             return;
                         }
                         if (DownLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
@@ -1394,12 +1530,12 @@ namespace MyGpnSoftware
                             p = 100;
                             if (DownLoadFile_Stop)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                 return;
                             }
                             if (DownLoadFile_On_Off)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
@@ -1411,12 +1547,12 @@ namespace MyGpnSoftware
                         {
                             if (DownLoadFile_Stop)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                 return;
                             }
                             if (DownLoadFile_On_Off)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
@@ -1434,12 +1570,12 @@ namespace MyGpnSoftware
                     {
                         if (DownLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                             return;
                         }
                         if (DownLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
@@ -1455,12 +1591,12 @@ namespace MyGpnSoftware
                             p = 100;
                             if (DownLoadFile_Stop)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                 return;
                             }
                             if (DownLoadFile_On_Off)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
@@ -1472,12 +1608,12 @@ namespace MyGpnSoftware
                         {
                             if (DownLoadFile_Stop)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                 return;
                             }
                             if (DownLoadFile_On_Off)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
@@ -1495,12 +1631,12 @@ namespace MyGpnSoftware
                     {
                         if (DownLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                             return;
                         }
                         if (DownLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
@@ -1516,12 +1652,12 @@ namespace MyGpnSoftware
                             p = 100;
                             if (DownLoadFile_Stop)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                 return;
                             }
                             if (DownLoadFile_On_Off)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
@@ -1533,12 +1669,12 @@ namespace MyGpnSoftware
                         {
                             if (DownLoadFile_Stop)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                 return;
                             }
                             if (DownLoadFile_On_Off)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
@@ -1549,19 +1685,19 @@ namespace MyGpnSoftware
                         }
                     }
                 }
-                if (check760a.Checked == true)
+                if (check760s.Checked == true)
                 {
-                    Fpga760a();
+                    Fpga760s();
                     if (s == p)
                     {
                         if (DownLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                             return;
                         }
                         if (DownLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
@@ -1577,12 +1713,12 @@ namespace MyGpnSoftware
                             p = 100;
                             if (DownLoadFile_Stop)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                 return;
                             }
                             if (DownLoadFile_On_Off)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
@@ -1594,12 +1730,12 @@ namespace MyGpnSoftware
                         {
                             if (DownLoadFile_Stop)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                 return;
                             }
                             if (DownLoadFile_On_Off)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
@@ -1617,12 +1753,12 @@ namespace MyGpnSoftware
                     {
                         if (DownLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                             return;
                         }
                         if (DownLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
@@ -1638,12 +1774,12 @@ namespace MyGpnSoftware
                             p = 100;
                             if (DownLoadFile_Stop)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                 return;
                             }
                             if (DownLoadFile_On_Off)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
@@ -1655,12 +1791,12 @@ namespace MyGpnSoftware
                         {
                             if (DownLoadFile_Stop)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                 return;
                             }
                             if (DownLoadFile_On_Off)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
@@ -1678,12 +1814,12 @@ namespace MyGpnSoftware
                     {
                         if (DownLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                             return;
                         }
                         if (DownLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
@@ -1699,12 +1835,12 @@ namespace MyGpnSoftware
                             p = 100;
                             if (DownLoadFile_Stop)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                 return;
                             }
                             if (DownLoadFile_On_Off)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
@@ -1716,12 +1852,12 @@ namespace MyGpnSoftware
                         {
                             if (DownLoadFile_Stop)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                 return;
                             }
                             if (DownLoadFile_On_Off)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
@@ -1739,12 +1875,12 @@ namespace MyGpnSoftware
                     {
                         if (DownLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                             return;
                         }
                         if (DownLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
@@ -1760,12 +1896,12 @@ namespace MyGpnSoftware
                             p = 100;
                             if (DownLoadFile_Stop)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                 return;
                             }
                             if (DownLoadFile_On_Off)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
@@ -1777,12 +1913,12 @@ namespace MyGpnSoftware
                         {
                             if (DownLoadFile_Stop)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                 return;
                             }
                             if (DownLoadFile_On_Off)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
@@ -1800,12 +1936,12 @@ namespace MyGpnSoftware
                     {
                         if (DownLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                             return;
                         }
                         if (DownLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
@@ -1821,12 +1957,12 @@ namespace MyGpnSoftware
                             p = 100;
                             if (DownLoadFile_Stop)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                 return;
                             }
                             if (DownLoadFile_On_Off)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
@@ -1838,12 +1974,12 @@ namespace MyGpnSoftware
                         {
                             if (DownLoadFile_Stop)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                 return;
                             }
                             if (DownLoadFile_On_Off)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
@@ -1854,19 +1990,19 @@ namespace MyGpnSoftware
                         }
                     }
                 }
-                if (checkotnpack.Checked == true)
+                if (check760f.Checked == true)
                 {
-                    OtnPack();
+                    Fpga760f();
                     if (s == p)
                     {
                         if (DownLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                             return;
                         }
                         if (DownLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
@@ -1882,12 +2018,12 @@ namespace MyGpnSoftware
                             p = 100;
                             if (DownLoadFile_Stop)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                 return;
                             }
                             if (DownLoadFile_On_Off)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
@@ -1899,12 +2035,12 @@ namespace MyGpnSoftware
                         {
                             if (DownLoadFile_Stop)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                 return;
                             }
                             if (DownLoadFile_On_Off)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
@@ -1922,12 +2058,12 @@ namespace MyGpnSoftware
                     {
                         if (DownLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                             return;
                         }
                         if (DownLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
@@ -1943,12 +2079,12 @@ namespace MyGpnSoftware
                             p = 100;
                             if (DownLoadFile_Stop)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                 return;
                             }
                             if (DownLoadFile_On_Off)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
@@ -1960,12 +2096,12 @@ namespace MyGpnSoftware
                         {
                             if (DownLoadFile_Stop)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                 return;
                             }
                             if (DownLoadFile_On_Off)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
@@ -1983,12 +2119,12 @@ namespace MyGpnSoftware
                     {
                         if (DownLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                             return;
                         }
                         if (DownLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
@@ -2004,12 +2140,12 @@ namespace MyGpnSoftware
                             p = 100;
                             if (DownLoadFile_Stop)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                 return;
                             }
                             if (DownLoadFile_On_Off)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
@@ -2021,12 +2157,12 @@ namespace MyGpnSoftware
                         {
                             if (DownLoadFile_Stop)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                 return;
                             }
                             if (DownLoadFile_On_Off)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
@@ -2044,12 +2180,12 @@ namespace MyGpnSoftware
                     {
                         if (DownLoadFile_Stop)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                             return;
                         }
                         if (DownLoadFile_On_Off)
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                             DownLoadFilePause = new ManualResetEvent(false);
                             DownLoadFilePause.WaitOne();
                         }
@@ -2065,12 +2201,12 @@ namespace MyGpnSoftware
                             p = 100;
                             if (DownLoadFile_Stop)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                 return;
                             }
                             if (DownLoadFile_On_Off)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
@@ -2082,12 +2218,12 @@ namespace MyGpnSoftware
                         {
                             if (DownLoadFile_Stop)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                 return;
                             }
                             if (DownLoadFile_On_Off)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                 DownLoadFilePause = new ManualResetEvent(false);
                                 DownLoadFilePause.WaitOne();
                             }
@@ -2104,10 +2240,10 @@ namespace MyGpnSoftware
                 Thread.Sleep(XHTime);
                 string canyu2 = mysocket.ReceiveData(int.Parse(ts));
                 toolStripStatusLabelzt.Text = "已完成";
-                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "下载结束" + "================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "下载结束" + "================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
 
                 DownLoadFile_Stop = true;
-                butupgrade.Text = "④下载升级";
+                butupgrade.Text = "下载升级";
                 Mytimer.Change(Timeout.Infinite, 1000);
                 Reboot();
             }
@@ -2142,9 +2278,9 @@ namespace MyGpnSoftware
         private void Butlogin_Click(object sender, EventArgs e)
         {
             Thread Linkgpn = new Thread(LinkGpn);
-            if (string.Compare(butlogin.Text, "①断开设备") == 0)
+            if (string.Compare(ButLogin.Text, "①断开设备") == 0)
             {
-                butlogin.Text = "①连接设备";
+                ButLogin.Text = "①连接设备";
                 comip.Enabled = true;
                 textcom.Enabled = false;
                 butsend.Enabled = false;
@@ -2152,7 +2288,7 @@ namespace MyGpnSoftware
                 butpaigu.Enabled = false;
                 butsyslog.Enabled = false;
                 textguzhangmingling.Enabled = false;
-                butupgrade.Text = "④下载升级";
+                butupgrade.Text = "下载升级";
                 butupgrade.Enabled = false;
                 butslectfile.Enabled = false;
                 butupload.Enabled = false;
@@ -2176,19 +2312,22 @@ namespace MyGpnSoftware
                 slot12 = "";               //12槽位状态
                 version = "";              //设备版本号
                 devtype = "";               //设备型号
-                textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已断开==================================================OK");
-                this.AcceptButton = butlogin;
+                textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已断开==================================================OK");
+                AcceptButton = ButLogin;
                 mysocket.Close();
                 toolStripStatusLabellinkstat.Text = "未连接";
                 Linkgpn.Abort();
+                Gpnsetini();
+                //readgpnip();
+
                 return;
             }
-            if (string.Compare(butlogin.Text, "①连接设备") == 0)
+            if (string.Compare(ButLogin.Text, "①连接设备") == 0)
             {
 
                 Linkgpn.Start();
                 timer1.Start();
-              //  LinkGpn();
+                //  LinkGpn();
             }
         }
         #endregion
@@ -2209,7 +2348,7 @@ namespace MyGpnSoftware
                 //判断请求是否超时
                 for (int but = 0; but < int.Parse(compingcount.Text); but++)
                 {
-                    if (butlogin.Text == "①连接设备")
+                    if (ButLogin.Text == "①连接设备")
                     {
                         pingReply = ping.Send(comip.Text, timeout);
                         if (pingReply.Status == IPStatus.Success)
@@ -2218,17 +2357,17 @@ namespace MyGpnSoftware
                             break;
                         }
                     }
-                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "设备无法ping通剩余：" + (int.Parse(compingcount.Text) - but).ToString() + "次，请检查IP地址：" + comip.Text + "  设备是否正常！");
+                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "设备无法ping通剩余：" + (int.Parse(compingcount.Text) - but).ToString() + "次，请检查IP地址：" + comip.Text + "  设备是否正常！");
                     Thread.Sleep(XHTime);
                 }
                 if (link == false)
                 {
                     return;
                 }
-                textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "设备可以ping通，正在尝试Telnet登录，请稍等...");
+                textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "设备可以ping通，正在尝试Telnet登录，请稍等...");
                 if (mysocket.Connect(comip.Text.Trim(), "23"))
                 {
-                    butlogin.Text = "①断开设备";
+                    ButLogin.Text = "①断开设备";
                     comip.Enabled = false;
                     textcom.Enabled = true;
                     butsend.Enabled = true;
@@ -2240,7 +2379,7 @@ namespace MyGpnSoftware
                     butslectfile.Enabled = true;
                     butupload.Enabled = true;
                     butotnpaigu.Enabled = true;
-                    // textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") +" "+mysocket.ReceiveData(int.Parse(ts)));
+                    // textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") +" "+mysocket.ReceiveData(int.Parse(ts)));
                     this.AcceptButton = butsend;
                     textcom.Focus();
                     tabPageGpn.Text = comip.Text;
@@ -2256,8 +2395,14 @@ namespace MyGpnSoftware
                         }
                         if (login.Contains("Key"))
                         {
-                            MessageBox.Show("非我司设置，请更换IP重启登录！");
-                            butlogin.PerformClick();
+                            MessageBox.Show("非我司设备，请更换IP重启登录！");
+                            ButLogin.PerformClick();
+                            return;
+                        }
+                        if (login.Contains("Username or password is invalid"))
+                        {
+                            MessageBox.Show("非我司设备，请更换IP重启登录！");
+                            ButLogin.PerformClick();
                             return;
                         }
                         Thread.Sleep(XHTime / 3);
@@ -2269,7 +2414,7 @@ namespace MyGpnSoftware
                         if (passd.Contains("Error") || passd.Contains("failed") || passd.Contains("Bad passwords") || passd.Contains("Key"))
                         {
                             MessageBox.Show("用户名或密码错误，请断开重新尝试！");
-                            butlogin.PerformClick();
+                            ButLogin.PerformClick();
                             //textDOS.AppendText("\r\n" + "用户名或密码错误，请断开重新尝试！");
                             return;
                         }
@@ -2280,7 +2425,7 @@ namespace MyGpnSoftware
                         Thread.Sleep(XHTime / 3);
                         if (passd.Contains(">"))
                         {
-                            textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "用户名密码正确==========================================OK");
+                            textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "用户名密码正确==========================================OK");
                             mysocket.SendData("enable");
                             for (int b = 0; b <= XHCount; b++)
                             {
@@ -2295,7 +2440,7 @@ namespace MyGpnSoftware
                                         if (locked.Contains("configuration is locked by other user"))
                                         //configuration is locked by other user
                                         {
-                                            textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已经有用户登录，正在重新登录============================OK");
+                                            textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已经有用户登录，正在重新登录============================OK");
                                             mysocket.SendData("grosadvdebug");
                                             Thread.Sleep(XHTime);
                                             mysocket.SendData("vty user limit no");
@@ -2311,7 +2456,7 @@ namespace MyGpnSoftware
                                                 if (!mysocket.ReceiveData(int.Parse(ts)).Contains("failed"))
                                                 {
                                                     MessageBox.Show("用户名或密码错误，请断开重新尝试！");
-                                                    butlogin.PerformClick();
+                                                    ButLogin.PerformClick();
                                                     return;
                                                 }
                                                 break;
@@ -2332,7 +2477,7 @@ namespace MyGpnSoftware
                                 if (pass.Contains("configuration is locked by other user"))
                                 //configuration is locked by other user
                                 {
-                                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已经有用户登录，正在重新登录============================OK");
+                                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已经有用户登录，正在重新登录============================OK");
                                     mysocket.SendData("grosadvdebug");
                                     Thread.Sleep(XHTime);
                                     mysocket.SendData("vty user limit no");
@@ -2348,7 +2493,7 @@ namespace MyGpnSoftware
                                         if (!mysocket.ReceiveData(int.Parse(ts)).Contains("failed"))
                                         {
                                             MessageBox.Show("用户名或密码错误，请断开重新尝试！");
-                                            butlogin.PerformClick();
+                                            ButLogin.PerformClick();
                                             return;
                                         }
                                         break;
@@ -2362,15 +2507,14 @@ namespace MyGpnSoftware
                         Thread.Sleep(XHTime / 3);
                     }
                     toolStripStatusLabellinkstat.Text = "已连接";
-                    mysocket.SendData("service snmp source-ip auto");
+                    // mysocket.SendData("service snmp source-ip auto");
                     Thread.Sleep(XHTime);
                     string slot = mysocket.ReceiveData(int.Parse(ts));
                     // SNMP团体名称 
                     OctetString community = new OctetString(textReadCommunity.Text);
                     //定义代理参数类 
-                    AgentParameters param = new AgentParameters(community);
+                    AgentParameters param = new AgentParameters(SnmpVersion.Ver2, community, true);
                     //将SNMP版本设置为1（或2） 
-                    param.Version = SnmpVersion.Ver2;
                     //构造代理地址对象
                     //这里很容易使用IpAddress类，因为
                     //如果不
@@ -2408,10 +2552,9 @@ namespace MyGpnSoftware
                         if (result.Pdu.ErrorStatus != 0)
                         {
                             //代理报告与所述请求的错误 
-                            textDOS.Text += string.Format("\r\n" + "SNMP回复错误！错误代码 {0} 。错误行数：第 {1} 行\r\n",
-                                    result.Pdu.ErrorStatus,
+                            textDOS.Text += string.Format("\r\n" + "SNMP回复错误！错误代码：{0}，错误索引：第 {1} 行\r\n",
+                                    FindDevType.FindErrorCode(result.Pdu.ErrorStatus),
                                     result.Pdu.ErrorIndex);
-                            textDOS.Text += "SNMP连接存在问题，请检查读写团体是否设置正确？";
                         }
                         else
                         {
@@ -2544,196 +2687,12 @@ namespace MyGpnSoftware
                     }
                     target.Close();
 
-
-
-
-                    //mysocket.SendData("show slot");
-                    ////mysocket.SendData("\r\n");
-                    ////mysocket.SendData("\r\n");
-                    //string nms17A = "17  GPN7600-NMS-V1           GPN7600-NMS-V1           RUNNING        MASTER   ACTIVE";
-                    //string nms17S = "17  GPN7600-NMS-V1           GPN7600-NMS-V1           RUNNING        MASTER   STANDBY";
-                    //string nms18A = "18  GPN7600-NMS-V1           GPN7600-NMS-V1           RUNNING        MASTER   ACTIVE";
-                    //string nms18S = "18  GPN7600-NMS-V1           GPN7600-NMS-V1           RUNNING        MASTER   STANDBY";
-                    //string nms17AV2 = "17  GPN7600-V2-NMS           GPN7600-V2-NMS           RUNNING        MASTER   ACTIVE";
-                    //string nms17SV2 = "17  GPN7600-V2-NMS           GPN7600-V2-NMS           RUNNING        MASTER   STANDBY";
-                    //string nms18AV2 = "18  GPN7600-V2-NMS           GPN7600-V2-NMS           RUNNING        MASTER   ACTIVE";
-                    //string nms18SV2 = "18  GPN7600-V2-NMS           GPN7600-V2-NMS           RUNNING        MASTER   STANDBY";
-                    //string nms17A2 = "17  GPN7600-NMS-V2           GPN7600-NMS-V2           RUNNING        MASTER   ACTIVE";
-                    //string nms17S2 = "17  GPN7600-NMS-V2           GPN7600-NMS-V2           RUNNING        MASTER   STANDBY";
-                    //string nms18A2 = "18  GPN7600-NMS-V2           GPN7600-NMS-V2           RUNNING        MASTER   ACTIVE";
-                    //string nms18S2 = "18  GPN7600-NMS-V2           GPN7600-NMS-V2           RUNNING        MASTER   STANDBY";
-                    //string swa11AA = "11  GPN7600-SW-A             GPN7600-SW-A             RUNNING        SLAVE    ACTIVE";
-                    //string swa12AS = "12  GPN7600-SW-A             GPN7600-SW-A             RUNNING        SLAVE    STANDBY";
-                    //string swa11AS = "11  GPN7600-SW-A             GPN7600-SW-A             RUNNING        SLAVE    STANDBY";
-                    //string swa12AA = "12  GPN7600-SW-A             GPN7600-SW-A             RUNNING        SLAVE    ACTIVE";
-                    //string swa11AAV2 = "11  GPN7600-V2-SW            GPN7600-V2-SW            RUNNING        SLAVE    ACTIVE";
-                    //string swa12ASV2 = "12  GPN7600-V2-SW            GPN7600-V2-SW            RUNNING        SLAVE    STANDBY";
-                    //string swa11ASV2 = "11  GPN7600-V2-SW            GPN7600-V2-SW            RUNNING        SLAVE    STANDBY";
-                    //string swa12AAV2 = "12  GPN7600-V2-SW            GPN7600-V2-SW            RUNNING        SLAVE    ACTIVE";
-                    //string swa11AAV3 = "11  GPN7600-V2-SW-A          GPN7600-V2-SW-A          RUNNING        SLAVE    ACTIVE";
-                    //string swa12ASV3 = "12  GPN7600-V2-SW-A          GPN7600-V2-SW-A          RUNNING        SLAVE    STANDBY";
-                    //string swa11ASV3 = "11  GPN7600-V2-SW-A          GPN7600-V2-SW-A          RUNNING        SLAVE    STANDBY";
-                    //string swa12AAV3 = "12  GPN7600-V2-SW-A          GPN7600-V2-SW-A          RUNNING        SLAVE    ACTIVE";
-                    //string swb11AA = "11  GPN7600-SW-B             GPN7600-SW-B             RUNNING        SLAVE    ACTIVE";
-                    //string swb12AS = "12  GPN7600-SW-B             GPN7600-SW-B             RUNNING        SLAVE    STANDBY";
-                    //string swb11AS = "11  GPN7600-SW-B             GPN7600-SW-B             RUNNING        SLAVE    STANDBY";
-                    //string swb12AA = "12  GPN7600-SW-B             GPN7600-SW-B             RUNNING        SLAVE    ACTIVE";
-                    //string GPN800 = "1  GPN800-NMS-V1            GPN800-NMS-V1            RUNNING        MASTER   ACTIVE";
-                    //for (int a = 0; a <= XHCount; a++)
-                    //{
-                    //     slot = mysocket.ReceiveData(int.Parse(ts));
-                    //    if (slot.Contains("Ctrl+c"))
-                    //    {
-                    //        mysocket.SendDate("\r\n");
-                    //    }
-                    //    if (slot.Contains("#"))
-                    //    {
-                    //        break;
-                    //    }
-                    //    if (slot.Contains(GPN800))
-                    //    {
-                    //        slot17 = "ACTIVE";
-                    //        toolStripStatusLabelnms.Text = "01槽：主";
-                    //        toolStripStatusLabelnms.ForeColor = Color.DarkGreen;
-                    //        // textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") +" " + "17槽主在位==============================================OK");
-                    //    }
-                    //    if ((slot.Contains(nms17A)) || (slot.Contains(nms17AV2)) || slot.Contains(nms17A2))
-                    //    {
-                    //        slot17 = "ACTIVE";
-                    //        toolStripStatusLabelnms.Text = "17槽：主";
-                    //        toolStripStatusLabelnms.ForeColor = Color.DarkGreen;
-                    //        // textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") +" " + "17槽主在位==============================================OK");
-                    //    }
-                    //    if ((slot.Contains(nms17S)) || (slot.Contains(nms17SV2)) || (slot.Contains(nms17S2)))
-                    //    {
-                    //        slot17 = "STANDBY";
-                    //        toolStripStatusLabelnms.Text = "17槽：备";
-                    //        toolStripStatusLabelnms.ForeColor = Color.Red;
-                    //        // textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") +" " + "17槽备在位==============================================OK");
-                    //    }
-                    //    if ((slot.Contains(nms18A)) || (slot.Contains(nms18AV2)) || (slot.Contains(nms18A2)))
-                    //    {
-                    //        slot18 = "ACTIVE";
-                    //        toolStripStatusLabelnms18.Text = "18槽：主";
-                    //        toolStripStatusLabelnms18.ForeColor = Color.DarkGreen;
-                    //        //textDOS.AppendText("\r\n" + "18槽主在位==============================================OK");
-                    //    }
-                    //    if ((slot.Contains(nms18S)) || (slot.Contains(nms18SV2)) || (slot.Contains(nms18S2)))
-                    //    {
-                    //        toolStripStatusLabelnms18.Text = "18槽：备";
-                    //        toolStripStatusLabelnms18.ForeColor = Color.Red;
-                    //        slot18 = "STANDBY";
-                    //        // textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") +" " + "18槽备在位=============================================OK");
-                    //    }
-                    //    if ((slot.Contains(swa11AA)) || (slot.Contains(swa11AAV2)) || (slot.Contains(swa11AAV3)))
-                    //    {
-                    //        slot11 = "在位";
-                    //        toolStripStatusLabelswa11.Text = "11槽SW-A：主";
-                    //        toolStripStatusLabelswa11.ForeColor = Color.DarkGreen;
-                    //        //textDOS.AppendText("\r\n" + "11槽在位=============================================OK");
-                    //    }
-                    //    if ((slot.Contains(swa11AS)) || (slot.Contains(swa11ASV2)) || (slot.Contains(swa11ASV3)))
-                    //    {
-                    //        slot11 = "在位";
-                    //        toolStripStatusLabelswa11.Text = "11槽SW-A：备";
-                    //        toolStripStatusLabelswa11.ForeColor = Color.Red;
-                    //        //textDOS.AppendText("\r\n" + "11槽在位=============================================OK");
-                    //    }
-                    //    if ((slot.Contains(swa12AA)) || (slot.Contains(swa12AAV2)) || (slot.Contains(swa12AAV3)))
-                    //    {
-                    //        slot12 = "在位";
-                    //        toolStripStatusLabelswa12.Text = "12槽SW-A：主";
-                    //        toolStripStatusLabelswa12.ForeColor = Color.DarkGreen;
-                    //        //textDOS.AppendText("\r\n" + "12槽在位=============================================OK");
-                    //    }
-                    //    if ((slot.Contains(swa12AS) || slot.Contains(swb12AS)) || slot.Contains(swa12ASV2) || slot.Contains(swa12ASV3))
-                    //    {
-                    //        slot12 = "在位";
-                    //        toolStripStatusLabelswa12.Text = "12槽SW-A：备";
-                    //        toolStripStatusLabelswa12.ForeColor = Color.Red;
-                    //        //textDOS.AppendText("\r\n" + "12槽在位=============================================OK");
-                    //    }
-                    //    if (slot.Contains(swb11AA))
-                    //    {
-                    //        slot11 = "在位";
-                    //        sw = "swb";
-                    //        toolStripStatusLabelswa11.Text = "11槽SW-B：主";
-                    //        toolStripStatusLabelswa11.ForeColor = Color.DarkGreen;
-                    //        //textDOS.AppendText("\r\n" + "11槽在位=============================================OK");
-                    //    }
-                    //    if (slot.Contains(swb11AS))
-                    //    {
-                    //        slot11 = "在位";
-                    //        sw = "swb";
-                    //        toolStripStatusLabelswa11.Text = "11槽SW-B：备";
-                    //        toolStripStatusLabelswa11.ForeColor = Color.Red;
-                    //        //textDOS.AppendText("\r\n" + "11槽在位=============================================OK");
-                    //    }
-                    //    if (slot.Contains(swb12AA))
-                    //    {
-                    //        slot12 = "在位";
-                    //        sw = "swb";
-                    //        toolStripStatusLabelswa12.Text = "12槽SW-B：主";
-                    //        toolStripStatusLabelswa12.ForeColor = Color.DarkGreen;
-                    //        //textDOS.AppendText("\r\n" + "12槽在位=============================================OK");
-                    //    }
-                    //    if (slot.Contains(swb12AS))
-                    //    {
-                    //        slot12 = "在位";
-                    //        sw = "swb";
-                    //        toolStripStatusLabelswa12.Text = "12槽SW-B：备";
-                    //        toolStripStatusLabelswa12.ForeColor = Color.Red;
-                    //        //textDOS.AppendText("\r\n" + "12槽在位=============================================OK");
-                    //    }
-                    //    Thread.Sleep(XHTime / 3);
-                    //}
-                    ////mysocket.SendDate("\r\n");
-                    //// mysocket.SendDate("\r\n");
-                    //// mysocket.SendDate("\x03");
-                    ////Thread.Sleep(XHTime);
-                    ////string meiyong = textDOS.Text + "\r\n" + mysocket.ReceiveData(int.Parse(ts));
-                    //textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "获取槽位信息============================================OK");
-                    //mysocket.SendData("show version");
-                    //string ver = "";
-                    //string ver2 = "";
-                    //for (int a = 0; a <= XHCount; a++)
-                    //{
-                    //    ver2 = mysocket.ReceiveData(int.Parse(ts));
-                    //    ver = ver + ver2;
-                    //    if (ver2.Contains("Ctrl+c"))
-                    //    {
-                    //        mysocket.SendDate("\r\n");
-                    //    }
-                    //    if (ver2.Contains("#"))
-                    //    {
-                    //        break;
-                    //    }
-                    //    Thread.Sleep(XHTime / 3);
-                    //}
-                    //Regex r = new Regex(@"ProductOS\s*Version\s*([\w\d]+)[\s*\(]*", RegexOptions.IgnoreCase | RegexOptions.Multiline);
-                    //string banben = r.Match(ver).Groups[1].Value;
-                    //if (banben.ToString() == "")
-                    //{
-                    //    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "获取版本信息===========================================NOK");
-                    //}
-                    //else
-                    //{
-                    //    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "获取版本信息============================================OK");
-                    //}
-                    //// banben = banben.Substring("ProductOS Version ".Length);
-                    //toolStripStatusLabelver.Text = "版本:" + banben.ToString();
-                    //toolStripStatusLabelver.ForeColor = Color.Red;
-                    //version = banben.ToString();
-                    ////mysocket.SendDate("\x03");
-                    ////Thread.Sleep(XHTime);
-                    ////string meiryong = textDOS.Text + "\r\n" + mysocket.ReceiveData(int.Parse(ts));
-                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "登录成功可以使用========================================OK" + "\r\n");
-                    this.butsend.PerformClick();
-                    //butguzhangsend.PerformClick();
+                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "登录成功可以使用========================================OK" + "\r\n");
+                    butsend.PerformClick();
                 }
                 else
                 {
-                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "无法Telnet登录，请检查设备是否正常！");
+                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "无法Telnet登录，请检查设备是否正常！");
                 }
             }
             catch (Exception ex)
@@ -2776,7 +2735,7 @@ namespace MyGpnSoftware
             }
             else
             {
-                textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "连接通信故障，请断开后，重新尝试！");
+                textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "连接通信故障，请断开后，重新尝试！");
                 //this.butlogin.PerformClick();
             }
             textcom.Text = "";
@@ -2796,12 +2755,12 @@ namespace MyGpnSoftware
                 string box = mysocket.ReceiveData(int.Parse(ts));
                 if (box.Contains(save))
                 {
-                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "保存配置===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "保存配置===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                     break;
                 }
                 if (box.Contains("erro"))
                 {
-                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "保存配置==============================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "保存配置==============================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     return;
                 }
                 Thread.Sleep(XHTime);
@@ -2814,14 +2773,14 @@ namespace MyGpnSoftware
         private void Testftpser()
         {
             toolStripStatusLabelzt.Text = "检查FTP服务器中";
-            textDOS.AppendText(DateTime.Now.ToString("\r\n" + "yyyy-MM-dd HH:mm:ss.fff") + " " + "FTP服务器连接测试中，请耐心等待,大约需要15秒钟.....");
+            textDOS.AppendText(DateTime.Now.ToString("\r\n" + "yyyy-MM-dd HH:mm:ss") + " " + "FTP服务器连接测试中，请耐心等待,大约需要15秒钟.....");
             mysocket.SendData("ping " + comftpip.Text);
             for (int i = 1; i <= XHCount; i++)
             {
                 string ping = mysocket.ReceiveData(int.Parse(ts));
                 if (ping.Contains("ms"))
                 {
-                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "设备ping服务器=========================================OK" + "\r\n");
+                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "设备ping服务器=========================================OK" + "\r\n");
                     mysocket.SendDate("\x03");
                     Thread.Sleep(XHTime);
                     string ctrlc = mysocket.ReceiveData(int.Parse(ts));
@@ -2829,14 +2788,14 @@ namespace MyGpnSoftware
                 }
                 if (ping.Contains("0 packets received"))
                 {
-                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "设备ping服务器=========================================NOK" + "\r\n");
-                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "FTP服务器故障，请点击停止升级后，检查FTP服务器IP地址！");
+                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "设备ping服务器=========================================NOK" + "\r\n");
+                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "FTP服务器故障，请点击停止升级后，检查FTP服务器IP地址！");
                     toolStripStatusLabelzt.Text = "FTP的IP地址故障，请检查！";
                     UpLoadFile_Stop = true;
-                    butupload.Text = "⑤上传备份";
+                    butupload.Text = "上传备份";
                     DownLoadFile_Stop = true;
                     backupfile = false;
-                    butupgrade.Text = "④下载升级";
+                    butupgrade.Text = "下载升级";
                     MessageBox.Show("请检查FTP服务IP地址后，再次尝试！");
                     return;
                 }
@@ -2849,30 +2808,30 @@ namespace MyGpnSoftware
                 string box = mysocket.ReceiveData(int.Parse(ts));
                 if (box.Contains("ok"))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "FTP服务器测试==========================================OK" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "FTP服务器测试==========================================OK" + "\r\n");
                     break;
                 }
                 if (box.Contains("fail"))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "FTP服务器IP地址故障，请点击停止升级后，检查FTP服务器IP地址！" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "FTP服务器IP地址故障，请点击停止升级后，检查FTP服务器IP地址！" + "\r\n");
                     toolStripStatusLabelzt.Text = "FTP故障，请检查！";
                     UpLoadFile_Stop = true;
-                    butupload.Text = "⑤上传备份";
+                    butupload.Text = "上传备份";
                     DownLoadFile_Stop = true;
                     backupfile = false;
-                    butupgrade.Text = "④下载升级";
+                    butupgrade.Text = "下载升级";
                     MessageBox.Show("请检查FTP服务IP地址后，再次尝试！");
                     return;
                 }
                 if (box.Contains("User need password"))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "FTP服务器用户名密码错误，请检查！" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "FTP服务器用户名密码错误，请检查！" + "\r\n");
                     toolStripStatusLabelzt.Text = "FTP故障，请检查！";
                     UpLoadFile_Stop = true;
-                    butupload.Text = "⑤上传备份";
+                    butupload.Text = "上传备份";
                     DownLoadFile_Stop = true;
                     backupfile = false;
-                    butupgrade.Text = "④下载升级";
+                    butupgrade.Text = "下载升级";
                     MessageBox.Show("请检查FTP用户名和密码后，再次尝试！");
                     return;
                 }
@@ -2910,12 +2869,12 @@ namespace MyGpnSoftware
                 string command = mysocket.ReceiveData(int.Parse(ts));
                 if (command.Contains("Error. Can't delete"))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "主槽app_code_backup.bin========================文件不存在" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "主槽app_code_backup.bin========================文件不存在" + toolStripStatusLabeltime.Text + "\r\n");
                     break;
                 }
                 if (command.Contains("rm app_code_backup.bin"))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "主槽删除app_code_backup.bin============================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "主槽删除app_code_backup.bin============================OK" + toolStripStatusLabeltime.Text + "\r\n");
                     break;
                 }
                 Thread.Sleep(XHTime);
@@ -2926,12 +2885,12 @@ namespace MyGpnSoftware
                 string command = mysocket.ReceiveData(int.Parse(ts));
                 if (command.Contains("Error. Can't delete"))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "主槽record.txt=================================文件不存在" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "主槽record.txt=================================文件不存在" + toolStripStatusLabeltime.Text + "\r\n");
                     break;
                 }
                 if (command.Contains("rm record.txt"))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "主槽删除record.txt=====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "主槽删除record.txt=====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                     break;
                 }
                 Thread.Sleep(XHTime);
@@ -2942,12 +2901,12 @@ namespace MyGpnSoftware
                 string command = mysocket.ReceiveData(int.Parse(ts));
                 if (command.Contains("Error. Can't delete"))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "主槽/flash/sys/fpga_code.bin===================文件不存在" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "主槽/flash/sys/fpga_code.bin===================文件不存在" + toolStripStatusLabeltime.Text + "\r\n");
                     break;
                 }
                 if (command.Contains("rm fpga_code.bin"))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "主槽删除/flash/sys/fpga_code.bin=======================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "主槽删除/flash/sys/fpga_code.bin=======================OK" + toolStripStatusLabeltime.Text + "\r\n");
                     break;
                 }
                 Thread.Sleep(XHTime);
@@ -2966,7 +2925,7 @@ namespace MyGpnSoftware
             if (slot18 == "STANDBY" || slot17 == "STANDBY")
             {
                 toolStripStatusLabelzt.Text = "清空备槽残余文件";
-                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备槽在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备槽在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                 mysocket.SendData("grosadvdebug");
                 for (int a = 1; a <= XHCount; a++)
                 {
@@ -2994,7 +2953,7 @@ namespace MyGpnSoftware
                     }
                     if (command.Contains("Please try later"))
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备槽有其他户登录，已退出终止升级");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备槽有其他户登录，已退出终止升级");
                         return;
                     }
                     if (command.Contains("Login"))
@@ -3081,12 +3040,12 @@ namespace MyGpnSoftware
                     string command = mysocket.ReceiveData(int.Parse(ts));
                     if (command.Contains("Error. Can't delete"))
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备槽app_code_backup.bin======================文件不能存在" + toolStripStatusLabeltime.Text + "\r\n");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备槽app_code_backup.bin======================文件不能存在" + toolStripStatusLabeltime.Text + "\r\n");
                         break;
                     }
                     if (command.Contains("rm app_code_backup.bin"))
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备槽删除app_code_backup.bin============================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备槽删除app_code_backup.bin============================OK" + toolStripStatusLabeltime.Text + "\r\n");
                         break;
                     }
                     Thread.Sleep(XHTime);
@@ -3097,12 +3056,12 @@ namespace MyGpnSoftware
                     string command = mysocket.ReceiveData(int.Parse(ts));
                     if (command.Contains("Error. Can't delete"))
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备槽record.txt=================================文件不存在" + toolStripStatusLabeltime.Text + "\r\n");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备槽record.txt=================================文件不存在" + toolStripStatusLabeltime.Text + "\r\n");
                         break;
                     }
                     if (command.Contains("rm record.txt"))
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备槽删除record.txt=====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备槽删除record.txt=====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                         break;
                     }
                     Thread.Sleep(XHTime);
@@ -3113,12 +3072,12 @@ namespace MyGpnSoftware
                     string command = mysocket.ReceiveData(int.Parse(ts));
                     if (command.Contains("Error. Can't delete"))
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备槽/flash/sys/fpga_code.bin===================文件不存在" + toolStripStatusLabeltime.Text + "\r\n");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备槽/flash/sys/fpga_code.bin===================文件不存在" + toolStripStatusLabeltime.Text + "\r\n");
                         break;
                     }
                     if (command.Contains("rm fpga_code.bin"))
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备槽删除/flash/sys/fpga_code.bin=======================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备槽删除/flash/sys/fpga_code.bin=======================OK" + toolStripStatusLabeltime.Text + "\r\n");
                         break;
                     }
                     Thread.Sleep(XHTime);
@@ -3202,7 +3161,7 @@ namespace MyGpnSoftware
                 //    }
                 //    Thread.Sleep(XHTime);
                 //}
-                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备槽不在位=============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备槽不在位=============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
             }
         }
         #endregion
@@ -3217,38 +3176,38 @@ namespace MyGpnSoftware
                 string command = mysocket.ReceiveData(int.Parse(ts));
                 if (command.Contains("Download file ...ok"))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "主槽APP下载成功========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "主槽APP下载成功========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                     toolStripStatusLabelzt.Text = "写入APP中";
                     for (int b = 1; b <= XHCount; b++)
                     {
                         string download = mysocket.ReceiveData(int.Parse(ts));
                         if (download.Contains("ok"))
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "APP写入成功============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "APP写入成功============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                             if (slot17 == "ACTIVE")
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "17槽APP写入成功==========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "17槽APP写入成功==========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                 if (slot18 == "STANDBY" && slot11 == "" && slot12 == "")
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                     for (int c = 1; c <= 100000; c++)
                                     {
                                         string up18slot = mysocket.ReceiveData(int.Parse(ts));
                                         if (up18slot.Contains("auto-upgrade to slot 18"))
                                         {
                                             toolStripStatusLabelzt.Text = "同步APP到备槽中";
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽准备同步APP========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽准备同步APP========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (up18slot.Contains("18 fail"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽同步APP===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽同步APP===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (up18slot.Contains("Auto-upgrade to slot 18 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             break;
                                         }
                                         Thread.Sleep(XHTime);
@@ -3258,45 +3217,45 @@ namespace MyGpnSoftware
                                 {
                                     string S11 = "其他";
                                     string S18 = "未知";
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                     for (int c = 1; c <= XHCount; c++)
                                     {
                                         string up1118slot = mysocket.ReceiveData(int.Parse(ts));
                                         if (up1118slot.Contains("auto-upgrade to slot 18"))
                                         {
                                             toolStripStatusLabelzt.Text = "同步APP到备槽中";
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽准备同步APP========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽准备同步APP========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (up1118slot.Contains("auto-upgrade to slot 11"))
                                         {
                                             toolStripStatusLabelzt.Text = "同步APP到11槽中";
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽准备同步APP========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽准备同步APP========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (up1118slot.Contains("Failed upgraded slot 11"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽同步APP===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽同步APP===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (up1118slot.Contains("18 fail"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽同步APP===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽同步APP===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (up1118slot.Contains("Auto-upgrade to slot 11 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             S11 = "OK";
                                         }
                                         if (up1118slot.Contains("Auto-upgrade to slot 18 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             S18 = "OK";
                                         }
                                         if (up1118slot.Contains("upgraded all files successfully") || (S11 == S18))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "全部槽同步APP==========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "全部槽同步APP==========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             break;
                                         }
                                         Thread.Sleep(XHTime);
@@ -3306,45 +3265,45 @@ namespace MyGpnSoftware
                                 {
                                     string S11 = "其他";
                                     string S18 = "未知";
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽在位==================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽在位==================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                     for (int c = 1; c <= XHCount; c++)
                                     {
                                         string up1118slot = mysocket.ReceiveData(int.Parse(ts));
                                         if (up1118slot.Contains("auto-upgrade to slot 18"))
                                         {
                                             toolStripStatusLabelzt.Text = "同步APP到备槽中";
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽准备同步APP========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽准备同步APP========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (up1118slot.Contains("auto-upgrade to slot 12"))
                                         {
                                             toolStripStatusLabelzt.Text = "同步APP到12槽中";
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽准备同步APP========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽准备同步APP========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (up1118slot.Contains("Failed upgraded slot 12"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽同步APP===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽同步APP===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (up1118slot.Contains("18 fail"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽同步APP===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽同步APP===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (up1118slot.Contains("Auto-upgrade to slot 12 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             S11 = "OK";
                                         }
                                         if (up1118slot.Contains("Auto-upgrade to slot 18 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             S18 = "OK";
                                         }
                                         if (up1118slot.Contains("upgraded all files successfully") || (S11 == S18))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "全部槽同步APP==========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "全部槽同步APP==========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             break;
                                         }
                                         Thread.Sleep(XHTime);
@@ -3355,60 +3314,60 @@ namespace MyGpnSoftware
                                     string S11 = "其他";
                                     string S12 = "爱好";
                                     string S18 = "号码";
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽在位================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽在位================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽在位================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽在位================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽在位================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽在位================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                     for (int c = 1; c <= 100000; c++)
                                     {
                                         string allslot = mysocket.ReceiveData(int.Parse(ts));
                                         if (allslot.Contains("auto-upgrade to slot 18"))
                                         {
                                             toolStripStatusLabelzt.Text = "同步APP到备槽中";
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽准备同步APP========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽准备同步APP========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (allslot.Contains("auto-upgrade to slot 11"))
                                         {
                                             toolStripStatusLabelzt.Text = "同步APP到11槽中";
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽准备同步APP========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽准备同步APP========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (allslot.Contains("auto-upgrade to slot 12"))
                                         {
                                             toolStripStatusLabelzt.Text = "同步APP到12槽中";
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽准备同步APP========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽准备同步APP========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (allslot.Contains("Failed upgraded slot 11"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽同步APP===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽同步APP===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (allslot.Contains("Failed upgraded slot 12"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽同步APP===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽同步APP===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (allslot.Contains("18 fail"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽同步APP===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽同步APP===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (allslot.Contains("Auto-upgrade to slot 11 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             S11 = "OK";
                                         }
                                         if (allslot.Contains("Auto-upgrade to slot 12 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             S12 = "OK";
                                         }
                                         if (allslot.Contains("Auto-upgrade to slot 18 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             S18 = "OK";
                                         }
                                         if (allslot.Contains("upgraded all files successfully") || (S11 == S12 && S11 == S18))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "全部槽同步APP==============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "全部槽同步APP==============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             break;
                                         }
                                         Thread.Sleep(XHTime);
@@ -3418,45 +3377,45 @@ namespace MyGpnSoftware
                                 {
                                     string S11 = "未知";
                                     string S12 = "其他";
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                     for (int c = 1; c <= 100000; c++)
                                     {
                                         string up112slot = mysocket.ReceiveData(int.Parse(ts));
                                         if (up112slot.Contains("auto-upgrade to slot 11"))
                                         {
                                             toolStripStatusLabelzt.Text = "同步APP到11槽中";
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽准备同步APP========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽准备同步APP========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (up112slot.Contains("auto-upgrade to slot 12"))
                                         {
                                             toolStripStatusLabelzt.Text = "同步APP到12槽中";
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽准备同步APP========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽准备同步APP========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (up112slot.Contains("Failed upgraded slot 11"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽同步APP===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽同步APP===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (up112slot.Contains("Failed upgraded slot 12"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽同步APP===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽同步APP===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (up112slot.Contains("Auto-upgrade to slot 11 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             S11 = "OK";
                                         }
                                         if (up112slot.Contains("Auto-upgrade to slot 12 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             S12 = "OK";
                                         }
                                         if (up112slot.Contains("upgraded all files successfully") || (S11 == S12))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "全部槽同步APP==============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "全部槽同步APP==============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             break;
                                         }
                                         Thread.Sleep(XHTime);
@@ -3464,25 +3423,25 @@ namespace MyGpnSoftware
                                 }
                                 if (slot18 == "" && slot11 == "在位" && slot12 == "")
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽在位==================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽不在位================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽不在位================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽在位==================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽不在位================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽不在位================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                     for (int c = 1; c <= XHCount; c++)
                                     {
                                         string up112slot = mysocket.ReceiveData(int.Parse(ts));
                                         if (up112slot.Contains("auto-upgrade to slot 11"))
                                         {
                                             toolStripStatusLabelzt.Text = "同步APP到11槽中";
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽准备同步APP========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽准备同步APP========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (up112slot.Contains("Failed upgraded slot 11"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽同步APP===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽同步APP===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (up112slot.Contains("Auto-upgrade to slot 11 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             break;
                                         }
                                         Thread.Sleep(XHTime);
@@ -3490,25 +3449,25 @@ namespace MyGpnSoftware
                                 }
                                 if (slot18 == "" && slot11 == "" && slot12 == "在位")
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽不在位================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽在位==================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽不在位================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽不在位================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽在位==================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽不在位================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                     for (int c = 1; c <= XHCount; c++)
                                     {
                                         string up112slot = mysocket.ReceiveData(int.Parse(ts));
                                         if (up112slot.Contains("auto-upgrade to slot 12"))
                                         {
                                             toolStripStatusLabelzt.Text = "同步APP到12槽中";
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽准备同步APP========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽准备同步APP========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (up112slot.Contains("Failed upgraded slot 12"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽同步APP===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽同步APP===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (up112slot.Contains("Auto-upgrade to slot 12 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             break;
                                         }
                                         Thread.Sleep(XHTime);
@@ -3516,36 +3475,36 @@ namespace MyGpnSoftware
                                 }
                                 if (slot18 == "" && slot11 == "" && slot12 == "")
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽不在位================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽不在位================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽不在位================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽不在位================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽不在位================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽不在位================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                     break;
                                 }
                             }
                             if (slot18 == "ACTIVE")
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽APP写入成功========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽APP写入成功========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                 if (slot17 == "STANDBY" && slot11 == "" && slot12 == "")
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽不在位=============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽不在位=============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "17槽在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽不在位=============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽不在位=============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "17槽在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                     for (int c = 1; c <= 100000; c++)
                                     {
                                         string up18slot = mysocket.ReceiveData(int.Parse(ts));
                                         if (up18slot.Contains("auto-upgrade to slot 18"))
                                         {
                                             toolStripStatusLabelzt.Text = "同步APP到备槽中";
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "17槽准备同步APP========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "17槽准备同步APP========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (up18slot.Contains("17 fail"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "17槽同步APP===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "17槽同步APP===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (up18slot.Contains("Auto-upgrade to slot 17 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "17槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "17槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             break;
                                         }
                                         Thread.Sleep(XHTime);
@@ -3555,45 +3514,45 @@ namespace MyGpnSoftware
                                 {
                                     string S11 = "其他";
                                     string S18 = "未知";
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽不在位=============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "17槽在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽不在位=============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "17槽在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                     for (int c = 1; c <= XHCount; c++)
                                     {
                                         string up1118slot = mysocket.ReceiveData(int.Parse(ts));
                                         if (up1118slot.Contains("auto-upgrade to slot 17"))
                                         {
                                             toolStripStatusLabelzt.Text = "同步APP到备槽中";
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "17槽准备同步APP========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "17槽准备同步APP========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (up1118slot.Contains("auto-upgrade to slot 11"))
                                         {
                                             toolStripStatusLabelzt.Text = "同步APP到11槽中";
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽准备同步APP========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽准备同步APP========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (up1118slot.Contains("Failed upgraded slot 11"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽同步APP===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽同步APP===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (up1118slot.Contains("18 fail"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "17槽同步APP===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "17槽同步APP===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (up1118slot.Contains("Auto-upgrade to slot 11 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             S11 = "OK";
                                         }
                                         if (up1118slot.Contains("Auto-upgrade to slot 17 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "17槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "17槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             S18 = "OK";
                                         }
                                         if (up1118slot.Contains("upgraded all files successfully") || (S11 == S18))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "全部槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "全部槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             break;
                                         }
                                         Thread.Sleep(XHTime);
@@ -3603,45 +3562,45 @@ namespace MyGpnSoftware
                                 {
                                     string S11 = "其他";
                                     string S18 = "未知";
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽不在位=============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "17槽在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽不在位=============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "17槽在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                     for (int c = 1; c <= XHCount; c++)
                                     {
                                         string up1118slot = mysocket.ReceiveData(int.Parse(ts));
                                         if (up1118slot.Contains("auto-upgrade to slot 17"))
                                         {
                                             toolStripStatusLabelzt.Text = "同步APP到备槽中";
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "17槽准备同步APP========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "17槽准备同步APP========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (up1118slot.Contains("auto-upgrade to slot 12"))
                                         {
                                             toolStripStatusLabelzt.Text = "同步APP到12槽中";
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽准备同步APP========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽准备同步APP========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (up1118slot.Contains("Failed upgraded slot 12"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽同步APP===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽同步APP===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (up1118slot.Contains("18 fail"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "17槽同步APP===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "17槽同步APP===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (up1118slot.Contains("Auto-upgrade to slot 12 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             S11 = "OK";
                                         }
                                         if (up1118slot.Contains("Auto-upgrade to slot 17 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "17槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "17槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             S18 = "OK";
                                         }
                                         if (up1118slot.Contains("upgraded all files successfully") || (S11 == S18))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "全部槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "全部槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             break;
                                         }
                                         Thread.Sleep(XHTime);
@@ -3652,60 +3611,60 @@ namespace MyGpnSoftware
                                     string S11 = "其他";
                                     string S12 = "爱好";
                                     string S18 = "号码";
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽在位==============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽在位==============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "17槽在位==============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽在位==============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽在位==============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "17槽在位==============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                     for (int c = 1; c <= 100000; c++)
                                     {
                                         string allslot = mysocket.ReceiveData(int.Parse(ts));
                                         if (allslot.Contains("auto-upgrade to slot 17"))
                                         {
                                             toolStripStatusLabelzt.Text = "同步APP到备槽中";
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "17槽准备同步APP========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "17槽准备同步APP========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (allslot.Contains("auto-upgrade to slot 11"))
                                         {
                                             toolStripStatusLabelzt.Text = "同步APP到11槽中";
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽准备同步APP========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽准备同步APP========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (allslot.Contains("auto-upgrade to slot 12"))
                                         {
                                             toolStripStatusLabelzt.Text = "同步APP到12槽中";
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽准备同步APP========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽准备同步APP========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (allslot.Contains("Failed upgraded slot 11"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽同步APP===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽同步APP===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (allslot.Contains("Failed upgraded slot 12"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽同步APP===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽同步APP===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (allslot.Contains("17 fail"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "17槽同步APP===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "17槽同步APP===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (allslot.Contains("Auto-upgrade to slot 11 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             S11 = "OK";
                                         }
                                         if (allslot.Contains("Auto-upgrade to slot 12 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             S12 = "OK";
                                         }
                                         if (allslot.Contains("Auto-upgrade to slot 17 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             S18 = "OK";
                                         }
                                         if (allslot.Contains("upgraded all files successfully") || (S11 == S12 && S11 == S18))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "全部槽同步APP==============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "全部槽同步APP==============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             break;
                                         }
                                         Thread.Sleep(XHTime);
@@ -3715,45 +3674,45 @@ namespace MyGpnSoftware
                                 {
                                     string S11 = "未知";
                                     string S12 = "其他";
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽不在位=============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽不在位=============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                     for (int c = 1; c <= 100000; c++)
                                     {
                                         string up112slot = mysocket.ReceiveData(int.Parse(ts));
                                         if (up112slot.Contains("auto-upgrade to slot 11"))
                                         {
                                             toolStripStatusLabelzt.Text = "同步APP到11槽中";
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽准备同步APP========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽准备同步APP========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (up112slot.Contains("auto-upgrade to slot 12"))
                                         {
                                             toolStripStatusLabelzt.Text = "同步APP到12槽中";
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽准备同步APP========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽准备同步APP========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (up112slot.Contains("Failed upgraded slot 11"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽同步APP===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽同步APP===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (up112slot.Contains("Failed upgraded slot 12"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽同步APP===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽同步APP===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (up112slot.Contains("Auto-upgrade to slot 11 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             S11 = "OK";
                                         }
                                         if (up112slot.Contains("Auto-upgrade to slot 12 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             S12 = "OK";
                                         }
                                         if (up112slot.Contains("upgraded all files successfully") || (S11 == S12))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "全部槽同步APP==============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "全部槽同步APP==============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             break;
                                         }
                                         Thread.Sleep(XHTime);
@@ -3761,25 +3720,25 @@ namespace MyGpnSoftware
                                 }
                                 if (slot17 == "" && slot11 == "在位" && slot12 == "")
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽在位==================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽不在位================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "17槽不在位================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽在位==================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽不在位================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "17槽不在位================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                     for (int c = 1; c <= XHCount; c++)
                                     {
                                         string up112slot = mysocket.ReceiveData(int.Parse(ts));
                                         if (up112slot.Contains("auto-upgrade to slot 11"))
                                         {
                                             toolStripStatusLabelzt.Text = "同步APP到11槽中";
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽准备同步APP========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽准备同步APP========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (up112slot.Contains("Failed upgraded slot 11"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽同步APP===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽同步APP===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (up112slot.Contains("Auto-upgrade to slot 11 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             break;
                                         }
                                         Thread.Sleep(XHTime);
@@ -3787,25 +3746,25 @@ namespace MyGpnSoftware
                                 }
                                 if (slot17 == "" && slot11 == "" && slot12 == "在位")
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽在位==================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽不在位================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "17槽不在位================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽在位==================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽不在位================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "17槽不在位================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                     for (int c = 1; c <= XHCount; c++)
                                     {
                                         string up112slot = mysocket.ReceiveData(int.Parse(ts));
                                         if (up112slot.Contains("auto-upgrade to slot 12"))
                                         {
                                             toolStripStatusLabelzt.Text = "同步APP到12槽中";
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽准备同步APP========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽准备同步APP========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (up112slot.Contains("Failed upgraded slot 12"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽同步APP===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽同步APP===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (up112slot.Contains("Auto-upgrade to slot 12 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽同步APP============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             break;
                                         }
                                         Thread.Sleep(XHTime);
@@ -3813,9 +3772,9 @@ namespace MyGpnSoftware
                                 }
                                 if (slot17 == "" && slot11 == "" && slot12 == "")
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽不在位================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽不在位================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备槽不在位================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽不在位================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽不在位================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备槽不在位================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                     break;
                                 }
                             }
@@ -3823,7 +3782,7 @@ namespace MyGpnSoftware
                         }
                         if (download.Contains("failed"))
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "主槽APP写入===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "主槽APP写入===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                             return;
                         }
                         Thread.Sleep(XHTime);
@@ -3832,7 +3791,7 @@ namespace MyGpnSoftware
                 }
                 if (command.Contains("failed"))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "主槽APP下载==============================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "主槽APP下载==============================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     return;
                 }
                 Thread.Sleep(XHTime);
@@ -3846,7 +3805,7 @@ namespace MyGpnSoftware
             toolStripStatusLabelzt.Text = "下载FPGA_CODE中";
             if (comapp.Text.Contains("R13"))
             {
-                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "升级为R13版本执行特殊升级方式===========================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "升级为R13版本执行特殊升级方式===========================OK" + toolStripStatusLabeltime.Text + "\r\n");
                 mysocket.SendData("download ftp file /flash/sys/fpga_code.bin " + comftpip.Text + " " + textftpusr.Text + " " + textftppsd.Text + " " + comcode.Text);
             }
             else
@@ -3859,7 +3818,7 @@ namespace MyGpnSoftware
                 if (command.Contains("Download file ...ok"))
                 {
                     toolStripStatusLabelzt.Text = "写入FPGA_CODE中";
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "主槽FPGA_CODE下载成功====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "主槽FPGA_CODE下载成功====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                     for (int b = 1; b <= XHCount; b++)
                     {
                         string download = mysocket.ReceiveData(int.Parse(ts));
@@ -3867,7 +3826,7 @@ namespace MyGpnSoftware
                         {
                             if (download.Contains("ok"))
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "主槽FPGA_CODE写入成功====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "主槽FPGA_CODE写入成功====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                 break;
                             }
                         }
@@ -3875,26 +3834,26 @@ namespace MyGpnSoftware
                         {
                             if (download.Contains("ok"))
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "主槽FPGA_CODE写入成功====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "主槽FPGA_CODE写入成功====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                 if (slot18 == "STANDBY")
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                     for (int c = 1; c <= XHCount; c++)
                                     {
                                         string up18slot = mysocket.ReceiveData(int.Parse(ts));
                                         if (up18slot.Contains("auto-upgrade to slot 18"))
                                         {
                                             toolStripStatusLabelzt.Text = "同步FPGA_CODE到备槽中";
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备槽准备同步FPGA_CODE================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备槽准备同步FPGA_CODE================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (up18slot.Contains("18 fail") || up18slot.Contains("Failed upgraded slot 18"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽同步FPGA_CODE=====================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽同步FPGA_CODE=====================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (up18slot.Contains("Auto-upgrade to slot 18 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽同步FPGA_CODE======================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽同步FPGA_CODE======================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             break;
                                         }
                                         Thread.Sleep(XHTime);
@@ -3902,23 +3861,23 @@ namespace MyGpnSoftware
                                 }
                                 if (slot17 == "STANDBY")
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "17槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "17槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                     for (int c = 1; c <= XHCount; c++)
                                     {
                                         string up18slot = mysocket.ReceiveData(int.Parse(ts));
                                         if (up18slot.Contains("auto-upgrade to slot 17"))
                                         {
                                             toolStripStatusLabelzt.Text = "同步FPGA_CODE到备槽中";
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "17槽准备同步FPGA_CODE==================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "17槽准备同步FPGA_CODE==================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (up18slot.Contains("17 fail") || up18slot.Contains("Failed upgraded slot 17"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "17槽同步FPGA_CODE=====================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "17槽同步FPGA_CODE=====================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (up18slot.Contains("Auto-upgrade to slot 17 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "17槽同步FPGA_CODE======================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "17槽同步FPGA_CODE======================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             break;
                                         }
                                         Thread.Sleep(XHTime);
@@ -3929,7 +3888,7 @@ namespace MyGpnSoftware
                         }
                         if (download.Contains("failed"))
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "主槽FPGA_CODE写入=======================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "主槽FPGA_CODE写入=======================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                             return;
                         }
                         Thread.Sleep(XHTime);
@@ -3938,7 +3897,7 @@ namespace MyGpnSoftware
                 }
                 if (command.Contains("failed"))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "主槽FPGA_CODE下载==========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "主槽FPGA_CODE下载==========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     return;
                 }
                 Thread.Sleep(XHTime);
@@ -3957,32 +3916,32 @@ namespace MyGpnSoftware
                 if (command.Contains("Download file ...ok"))
                 {
                     toolStripStatusLabelzt.Text = "写入FPGA_NMS中";
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "主槽FPGA_NMS下载成功=====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "主槽FPGA_NMS下载成功=====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                     for (int b = 1; b <= XHCount; b++)
                     {
                         string download = mysocket.ReceiveData(int.Parse(ts));
                         if (download.Contains("ok"))
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "主槽FPGA_NMS写入成功=====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "主槽FPGA_NMS写入成功=====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                             if (slot18 == "STANDBY")
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                 for (int c = 1; c <= XHCount; c++)
                                 {
                                     string up18slot = mysocket.ReceiveData(int.Parse(ts));
                                     if (up18slot.Contains("auto-upgrade to slot 18"))
                                     {
                                         toolStripStatusLabelzt.Text = "同步FPGA_NMS到备槽中";
-                                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽准备同步FPGA_NMS===================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽准备同步FPGA_NMS===================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                     }
                                     if (up18slot.Contains("18 fail"))
                                     {
-                                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽同步FPGA_NMS======================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽同步FPGA_NMS======================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                         return;
                                     }
                                     if (up18slot.Contains("Auto-upgrade to slot 18 successful"))
                                     {
-                                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽同步FPGA_NMS=======================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽同步FPGA_NMS=======================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         break;
                                     }
                                     Thread.Sleep(XHTime);
@@ -3990,23 +3949,23 @@ namespace MyGpnSoftware
                             }
                             if (slot17 == "STANDBY")
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "17槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "17槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                 for (int c = 1; c <= XHCount; c++)
                                 {
                                     string up18slot = mysocket.ReceiveData(int.Parse(ts));
                                     if (up18slot.Contains("auto-upgrade to slot 17"))
                                     {
                                         toolStripStatusLabelzt.Text = "同步FPGA_NMS到备槽中";
-                                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "17槽准备同步FPGA_NMS=======================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "17槽准备同步FPGA_NMS=======================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                     }
                                     if (up18slot.Contains("17 fail"))
                                     {
-                                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "17槽同步FPGA_NMS==========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "17槽同步FPGA_NMS==========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                         return;
                                     }
                                     if (up18slot.Contains("Auto-upgrade to slot 17 successful"))
                                     {
-                                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "17槽同步FPGA_NMS===========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "17槽同步FPGA_NMS===========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         break;
                                     }
                                     Thread.Sleep(XHTime);
@@ -4016,7 +3975,7 @@ namespace MyGpnSoftware
                         }
                         if (download.Contains("failed"))
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "主槽FPGA_NMS写入========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "主槽FPGA_NMS写入========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                             return;
                         }
                         Thread.Sleep(XHTime);
@@ -4025,7 +3984,7 @@ namespace MyGpnSoftware
                 }
                 if (command.Contains("failed"))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "主槽FPGA_NMS下载===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "主槽FPGA_NMS下载===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     return;
                 }
                 Thread.Sleep(XHTime);
@@ -4058,7 +4017,7 @@ namespace MyGpnSoftware
                 if (command.Contains("Download file ...ok"))
                 {
                     toolStripStatusLabelzt.Text = "写入SW_FPGA中";
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "主槽SW_FPGA下载成功====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "主槽SW_FPGA下载成功====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                     for (int b = 1; b <= XHCount; b++)
                     {
                         string download = mysocket.ReceiveData(int.Parse(ts));
@@ -4066,28 +4025,28 @@ namespace MyGpnSoftware
                         {
                             if (slot17 == "ACTIVE")
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "17槽SW_FPGA写入成功====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "17槽SW_FPGA写入成功====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                 if (slot18 == "STANDBY" && slot11 == "" && slot12 == "")
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                     for (int c = 1; c <= XHCount; c++)
                                     {
                                         string up18slot = mysocket.ReceiveData(int.Parse(ts));
                                         if (up18slot.Contains("auto-upgrade to slot 18"))
                                         {
                                             toolStripStatusLabelzt.Text = "同步SW_FPGA到备槽中";
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽准备同步SW_FPGA==================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽准备同步SW_FPGA==================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (up18slot.Contains("18 fail"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽同步SW_FPGA=====================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽同步SW_FPGA=====================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (up18slot.Contains("Auto-upgrade to slot 18 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽同步SW_FPGA======================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽同步SW_FPGA======================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             break;
                                         }
                                         Thread.Sleep(XHTime);
@@ -4097,45 +4056,45 @@ namespace MyGpnSoftware
                                 {
                                     String S11 = "1";
                                     String S18 = "3";
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                     for (int c = 1; c <= XHCount; c++)
                                     {
                                         string up18slot = mysocket.ReceiveData(int.Parse(ts));
                                         if (up18slot.Contains("auto-upgrade to slot 18"))
                                         {
                                             toolStripStatusLabelzt.Text = "同步SW_FPGA到备槽中";
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽准备同步SW_FPGA========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽准备同步SW_FPGA========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (up18slot.Contains("auto-upgrade to slot 11"))
                                         {
                                             toolStripStatusLabelzt.Text = "同步SW_FPGA到11槽中";
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽准备同步SW_FPGA========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽准备同步SW_FPGA========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (up18slot.Contains("Failed upgraded slot 11"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽同步SW_FPGA===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽同步SW_FPGA===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (up18slot.Contains("Failed upgraded slot 18"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽同步SW_FPGA===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽同步SW_FPGA===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (up18slot.Contains("Auto-upgrade to slot 11 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽同步SW_FPGA==============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽同步SW_FPGA==============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             S11 = "OK";
                                         }
                                         if (up18slot.Contains("Auto-upgrade to slot 18 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽同步SW_FPGA==============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽同步SW_FPGA==============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             S18 = "OK";
                                         }
                                         if (up18slot.Contains("upgraded all files successfully") || S11 == S18)
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "全部槽同步SW_FPGA============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "全部槽同步SW_FPGA============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             break;
                                         }
                                         Thread.Sleep(XHTime);
@@ -4145,45 +4104,45 @@ namespace MyGpnSoftware
                                 {
                                     String S11 = "1";
                                     String S18 = "3";
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                     for (int c = 1; c <= XHCount; c++)
                                     {
                                         string up18slot = mysocket.ReceiveData(int.Parse(ts));
                                         if (up18slot.Contains("auto-upgrade to slot 18"))
                                         {
                                             toolStripStatusLabelzt.Text = "同步SW_FPGA到备槽中";
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽准备同步SW_FPGA========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽准备同步SW_FPGA========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (up18slot.Contains("auto-upgrade to slot 12"))
                                         {
                                             toolStripStatusLabelzt.Text = "同步SW_FPGA到12槽中";
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽准备同步SW_FPGA========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽准备同步SW_FPGA========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (up18slot.Contains("Failed upgraded slot 12"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽同步SW_FPGA=============================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽同步SW_FPGA=============================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (up18slot.Contains("Failed upgraded slot 18"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽同步SW_FPGA===============================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽同步SW_FPGA===============================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (up18slot.Contains("Auto-upgrade to slot 12 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽同步SW_FPGA==============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽同步SW_FPGA==============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             S11 = "OK";
                                         }
                                         if (up18slot.Contains("Auto-upgrade to slot 18 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽同步SW_FPGA==============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽同步SW_FPGA==============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             S18 = "OK";
                                         }
                                         if (up18slot.Contains("upgraded all files successfully") || S11 == S18)
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "全部槽同步SW_FPGA============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "全部槽同步SW_FPGA============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             break;
                                         }
                                         Thread.Sleep(XHTime);
@@ -4194,59 +4153,59 @@ namespace MyGpnSoftware
                                     string S11 = "1";
                                     string S12 = "2";
                                     string S18 = "3";
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                     for (int c = 1; c <= XHCount; c++)
                                     {
                                         string up18slot = mysocket.ReceiveData(int.Parse(ts));
                                         if (up18slot.Contains("auto-upgrade to slot 18"))
                                         {
                                             toolStripStatusLabelzt.Text = "同步SW_FPGA到备槽中";
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽准备同步SW_FPGA==================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽准备同步SW_FPGA==================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (up18slot.Contains("auto-upgrade to slot 11"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽准备同步SW_FPGA======================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽准备同步SW_FPGA======================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (up18slot.Contains("auto-upgrade to slot 12"))
                                         {
                                             toolStripStatusLabelzt.Text = "同步SW_FPGA到12槽中";
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽准备同步SW_FPGA==================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽准备同步SW_FPGA==================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (up18slot.Contains("Failed upgraded slot 11"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽同步SW_FPGA=====================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽同步SW_FPGA=====================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (up18slot.Contains("Failed upgraded slot 12"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽同步SW_FPGA=====================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽同步SW_FPGA=====================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (up18slot.Contains("18 fail"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽同步SW_FPGA=====================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽同步SW_FPGA=====================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (up18slot.Contains("Auto-upgrade to slot 11 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽同步SW_FPGA==========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽同步SW_FPGA==========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             S11 = "OK";
                                         }
                                         if (up18slot.Contains("Auto-upgrade to slot 12 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽同步SW_FPGA==========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽同步SW_FPGA==========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             S12 = "OK";
                                         }
                                         if (up18slot.Contains("Auto-upgrade to slot 18 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽同步SW_FPGA==========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽同步SW_FPGA==========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             S18 = "OK";
                                         }
                                         if (up18slot.Contains("upgraded all files successfully") || (S11 == S12 && S11 == S18))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "全部槽同步SW_FPGA========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "全部槽同步SW_FPGA========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             break;
                                         }
                                         Thread.Sleep(XHTime);
@@ -4256,45 +4215,45 @@ namespace MyGpnSoftware
                                 {
                                     string S11 = "1";
                                     string S12 = "2";
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                     for (int c = 1; c <= XHCount; c++)
                                     {
                                         string up18slot = mysocket.ReceiveData(int.Parse(ts));
                                         if (up18slot.Contains("auto-upgrade to slot 11"))
                                         {
                                             toolStripStatusLabelzt.Text = "同步SW_FPGA到11槽中";
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽准备同步SW_FPGA======================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽准备同步SW_FPGA======================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (up18slot.Contains("auto-upgrade to slot 12"))
                                         {
                                             toolStripStatusLabelzt.Text = "同步SW_FPGA到12槽中";
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽准备同步SW_FPGA==================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽准备同步SW_FPGA==================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (up18slot.Contains("Failed upgraded slot 11"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽同步SW_FPGA=====================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽同步SW_FPGA=====================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (up18slot.Contains("Failed upgraded slot 12"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽同步SW_FPGA=====================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽同步SW_FPGA=====================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (up18slot.Contains("Auto-upgrade to slot 11 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽同步SW_FPGA======================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽同步SW_FPGA======================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             S11 = "OK";
                                         }
                                         if (up18slot.Contains("Auto-upgrade to slot 12 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽同步SW_FPGA======================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽同步SW_FPGA======================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             S12 = "OK";
                                         }
                                         if (up18slot.Contains("upgraded all files successfully") || (S11 == S12))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "全部槽同步SW_FPGA====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "全部槽同步SW_FPGA====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             break;
                                         }
                                         Thread.Sleep(XHTime);
@@ -4302,25 +4261,25 @@ namespace MyGpnSoftware
                                 }
                                 if (slot18 == "" && slot11 == "在位" && slot12 == "")
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                     for (int c = 1; c <= XHCount; c++)
                                     {
                                         string up112slot = mysocket.ReceiveData(int.Parse(ts));
                                         if (up112slot.Contains("auto-upgrade to slot 11"))
                                         {
                                             toolStripStatusLabelzt.Text = "同步APP到11槽中";
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽准备同步SW_FPGA=====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽准备同步SW_FPGA=====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (up112slot.Contains("Failed upgraded slot 11"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽同步SW_FPGA====================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽同步SW_FPGA====================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (up112slot.Contains("Auto-upgrade to slot 11 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽同步SW_FPGA=====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽同步SW_FPGA=====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             break;
                                         }
                                         Thread.Sleep(XHTime);
@@ -4328,25 +4287,25 @@ namespace MyGpnSoftware
                                 }
                                 if (slot18 == "" && slot11 == "" && slot12 == "在位")
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                     for (int c = 1; c <= XHCount; c++)
                                     {
                                         string up112slot = mysocket.ReceiveData(int.Parse(ts));
                                         if (up112slot.Contains("auto-upgrade to slot 12"))
                                         {
                                             toolStripStatusLabelzt.Text = "同步APP到12槽中";
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽准备同步SW_FPGA=====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽准备同步SW_FPGA=====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (up112slot.Contains("Failed upgraded slot 12"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽同步SW_FPGA====================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽同步SW_FPGA====================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (up112slot.Contains("Auto-upgrade to slot 12 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽同步SW_FPGA=====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽同步SW_FPGA=====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             break;
                                         }
                                         Thread.Sleep(XHTime);
@@ -4354,37 +4313,37 @@ namespace MyGpnSoftware
                                 }
                                 if (slot18 == "" && slot11 == "" && slot12 == "")
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                     break;
                                 }
                                 break;
                             }
                             if (slot18 == "ACTIVE")
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "18槽SW_FPGA写入成功====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "18槽SW_FPGA写入成功====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                 if (slot17 == "STANDBY" && slot11 == "" && slot12 == "")
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "17槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "17槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                     for (int c = 1; c <= XHCount; c++)
                                     {
                                         string up18slot = mysocket.ReceiveData(int.Parse(ts));
                                         if (up18slot.Contains("auto-upgrade to slot 17"))
                                         {
                                             toolStripStatusLabelzt.Text = "同步SW_FPGA到备槽中";
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "17槽准备同步SW_FPGA===================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "17槽准备同步SW_FPGA===================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (up18slot.Contains("17 fail"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "17槽同步SW_FPGA======================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "17槽同步SW_FPGA======================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (up18slot.Contains("Auto-upgrade to slot 17 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "17槽同步SW_FPGA=======================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "17槽同步SW_FPGA=======================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             break;
                                         }
                                         Thread.Sleep(XHTime);
@@ -4394,45 +4353,45 @@ namespace MyGpnSoftware
                                 {
                                     String S11 = "1";
                                     String S18 = "3";
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "17槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "17槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                     for (int c = 1; c <= XHCount; c++)
                                     {
                                         string up18slot = mysocket.ReceiveData(int.Parse(ts));
                                         if (up18slot.Contains("auto-upgrade to slot 17"))
                                         {
                                             toolStripStatusLabelzt.Text = "同步SW_FPGA到备槽中";
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "17槽准备同步SW_FPGA======================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "17槽准备同步SW_FPGA======================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (up18slot.Contains("auto-upgrade to slot 11"))
                                         {
                                             toolStripStatusLabelzt.Text = "同步SW_FPGA到11槽中";
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽准备同步SW_FPGA=====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽准备同步SW_FPGA=====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (up18slot.Contains("Failed upgraded slot 11"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽同步SW_FPGA========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽同步SW_FPGA========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (up18slot.Contains("Failed upgraded slot 17"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "17槽同步SW_FPGA========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "17槽同步SW_FPGA========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (up18slot.Contains("Auto-upgrade to slot 11 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽同步SW_FPGA=========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽同步SW_FPGA=========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             S11 = "OK";
                                         }
                                         if (up18slot.Contains("Auto-upgrade to slot 17 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "17槽同步SW_FPGA=========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "17槽同步SW_FPGA=========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             S18 = "OK";
                                         }
                                         if (up18slot.Contains("upgraded all files successfully") || S11 == S18)
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "全部槽同步SW_FPGA=======================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "全部槽同步SW_FPGA=======================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             break;
                                         }
                                         Thread.Sleep(XHTime);
@@ -4442,45 +4401,45 @@ namespace MyGpnSoftware
                                 {
                                     String S11 = "1";
                                     String S18 = "3";
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "17槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "17槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                     for (int c = 1; c <= XHCount; c++)
                                     {
                                         string up18slot = mysocket.ReceiveData(int.Parse(ts));
                                         if (up18slot.Contains("auto-upgrade to slot 17"))
                                         {
                                             toolStripStatusLabelzt.Text = "同步SW_FPGA到备槽中";
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "17槽准备同步SW_FPGA======================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "17槽准备同步SW_FPGA======================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (up18slot.Contains("auto-upgrade to slot 12"))
                                         {
                                             toolStripStatusLabelzt.Text = "同步SW_FPGA到12槽中";
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽准备同步SW_FPGA=====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽准备同步SW_FPGA=====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (up18slot.Contains("Failed upgraded slot 12"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽同步SW_FPGA========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽同步SW_FPGA========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (up18slot.Contains("Failed upgraded slot 17"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "17槽同步SW_FPGA========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "17槽同步SW_FPGA========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (up18slot.Contains("Auto-upgrade to slot 12 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽同步SW_FPGA=========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽同步SW_FPGA=========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             S11 = "OK";
                                         }
                                         if (up18slot.Contains("Auto-upgrade to slot 17 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "17槽同步SW_FPGA=========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "17槽同步SW_FPGA=========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             S18 = "OK";
                                         }
                                         if (up18slot.Contains("upgraded all files successfully") || S11 == S18)
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "全部槽同步SW_FPGA=======================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "全部槽同步SW_FPGA=======================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             break;
                                         }
                                         Thread.Sleep(XHTime);
@@ -4491,59 +4450,59 @@ namespace MyGpnSoftware
                                     string S11 = "1";
                                     string S12 = "2";
                                     string S18 = "3";
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "17槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "17槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                     for (int c = 1; c <= XHCount; c++)
                                     {
                                         string up18slot = mysocket.ReceiveData(int.Parse(ts));
                                         if (up18slot.Contains("auto-upgrade to slot 17"))
                                         {
                                             toolStripStatusLabelzt.Text = "同步SW_FPGA到备槽中";
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "17槽准备同步SW_FPGA===================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "17槽准备同步SW_FPGA===================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (up18slot.Contains("auto-upgrade to slot 11"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽准备同步SW_FPGA======================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽准备同步SW_FPGA======================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (up18slot.Contains("auto-upgrade to slot 12"))
                                         {
                                             toolStripStatusLabelzt.Text = "同步SW_FPGA到12槽中";
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽准备同步SW_FPGA==================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽准备同步SW_FPGA==================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (up18slot.Contains("Failed upgraded slot 11"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽同步SW_FPGA=====================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽同步SW_FPGA=====================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (up18slot.Contains("Failed upgraded slot 12"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽同步SW_FPGA=====================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽同步SW_FPGA=====================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (up18slot.Contains("17 fail"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "17槽同步SW_FPGA=====================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "17槽同步SW_FPGA=====================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (up18slot.Contains("Auto-upgrade to slot 11 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽同步SW_FPGA======================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽同步SW_FPGA======================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             S11 = "OK";
                                         }
                                         if (up18slot.Contains("Auto-upgrade to slot 12 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽同步SW_FPGA======================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽同步SW_FPGA======================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             S12 = "OK";
                                         }
                                         if (up18slot.Contains("Auto-upgrade to slot 17 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "17槽同步SW_FPGA======================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "17槽同步SW_FPGA======================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             S18 = "OK";
                                         }
                                         if (up18slot.Contains("upgraded all files successfully") || (S11 == S12 && S11 == S18))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "全部槽同步SW_FPGA====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "全部槽同步SW_FPGA====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             break;
                                         }
                                         Thread.Sleep(XHTime);
@@ -4553,45 +4512,45 @@ namespace MyGpnSoftware
                                 {
                                     string S11 = "1";
                                     string S12 = "2";
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "17槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "17槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                     for (int c = 1; c <= XHCount; c++)
                                     {
                                         string up18slot = mysocket.ReceiveData(int.Parse(ts));
                                         if (up18slot.Contains("auto-upgrade to slot 11"))
                                         {
                                             toolStripStatusLabelzt.Text = "同步SW_FPGA到11槽中";
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽准备同步SW_FPGA======================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽准备同步SW_FPGA======================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (up18slot.Contains("auto-upgrade to slot 12"))
                                         {
                                             toolStripStatusLabelzt.Text = "同步SW_FPGA到12槽中";
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽准备同步SW_FPGA==================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽准备同步SW_FPGA==================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (up18slot.Contains("Failed upgraded slot 11"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽同步SW_FPGA=====================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽同步SW_FPGA=====================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (up18slot.Contains("Failed upgraded slot 12"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽同步SW_FPGA=====================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽同步SW_FPGA=====================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (up18slot.Contains("Auto-upgrade to slot 11 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽同步SW_FPGA======================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽同步SW_FPGA======================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             S11 = "OK";
                                         }
                                         if (up18slot.Contains("Auto-upgrade to slot 12 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽同步SW_FPGA======================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽同步SW_FPGA======================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             S12 = "OK";
                                         }
                                         if (up18slot.Contains("upgraded all files successfully") || (S11 == S12))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "全部槽同步SW_FPGA====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "全部槽同步SW_FPGA====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             break;
                                         }
                                         Thread.Sleep(XHTime);
@@ -4599,25 +4558,25 @@ namespace MyGpnSoftware
                                 }
                                 if (slot17 == "" && slot11 == "在位" && slot12 == "")
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "17槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "17槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                     for (int c = 1; c <= XHCount; c++)
                                     {
                                         string up112slot = mysocket.ReceiveData(int.Parse(ts));
                                         if (up112slot.Contains("auto-upgrade to slot 11"))
                                         {
                                             toolStripStatusLabelzt.Text = "同步APP到11槽中";
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽准备同步SW_FPGA=====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽准备同步SW_FPGA=====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (up112slot.Contains("Failed upgraded slot 11"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽同步SW_FPGA====================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽同步SW_FPGA====================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (up112slot.Contains("Auto-upgrade to slot 11 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽同步SW_FPGA=====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽同步SW_FPGA=====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             break;
                                         }
                                         Thread.Sleep(XHTime);
@@ -4625,25 +4584,25 @@ namespace MyGpnSoftware
                                 }
                                 if (slot17 == "" && slot11 == "" && slot12 == "在位")
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "17槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽在位=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "17槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                     for (int c = 1; c <= XHCount; c++)
                                     {
                                         string up112slot = mysocket.ReceiveData(int.Parse(ts));
                                         if (up112slot.Contains("auto-upgrade to slot 12"))
                                         {
                                             toolStripStatusLabelzt.Text = "同步APP到12槽中";
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽准备同步SW_FPGA=====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽准备同步SW_FPGA=====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                         }
                                         if (up112slot.Contains("Failed upgraded slot 12"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽同步SW_FPGA====================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽同步SW_FPGA====================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                                             return;
                                         }
                                         if (up112slot.Contains("Auto-upgrade to slot 12 successful"))
                                         {
-                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽同步SW_FPGA=====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽同步SW_FPGA=====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                             break;
                                         }
                                         Thread.Sleep(XHTime);
@@ -4651,9 +4610,9 @@ namespace MyGpnSoftware
                                 }
                                 if (slot17 == "" && slot11 == "" && slot12 == "")
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "11槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "12槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "17槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "11槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "12槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "17槽不在位===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                     break;
                                 }
                                 break;
@@ -4662,7 +4621,7 @@ namespace MyGpnSoftware
                         }
                         if (download.Contains("failed"))
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "主用槽SW_FPGA写入=====================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "主用槽SW_FPGA写入=====================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                             return;
                         }
                         Thread.Sleep(XHTime);
@@ -4671,7 +4630,7 @@ namespace MyGpnSoftware
                 }
                 if (command.Contains("failed"))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "主用槽SW_FPGA下载========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "主用槽SW_FPGA下载========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     return;
                 }
                 Thread.Sleep(XHTime);
@@ -4680,13 +4639,13 @@ namespace MyGpnSoftware
             string jieshu = mysocket.ReceiveData(int.Parse(ts));
         }
         #endregion
-        #region 下载 Fpga760a
-        private void Fpga760a()
+        #region 下载 Fpga760s
+        private void Fpga760s()
         {
             Thread.Sleep(XHTime);
             string cccc = mysocket.ReceiveData(int.Parse(ts));
-            toolStripStatusLabelzt.Text = "正在下载760A";
-            mysocket.SendData("download ftp file /yaffs/sys/760a.fpga " + comftpip.Text + " " + textftpusr.Text + " " + textftppsd.Text + " " + com760a.Text);
+            toolStripStatusLabelzt.Text = "正在下载760S";
+            mysocket.SendData("download ftp file /yaffs/sys/760s.fpga " + comftpip.Text + " " + textftpusr.Text + " " + textftppsd.Text + " " + com760s.Text);
             for (int i = 1; i <= XHCount; i++)
             {
                 string ok = "Write to flash...";
@@ -4694,10 +4653,10 @@ namespace MyGpnSoftware
                 string box = mysocket.ReceiveData(int.Parse(ts));
                 if (box.Contains(ok))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "下载760a===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "下载760s===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                     if (slot17 != "" && slot18 != "")
                     {
-                        toolStripStatusLabelzt.Text = "正在同步760A";
+                        toolStripStatusLabelzt.Text = "正在同步760S";
                         string sync = "successful";
                         for (int p = 1; p <= XHCount; p++)
                         {
@@ -4705,7 +4664,7 @@ namespace MyGpnSoftware
                             string syncotn = mysocket.ReceiveData(int.Parse(ts));
                             if (syncotn.Contains(sync))
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "同步760a===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "同步760s===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                 break;
                             }
 
@@ -4717,7 +4676,7 @@ namespace MyGpnSoftware
 
                 if (box.Contains(fail))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "下载760a===============================================fail" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "下载760s===============================================fail" + toolStripStatusLabeltime.Text + "\r\n");
                     return;
                 }
 
@@ -4740,7 +4699,7 @@ namespace MyGpnSoftware
                 string box = mysocket.ReceiveData(int.Parse(ts)); ;
                 if (box.Contains(ok))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "下载760b===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "下载760b===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                     if (slot17 != "" && slot18 != "")
                     {
                         toolStripStatusLabelzt.Text = "正在同步760B";
@@ -4750,7 +4709,7 @@ namespace MyGpnSoftware
                             string syncotn = mysocket.ReceiveData(int.Parse(ts));
                             if (syncotn.Contains(sync))
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "同步760b===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "同步760b===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                 break;
                             }
 
@@ -4761,7 +4720,7 @@ namespace MyGpnSoftware
                 }
                 if (box.Contains(fail))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "下载760b===============================================fail" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "下载760b===============================================fail" + toolStripStatusLabeltime.Text + "\r\n");
                     return;
                 }
                 Thread.Sleep(XHTime);
@@ -4783,7 +4742,7 @@ namespace MyGpnSoftware
                 string box = mysocket.ReceiveData(int.Parse(ts)); ;
                 if (box.Contains(ok))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "下载760c===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "下载760c===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                     if (slot17 != "" && slot18 != "")
                     {
                         toolStripStatusLabelzt.Text = "正在同步760C";
@@ -4793,7 +4752,7 @@ namespace MyGpnSoftware
                             string syncotn = mysocket.ReceiveData(int.Parse(ts));
                             if (syncotn.Contains(sync))
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "同步760c===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "同步760c===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                 break;
                             }
 
@@ -4804,7 +4763,7 @@ namespace MyGpnSoftware
                 }
                 if (box.Contains(fail))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "下载760c===============================================fail" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "下载760c===============================================fail" + toolStripStatusLabeltime.Text + "\r\n");
                     return;
                 }
                 Thread.Sleep(XHTime);
@@ -4826,7 +4785,7 @@ namespace MyGpnSoftware
                 string box = mysocket.ReceiveData(int.Parse(ts)); ;
                 if (box.Contains(ok))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "下载760d===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "下载760d===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                     if (slot17 != "" && slot18 != "")
                     {
                         toolStripStatusLabelzt.Text = "正在同步760D";
@@ -4836,7 +4795,7 @@ namespace MyGpnSoftware
                             string syncotn = mysocket.ReceiveData(int.Parse(ts));
                             if (syncotn.Contains(sync))
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "同步760d===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "同步760d===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                 break;
                             }
 
@@ -4847,7 +4806,7 @@ namespace MyGpnSoftware
                 }
                 if (box.Contains(fail))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "下载760d===============================================fail" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "下载760d===============================================fail" + toolStripStatusLabeltime.Text + "\r\n");
                     return;
                 }
                 Thread.Sleep(XHTime);
@@ -4869,7 +4828,7 @@ namespace MyGpnSoftware
                 string box = mysocket.ReceiveData(int.Parse(ts)); ;
                 if (box.Contains(ok))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "下载760e===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "下载760e===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                     if (slot17 != "" && slot18 != "")
                     {
                         toolStripStatusLabelzt.Text = "正在同步760E";
@@ -4879,7 +4838,7 @@ namespace MyGpnSoftware
                             string syncotn = mysocket.ReceiveData(int.Parse(ts));
                             if (syncotn.Contains(sync))
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "同步760e===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "同步760e===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                 break;
                             }
                             Thread.Sleep(XHTime);
@@ -4889,7 +4848,7 @@ namespace MyGpnSoftware
                 }
                 if (box.Contains(fail))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "下载760e===============================================fail" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "下载760e===============================================fail" + toolStripStatusLabeltime.Text + "\r\n");
                     return;
                 }
                 Thread.Sleep(XHTime);
@@ -4898,12 +4857,12 @@ namespace MyGpnSoftware
         }
         #endregion
         #region 下载 OTN-Pack
-        private void OtnPack()
+        private void Fpga760f()
         {
             Thread.Sleep(XHTime);
             string cccc = mysocket.ReceiveData(int.Parse(ts));
-            toolStripStatusLabelzt.Text = "正在下载OtnPack";
-            mysocket.SendData("download ftp fpga " + comftpip.Text + " " + textftpusr.Text + " " + textftppsd.Text + " " + comotnpack.Text + " otn");
+            toolStripStatusLabelzt.Text = "正在下载760F";
+            mysocket.SendData("download ftp fpga " + comftpip.Text + " " + textftpusr.Text + " " + textftppsd.Text + " " + com760f.Text + " otn");
             for (int i = 1; i <= XHCount; i++)
             {
                 string ok = "Write to flash...";
@@ -4912,25 +4871,25 @@ namespace MyGpnSoftware
                 string box = mysocket.ReceiveData(int.Parse(ts));
                 if (box.Contains(Error))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "下载OtnPack===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "由于此版本不支持大于30Mb文件写入，请下载R19C07B035版本后的APP重启再次进行尝试下载，我们将在此版本支持。" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "下载760F===========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "由于此版本不支持大于30Mb文件写入，请下载R19C07B035版本后的APP重启再次进行尝试下载，我们将在此版本支持。" + toolStripStatusLabeltime.Text + "\r\n");
                     return;
-                    //mysocket.SendData("download ftp file /yaffs/sys/otn_pack.bin  " + comftpip.Text + " " + textftpusr.Text + " " + textftppsd.Text + " " + comotnpack.Text);
+                    //mysocket.SendData("download ftp file /yaffs/sys/760f.fpga  " + comftpip.Text + " " + textftpusr.Text + " " + textftppsd.Text + " " + comotnpack.Text);
                 }
                 if (box.Contains(ok))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "下载OtnPack============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "下载760F============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                     Thread.Sleep(8000);
                     if (slot17 != "" && slot18 != "")
                     {
-                        toolStripStatusLabelzt.Text = "正在同步OtnPack";
+                        toolStripStatusLabelzt.Text = "正在同步760F";
                         string sync = "successful";
                         for (int p = 1; p <= XHCount; p++)
                         {
                             string syncotn = mysocket.ReceiveData(int.Parse(ts));
                             if (syncotn.Contains(sync))
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "同步OtnPack============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "同步760F============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                 Thread.Sleep(8000);
                                 break;
                             }
@@ -4941,7 +4900,7 @@ namespace MyGpnSoftware
                 }
                 if (box.Contains(fail))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "下载OtnPack============================================fail" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "下载760F============================================fail" + toolStripStatusLabeltime.Text + "\r\n");
                     return;
                 }
                 Thread.Sleep(XHTime);
@@ -4963,7 +4922,7 @@ namespace MyGpnSoftware
                 string box = mysocket.ReceiveData(int.Parse(ts)); ;
                 if (box.Contains(ok))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "下载sysfile============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "下载sysfile============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                     if (slot17 != "" && slot18 != "" || slot11 != "" || slot12 != "")
                     {
                         toolStripStatusLabelzt.Text = "正在同步sysfile文件";
@@ -4973,7 +4932,7 @@ namespace MyGpnSoftware
                             string syncotn = mysocket.ReceiveData(int.Parse(ts));
                             if (syncotn.Contains(sync))
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "同步sysfile============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "同步sysfile============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                                 Thread.Sleep(5000);
                                 break;
                             }
@@ -4984,7 +4943,7 @@ namespace MyGpnSoftware
                 }
                 if (box.Contains(fail))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "下载sysfile=========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "下载sysfile=========================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     return;
                 }
                 Thread.Sleep(XHTime);
@@ -5006,8 +4965,8 @@ namespace MyGpnSoftware
                 string box = mysocket.ReceiveData(int.Parse(ts));
                 if (box.Contains(downloadok))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "下载Flash==============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "写入Flash进度===========================================O%");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "下载Flash==============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "写入Flash进度===========================================O%");
                 }
                 if (box.Contains("%"))
                 {
@@ -5027,12 +4986,12 @@ namespace MyGpnSoftware
                 }
                 if (box.Contains(ok))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "写入Flash==============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "写入Flash==============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                     break;
                 }
                 if (box.Contains(fail))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "下载Flash=============================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "下载Flash=============================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     return;
                 }
                 Thread.Sleep(XHTime);
@@ -5046,7 +5005,7 @@ namespace MyGpnSoftware
             Thread.Sleep(XHTime);
             string cccc = mysocket.ReceiveData(int.Parse(ts));
             toolStripStatusLabelzt.Text = "正在下载Yaffs";
-            mysocket.SendData("download ftp yaffs " + comftpip.Text + " " + textftpusr.Text + " " + textftppsd.Text + " " + comflash.Text);
+            mysocket.SendData("download ftp yaffs " + comftpip.Text + " " + textftpusr.Text + " " + textftppsd.Text + " " + comyaffs.Text);
             for (int i = 1; i <= 6 * XHCount; i++)
             {
                 string ok = "100%";
@@ -5055,8 +5014,8 @@ namespace MyGpnSoftware
                 string box = mysocket.ReceiveData(int.Parse(ts));
                 if (box.Contains(downloadok))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "下载Yaffs==============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "写入Yaffs进度===========================================O%");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "下载Yaffs==============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "写入Yaffs进度===========================================O%");
                 }
                 if (box.Contains("%"))
                 {
@@ -5076,12 +5035,12 @@ namespace MyGpnSoftware
                 }
                 if (box.Contains(ok))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "下载Yaffs==============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "下载Yaffs==============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                     break;
                 }
                 if (box.Contains(fail))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "下载Yaffs=============================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "下载Yaffs=============================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     return;
                 }
                 Thread.Sleep(XHTime);
@@ -5102,17 +5061,17 @@ namespace MyGpnSoftware
                 string box = mysocket.ReceiveData(int.Parse(ts)); ;
                 if (box.Contains(ok))
                 {
-                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "下载config=============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "下载config=============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                     break;
                 }
                 if (box.Contains(fail))
                 {
-                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "下载config=================请检查FTP服务器IP或是否开启==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "下载config=================请检查FTP服务器IP或是否开启==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     return;
                 }
                 if (box.Contains("User need password"))
                 {
-                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "下载config========================请检查FTP户名密码==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "下载config========================请检查FTP户名密码==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     return;
                 }
                 Thread.Sleep(XHTime);
@@ -5131,12 +5090,12 @@ namespace MyGpnSoftware
                 string box = mysocket.ReceiveData(int.Parse(ts)); ;
                 if (box.Contains(ok))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "下载slotconfig=========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "下载slotconfig=========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                     break;
                 }
                 if (box.Contains(fail))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "下载lsotconfig=========================================fail" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "下载lsotconfig=========================================fail" + toolStripStatusLabeltime.Text + "\r\n");
                     return;
                 }
                 Thread.Sleep(XHTime);
@@ -5161,7 +5120,7 @@ namespace MyGpnSoftware
                         string box2 = mysocket.ReceiveData(int.Parse(ts));
                         if (box2.Contains(db))
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "下载db=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "下载db=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                             break;
                         }
                         Thread.Sleep(XHTime);
@@ -5170,7 +5129,7 @@ namespace MyGpnSoftware
                 }
                 if (box.Contains(fail))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "下载db=================================================fail" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "下载db=================================================fail" + toolStripStatusLabeltime.Text + "\r\n");
                     return;
                 }
                 Thread.Sleep(XHTime);
@@ -5190,17 +5149,17 @@ namespace MyGpnSoftware
                 string box = mysocket.ReceiveData(int.Parse(ts)); ;
                 if (box.Contains(ok))
                 {
-                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份config=============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份config=============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                     break;
                 }
                 if (box.Contains(fail))
                 {
-                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份config=================请检查FTP服务器IP或是否开启==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份config=================请检查FTP服务器IP或是否开启==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     return;
                 }
                 if (box.Contains("User need password"))
                 {
-                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份config=========================请检查FTP用户名密码==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份config=========================请检查FTP用户名密码==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     return;
                 }
                 Thread.Sleep(XHTime);
@@ -5215,12 +5174,12 @@ namespace MyGpnSoftware
                 string box = mysocket.ReceiveData(int.Parse(ts)); ;
                 if (box.Contains(ok))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份slotconfig=========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份slotconfig=========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                     break;
                 }
                 if (box.Contains(fail))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份slotconfig=========================================fail" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份slotconfig=========================================fail" + toolStripStatusLabeltime.Text + "\r\n");
                     return;
                 }
                 Thread.Sleep(XHTime);
@@ -5241,7 +5200,7 @@ namespace MyGpnSoftware
                         string box2 = mysocket.ReceiveData(int.Parse(ts));
                         if (box2.Contains(db))
                         {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份db=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份db=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                             break;
                         }
                         Thread.Sleep(XHTime);
@@ -5250,7 +5209,7 @@ namespace MyGpnSoftware
                 }
                 if (box.Contains(fail))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份db=================================================fail" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份db=================================================fail" + toolStripStatusLabeltime.Text + "\r\n");
                     return;
                 }
                 Thread.Sleep(XHTime);
@@ -5274,17 +5233,17 @@ namespace MyGpnSoftware
             if (dr == DialogResult.Yes)
             {
                 mysocket.SendData("Y");
-                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "您选择重启设备=========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "您选择重启设备=========================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                 Thread.Sleep(XHTime);
                 string command = mysocket.ReceiveData(int.Parse(ts));
-                butlogin.PerformClick();
+                ButLogin.PerformClick();
                 //户选择确认的操作
             }
             if (dr == DialogResult.No)
             {
                 //户选择取消的操作
                 mysocket.SendData("N");
-                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "您没有选择重启设备=====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "您没有选择重启设备=====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                 Thread.Sleep(XHTime);
                 string command = mysocket.ReceiveData(int.Parse(ts));
             }
@@ -5297,7 +5256,7 @@ namespace MyGpnSoftware
             // mysocket.SendDate("ETX");
             // Thread.Sleep(XHTime);
             //textDOS.AppendText("\r\n"+"CTRL+C已发送");
-            // textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") +" "+mysocket.ReceiveData(int.Parse(ts)));
+            // textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") +" "+mysocket.ReceiveData(int.Parse(ts)));
             this.butsend.PerformClick();
         }
         #endregion
@@ -5305,7 +5264,7 @@ namespace MyGpnSoftware
         private void butctrlq_Click(object sender, EventArgs e)
         {
             mysocket.SendDate("\x011");
-            // textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") +" "+"CTRL+Q已发送");
+            // textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") +" "+"CTRL+Q已发送");
             this.butsend.PerformClick();
         }
         #endregion
@@ -5317,7 +5276,7 @@ namespace MyGpnSoftware
                 //textcom.Text = "";
                 mysocket.SendDate("\x1b\x5b\x41");
                 Thread.Sleep(XHTime);
-                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + mysocket.ReceiveData(int.Parse(ts)) + "\n");
+                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + mysocket.ReceiveData(int.Parse(ts)) + "\n");
                 //text = 
                 //this.butsend.Focus();
                 //textcom.Text = com.ToString();
@@ -5327,7 +5286,7 @@ namespace MyGpnSoftware
                 //textcom.Text = "";
                 mysocket.SendDate("\x1b\x5b\x42");
                 Thread.Sleep(XHTime);
-                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + mysocket.ReceiveData(int.Parse(ts)) + "\n");
+                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + mysocket.ReceiveData(int.Parse(ts)) + "\n");
                 //this.butsend.Focus();
                 //this.butguzhangsend.Focus();
                 //textcom.Text = "";
@@ -5346,14 +5305,30 @@ namespace MyGpnSoftware
         #region 打开目录
         private void butapp_Click(object sender, EventArgs e)
         {
+
             FolderBrowserDialog path = new FolderBrowserDialog();
             //file.Multiselect = true;
             //MessageBox.Show("CTRL+A全选中会自动填写");
             path.SelectedPath = @"C:\";
-            comapp.Items.Clear();//清除之前打开的历史  
-                                 //获取文件路径，不带文件名
-                                 // string filePath = file.FileName;
-                                 // string FilePath = Path.GetDirectoryName(filePath);
+            comconfig.Items.Clear();
+            comslotconfig.Items.Clear();
+            comdb.Items.Clear();
+            comapp.Items.Clear();
+            comnms.Items.Clear();
+            comcode.Items.Clear();
+            comsw.Items.Clear();
+            com760s.Items.Clear();
+            com760b.Items.Clear();
+            com760c.Items.Clear();
+            com760d.Items.Clear();
+            com760e.Items.Clear();
+            com760f.Items.Clear();
+            comsysfile.Items.Clear();
+            comflash.Items.Clear();
+            comyaffs.Items.Clear();//清除之前打开的历史  
+                                   //获取文件路径，不带文件名
+                                   // string filePath = file.FileName;
+                                   // string FilePath = Path.GetDirectoryName(filePath);
             if (defaultfilePath != "")
             {
                 //设置此次默认目录为上一次选中目录  
@@ -5395,7 +5370,7 @@ namespace MyGpnSoftware
             }
             foreach (string s in fileNames)
             {
-                if (s.Contains(".bin") && !s.Contains("code") && !s.Contains("sysfile") && !s.Contains("db") && !s.Contains("slot"))
+                if (s.Contains(".bin") && !s.Contains("code") && !s.Contains("sysfile") && !s.Contains("db") && !s.Contains("slot") && !s.Contains("config") && !s.Contains(".fpga"))
                 {
                     comapp.Items.Add(s);
                     if (comapp.Items.Count > 0)
@@ -5427,7 +5402,7 @@ namespace MyGpnSoftware
                         comsw.SelectedIndex = comsw.Items.Count - 1;
                     }
                 }
-                if (s.Contains("config") && !s.Contains("slot"))
+                if ((s.Contains("config") || s.Contains("Config") || s.Contains("CONFIG")) && (!s.Contains("slotconfig") && !s.Contains("SlotConfig")))
                 {
                     comconfig.Items.Add(s);
                     if (comconfig.Items.Count > 0)
@@ -5435,7 +5410,7 @@ namespace MyGpnSoftware
                         comconfig.SelectedIndex = comconfig.Items.Count - 1;
                     }
                 }
-                if (s.Contains("db"))
+                if (s.Contains("db") || s.Contains("DB") || s.Contains("Db"))
                 {
                     comdb.Items.Add(s);
                     if (comdb.Items.Count > 0)
@@ -5443,7 +5418,7 @@ namespace MyGpnSoftware
                         comdb.SelectedIndex = comdb.Items.Count - 1;
                     }
                 }
-                if (s.Contains("slotconfig"))
+                if (s.Contains("slotconfig") || s.Contains("SlotConfig") || s.Contains("SLOTCONFIG"))
                 {
                     comslotconfig.Items.Add(s);
                     if (comslotconfig.Items.Count > 0)
@@ -5451,12 +5426,12 @@ namespace MyGpnSoftware
                         comslotconfig.SelectedIndex = comslotconfig.Items.Count - 1;
                     }
                 }
-                if (s.Contains("760a") || s.Contains("760A"))
+                if (s.Contains("760s") || s.Contains("760S"))
                 {
-                    com760a.Items.Add(s);
-                    if (com760a.Items.Count > 0)
+                    com760s.Items.Add(s);
+                    if (com760s.Items.Count > 0)
                     {
-                        com760a.SelectedIndex = com760a.Items.Count - 1;
+                        com760s.SelectedIndex = com760s.Items.Count - 1;
                     }
                 }
                 if (s.Contains("760b") || s.Contains("760B"))
@@ -5491,15 +5466,15 @@ namespace MyGpnSoftware
                         com760e.SelectedIndex = com760e.Items.Count - 1;
                     }
                 }
-                if (s.Contains("pack") || s.Contains("PACK") || s.Contains("Pack"))
+                if (s.Contains("760f") || s.Contains("760F"))
                 {
-                    comotnpack.Items.Add(s);
-                    if (comotnpack.Items.Count > 0)
+                    com760f.Items.Add(s);
+                    if (com760f.Items.Count > 0)
                     {
-                        comotnpack.SelectedIndex = comotnpack.Items.Count - 1;
+                        com760f.SelectedIndex = com760f.Items.Count - 1;
                     }
                 }
-                if (s.Contains("sysfile") || s.Contains("Sysfile") || s.Contains("SYSFILE"))
+                if (s.Contains("sysfile") || s.Contains("Sysfile") || s.Contains("SYSFILE") || s.Contains("SysFile"))
                 {
                     comsysfile.Items.Add(s);
                     if (comsysfile.Items.Count > 0)
@@ -5555,12 +5530,12 @@ namespace MyGpnSoftware
                     + "\r\n" + comcode.Text + ":  " + checkcode.Checked
                     + "\r\n" + comnms.Text + ":  " + checknms.Checked
                     + "\r\n" + comsw.Text + ":  " + checksw.Checked
-                    + "\r\n" + com760a.Text + ":  " + check760a.Checked
+                    + "\r\n" + com760s.Text + ":  " + check760s.Checked
                     + "\r\n" + com760b.Text + ":  " + check760b.Checked
                     + "\r\n" + com760c.Text + ":  " + check760c.Checked
                     + "\r\n" + com760d.Text + ":  " + check760d.Checked
                     + "\r\n" + com760e.Text + ":  " + check760e.Checked
-                    + "\r\n" + comotnpack.Text + ":  " + checkotnpack.Checked
+                    + "\r\n" + com760f.Text + ":  " + check760f.Checked
                     + "\r\n" + comsysfile.Text + ":  " + checksysfile.Checked
                     + "\r\n" + comflash.Text + ":  " + checkflash.Checked
                     + "\r\n" + comyaffs.Text + ":  " + checkyaffs.Checked
@@ -5607,7 +5582,7 @@ namespace MyGpnSoftware
             if (e.Control == true && e.KeyCode == Keys.Q)
             {
                 mysocket.SendDate("\x011");
-                // textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") +" "+"CTRL+Q已发送");
+                // textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") +" "+"CTRL+Q已发送");
                 this.butsend.PerformClick();
             }
             if (e.Control == true && e.KeyCode == Keys.Back)
@@ -5646,20 +5621,20 @@ namespace MyGpnSoftware
                         string luanma = "\b";
                         string newSS = stra.Replace(luanma, "");
                         string newSw = newSS.Replace(dos, dos2);
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + newSw);
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + newSw);
                     }
                     else
                     {
                         string luanma = "\b";
                         string newSS = stra.Replace(luanma, "");
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + newSS);
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + newSS);
                     }
                 }
                 else
                 {
                     string luanma = "\b";
                     string newSS = stra.Replace(luanma, "");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + newSS);
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + newSS);
                 }
                 //string luanma = "\b";
                 //string newSS = ss.Replace(luanma,"");
@@ -5689,7 +5664,7 @@ namespace MyGpnSoftware
         {
             Mytimer = new System.Threading.Timer(new TimerCallback(TimerUp), null, Timeout.Infinite, 1000);
             btnFtpServerStartStop.PerformClick();
-            metroComreadoid.Text = "GET";
+            metroComreadoid.Text = "WALK";
             tbxFtpServerPort.Text = "21";
             //checkpssd.CheckedChanged = true;
             labelboard.Visible = false;
@@ -5742,7 +5717,7 @@ namespace MyGpnSoftware
         private string strSec = ""; //INI文件名
         #endregion
         #region 设置ini文件内容
-        private Dictionary<string, Gpnip> userss = new Dictionary<string, Gpnip>();
+
         private void Gpnsetini()
         {
 
@@ -5766,43 +5741,62 @@ namespace MyGpnSoftware
                 WritePrivateProfileString(strSec, "FPFA_CODE", comcode.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "NMS", comnms.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "SW", comsw.Text.Trim(), strFilePath);
-                WritePrivateProfileString(strSec, "760A", com760a.Text.Trim(), strFilePath);
+                WritePrivateProfileString(strSec, "760S", com760s.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "760B", com760b.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "760C", com760c.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "760D", com760d.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "760E", com760e.Text.Trim(), strFilePath);
-                WritePrivateProfileString(strSec, "OtnPack", comotnpack.Text.Trim(), strFilePath);
+                WritePrivateProfileString(strSec, "760F", com760f.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "sysfile", comsysfile.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "Flash", comflash.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "Yaffs", comyaffs.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "GPN7600EMS", comgpn76list.Text.Trim(), strFilePath);
-                Gpnip user = new Gpnip();
-                // 登录时 如果没有Data.bin文件就创建、有就打开
-                FileStream fs = new FileStream(@"C:\gpn\gpnip.bin", FileMode.OpenOrCreate);
-                BinaryFormatter bf = new BinaryFormatter();
-                // 保存在实体类属性中
-                user.GpnIP = comip.Text;
-                if (userss.ContainsKey(user.GpnIP))
+                int a = 0;
+                bool zhixing;
+                string ipadd = "";
+                for (int i = 0; i < DGVSTATUS.Rows.Count - 1; i++)
                 {
-                    //如果有清掉
-                    userss.Remove(user.GpnIP);
-                    // MessageBox.Show("ip已经存在，替换完成");
+                    ipadd = DGVSTATUS.Rows[i].Cells["ip地址"].Value.ToString();
+                    a = int.Parse(DGVSTATUS.Rows[i].Cells["优先级"].Value.ToString());
+                    zhixing = bool.Parse(DGVSTATUS.Rows[i].Cells["执行"].Value.ToString());
+                    DGVSTATUS.Rows[i].Cells["优先级"].Value = a;
+                    Gpnip user = new Gpnip();
+                    // 登录时 如果没有Data.bin文件就创建、有就打开
+                    FileStream fs = new FileStream(@"C:\gpn\gpnip.bin", FileMode.OpenOrCreate);
+                    BinaryFormatter bf = new BinaryFormatter();
+                    // 保存在实体类属性中
+                    user.GpnIP = ipadd;
+                    user.GpnPRY = a;
+                    user.GpnZX = zhixing;
+                    if (userss.ContainsKey(user.GpnIP))
+                    {
+                        //如果有清掉
+                        userss.Remove(user.GpnIP);
+                        // MessageBox.Show("ip已经存在，替换完成");
+                    }
+                    //添加用户信息到集合
+                    userss.Add(user.GpnIP, user);
+                    //写入文件
+                    bf.Serialize(fs, userss);
+
+                    fs.Close();
+                 //   MySocket.WriteLogs("Logs", "软件窗口所有日志：", EmailBody);
+
+
+
                 }
-                //添加用户信息到集合
-                userss.Add(user.GpnIP, user);
-                //写入文件
-                bf.Serialize(fs, userss);
-                //关闭
-                fs.Close();
-                // textmesg.Text = "用户以保存，重新打开软件后会显示";
-                //MessageBox.Show("账号保存成功！！！");
-                //MessageBox.Show("写入成功");
+
+
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
         }
+
+
+
+
         private void 设置ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Gpnsetini();
@@ -5825,7 +5819,7 @@ namespace MyGpnSoftware
                     Gpnsetini();
                     ///////保存telnet 记录////////
                     Savecom();
-
+                    //  导出前俩列ToolStripMenuItem.PerformClick();
                     if (metroButTrap.Text == "禁止Trap监听")
                     {
                         run = false;
@@ -5845,6 +5839,7 @@ namespace MyGpnSoftware
                 if (dr == DialogResult.No)
                 {
                     Gpnsetini();
+                    //    导出前俩列ToolStripMenuItem.PerformClick();
 
                     if (metroButTrap.Text == "禁止Trap监听")
                     {
@@ -5936,23 +5931,23 @@ namespace MyGpnSoftware
                 checkcode.Checked = false;
                 checknms.Checked = false;
                 checksw.Checked = false;
-                check760a.Checked = false;
+                check760s.Checked = false;
                 check760b.Checked = false;
                 check760c.Checked = false;
                 check760d.Checked = false;
                 check760e.Checked = false;
-                checkotnpack.Checked = false;
+                check760f.Checked = false;
                 checksysfile.Checked = false;
                 checkapp.Checked = true;
                 checkcode.Checked = true;
                 checknms.Checked = true;
                 checksw.Checked = true;
-                check760a.Checked = true;
+                check760s.Checked = true;
                 check760b.Checked = true;
                 check760c.Checked = true;
                 check760d.Checked = true;
                 check760e.Checked = true;
-                checkotnpack.Checked = true;
+                //    check760f.Checked = true;
                 checksysfile.Checked = true;
                 checkconfig.Checked = true;
                 checkslotconfig.Checked = true;
@@ -5968,12 +5963,12 @@ namespace MyGpnSoftware
                 checkcode.Checked = false;
                 checknms.Checked = false;
                 checksw.Checked = false;
-                check760a.Checked = false;
+                check760s.Checked = false;
                 check760b.Checked = false;
                 check760c.Checked = false;
                 check760d.Checked = false;
                 check760e.Checked = false;
-                checkotnpack.Checked = false;
+                check760f.Checked = false;
                 checksysfile.Checked = false;
                 checkconfig.Checked = false;
                 checkslotconfig.Checked = false;
@@ -5992,23 +5987,23 @@ namespace MyGpnSoftware
                 checkcode.Checked = false;
                 checknms.Checked = false;
                 checksw.Checked = false;
-                check760a.Checked = false;
+                check760s.Checked = false;
                 check760b.Checked = false;
                 check760c.Checked = false;
                 check760d.Checked = false;
                 check760e.Checked = false;
-                checkotnpack.Checked = false;
+                check760f.Checked = false;
                 checksysfile.Checked = false;
                 checkapp.Checked = true;
                 checkcode.Checked = true;
                 checknms.Checked = true;
                 checksw.Checked = true;
-                check760a.Checked = true;
+                check760s.Checked = true;
                 check760b.Checked = true;
                 check760c.Checked = true;
                 check760d.Checked = true;
                 check760e.Checked = true;
-                checkotnpack.Checked = true;
+                // check760f.Checked = true;
                 checksysfile.Checked = true;
                 butgpn7600.Text = "取消勾选";
                 butgpnall.Text = "全部勾选";
@@ -6021,12 +6016,12 @@ namespace MyGpnSoftware
                 checkcode.Checked = false;
                 checknms.Checked = false;
                 checksw.Checked = false;
-                check760a.Checked = false;
+                check760s.Checked = false;
                 check760b.Checked = false;
                 check760c.Checked = false;
                 check760d.Checked = false;
                 check760e.Checked = false;
-                checkotnpack.Checked = false;
+                check760f.Checked = false;
                 checksysfile.Checked = false;
                 butgpn7600.Text = "GPN76-OTN勾选";
             }
@@ -6042,18 +6037,18 @@ namespace MyGpnSoftware
                 checkcode.Checked = false;
                 checknms.Checked = false;
                 checksw.Checked = false;
-                check760a.Checked = false;
+                check760s.Checked = false;
                 check760b.Checked = false;
                 check760c.Checked = false;
                 check760d.Checked = false;
                 check760e.Checked = false;
-                checkotnpack.Checked = false;
+                check760f.Checked = false;
                 checksysfile.Checked = false;
                 checkapp.Checked = true;
                 checknms.Checked = true;
                 check760c.Checked = true;
                 check760d.Checked = true;
-                checkotnpack.Checked = true;
+                //   check760f.Checked = true;
                 butgpn800.Text = "取消勾选";
                 butgpn7600.Text = "GPN76-OTN勾选";
                 butgpnall.Text = "全部勾选";
@@ -6065,12 +6060,12 @@ namespace MyGpnSoftware
                 checkcode.Checked = false;
                 checknms.Checked = false;
                 checksw.Checked = false;
-                check760a.Checked = false;
+                check760s.Checked = false;
                 check760b.Checked = false;
                 check760c.Checked = false;
                 check760d.Checked = false;
                 check760e.Checked = false;
-                checkotnpack.Checked = false;
+                check760f.Checked = false;
                 checksysfile.Checked = false;
                 butgpn800.Text = "GPN800勾选";
             }
@@ -6086,7 +6081,7 @@ namespace MyGpnSoftware
                 checkcode.Checked = false;
                 checknms.Checked = false;
                 checksw.Checked = false;
-                check760a.Checked = false;
+                check760s.Checked = false;
                 check760b.Checked = false;
                 check760c.Checked = false;
                 check760d.Checked = false;
@@ -6107,7 +6102,7 @@ namespace MyGpnSoftware
                 checkcode.Checked = false;
                 checknms.Checked = false;
                 checksw.Checked = false;
-                check760a.Checked = false;
+                check760s.Checked = false;
                 check760b.Checked = false;
                 check760c.Checked = false;
                 check760d.Checked = false;
@@ -6116,20 +6111,7 @@ namespace MyGpnSoftware
                 butgpn7600old.Text = "GPN76-PTN勾选";
             }
         }
-        private void Xianchengchi(object obj)
-        {
-            int i = 1;
-            ThreadPool.SetMinThreads(1, 1);
-            ThreadPool.SetMaxThreads(int.Parse("10"), int.Parse("10"));
-            if (obj.ToString() == "Syslog")
-            {
-                ThreadPool.QueueUserWorkItem(new WaitCallback(Syslog), i.ToString());
-            }
-            if (obj.ToString() == "GuZhangPaiCha")
-            {
-                ThreadPool.QueueUserWorkItem(new WaitCallback(GuZhangPaiCha), i.ToString());
-            }
-        }
+
         /// <summary>
         /// 一键导出入职主程序
         /// </summary>
@@ -7466,7 +7448,7 @@ namespace MyGpnSoftware
                                 textlog.AppendText(textcurrent.Text);
                                 textcurrent.Text = "";
                                 break;
-                                
+
                             }
                             Thread.Sleep(XHTime);
                         }
@@ -7774,10 +7756,8 @@ namespace MyGpnSoftware
         }
         private void Butsyslog_Click(object sender, EventArgs e)
         {
-            string task = "Syslog";
-            ParameterizedThreadStart p = new ParameterizedThreadStart(Xianchengchi);
-            Thread t = new Thread(p);
-            t.Start(task);
+            Thread t = new Thread(Syslog);
+            t.Start();
         }
         private void Butpaigu_Click(object sender, EventArgs e)
         {
@@ -7791,7 +7771,7 @@ namespace MyGpnSoftware
             {
                 if (textguzhangmingling.Text == "")
                 {
-                    Thread.Sleep(XHTime / 3);
+                    Thread.Sleep(XHTime / 4);
                     string ctrlc = "Press any key to continue Ctrl+c to stop";
                     string DOS = textcurrent.Text;
                     if (DOS.Contains(ctrlc))
@@ -7800,70 +7780,25 @@ namespace MyGpnSoftware
                         //MessageBox.Show("检测到了");
                     }
                     string str = "\r\n" + mysocket.ReceiveData(int.Parse(ts));
-                    //string luanma = "[7m --Press any key to continue Ctrl+c to stop-- [m";
-                    //string newSS = str.Replace(luanma, "Press any key to continue Ctrl+c to stop");
-                    //string luama2 = "\n" + "                                              ";
-                    //string newSD = newSS.Replace(luama2, "");
-                    //string vcg = "[0m[0;0m";
-                    //string newvcg = newSD.Replace(vcg, "");
-                    //string vcg2 = "\n";
-                    //string newvcg2 = newvcg.Replace(vcg2, "\r\n");
-                    //string kou = "";
-                    //string kou2 = "";
-                    //string newkou = newvcg2.Replace(kou, "");
-                    //string newkou2 = newkou.Replace(kou2, "");
-                    //string msapeth = "[0;32m";
-                    //string msapeth2 = newkou2.Replace(msapeth, "");
-                    //string msapeth1 = "[0m";
-                    //string msapeth3 = msapeth2.Replace(msapeth1, "");
-                    //string msapeth4 = "[0;0m";
-                    //string msapeth5 = msapeth3.Replace(msapeth4, "");
-                    //string msapeth6 = "[0;31m";
-                    //string msapeth7 = msapeth5.Replace(msapeth6, "");
-                    //textBox3.Text = newkou2;
                     textcurrent.AppendText(str);
-                    //this.textBox3.Text = str;
                 }
                 else
                 {
                     com = textguzhangmingling.Text;
-                    Thread.Sleep(XHTime / 3);
+                    Thread.Sleep(XHTime / 4);
                     string ss = mysocket.ReceiveData(int.Parse(ts));
-                    //string luanma = "[7m --Press any key to continue Ctrl+c to stop-- [m";
-                    //string newSS = ss.Replace(luanma, "Press any key to continue Ctrl+c to stop");
-                    //string luama2 = "\n" + "                                              ";
-                    //string newSD = newSS.Replace(luama2, "");
-                    //string vcg = "[0m[0;0m";//[0;31m
-                    //string newvcg = newSD.Replace(vcg, "");
-                    //string vcg2 = "\n";
-                    //string newvcg2 = newvcg.Replace(vcg2, "\r\n");
-                    //string kou = "";
-                    //string kou2 = "";
-                    //string newkou = newvcg2.Replace(kou, "");
-                    //string newkou2 = newkou.Replace(kou2, "");
-                    //string msapeth = "[0;32m";
-                    //string msapeth2 = newkou2.Replace(msapeth, "");
-                    //string msapeth1 = "[0m";
-                    //string msapeth3 = msapeth2.Replace(msapeth1, "");
-                    //string msapeth4 = "[0;0m";
-                    //string msapeth5 = msapeth3.Replace(msapeth4, "");
-                    //string msapeth6 = "[0;31m";
-                    //string msapeth7 = msapeth5.Replace(msapeth6, "");
-                    //textBox3.Text = newkou2;
                     textcurrent.AppendText(ss);
-                    //this.textDOS.Text = ss;
                 }
             }
             else
             {
                 textcurrent.AppendText("\r\n" + "连接通信故障，请断开后，重新尝试！");
-                //this.butlogin.PerformClick();
+
             }
             textguzhangmingling.Text = "";
             textcurrent.Focus();
             textcurrent.ScrollToCaret();
             textguzhangmingling.Focus();
-            // this.richTextEnd.Select(this.richTextEnd.TextLength, 0);
         }
         #endregion
         #region Tab选项卡切换
@@ -8347,7 +8282,7 @@ namespace MyGpnSoftware
                 p.StartInfo.FileName = @"C:\Program Files (x86)\InstallShield Installation Information\{F54A1417-6804-4C74-8B36-C44592EDFEF2}\setup.exe";
                 //p.StartInfo.Arguments = " -runfromtemp -l0x0409  -removeonly";
                 p.Start();
-                textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "GPN模块已卸载==============================================OK" + "\r\n");
+                textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "GPN模块已卸载==============================================OK" + "\r\n");
 
             }
             if (dr == DialogResult.No)
@@ -8410,7 +8345,7 @@ namespace MyGpnSoftware
             bool overWrite = true;
             try
             {
-                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "GPN模块下载中==============================================OK" + "\r\n");
+                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "GPN模块下载中==============================================OK" + "\r\n");
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                 HttpWebResponse response = request.GetResponse() as HttpWebResponse;
                 Stream responseStream = response.GetResponseStream();
@@ -8425,15 +8360,15 @@ namespace MyGpnSoftware
                     size = responseStream.Read(bArr, 0, bArr.Length);
                     //p = (int)Math.Floor((double)100 / a);
                     percent = (int)Math.Floor((float)totalDownloadedByte / (float)totalBytes * 100);
-                    // textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") +" "+percent.ToString() + "\r\n");
+                    // textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") +" "+percent.ToString() + "\r\n");
                     //labjindu.Text = percent.ToString() + "%";
                     myProgressBarjindu.Value = percent;
                     // System.Windows.Forms.Application.DoEvents();
                 }
                 stream.Close();
                 responseStream.Close();
-                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "GPN模块下载成功============================================OK" + "\r\n");
-                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "GPN模块保存路径：" + strZipPath + "\r\n");
+                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "GPN模块下载成功============================================OK" + "\r\n");
+                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "GPN模块保存路径：" + strZipPath + "\r\n");
 
             }
             catch (Exception)
@@ -8456,7 +8391,7 @@ namespace MyGpnSoftware
                         if (overWrite)
                         {
                             entry.Extract(strUnZipPath, ExtractExistingFileAction.OverwriteSilently);//解压文件，如果已存在就覆盖
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "GPN模块解压成功============================================OK" + "\r\n");
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "GPN模块解压成功============================================OK" + "\r\n");
                         }
                     }
                     // zip.ExtractAll(@tbxFtpRoot.Text.Trim());
@@ -8468,51 +8403,56 @@ namespace MyGpnSoftware
                 return;
             }
             System.Diagnostics.Process.Start(strUnZipPath + "setup.exe");
-            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "GPN模块安装成功============================================OK" + "\r\n");
+            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "GPN模块安装成功============================================OK" + "\r\n");
             // MessageBox.Show("GPN7600 EMS模块已安装成功！");
         }
         #region 获取GPN7600EMS软件目录
         private void gpnurlupdate()
         {
-            string strCode;
-            ArrayList alLinks;
-            if (GPN7600EMSURL == "")
+            try
             {
-                MessageBox.Show("请输入网址");
-                return;
+                string strCode;
+                ArrayList alLinks;
+                if (GPN7600EMSURL == "")
+                {
+                    MessageBox.Show("请输入网址");
+                    return;
+                }
+                string strURL = GPN7600EMSURL;
+                if (strURL.Substring(0, 7) != @"http://")
+                {
+                    //strURL = @"http://" + strURL;
+                }
+
+                Ping ping = new Ping();
+                int timeout = 120;
+                PingReply pingReply = ping.Send(GPN7600EMSURLIP, timeout);
+                //判断请求是否超时
+
+                //textDOS.AppendText("正在获取页面代码===========================================OK" + "\r\n");
+                strCode = MyGpnSoftware.App.GetPageSource(strURL);
+                //textDOS.AppendText("正在提取超链接=============================================OK" + "\r\n");
+                alLinks = MyGpnSoftware.App.GetHyperLinks(strCode);
+                //textDOS.AppendText("正在写入XML文件============================================OK" + "\r\n");
+                MyGpnSoftware.App.WriteToXml(strURL, alLinks);
+                //读取设定档百
+                XmlDocument xmlDoc = new XmlDocument();
+                xmlDoc.Load(@"C:\gpn\HyperLinks.xml");
+                //取得节点专
+                XmlNodeList node = xmlDoc.GetElementsByTagName("other");
+                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "获取网管版本" + "===============================================OK " + node.Count.ToString() + "个版本" + "\r\n");
+                for (int i = 0; i < node.Count; i++)
+                {
+                    comgpn76list.Items.Add(node[i].InnerText);
+                }
+                //textDOS.AppendText("从网管服务器获取GPN76模块链接成功==========================OK" + "\r\n");
             }
-            string strURL = GPN7600EMSURL;
-            if (strURL.Substring(0, 7) != @"http://")
+            catch (Exception ex)
             {
-                //strURL = @"http://" + strURL;
+                //   textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "GPN模块获取失败，请链接格林威尔VPN后，再次尝试！" + "\r\n");
+
             }
 
-            Ping ping = new Ping();
-            int timeout = 120;
-            PingReply pingReply = ping.Send(GPN7600EMSURLIP, timeout);
-            //判断请求是否超时
-            if (pingReply.Status != IPStatus.Success)
-            {
-                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "GPN模块获取失败，请链接格林威尔VPN后，再次尝试！" + "\r\n");
-                return;
-            }
-            //textDOS.AppendText("正在获取页面代码===========================================OK" + "\r\n");
-            strCode = MyGpnSoftware.App.GetPageSource(strURL);
-            //textDOS.AppendText("正在提取超链接=============================================OK" + "\r\n");
-            alLinks = MyGpnSoftware.App.GetHyperLinks(strCode);
-            //textDOS.AppendText("正在写入XML文件============================================OK" + "\r\n");
-            MyGpnSoftware.App.WriteToXml(strURL, alLinks);
-            //读取设定档百
-            XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.Load(@"C:\gpn\HyperLinks.xml");
-            //取得节点专
-            XmlNodeList node = xmlDoc.GetElementsByTagName("other");
-            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "获取网管版本" + "===============================================OK " + node.Count.ToString() + "个版本" + "\r\n");
-            for (int i = 0; i < node.Count; i++)
-            {
-                comgpn76list.Items.Add(node[i].InnerText);
-            }
-            //textDOS.AppendText("从网管服务器获取GPN76模块链接成功==========================OK" + "\r\n");
         }
         #endregion
         #region 获取各个文件的大小
@@ -8566,14 +8506,14 @@ namespace MyGpnSoftware
                 labsw.Text = lSize.ToString();
             }
         }
-        private void com760a_SelectedIndexChanged(object sender, EventArgs e)
+        private void com760s_SelectedIndexChanged(object sender, EventArgs e)
         {
             long lSize = 0;
-            string sFullName = @tbxFtpRoot.Text.Trim() + com760a.Text.Trim();
+            string sFullName = @tbxFtpRoot.Text.Trim() + com760s.Text.Trim();
             if (File.Exists(sFullName))
             {
                 lSize = new FileInfo(sFullName).Length;
-                lab760a.Text = lSize.ToString();
+                lab760s.Text = lSize.ToString();
             }
         }
         private void com760b_SelectedIndexChanged(object sender, EventArgs e)
@@ -8616,14 +8556,14 @@ namespace MyGpnSoftware
                 lab760e.Text = lSize.ToString();
             }
         }
-        private void comotnpack_SelectedIndexChanged(object sender, EventArgs e)
+        private void com760f_SelectedIndexChanged(object sender, EventArgs e)
         {
             long lSize = 0;
-            string sFullName = @tbxFtpRoot.Text.Trim() + comotnpack.Text.Trim();
+            string sFullName = @tbxFtpRoot.Text.Trim() + com760f.Text.Trim();
             if (File.Exists(sFullName))
             {
                 lSize = new FileInfo(sFullName).Length;
-                labotnpack.Text = lSize.ToString();
+                lab760f.Text = lSize.ToString();
             }
         }
         private void comsysfile_SelectedIndexChanged(object sender, EventArgs e)
@@ -8726,7 +8666,7 @@ namespace MyGpnSoftware
             string appsize1 = r.Match(ver).Groups[0].Value;
             if (appsize1 == "")
             {
-                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "检查conf_data.txt文件大小超时，请检查文件是否存在，设备是否正常？==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "检查conf_data.txt文件大小超时，请检查文件是否存在，设备是否正常？==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                 mysocket.SendData("exit");
                 for (int a = 1; a <= 200; a++)
                 {
@@ -8749,15 +8689,15 @@ namespace MyGpnSoftware
             {
                 if (Appsize == labconfig.Text)
                 {
-                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "检查conf_data.txt文件比对==============================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "设备：conf_data.txt文件大小为： " + Appsize + " 字节" + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "电脑：conf_data.txt文件大小为： " + labconfig.Text + " 字节" + "\r\n");
+                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "检查conf_data.txt文件比对==============================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "设备：conf_data.txt文件大小为： " + Appsize + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "电脑：conf_data.txt文件大小为： " + labconfig.Text + " 字节" + "\r\n");
                 }
                 else
                 {
-                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "检查conf_data.txt文件比对=============================NOK" + toolStripStatusLabeltime.Text + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "设备：conf_data.txt文件大小为： " + Appsize + " 字节" + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "电脑：conf_data.txt文件大小为： " + labconfig.Text + " 字节" + "\r\n");
+                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "检查conf_data.txt文件比对=============================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "设备：conf_data.txt文件大小为： " + Appsize + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "电脑：conf_data.txt文件大小为： " + labconfig.Text + " 字节" + "\r\n");
                 }
             }
             mysocket.SendData("exit");
@@ -8823,7 +8763,7 @@ namespace MyGpnSoftware
             string appsize1 = r.Match(ver).Groups[0].Value;
             if (appsize1 == "")
             {
-                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "检查slotconfig.bin文件大小超时，请检查文件是否存在，设备是否正常？==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "检查slotconfig.bin文件大小超时，请检查文件是否存在，设备是否正常？==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                 mysocket.SendData("exit");
                 for (int a = 1; a <= 200; a++)
                 {
@@ -8846,15 +8786,15 @@ namespace MyGpnSoftware
             {
                 if (Appsize == labslotconfig.Text)
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "检查slotconfig.bin文件比对=============================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "设备：slotconfig.bin文件大小为： " + Appsize + " 字节" + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "电脑：slotconfig.bin文件大小为： " + labslotconfig.Text + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "检查slotconfig.bin文件比对=============================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "设备：slotconfig.bin文件大小为： " + Appsize + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "电脑：slotconfig.bin文件大小为： " + labslotconfig.Text + " 字节" + "\r\n");
                 }
                 else
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "检查slotconfig.bin文件比对============================NOK" + toolStripStatusLabeltime.Text + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "设备：slotconfig.bin文件大小为： " + Appsize + " 字节" + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "电脑：slotconfig.bin文件大小为： " + labslotconfig.Text + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "检查slotconfig.bin文件比对============================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "设备：slotconfig.bin文件大小为： " + Appsize + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "电脑：slotconfig.bin文件大小为： " + labslotconfig.Text + " 字节" + "\r\n");
                 }
             }
             mysocket.SendData("exit");
@@ -8920,7 +8860,7 @@ namespace MyGpnSoftware
             string appsize1 = r.Match(ver).Groups[0].Value;
             if (appsize1 == "")
             {
-                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "检查db.bin文件大小超时，请检查文件是否存在，设备是否正常？==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "检查db.bin文件大小超时，请检查文件是否存在，设备是否正常？==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                 mysocket.SendData("exit");
                 for (int a = 1; a <= 200; a++)
                 {
@@ -8943,15 +8883,15 @@ namespace MyGpnSoftware
             {
                 if (Appsize == labdb.Text)
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "检查db.bin文件比对=====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "设备：db.bin文件大小为： " + Appsize + " 字节" + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "电脑：db.bin文件大小为： " + labdb.Text + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "检查db.bin文件比对=====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "设备：db.bin文件大小为： " + Appsize + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "电脑：db.bin文件大小为： " + labdb.Text + " 字节" + "\r\n");
                 }
                 else
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "检查db.bin文件比对====================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "设备：db.bin文件大小为： " + Appsize + " 字节" + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "电脑：db.bin文件大小为： " + labdb.Text + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "检查db.bin文件比对====================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "设备：db.bin文件大小为： " + Appsize + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "电脑：db.bin文件大小为： " + labdb.Text + " 字节" + "\r\n");
                 }
             }
             mysocket.SendData("exit");
@@ -9017,7 +8957,7 @@ namespace MyGpnSoftware
             string appsize1 = r.Match(ver).Groups[0].Value;
             if (appsize1 == "")
             {
-                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "检查app_code.bin文件大小超时，请检查文件是否存在，设备是否正常？==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "检查app_code.bin文件大小超时，请检查文件是否存在，设备是否正常？==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                 mysocket.SendData("exit");
                 for (int a = 1; a <= 200; a++)
                 {
@@ -9040,15 +8980,15 @@ namespace MyGpnSoftware
             {
                 if (Appsize == labapp.Text)
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "检查app_code.bin文件比对===============================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "设备：app_code.bin文件大小为： " + Appsize + " 字节" + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "电脑：app_code.bin文件大小为： " + labapp.Text + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "检查app_code.bin文件比对===============================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "设备：app_code.bin文件大小为： " + Appsize + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "电脑：app_code.bin文件大小为： " + labapp.Text + " 字节" + "\r\n");
                 }
                 else
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "检查app_code.bin文件比对==============================NOK" + toolStripStatusLabeltime.Text + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "设备：app_code.bin文件大小为： " + Appsize + " 字节" + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "电脑：app_code.bin文件大小为： " + labapp.Text + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "检查app_code.bin文件比对==============================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "设备：app_code.bin文件大小为： " + Appsize + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "电脑：app_code.bin文件大小为： " + labapp.Text + " 字节" + "\r\n");
                 }
             }
             mysocket.SendData("exit");
@@ -9114,7 +9054,7 @@ namespace MyGpnSoftware
             string appsize1 = r.Match(ver).Groups[0].Value;
             if (appsize1 == "")
             {
-                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "检查nms.fpga文件大小超时，请检查文件是否存在，设备是否正常？==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "检查nms.fpga文件大小超时，请检查文件是否存在，设备是否正常？==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                 mysocket.SendData("exit");
                 for (int a = 1; a <= 200; a++)
                 {
@@ -9137,15 +9077,15 @@ namespace MyGpnSoftware
             {
                 if (Appsize == labnms.Text)
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "检查nms.fpga文件比对===================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "设备：nms.fpga文件大小为： " + Appsize + " 字节" + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "电脑：nms.fpga文件大小为： " + labnms.Text + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "检查nms.fpga文件比对===================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "设备：nms.fpga文件大小为： " + Appsize + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "电脑：nms.fpga文件大小为： " + labnms.Text + " 字节" + "\r\n");
                 }
                 else
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "检查nms.fpga文件比对==================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "设备：nms.fpga文件大小为： " + Appsize + " 字节" + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "电脑：nms.fpga文件大小为： " + labnms.Text + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "检查nms.fpga文件比对==================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "设备：nms.fpga文件大小为： " + Appsize + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "电脑：nms.fpga文件大小为： " + labnms.Text + " 字节" + "\r\n");
                 }
             }
             mysocket.SendData("exit");
@@ -9211,7 +9151,7 @@ namespace MyGpnSoftware
             string appsize1 = r.Match(ver).Groups[0].Value;
             if (appsize1 == "")
             {
-                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "检查sw.fpga文件大小超时，请检查文件是否存在，设备是否正常？==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "检查sw.fpga文件大小超时，请检查文件是否存在，设备是否正常？==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                 mysocket.SendData("exit");
                 for (int a = 1; a <= 200; a++)
                 {
@@ -9234,15 +9174,15 @@ namespace MyGpnSoftware
             {
                 if (Appsize == labsw.Text)
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "检查sw.fpga文件比对====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "设备：sw.fpga文件大小为： " + Appsize + " 字节" + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "电脑：sw.fpga文件大小为： " + labsw.Text + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "检查sw.fpga文件比对====================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "设备：sw.fpga文件大小为： " + Appsize + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "电脑：sw.fpga文件大小为： " + labsw.Text + " 字节" + "\r\n");
                 }
                 else
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "检查sw.fpga文件比对===================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "设备：sw.fpga文件大小为： " + Appsize + " 字节" + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "电脑：sw.fpga文件大小为： " + labsw.Text + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "检查sw.fpga文件比对===================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "设备：sw.fpga文件大小为： " + Appsize + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "电脑：sw.fpga文件大小为： " + labsw.Text + " 字节" + "\r\n");
                 }
             }
             mysocket.SendData("exit");
@@ -9323,7 +9263,7 @@ namespace MyGpnSoftware
             string appsize1 = r.Match(ver).Groups[0].Value;
             if (appsize1 == "")
             {
-                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "检查fpga_code.bin文件大小超时，请检查文件是否存在，设备是否正常？==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "检查fpga_code.bin文件大小超时，请检查文件是否存在，设备是否正常？==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                 mysocket.SendData("exit");
                 for (int a = 1; a <= 200; a++)
                 {
@@ -9346,15 +9286,15 @@ namespace MyGpnSoftware
             {
                 if (Appsize == labcode.Text)
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "检查fpga_code.bin文件比对==============================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "设备：fpga_code.bin文件大小为： " + Appsize + " 字节" + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "电脑：fpga_code.bin文件大小为： " + labcode.Text + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "检查fpga_code.bin文件比对==============================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "设备：fpga_code.bin文件大小为： " + Appsize + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "电脑：fpga_code.bin文件大小为： " + labcode.Text + " 字节" + "\r\n");
                 }
                 else
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "检查fpga_code.bin文件比对=============================NOK" + toolStripStatusLabeltime.Text + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "设备：fpga_code.bin文件大小为： " + Appsize + " 字节" + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "电脑：fpga_code.bin文件大小为： " + labcode.Text + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "检查fpga_code.bin文件比对=============================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "设备：fpga_code.bin文件大小为： " + Appsize + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "电脑：fpga_code.bin文件大小为： " + labcode.Text + " 字节" + "\r\n");
                 }
             }
             mysocket.SendData("exit");
@@ -9371,9 +9311,9 @@ namespace MyGpnSoftware
             string cccc = mysocket.ReceiveData(int.Parse(ts));
             // MessageBox.Show(Appsize);
         }
-        private void Fpga760aSize()
+        private void Fpga760sSize()
         {
-            toolStripStatusLabelzt.Text = "检查FPGA760A大小中";
+            toolStripStatusLabelzt.Text = "检查FPGA760S大小中";
             mysocket.SendData("dosfs");
             for (int a = 1; a <= 200; a++)
             {
@@ -9415,12 +9355,12 @@ namespace MyGpnSoftware
                 Thread.Sleep(XHTime);
             }
             //MessageBox.Show(ver);
-            string appRegex = ".*760a.fpga";
+            string appRegex = ".*760s.fpga";
             Regex r = new Regex(appRegex, RegexOptions.IgnoreCase);
             string appsize1 = r.Match(ver).Groups[0].Value;
             if (appsize1 == "")
             {
-                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "检查760a.fpga文件大小超时，请检查文件是否存在，设备是否正常？==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "检查760s.fpga文件大小超时，请检查文件是否存在，设备是否正常？==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                 mysocket.SendData("exit");
                 for (int a = 1; a <= 200; a++)
                 {
@@ -9441,17 +9381,17 @@ namespace MyGpnSoftware
             }
             else
             {
-                if (Appsize == lab760a.Text)
+                if (Appsize == lab760s.Text)
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "检查760a.fpga文件比对==================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "设备：760a.fpga文件大小为： " + Appsize + " 字节" + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "电脑：760a.fpga文件大小为： " + lab760a.Text + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "检查760s.fpga文件比对==================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "设备：760s.fpga文件大小为： " + Appsize + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "电脑：760s.fpga文件大小为： " + lab760s.Text + " 字节" + "\r\n");
                 }
                 else
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "检查760a.fpga文件比对=================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "设备：760a.fpga文件大小为： " + Appsize + " 字节" + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "电脑：760a.fpga文件大小为： " + lab760a.Text + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "检查760s.fpga文件比对=================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "设备：760s.fpga文件大小为： " + Appsize + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "电脑：760s.fpga文件大小为： " + lab760s.Text + " 字节" + "\r\n");
                 }
             }
             mysocket.SendData("exit");
@@ -9517,7 +9457,7 @@ namespace MyGpnSoftware
             string appsize1 = r.Match(ver).Groups[0].Value;
             if (appsize1 == "")
             {
-                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "检查760b.fpga文件大小超时，请检查文件是否存在，设备是否正常？==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "检查760b.fpga文件大小超时，请检查文件是否存在，设备是否正常？==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                 mysocket.SendData("exit");
                 for (int a = 1; a <= 200; a++)
                 {
@@ -9540,15 +9480,15 @@ namespace MyGpnSoftware
             {
                 if (Appsize == lab760b.Text)
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "检查760b.fpga文件比对==================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "设备：760b.fpga文件大小为： " + Appsize + " 字节" + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "电脑：760b.fpga文件大小为： " + lab760b.Text + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "检查760b.fpga文件比对==================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "设备：760b.fpga文件大小为： " + Appsize + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "电脑：760b.fpga文件大小为： " + lab760b.Text + " 字节" + "\r\n");
                 }
                 else
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "检查760b.fpga文件比对=================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "设备：760b.fpga文件大小为： " + Appsize + " 字节" + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "电脑：760b.fpga文件大小为： " + lab760b.Text + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "检查760b.fpga文件比对=================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "设备：760b.fpga文件大小为： " + Appsize + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "电脑：760b.fpga文件大小为： " + lab760b.Text + " 字节" + "\r\n");
                 }
             }
             mysocket.SendData("exit");
@@ -9614,7 +9554,7 @@ namespace MyGpnSoftware
             string appsize1 = r.Match(ver).Groups[0].Value;
             if (appsize1 == "")
             {
-                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "检查760c.fpga文件大小超时，请检查文件是否存在，设备是否正常？==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "检查760c.fpga文件大小超时，请检查文件是否存在，设备是否正常？==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                 mysocket.SendData("exit");
                 for (int a = 1; a <= 200; a++)
                 {
@@ -9637,15 +9577,15 @@ namespace MyGpnSoftware
             {
                 if (Appsize == lab760c.Text)
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "检查760c.fpga文件比对==================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "设备：760c.fpga文件大小为： " + Appsize + " 字节" + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "电脑：760c.fpga文件大小为： " + lab760c.Text + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "检查760c.fpga文件比对==================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "设备：760c.fpga文件大小为： " + Appsize + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "电脑：760c.fpga文件大小为： " + lab760c.Text + " 字节" + "\r\n");
                 }
                 else
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "检查760c.fpga文件比对=================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "设备：760c.fpga文件大小为： " + Appsize + " 字节" + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "电脑：760c.fpga文件大小为： " + lab760c.Text + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "检查760c.fpga文件比对=================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "设备：760c.fpga文件大小为： " + Appsize + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "电脑：760c.fpga文件大小为： " + lab760c.Text + " 字节" + "\r\n");
                 }
             }
             mysocket.SendData("exit");
@@ -9711,7 +9651,7 @@ namespace MyGpnSoftware
             string appsize1 = r.Match(ver).Groups[0].Value;
             if (appsize1 == "")
             {
-                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "检查760d.fpga文件大小超时，请检查文件是否存在，设备是否正常？==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "检查760d.fpga文件大小超时，请检查文件是否存在，设备是否正常？==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                 mysocket.SendData("exit");
                 for (int a = 1; a <= 200; a++)
                 {
@@ -9734,15 +9674,15 @@ namespace MyGpnSoftware
             {
                 if (Appsize == lab760d.Text)
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "检查760d.fpga文件比对==================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "设备：760d.fpga文件大小为： " + Appsize + " 字节" + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "电脑：760d.fpga文件大小为： " + lab760d.Text + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "检查760d.fpga文件比对==================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "设备：760d.fpga文件大小为： " + Appsize + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "电脑：760d.fpga文件大小为： " + lab760d.Text + " 字节" + "\r\n");
                 }
                 else
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "检查760d.fpga文件比对=================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "设备：760d.fpga文件大小为： " + Appsize + " 字节" + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "电脑：760d.fpga文件大小为： " + lab760d.Text + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "检查760d.fpga文件比对=================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "设备：760d.fpga文件大小为： " + Appsize + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "电脑：760d.fpga文件大小为： " + lab760d.Text + " 字节" + "\r\n");
                 }
             }
             mysocket.SendData("exit");
@@ -9808,7 +9748,7 @@ namespace MyGpnSoftware
             string appsize1 = r.Match(ver).Groups[0].Value;
             if (appsize1 == "")
             {
-                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "检查760e.fpga文件大小超时，请检查文件是否存在，设备是否正常？==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "检查760e.fpga文件大小超时，请检查文件是否存在，设备是否正常？==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                 mysocket.SendData("exit");
                 for (int a = 1; a <= 200; a++)
                 {
@@ -9831,15 +9771,15 @@ namespace MyGpnSoftware
             {
                 if (Appsize == lab760e.Text)
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "检查760e.fpga文件比对==================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "设备：760e.fpga文件大小为： " + Appsize + " 字节" + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "电脑：760e.fpga文件大小为： " + lab760e.Text + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "检查760e.fpga文件比对==================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "设备：760e.fpga文件大小为： " + Appsize + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "电脑：760e.fpga文件大小为： " + lab760e.Text + " 字节" + "\r\n");
                 }
                 else
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "检查760e.fpga文件比对=================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "设备：760e.fpga文件大小为： " + Appsize + " 字节" + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "电脑：760e.fpga文件大小为： " + lab760e.Text + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "检查760e.fpga文件比对=================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "设备：760e.fpga文件大小为： " + Appsize + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "电脑：760e.fpga文件大小为： " + lab760e.Text + " 字节" + "\r\n");
                 }
             }
             mysocket.SendData("exit");
@@ -9856,9 +9796,9 @@ namespace MyGpnSoftware
             string cccc = mysocket.ReceiveData(int.Parse(ts));
             // MessageBox.Show(Appsize);
         }
-        private void OtnPackSize()
+        private void Fpga760fSize()
         {
-            toolStripStatusLabelzt.Text = "检查OtnPack大小中";
+            toolStripStatusLabelzt.Text = "检查760F大小中";
             mysocket.SendData("dosfs");
             for (int a = 1; a <= 200; a++)
             {
@@ -9900,12 +9840,12 @@ namespace MyGpnSoftware
                 Thread.Sleep(XHTime);
             }
             //MessageBox.Show(ver);
-            string appRegex = ".*pack.bin";
+            string appRegex = ".*760f.fpga";
             Regex r = new Regex(appRegex, RegexOptions.IgnoreCase);
             string appsize1 = r.Match(ver).Groups[0].Value;
             if (appsize1 == "")
             {
-                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "检查otn_pack.bin文件大小超时，请检查文件是否存在，设备是否正常？==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "检查760f.fpga文件大小超时，请检查文件是否存在，设备是否正常？==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                 mysocket.SendData("exit");
                 for (int a = 1; a <= 200; a++)
                 {
@@ -9926,17 +9866,17 @@ namespace MyGpnSoftware
             }
             else
             {
-                if (Appsize == labotnpack.Text)
+                if (Appsize == lab760f.Text)
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "检查otn_pack.bin文件比对===============================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "设备：otn_pack.bin文件大小为： " + Appsize + " 字节" + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "电脑：otn_pack.bin文件大小为： " + labotnpack.Text + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "检查760f.fpga文件比对===============================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "设备：760f.fpga文件大小为： " + Appsize + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "电脑：760f.fpga文件大小为： " + lab760f.Text + " 字节" + "\r\n");
                 }
                 else
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "检查otn_pack.bin文件比对==============================NOK" + toolStripStatusLabeltime.Text + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "设备：otn_pack.bin文件大小为： " + Appsize + " 字节" + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "电脑：otn_pack.bin文件大小为： " + labotnpack.Text + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "检查760f.fpga文件比对==============================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "设备：760f.fpga文件大小为： " + Appsize + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "电脑：760f.fpga文件大小为： " + lab760f.Text + " 字节" + "\r\n");
                 }
             }
             mysocket.SendData("exit");
@@ -10002,7 +9942,7 @@ namespace MyGpnSoftware
             string appsize1 = r.Match(ver).Groups[0].Value;
             if (appsize1 == "")
             {
-                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "检查sysfile_ini.bin文件大小超时，请检查文件是否存在，设备是否正常？==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "检查sysfile_ini.bin文件大小超时，请检查文件是否存在，设备是否正常？==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                 mysocket.SendData("exit");
                 for (int a = 1; a <= 200; a++)
                 {
@@ -10025,15 +9965,15 @@ namespace MyGpnSoftware
             {
                 if (Appsize == labsysfile.Text)
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "检查sysfile_ini.bin文件比对============================OK" + toolStripStatusLabeltime.Text + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "设备：sysfile_ini.bin文件大小为： " + Appsize + " 字节" + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "电脑：sysfile_ini.bin文件大小为： " + labsysfile.Text + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "检查sysfile_ini.bin文件比对============================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "设备：sysfile_ini.bin文件大小为： " + Appsize + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "电脑：sysfile_ini.bin文件大小为： " + labsysfile.Text + " 字节" + "\r\n");
                 }
                 else
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "检查sysfile_ini.bin文件比对===========================NOK" + toolStripStatusLabeltime.Text + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "设备：sysfile_ini.bin文件大小为： " + Appsize + " 字节" + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "电脑：sysfile_ini.bin文件大小为： " + labsysfile.Text + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "检查sysfile_ini.bin文件比对===========================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "设备：sysfile_ini.bin文件大小为： " + Appsize + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "电脑：sysfile_ini.bin文件大小为： " + labsysfile.Text + " 字节" + "\r\n");
                 }
             }
             mysocket.SendData("exit");
@@ -10057,12 +9997,12 @@ namespace MyGpnSoftware
                 checkcode.Checked == false &&
                 checknms.Checked == false &&
                 checksw.Checked == false &&
-                check760a.Checked == false &&
+                check760s.Checked == false &&
                 check760b.Checked == false &&
                 check760c.Checked == false &&
                 check760d.Checked == false &&
                 check760e.Checked == false &&
-                checkotnpack.Checked == false &&
+                check760f.Checked == false &&
                 checksysfile.Checked == false &&
                 checkconfig.Checked == false &&
                 checkdb.Checked == false &&
@@ -10112,9 +10052,9 @@ namespace MyGpnSoftware
                     {
                         SwSize();
                     }
-                    if (check760a.Checked == true)
+                    if (check760s.Checked == true)
                     {
-                        Fpga760aSize();
+                        Fpga760sSize();
                     }
                     if (check760b.Checked == true)
                     {
@@ -10132,9 +10072,9 @@ namespace MyGpnSoftware
                     {
                         Fpga760eSize();
                     }
-                    if (checkotnpack.Checked == true)
+                    if (check760f.Checked == true)
                     {
-                        OtnPackSize();
+                        Fpga760fSize();
                     }
                     if (checksysfile.Checked == true)
                     {
@@ -10143,8 +10083,9 @@ namespace MyGpnSoftware
 
 
                 }
-                else {
-                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " "+ "该设备不支持检查flash文件大小进行比对！");
+                else
+                {
+                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "该设备不支持检查flash文件大小进行比对！");
                     return;
                 }
             }
@@ -10152,8 +10093,9 @@ namespace MyGpnSoftware
             {
                 MessageBox.Show(ex.Message);
             }
-            finally {
-               // butsend.PerformClick();
+            finally
+            {
+                // butsend.PerformClick();
                 toolStripStatusLabelzt.Text = "已完成";
             }
         }
@@ -10163,11 +10105,11 @@ namespace MyGpnSoftware
         Thread UpLoadFileThread;
         private void butupload_Click(object sender, EventArgs e)
         {
-            if (butupload.Text == "⑤上传备份")
+            if (butupload.Text == "上传备份")
             {
 
-                    if (FtpPortEnable = false || FtpStatusEnable == false)
-                    {
+                if (FtpPortEnable = false || FtpStatusEnable == false)
+                {
                     MessageBox.Show("请先③启动FTP服务器,进行后续操作！");
                     return;
 
@@ -10176,11 +10118,11 @@ namespace MyGpnSoftware
 checkcode.Checked == false &&
 checknms.Checked == false &&
 checksw.Checked == false &&
-check760a.Checked == false &&
+check760s.Checked == false &&
 check760b.Checked == false &&
 check760c.Checked == false &&
 check760d.Checked == false &&
-checkotnpack.Checked == false &&
+check760f.Checked == false &&
 checksysfile.Checked == false &&
 checkflash.Checked == false &&
 checkyaffs.Checked == false &&
@@ -10199,14 +10141,14 @@ check760e.Checked == false)
                     IsBackground = true
                 };
                 UpLoadFileThread.Start();
-                butupload.Text = "⑤停止备份";
+                butupload.Text = "停止备份";
                 //textcurrent.AppendText("\r\n开始运行！");
 
             }
             else
             {
                 UpLoadFile_Stop = true;
-                butupload.Text = "⑤上传备份";
+                butupload.Text = "上传备份";
             }
         }
         private void UpLoadFile()
@@ -10226,7 +10168,7 @@ check760e.Checked == false)
                     Testftpser();
                     if (UpLoadFile_Stop)
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("\r\n" + "yyyy-MM-dd HH:mm:ss.fff") + " " + "上传备份已停止！");
+                        textDOS.AppendText(DateTime.Now.ToString("\r\n" + "yyyy-MM-dd HH:mm:ss") + " " + "上传备份已停止！");
                         return;
                     }
                     Uploadsave();
@@ -10248,7 +10190,7 @@ check760e.Checked == false)
                     {
                         a++;
                     }
-                    if (check760a.Checked == true)
+                    if (check760s.Checked == true)
                     {
                         a++;
                     }
@@ -10268,7 +10210,7 @@ check760e.Checked == false)
                     {
                         a++;
                     }
-                    if (checkotnpack.Checked == true)
+                    if (check760f.Checked == true)
                     {
                         a++;
                     }
@@ -10306,12 +10248,12 @@ check760e.Checked == false)
                         {
                             if (UpLoadFile_Stop)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                 return;
                             }
                             if (UpLoadFile_On_Off)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                 UpLoadFilePause = new ManualResetEvent(false);
                                 UpLoadFilePause.WaitOne();
                             }
@@ -10327,12 +10269,12 @@ check760e.Checked == false)
                                 p = 100;
                                 if (UpLoadFile_Stop)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                     return;
                                 }
                                 if (UpLoadFile_On_Off)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
@@ -10344,12 +10286,12 @@ check760e.Checked == false)
                             {
                                 if (UpLoadFile_Stop)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                     return;
                                 }
                                 if (UpLoadFile_On_Off)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
@@ -10368,12 +10310,12 @@ check760e.Checked == false)
                         {
                             if (UpLoadFile_Stop)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                 return;
                             }
                             if (UpLoadFile_On_Off)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                 UpLoadFilePause = new ManualResetEvent(false);
                                 UpLoadFilePause.WaitOne();
                             }
@@ -10389,12 +10331,12 @@ check760e.Checked == false)
                                 p = 100;
                                 if (UpLoadFile_Stop)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                     return;
                                 }
                                 if (UpLoadFile_On_Off)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
@@ -10406,12 +10348,12 @@ check760e.Checked == false)
                             {
                                 if (UpLoadFile_Stop)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                     return;
                                 }
                                 if (UpLoadFile_On_Off)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
@@ -10430,12 +10372,12 @@ check760e.Checked == false)
                         {
                             if (UpLoadFile_Stop)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                 return;
                             }
                             if (UpLoadFile_On_Off)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                 UpLoadFilePause = new ManualResetEvent(false);
                                 UpLoadFilePause.WaitOne();
                             }
@@ -10451,12 +10393,12 @@ check760e.Checked == false)
                                 p = 100;
                                 if (UpLoadFile_Stop)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                     return;
                                 }
                                 if (UpLoadFile_On_Off)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
@@ -10468,12 +10410,12 @@ check760e.Checked == false)
                             {
                                 if (UpLoadFile_Stop)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                     return;
                                 }
                                 if (UpLoadFile_On_Off)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
@@ -10492,12 +10434,12 @@ check760e.Checked == false)
                         {
                             if (UpLoadFile_Stop)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                 return;
                             }
                             if (UpLoadFile_On_Off)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                 UpLoadFilePause = new ManualResetEvent(false);
                                 UpLoadFilePause.WaitOne();
                             }
@@ -10513,12 +10455,12 @@ check760e.Checked == false)
                                 p = 100;
                                 if (UpLoadFile_Stop)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                     return;
                                 }
                                 if (UpLoadFile_On_Off)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
@@ -10530,12 +10472,12 @@ check760e.Checked == false)
                             {
                                 if (UpLoadFile_Stop)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                     return;
                                 }
                                 if (UpLoadFile_On_Off)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
@@ -10554,12 +10496,12 @@ check760e.Checked == false)
                         {
                             if (UpLoadFile_Stop)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                 return;
                             }
                             if (UpLoadFile_On_Off)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                 UpLoadFilePause = new ManualResetEvent(false);
                                 UpLoadFilePause.WaitOne();
                             }
@@ -10574,12 +10516,12 @@ check760e.Checked == false)
                                 p = 100;
                                 if (UpLoadFile_Stop)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                     return;
                                 }
                                 if (UpLoadFile_On_Off)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
@@ -10591,12 +10533,12 @@ check760e.Checked == false)
                             {
                                 if (UpLoadFile_Stop)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                     return;
                                 }
                                 if (UpLoadFile_On_Off)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
@@ -10615,12 +10557,12 @@ check760e.Checked == false)
                         {
                             if (UpLoadFile_Stop)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                 return;
                             }
                             if (UpLoadFile_On_Off)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                 UpLoadFilePause = new ManualResetEvent(false);
                                 UpLoadFilePause.WaitOne();
                             }
@@ -10636,12 +10578,12 @@ check760e.Checked == false)
                                 p = 100;
                                 if (UpLoadFile_Stop)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                     return;
                                 }
                                 if (UpLoadFile_On_Off)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
@@ -10653,12 +10595,12 @@ check760e.Checked == false)
                             {
                                 if (UpLoadFile_Stop)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                     return;
                                 }
                                 if (UpLoadFile_On_Off)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
@@ -10677,12 +10619,12 @@ check760e.Checked == false)
                         {
                             if (UpLoadFile_Stop)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                 return;
                             }
                             if (UpLoadFile_On_Off)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                 UpLoadFilePause = new ManualResetEvent(false);
                                 UpLoadFilePause.WaitOne();
                             }
@@ -10698,12 +10640,12 @@ check760e.Checked == false)
                                 p = 100;
                                 if (UpLoadFile_Stop)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                     return;
                                 }
                                 if (UpLoadFile_On_Off)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
@@ -10715,12 +10657,12 @@ check760e.Checked == false)
                             {
                                 if (UpLoadFile_Stop)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                     return;
                                 }
                                 if (UpLoadFile_On_Off)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
@@ -10731,20 +10673,20 @@ check760e.Checked == false)
                             }
                         }
                     }
-                    if (check760a.Checked == true)
+                    if (check760s.Checked == true)
                     {
-                        Fpga760aSize();
-                        Upload760a();
+                        Fpga760sSize();
+                        Upload760s();
                         if (s == p)
                         {
                             if (UpLoadFile_Stop)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                 return;
                             }
                             if (UpLoadFile_On_Off)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                 UpLoadFilePause = new ManualResetEvent(false);
                                 UpLoadFilePause.WaitOne();
                             }
@@ -10760,12 +10702,12 @@ check760e.Checked == false)
                                 p = 100;
                                 if (UpLoadFile_Stop)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                     return;
                                 }
                                 if (UpLoadFile_On_Off)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
@@ -10777,12 +10719,12 @@ check760e.Checked == false)
                             {
                                 if (UpLoadFile_Stop)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                     return;
                                 }
                                 if (UpLoadFile_On_Off)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
@@ -10801,12 +10743,12 @@ check760e.Checked == false)
                         {
                             if (UpLoadFile_Stop)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                 return;
                             }
                             if (UpLoadFile_On_Off)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                 UpLoadFilePause = new ManualResetEvent(false);
                                 UpLoadFilePause.WaitOne();
                             }
@@ -10822,12 +10764,12 @@ check760e.Checked == false)
                                 p = 100;
                                 if (UpLoadFile_Stop)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                     return;
                                 }
                                 if (UpLoadFile_On_Off)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
@@ -10839,12 +10781,12 @@ check760e.Checked == false)
                             {
                                 if (UpLoadFile_Stop)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                     return;
                                 }
                                 if (UpLoadFile_On_Off)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
@@ -10863,12 +10805,12 @@ check760e.Checked == false)
                         {
                             if (UpLoadFile_Stop)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                 return;
                             }
                             if (UpLoadFile_On_Off)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                 UpLoadFilePause = new ManualResetEvent(false);
                                 UpLoadFilePause.WaitOne();
                             }
@@ -10884,12 +10826,12 @@ check760e.Checked == false)
                                 p = 100;
                                 if (UpLoadFile_Stop)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                     return;
                                 }
                                 if (UpLoadFile_On_Off)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
@@ -10901,12 +10843,12 @@ check760e.Checked == false)
                             {
                                 if (UpLoadFile_Stop)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                     return;
                                 }
                                 if (UpLoadFile_On_Off)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
@@ -10925,12 +10867,12 @@ check760e.Checked == false)
                         {
                             if (UpLoadFile_Stop)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                 return;
                             }
                             if (UpLoadFile_On_Off)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                 UpLoadFilePause = new ManualResetEvent(false);
                                 UpLoadFilePause.WaitOne();
                             }
@@ -10946,12 +10888,12 @@ check760e.Checked == false)
                                 p = 100;
                                 if (UpLoadFile_Stop)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                     return;
                                 }
                                 if (UpLoadFile_On_Off)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
@@ -10963,12 +10905,12 @@ check760e.Checked == false)
                             {
                                 if (UpLoadFile_Stop)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                     return;
                                 }
                                 if (UpLoadFile_On_Off)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
@@ -10987,12 +10929,12 @@ check760e.Checked == false)
                         {
                             if (UpLoadFile_Stop)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                 return;
                             }
                             if (UpLoadFile_On_Off)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                 UpLoadFilePause = new ManualResetEvent(false);
                                 UpLoadFilePause.WaitOne();
                             }
@@ -11008,12 +10950,12 @@ check760e.Checked == false)
                                 p = 100;
                                 if (UpLoadFile_Stop)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                     return;
                                 }
                                 if (UpLoadFile_On_Off)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
@@ -11025,12 +10967,12 @@ check760e.Checked == false)
                             {
                                 if (UpLoadFile_Stop)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                     return;
                                 }
                                 if (UpLoadFile_On_Off)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
@@ -11041,20 +10983,20 @@ check760e.Checked == false)
                             }
                         }
                     }
-                    if (checkotnpack.Checked == true)
+                    if (check760f.Checked == true)
                     {
-                        OtnPackSize();
-                        UploadOtnPack();
+                        Fpga760fSize();
+                        Upload760f();
                         if (s == p)
                         {
                             if (UpLoadFile_Stop)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                 return;
                             }
                             if (UpLoadFile_On_Off)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                 UpLoadFilePause = new ManualResetEvent(false);
                                 UpLoadFilePause.WaitOne();
                             }
@@ -11070,12 +11012,12 @@ check760e.Checked == false)
                                 p = 100;
                                 if (UpLoadFile_Stop)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                     return;
                                 }
                                 if (UpLoadFile_On_Off)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
@@ -11087,12 +11029,12 @@ check760e.Checked == false)
                             {
                                 if (UpLoadFile_Stop)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                     return;
                                 }
                                 if (UpLoadFile_On_Off)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
@@ -11111,12 +11053,12 @@ check760e.Checked == false)
                         {
                             if (UpLoadFile_Stop)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                 return;
                             }
                             if (UpLoadFile_On_Off)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                 UpLoadFilePause = new ManualResetEvent(false);
                                 UpLoadFilePause.WaitOne();
                             }
@@ -11132,12 +11074,12 @@ check760e.Checked == false)
                                 p = 100;
                                 if (UpLoadFile_Stop)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                     return;
                                 }
                                 if (UpLoadFile_On_Off)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
@@ -11149,12 +11091,12 @@ check760e.Checked == false)
                             {
                                 if (UpLoadFile_Stop)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                     return;
                                 }
                                 if (UpLoadFile_On_Off)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
@@ -11173,12 +11115,12 @@ check760e.Checked == false)
                         {
                             if (UpLoadFile_Stop)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                 return;
                             }
                             if (UpLoadFile_On_Off)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                 UpLoadFilePause = new ManualResetEvent(false);
                                 UpLoadFilePause.WaitOne();
                             }
@@ -11194,12 +11136,12 @@ check760e.Checked == false)
                                 p = 100;
                                 if (UpLoadFile_Stop)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                     return;
                                 }
                                 if (UpLoadFile_On_Off)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
@@ -11211,12 +11153,12 @@ check760e.Checked == false)
                             {
                                 if (UpLoadFile_Stop)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                     return;
                                 }
                                 if (UpLoadFile_On_Off)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
@@ -11235,12 +11177,12 @@ check760e.Checked == false)
                         {
                             if (UpLoadFile_Stop)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                 return;
                             }
                             if (UpLoadFile_On_Off)
                             {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                 UpLoadFilePause = new ManualResetEvent(false);
                                 UpLoadFilePause.WaitOne();
                             }
@@ -11256,12 +11198,12 @@ check760e.Checked == false)
                                 p = 100;
                                 if (UpLoadFile_Stop)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                     return;
                                 }
                                 if (UpLoadFile_On_Off)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
@@ -11273,12 +11215,12 @@ check760e.Checked == false)
                             {
                                 if (UpLoadFile_Stop)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "已停止！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
                                     return;
                                 }
                                 if (UpLoadFile_On_Off)
                                 {
-                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "暂停中！\r\n");
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
                                     UpLoadFilePause = new ManualResetEvent(false);
                                     UpLoadFilePause.WaitOne();
                                 }
@@ -11292,13 +11234,14 @@ check760e.Checked == false)
                     Thread.Sleep(XHTime);
                     string canyu = mysocket.ReceiveData(int.Parse(ts));
                     toolStripStatusLabelzt.Text = "已完成";
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份结束" + "================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份结束" + "================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                     butsend.PerformClick();
                     UpLoadFile_Stop = true;
-                    butupload.Text = "⑤上传备份";
+                    butupload.Text = "上传备份";
                     Mytimer.Change(Timeout.Infinite, 1000);
                 }
-                else {
+                else
+                {
                     textDOS.AppendText("\r\n" + "该设备不支持文件上传，请使用其方式！");
                     return;
 
@@ -11328,24 +11271,24 @@ check760e.Checked == false)
                 string box = mysocket.ReceiveData(int.Parse(ts)); ;
                 if (box.Contains(ok))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "=============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "=============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                     break;
                 }
                 if (box.Contains(serveron))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "==================请检查FTP服务器IP是否开启==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "==================请检查FTP服务器IP是否开启==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     butCycleStart.Text = "⑤开始备份";
                     return;
                 }
                 if (box.Contains(user))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "=========================请检查FTP用户名密码==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "=========================请检查FTP用户名密码==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     butCycleStart.Text = "⑤开始备份";
                     return;
                 }
                 if (box.Contains(foundfile))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "==========================设备内不存在该文件==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "==========================设备内不存在该文件==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     break;
                 }
                 Thread.Sleep(xunhuantime);
@@ -11371,30 +11314,30 @@ check760e.Checked == false)
                 string box = mysocket.ReceiveData(int.Parse(ts)); ;
                 if (box.Contains(ok))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                     break;
                 }
                 if (box.Contains(failed))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "=========================上传config文件失败==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "=========================上传config文件失败==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     butCycleStart.Text = "⑤开始备份";
                     return;
                 }
                 if (box.Contains(serveron))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "==================请检查FTP服务器IP是否开启==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "==================请检查FTP服务器IP是否开启==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     butCycleStart.Text = "⑤开始备份";
                     return;
                 }
                 if (box.Contains(user))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "=========================请检查FTP用户名密码==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "=========================请检查FTP用户名密码==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     butCycleStart.Text = "⑤开始备份";
                     return;
                 }
                 if (box.Contains(foundfile))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "==========================设备内不存在该文件==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "==========================设备内不存在该文件==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     break;
                 }
                 Thread.Sleep(xunhuantime);
@@ -11419,24 +11362,24 @@ check760e.Checked == false)
                 string box = mysocket.ReceiveData(int.Parse(ts)); ;
                 if (box.Contains(ok))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "=================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                     break;
                 }
                 if (box.Contains(serveron))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "=====================请检查FTP服务器IP是否开启==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "=====================请检查FTP服务器IP是否开启==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     butCycleStart.Text = "⑤开始备份";
                     return;
                 }
                 if (box.Contains(user))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "===========================请检查FTP用户名密码==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "===========================请检查FTP用户名密码==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     butCycleStart.Text = "⑤开始备份";
                     return;
                 }
                 if (box.Contains(foundfile))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "============================设备内不存在该文件==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "============================设备内不存在该文件==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     break;
                 }
                 Thread.Sleep(xunhuantime);
@@ -11461,24 +11404,24 @@ check760e.Checked == false)
                 string box = mysocket.ReceiveData(int.Parse(ts)); ;
                 if (box.Contains(ok))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                     break;
                 }
                 if (box.Contains(serveron))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "====================请检查FTP服务器IP是否开启==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "====================请检查FTP服务器IP是否开启==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     butCycleStart.Text = "⑤开始备份";
                     return;
                 }
                 if (box.Contains(user))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "==========================请检查FTP用户名密码==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "==========================请检查FTP用户名密码==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     butCycleStart.Text = "⑤开始备份";
                     return;
                 }
                 if (box.Contains(foundfile))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "===========================设备内不存在该文件==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "===========================设备内不存在该文件==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     break;
                 }
                 Thread.Sleep(xunhuantime);
@@ -11511,37 +11454,37 @@ check760e.Checked == false)
                 string box = mysocket.ReceiveData(int.Parse(ts)); ;
                 if (box.Contains(ok))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                     break;
                 }
                 if (box.Contains(serveron))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "===================请检查FTP服务器IP是否开启==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "===================请检查FTP服务器IP是否开启==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     butCycleStart.Text = "⑤开始备份";
                     return;
                 }
                 if (box.Contains(user))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "=========================请检查FTP用户名密码==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "=========================请检查FTP用户名密码==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     butCycleStart.Text = "⑤开始备份";
                     return;
                 }
                 if (box.Contains(foundfile))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "===========================设备内不存在该文件==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "===========================设备内不存在该文件==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     break;
                 }
                 Thread.Sleep(xunhuantime);
             }
         }
-        private void Upload760a()
+        private void Upload760s()
         {
-            toolStripStatusLabelzt.Text = "正在备份fpga760a文件";             //上传状态栏显示
-            string strname = lab760aname.Text;                            //上传文件类型
+            toolStripStatusLabelzt.Text = "正在备份fpga760s文件";             //上传状态栏显示
+            string strname = lab760sname.Text;                            //上传文件类型
             int xunhuantime = 10;                                           //循环时间
             int xunhuancishu = 10000;                                        //循环次数           
-            string uploadfilename = " file /yaffs/sys/760a.fpga ";      //上传文件名
-            string uploadfilenamesave = "760a.fpga";                       //上传后命名
+            string uploadfilename = " file /yaffs/sys/760s.fpga ";      //上传文件名
+            string uploadfilenamesave = "760s.fpga";                       //上传后命名
             //textDOS.AppendText("已执行保存");
             mysocket.SendData("upload ftp" + uploadfilename + comftpip.Text + " " + textftpusr.Text + " " + textftppsd.Text + " " + comip.Text + "_" + DateTime.Now.ToString("yyyy-MM-dd") + "_" + uploadfilenamesave);
             for (int i = 1; i <= xunhuancishu; i++)
@@ -11553,24 +11496,24 @@ check760e.Checked == false)
                 string box = mysocket.ReceiveData(int.Parse(ts)); ;
                 if (box.Contains(ok))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                     break;
                 }
                 if (box.Contains(serveron))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "===================请检查FTP服务器IP是否开启==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "===================请检查FTP服务器IP是否开启==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     butCycleStart.Text = "⑤开始备份";
                     return;
                 }
                 if (box.Contains(user))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "==========================请检查FTP用户名密码==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "==========================请检查FTP用户名密码==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     butCycleStart.Text = "⑤开始备份";
                     return;
                 }
                 if (box.Contains(foundfile))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "===========================设备内不存在该文件==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "===========================设备内不存在该文件==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     break;
                 }
                 Thread.Sleep(xunhuantime);
@@ -11595,24 +11538,24 @@ check760e.Checked == false)
                 string box = mysocket.ReceiveData(int.Parse(ts)); ;
                 if (box.Contains(ok))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                     break;
                 }
                 if (box.Contains(serveron))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "====================请检查FTP服务器IP是否开启==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "====================请检查FTP服务器IP是否开启==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     butCycleStart.Text = "⑤开始备份";
                     return;
                 }
                 if (box.Contains(user))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "==========================请检查FTP用户名密码==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "==========================请检查FTP用户名密码==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     butCycleStart.Text = "⑤开始备份";
                     return;
                 }
                 if (box.Contains(foundfile))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "===========================设备内不存在该文件==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "===========================设备内不存在该文件==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     break;
                 }
                 Thread.Sleep(xunhuantime);
@@ -11637,24 +11580,24 @@ check760e.Checked == false)
                 string box = mysocket.ReceiveData(int.Parse(ts)); ;
                 if (box.Contains(ok))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                     break;
                 }
                 if (box.Contains(serveron))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "====================请检查FTP服务器IP是否开启==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "====================请检查FTP服务器IP是否开启==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     butCycleStart.Text = "⑤开始备份";
                     return;
                 }
                 if (box.Contains(user))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "==========================请检查FTP用户名密码==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "==========================请检查FTP用户名密码==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     butCycleStart.Text = "⑤开始备份";
                     return;
                 }
                 if (box.Contains(foundfile))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "===========================设备内不存在该文件==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "===========================设备内不存在该文件==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     break;
                 }
                 Thread.Sleep(xunhuantime);
@@ -11679,24 +11622,24 @@ check760e.Checked == false)
                 string box = mysocket.ReceiveData(int.Parse(ts)); ;
                 if (box.Contains(ok))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                     break;
                 }
                 if (box.Contains(serveron))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "====================请检查FTP服务器IP是否开启==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "====================请检查FTP服务器IP是否开启==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     butCycleStart.Text = "⑤开始备份";
                     return;
                 }
                 if (box.Contains(user))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "==========================请检查FTP用户名密码==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "==========================请检查FTP用户名密码==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     butCycleStart.Text = "⑤开始备份";
                     return;
                 }
                 if (box.Contains(foundfile))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "===========================设备内不存在该文件==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "===========================设备内不存在该文件==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     break;
                 }
                 Thread.Sleep(xunhuantime);
@@ -11721,37 +11664,37 @@ check760e.Checked == false)
                 string box = mysocket.ReceiveData(int.Parse(ts)); ;
                 if (box.Contains(ok))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                     break;
                 }
                 if (box.Contains(serveron))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "====================请检查FTP服务器IP是否开启==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "====================请检查FTP服务器IP是否开启==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     butCycleStart.Text = "⑤开始备份";
                     return;
                 }
                 if (box.Contains(user))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "==========================请检查FTP用户名密码==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "==========================请检查FTP用户名密码==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     butCycleStart.Text = "⑤开始备份";
                     return;
                 }
                 if (box.Contains(foundfile))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "===========================设备内不存在该文件==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "===========================设备内不存在该文件==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     break;
                 }
                 Thread.Sleep(xunhuantime);
             }
         }
-        private void UploadOtnPack()
+        private void Upload760f()
         {
-            toolStripStatusLabelzt.Text = "正在备份OtnPack文件";             //上传状态栏显示
-            string strname = labOtnPackName.Text;                            //上传文件类型
+            toolStripStatusLabelzt.Text = "正在备份760F文件";             //上传状态栏显示
+            string strname = lab760fname.Text;                            //上传文件类型
             int xunhuantime = 10;                                           //循环时间
             int xunhuancishu = 10000;                                        //循环次数           
-            string uploadfilename = " file /yaffs/sys/otn_pack.bin ";      //上传文件名
-            string uploadfilenamesave = "otn_pack.bin";                       //上传后命名
+            string uploadfilename = " file /yaffs/sys/760f.fpga ";      //上传文件名
+            string uploadfilenamesave = "760f.fpga";                       //上传后命名
             //textDOS.AppendText("已执行保存");
             mysocket.SendData("upload ftp" + uploadfilename + comftpip.Text + " " + textftpusr.Text + " " + textftppsd.Text + " " + comip.Text + "_" + DateTime.Now.ToString("yyyy-MM-dd") + "_" + uploadfilenamesave);
             for (int i = 1; i <= xunhuancishu; i++)
@@ -11763,24 +11706,24 @@ check760e.Checked == false)
                 string box = mysocket.ReceiveData(int.Parse(ts)); ;
                 if (box.Contains(ok))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                     break;
                 }
                 if (box.Contains(serveron))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "=================请检查FTP服务器IP是否开启==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "=================请检查FTP服务器IP是否开启==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     butCycleStart.Text = "⑤开始备份";
                     return;
                 }
                 if (box.Contains(user))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "========================请检查FTP用户名密码==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "========================请检查FTP用户名密码==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     butCycleStart.Text = "⑤开始备份";
                     return;
                 }
                 if (box.Contains(foundfile))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "=========================设备内不存在该文件==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "=========================设备内不存在该文件==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     break;
                 }
                 Thread.Sleep(xunhuantime);
@@ -11805,24 +11748,24 @@ check760e.Checked == false)
                 string box = mysocket.ReceiveData(int.Parse(ts)); ;
                 if (box.Contains(ok))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                     break;
                 }
                 if (box.Contains(serveron))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "=====================请检查FTP服务器IP是否开启==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "=====================请检查FTP服务器IP是否开启==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     butCycleStart.Text = "⑤开始备份";
                     return;
                 }
                 if (box.Contains(user))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "===========================请检查FTP用户名密码==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "===========================请检查FTP用户名密码==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     butCycleStart.Text = "⑤开始备份";
                     return;
                 }
                 if (box.Contains(foundfile))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "============================设备内不存在该文件==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "============================设备内不存在该文件==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     break;
                 }
                 Thread.Sleep(xunhuantime);
@@ -11847,24 +11790,24 @@ check760e.Checked == false)
                 string box = mysocket.ReceiveData(int.Parse(ts)); ;
                 if (box.Contains(ok))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "=============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "=============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                     break;
                 }
                 if (box.Contains(serveron))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "==================请检查FTP服务器IP是否开启==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "==================请检查FTP服务器IP是否开启==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     butCycleStart.Text = "⑤开始备份";
                     return;
                 }
                 if (box.Contains(user))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "=========================请检查FTP用户名密码==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "=========================请检查FTP用户名密码==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     butCycleStart.Text = "⑤开始备份";
                     return;
                 }
                 if (box.Contains(foundfile))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "==========================设备内不存在该文件==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "==========================设备内不存在该文件==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     break;
                 }
                 Thread.Sleep(xunhuantime);
@@ -11890,29 +11833,29 @@ check760e.Checked == false)
                 string box = mysocket.ReceiveData(int.Parse(ts)); ;
                 if (box.Contains(ok))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                     break;
                 }
                 if (box.Contains(serveron))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "=================请检查FTP服务器IP是否开启==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "=================请检查FTP服务器IP是否开启==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     butCycleStart.Text = "⑤开始备份";
                     return;
                 }
                 if (box.Contains(user))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "========================请检查FTP用户名密码==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "========================请检查FTP用户名密码==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     butCycleStart.Text = "⑤开始备份";
                     return;
                 }
                 if (box.Contains(foundfile))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "=========================设备内不存在该文件==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "=========================设备内不存在该文件==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     break;
                 }
                 if (box.Contains(uploadfile))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "================================文件上传失败==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "================================文件上传失败==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     break;
                 }
                 Thread.Sleep(xunhuantime);
@@ -11944,30 +11887,30 @@ check760e.Checked == false)
                     okstart = true;
                     if (box.Contains(end))
                     {
-                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                         break;
                     }
                 }
                 if (box.Contains(serveron))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "=================请检查FTP服务器IP是否开启==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "=================请检查FTP服务器IP是否开启==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     butCycleStart.Text = "⑤开始备份";
                     return;
                 }
                 if (box.Contains(user))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "========================请检查FTP用户名密码==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "========================请检查FTP用户名密码==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     butCycleStart.Text = "⑤开始备份";
                     return;
                 }
                 if (box.Contains(foundfile))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "=========================设备内不存在该文件==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "=========================设备内不存在该文件==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     break;
                 }
                 if (box.Contains(uploadfile))
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "备份" + strname + "================================文件上传失败==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份" + strname + "================================文件上传失败==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     break;
                 }
                 Thread.Sleep(xunhuantime);
@@ -11979,7 +11922,7 @@ check760e.Checked == false)
             Thread.Sleep(XHTime);
             string cccc = mysocket.ReceiveData(int.Parse(ts));
             toolStripStatusLabelzt.Text = "正在上传Flash";
-            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "上传Flash进度===========================================O%");
+            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "上传Flash进度===========================================O%");
             mysocket.SendData("upload ftp flash " + comftpip.Text + " " + textftpusr.Text + " " + textftppsd.Text + " " + comip.Text + "_" + DateTime.Now.ToString("yyyy-MM-dd") + "_flash.bin gpn");
             for (int i = 1; i <= 10000; i++)
             {
@@ -11997,18 +11940,18 @@ check760e.Checked == false)
                 }
                 if (box.Contains(ok))
                 {
-                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "上传Flash ==============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "上传Flash ==============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                     break;
                 }
                 if (box.Contains(fail))
                 {
-                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "上传Flash=============================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "上传Flash=============================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     butCycleStart.Text = "⑤开始备份";
                     return;
                 }
                 if (box.Contains("User need password"))
                 {
-                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "上传Flash=======================请检查FTP用户名密码==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "上传Flash=======================请检查FTP用户名密码==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     butCycleStart.Text = "⑤开始备份";
                     return;
                 }
@@ -12023,8 +11966,8 @@ check760e.Checked == false)
             Thread.Sleep(XHTime);
             string cccc = mysocket.ReceiveData(int.Parse(ts));
             toolStripStatusLabelzt.Text = "正在上传Yaffs";
-            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "上传Yaffs文件大小约有528MB,大约需要20分钟，请耐心等待！" + toolStripStatusLabeltime.Text + "\r\n");
-            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "上传Yaffs进度===========================================O%");
+            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "上传Yaffs文件大小约有528MB,大约需要20分钟，请耐心等待！" + toolStripStatusLabeltime.Text + "\r\n");
+            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "上传Yaffs进度===========================================O%");
             mysocket.SendData("upload ftp yaffs " + comftpip.Text + " " + textftpusr.Text + " " + textftppsd.Text + " " + comip.Text + "_" + DateTime.Now.ToString("yyyy-MM-dd") + "_yaffs.bin");
             for (int i = 1; i <= 100000; i++)
             {
@@ -12042,18 +11985,18 @@ check760e.Checked == false)
                 }
                 if (box.Contains(ok))
                 {
-                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "上传Yaffs==============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "上传Yaffs==============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                     break;
                 }
                 if (box.Contains(fail))
                 {
-                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "上传Yaffs=============================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "上传Yaffs=============================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     butCycleStart.Text = "⑤开始备份";
                     return;
                 }
                 if (box.Contains("User need password"))
                 {
-                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "上传Yaffs=======================请检查FTP用户名密码==NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "上传Yaffs=======================请检查FTP用户名密码==NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     butCycleStart.Text = "⑤开始备份";
                     return;
                 }
@@ -12072,12 +12015,12 @@ check760e.Checked == false)
                 string box = mysocket.ReceiveData(int.Parse(ts));
                 if (box.Contains(save))
                 {
-                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "保存配置===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "保存配置===============================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                     break;
                 }
                 if (box.Contains("erro"))
                 {
-                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + "保存配置==============================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
+                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "保存配置==============================================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     butCycleStart.Text = "⑤开始备份";
                     return;
                 }
@@ -13279,12 +13222,12 @@ check760e.Checked == false)
                     + "\r\n" + comcode.Text + ":  " + checkcode.Checked
                     + "\r\n" + comnms.Text + ":  " + checknms.Checked
                     + "\r\n" + comsw.Text + ":  " + checksw.Checked
-                    + "\r\n" + com760a.Text + ":  " + check760a.Checked
+                    + "\r\n" + com760s.Text + ":  " + check760s.Checked
                     + "\r\n" + com760b.Text + ":  " + check760b.Checked
                     + "\r\n" + com760c.Text + ":  " + check760c.Checked
                     + "\r\n" + com760d.Text + ":  " + check760d.Checked
                     + "\r\n" + com760e.Text + ":  " + check760e.Checked
-                    + "\r\n" + comotnpack.Text + ":  " + checkotnpack.Checked
+                    + "\r\n" + com760f.Text + ":  " + check760f.Checked
                     + "\r\n" + comsysfile.Text + ":  " + checksysfile.Checked
                     + "\r\n" + comflash.Text + ":  " + checkflash.Checked
                     + "\r\n" + comyaffs.Text + ":  " + checkyaffs.Checked
@@ -13348,6 +13291,7 @@ check760e.Checked == false)
                 AgentParameters param = new AgentParameters(community);
                 //将SNMP版本设置为1（或2） 
                 param.Version = SnmpVersion.Ver2;
+                param.DisableReplySourceCheck = true;
                 //构造代理地址对象
                 //这里很容易使用IpAddress类，因为
                 //如果不
@@ -13356,10 +13300,12 @@ check760e.Checked == false)
                 IPAddress send = new IPAddress(agent);
                 //构建目标 
                 UdpTarget target = new UdpTarget(send, 161, 2000, 1);
+                UdpTransport h = new UdpTransport(true);
+
                 //  用于所有请求PDU级 
                 Pdu pdu = new Pdu(PduType.Get);
                 pdu.VbList.Add(metroTextoid.Text);   //11槽位主备状态
-
+                //SnmpAsyncResponse result = null;
 
                 SnmpPacket result = null;
                 try
@@ -13379,8 +13325,8 @@ check760e.Checked == false)
                     if (result.Pdu.ErrorStatus != 0)
                     {
                         //代理报告与所述请求的错误 
-                        MessageBox.Show(String.Format("SNMP回复错误！错误代码 {0} 。错误行数：第 {1} 行\r\n",
-                                result.Pdu.ErrorStatus,
+                        MessageBox.Show(String.Format("SNMP回复错误！错误代码：{0}，错误索引：第 {1} 行 \r\n",
+                                FindDevType.FindErrorCode(result.Pdu.ErrorStatus),
                                 result.Pdu.ErrorIndex));
                         return;
                     }
@@ -13428,9 +13374,8 @@ check760e.Checked == false)
                 // SNMP community name
                 OctetString community = new OctetString(metroTextReadCommunity.Text);
                 // Define agent parameters class
-                AgentParameters param = new AgentParameters(community);
+                AgentParameters param = new AgentParameters(SnmpVersion.Ver2, community, true);
                 // Set SNMP version to 2 (GET-BULK only works with SNMP ver 2 and 3)
-                param.Version = SnmpVersion.Ver2;
                 // Construct the agent address object
                 // IpAddress class is easy to use here because
                 //  it will try to resolve constructor parameter if it doesn't
@@ -13487,8 +13432,8 @@ check760e.Checked == false)
                         if (result.Pdu.ErrorStatus != 0)
                         {
                             // agent reported an error with the request
-                            MessageBox.Show(string.Format("Error in SNMP reply. Error {0} index {1}",
-                                result.Pdu.ErrorStatus,
+                            MessageBox.Show(String.Format("SNMP回复错误！错误代码：{0}，错误索引：第 {1} 行 \r\n",
+                                FindDevType.FindErrorCode(result.Pdu.ErrorStatus),
                                 result.Pdu.ErrorIndex));
                             lastOid = null;
                             break;
@@ -13648,9 +13593,8 @@ check760e.Checked == false)
                 // SNMP团体名称 
                 OctetString community = new OctetString(textReadCommunity.Text);
                 //定义代理参数类 
-                AgentParameters param = new AgentParameters(community);
+                AgentParameters param = new AgentParameters(SnmpVersion.Ver2, community, true);
                 //将SNMP版本设置为1（或2） 
-                param.Version = SnmpVersion.Ver2;
                 //构造代理地址对象
                 //这里很容易使用IpAddress类，因为
                 //如果不
@@ -13695,10 +13639,6 @@ check760e.Checked == false)
 
                     textDOS.AppendText("没有收到SNMP请求后的响应！");
                 }
-                catch
-                {
-                    textDOS.AppendText("请检查Oid项配置信息！");
-                }
                 //SnmpV1Packet result = (SnmpV1Packet)target.Request(pdu, param);
                 //如果结果为null，则座席未回复或我们无法解析回复。
                 if (result != null)
@@ -13708,8 +13648,8 @@ check760e.Checked == false)
                     if (result.Pdu.ErrorStatus != 0)
                     {
                         //代理报告与所述请求的错误 
-                        textDOS.Text += string.Format("\r\n" + "SNMP回复错误！错误 {0} 第 {1} 项\r\n",
-                                result.Pdu.ErrorStatus,
+                        textDOS.Text += string.Format("\r\n" + "SNMP回复错误！错误代码：{0}，错误索引：第{1}项 \r\n",
+                                FindDevType.FindErrorCode(result.Pdu.ErrorStatus),
                                 result.Pdu.ErrorIndex);
                     }
                     else
@@ -13783,9 +13723,8 @@ check760e.Checked == false)
             // SNMP团体名称 
             OctetString community = new OctetString(metroTextReadCommunity.Text);
             //定义代理参数类 
-            AgentParameters param = new AgentParameters(community);
+            AgentParameters param = new AgentParameters(SnmpVersion.Ver2, community, true);
             //将SNMP版本设置为1（或2） 
-            param.Version = SnmpVersion.Ver1;
             //构造代理地址对象
             //这里很容易使用IpAddress类，因为
             //如果不
@@ -13816,10 +13755,12 @@ check760e.Checked == false)
                 //代理-见SnmpConstants为错误定义
                 if (result.Pdu.ErrorStatus != 0)
                 {
+                    string b = "";
                     //代理报告与所述请求的错误 
-                    MessageBox.Show(String.Format("SNMP回复错误！错误代码 {0} 。错误行数：第 {1} 行\r\n",
-                            result.Pdu.ErrorStatus,
+                    MessageBox.Show(String.Format("SNMP回复错误！错误代码：{0}，错误索引：第{1}行\r\n",
+                            FindDevType.FindErrorCode(result.Pdu.ErrorStatus),
                             result.Pdu.ErrorIndex));
+
                     return;
                 }
                 else
@@ -13879,7 +13820,11 @@ check760e.Checked == false)
             {
                 pdu.VbList.Add(new Oid(metroTextoid.Text), new TimeTicks(metroTextvalue.Text));
             }
-            AgentParameters aparam = aparam = new AgentParameters(SnmpVersion.Ver2, new OctetString(metroTextSetCommunity.Text));
+            if (WriteType == "IpAddress")
+            {
+                pdu.VbList.Add(new Oid(metroTextoid.Text), new IpAddress(metroTextvalue.Text));
+            }
+            AgentParameters aparam = aparam = new AgentParameters(SnmpVersion.Ver2, new OctetString(metroTextSetCommunity.Text), true);
 
 
             // Response packet
@@ -13906,8 +13851,8 @@ check760e.Checked == false)
                 // Check if we received an SNMP error from the agent
                 if (response.Pdu.ErrorStatus != 0)
                 {
-                    MessageBox.Show(String.Format("SNMP返回错误状态: {0} on 第 {1}行",
-                        response.Pdu.ErrorStatus, response.Pdu.ErrorIndex));
+                    MessageBox.Show(String.Format("SNMP回复错误！错误代码:{0}，错误索引：第{1}行\r\n",
+                        FindDevType.FindErrorCode(response.Pdu.ErrorStatus), response.Pdu.ErrorIndex));
                 }
                 else
                 {
@@ -14142,9 +14087,9 @@ check760e.Checked == false)
             try
             {
                 conn.Open();//打开通道，建立连接，可能出现异常,使用try catch语句
-               // MessageBox.Show("已经建立连接");
-                //在这里使用代码对数据库进行增删查改
-                //设置查询命令
+                            // MessageBox.Show("已经建立连接");
+                            //在这里使用代码对数据库进行增删查改
+                            //设置查询命令
                 string sql = "select distinct table_class from mib;";
                 MySqlCommand cmd = new MySqlCommand(sql, conn);
                 //查询结果读取器
@@ -14152,10 +14097,10 @@ check760e.Checked == false)
                 metroComTableClass.Items.Clear();
                 while (reader.Read())
                 {
-                    
+
                     metroComTableClass.Items.Add(reader[0].ToString());
 
-                        
+
 
                 }
                 metroComTableClass.SelectedIndex = metroComTableClass.Items.Count - 1;
@@ -14178,10 +14123,10 @@ check760e.Checked == false)
             try
             {
                 conn.Open();//打开通道，建立连接，可能出现异常,使用try catch语句
-              // MessageBox.Show("已经建立连接");
-                //在这里使用代码对数据库进行增删查改
-                //设置查询命令
-                string sql = "SELECT mib.table_name from mib WHERE table_class = '"+metroComTableClass.Text+"' GROUP BY table_name";
+                            // MessageBox.Show("已经建立连接");
+                            //在这里使用代码对数据库进行增删查改
+                            //设置查询命令
+                string sql = "SELECT mib.table_name from mib WHERE table_class = '" + metroComTableClass.Text + "' GROUP BY table_name";
                 MySqlCommand cmd = new MySqlCommand(sql, conn);
                 //查询结果读取器
                 MySqlDataReader reader = cmd.ExecuteReader();
@@ -14189,10 +14134,10 @@ check760e.Checked == false)
                 metroComTableName.Items.Clear();
                 while (reader.Read())
                 {
-                    
+
                     metroComTableName.Items.Add(reader[0].ToString());
 
-                     
+
 
                 }
                 metroComTableName.SelectedIndex = metroComTableName.Items.Count - 1;
@@ -14218,7 +14163,7 @@ check760e.Checked == false)
                 //MessageBox.Show("已经建立连接");
                 //在这里使用代码对数据库进行增删查改
                 //设置查询命令
-                string sql = "SELECT mib.name from mib WHERE table_name = '"+metroComTableName.Text+"' GROUP BY name";
+                string sql = "SELECT mib.name from mib WHERE table_name = '" + metroComTableName.Text + "' GROUP BY name";
                 MySqlCommand cmd = new MySqlCommand(sql, conn);
                 //查询结果读取器
                 MySqlDataReader reader = cmd.ExecuteReader();
@@ -14226,10 +14171,10 @@ check760e.Checked == false)
                 // MessageBox.Show(reader[0].ToString());
                 while (reader.Read())
                 {
-                    
+
                     metroComOidName.Items.Add(reader[0].ToString());
 
-                      
+
 
                 }
                 metroComOidName.SelectedIndex = metroComOidName.Items.Count - 1;
@@ -14260,8 +14205,8 @@ check760e.Checked == false)
                 //查询结果读取器
                 MySqlDataReader readeroid = oid.ExecuteReader();
                 metroTextoid.Text = "";
-                metroComOidType.Items.Clear();
-                metroComOidPermission.Items.Clear();
+                metroTextOidType.Text = "";
+                metroTextOidPermission.Text = "";
                 metroTextOidValue.Text = "";
                 metroTextOidNote.Text = "";
                 // MessageBox.Show(reader[0].ToString());
@@ -14269,15 +14214,14 @@ check760e.Checked == false)
                 {
 
                     metroTextoid.AppendText(readeroid[0].ToString());
-                    metroComOidType.Items.Add(readeroid[1].ToString());
-                    metroComOidPermission.Items.Add(readeroid[2].ToString());
+                    metroTextOidType.AppendText(readeroid[1].ToString());
+                    metroTextOidPermission.AppendText(readeroid[2].ToString());
                     metroTextOidValue.AppendText(readeroid[3].ToString());
                     metroTextOidNote.AppendText(readeroid[4].ToString());
 
 
                 }
-                metroComOidType.SelectedIndex = metroComOidType.Items.Count - 1;
-                metroComOidPermission.SelectedIndex = metroComOidPermission.Items.Count - 1;
+
             }
             catch (MySqlException ex)
             {
@@ -14289,5 +14233,1404 @@ check760e.Checked == false)
             }
         }
 
+        private void metroButselect_Click(object sender, EventArgs e)
+        {
+            //        MessageBox.Show("支持了三方FTP工具，请先启动第三方FTP工具,然后点击批量升级。否则会出现卡死的情况，得重新关闭软件在打开！"
+            //+ "\r\n" + "注意事项：FTP用户名：admin密码：admin必须一样，APP文件必须和升级的文件名一致");
+            Batch batchfrm = new Batch
+            {
+                FTPIP = comftpip.Text,
+                FTPUSR = textftpusr.Text,
+                FTPPSD = textftppsd.Text,
+                GPNUSR = textusr.Text,
+                GPNPSD = textpsd.Text,
+                GPNPSDEN = textpsden.Text,
+                yanshi = ts,
+                app = comapp.Text
+            };//实例化窗体
+            batchfrm.ShowDialog();// 将窗体显示出来
+        }
+
+        private void textDOS_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+        private void datagridviewcreat()
+        {
+            if (checkapp.Checked == true)
+            {
+                if (DGVSTATUS.Columns["APP"] == null)
+                {
+
+                    this.DGVSTATUS.Columns.Add("APP", "APP");
+                }
+                else
+                {
+                    this.DGVSTATUS.Columns.Remove("APP");
+                    this.DGVSTATUS.Columns.Add("APP", "APP");
+                }
+            }
+            if (checkcode.Checked == true)
+            {
+                if (DGVSTATUS.Columns["CODE"] == null)
+                {
+
+                    this.DGVSTATUS.Columns.Add("CODE", "CODE");
+                }
+                else
+                {
+                    this.DGVSTATUS.Columns.Remove("CODE");
+                    this.DGVSTATUS.Columns.Add("CODE", "CODE");
+                }
+            }
+            if (checknms.Checked == true)
+            {
+                if (DGVSTATUS.Columns["NMS"] == null)
+                {
+
+                    this.DGVSTATUS.Columns.Add("NMS", "NMS");
+                }
+                else
+                {
+                    this.DGVSTATUS.Columns.Remove("NMS");
+                    this.DGVSTATUS.Columns.Add("NMS", "NMS");
+                }
+            }
+            if (checksw.Checked == true)
+            {
+                if (DGVSTATUS.Columns["SW"] == null)
+                {
+
+                    this.DGVSTATUS.Columns.Add("SW", "SW");
+                }
+                else
+                {
+                    this.DGVSTATUS.Columns.Remove("SW");
+                    this.DGVSTATUS.Columns.Add("SW", "SW");
+                }
+            }
+            if (check760s.Checked == true)
+            {
+                if (DGVSTATUS.Columns["760S"] == null)
+                {
+
+                    this.DGVSTATUS.Columns.Add("760S", "760S");
+                }
+                else
+                {
+                    this.DGVSTATUS.Columns.Remove("760S");
+                    this.DGVSTATUS.Columns.Add("760S", "760S");
+                }
+            }
+            if (check760b.Checked == true)
+            {
+                if (DGVSTATUS.Columns["760B"] == null)
+                {
+
+                    this.DGVSTATUS.Columns.Add("760B", "760B");
+                }
+                else
+                {
+                    this.DGVSTATUS.Columns.Remove("760B");
+                    this.DGVSTATUS.Columns.Add("760B", "760B");
+                }
+            }
+            if (check760c.Checked == true)
+            {
+                if (DGVSTATUS.Columns["760C"] == null)
+                {
+
+                    this.DGVSTATUS.Columns.Add("760C", "760C");
+                }
+                else
+                {
+                    this.DGVSTATUS.Columns.Remove("760C");
+                    this.DGVSTATUS.Columns.Add("760C", "760C");
+                }
+            }
+            if (check760d.Checked == true)
+            {
+                if (DGVSTATUS.Columns["760D"] == null)
+                {
+
+                    this.DGVSTATUS.Columns.Add("760D", "760D");
+                }
+                else
+                {
+                    this.DGVSTATUS.Columns.Remove("760D");
+                    this.DGVSTATUS.Columns.Add("760D", "760D");
+                }
+            }
+            if (check760e.Checked == true)
+            {
+                if (DGVSTATUS.Columns["760E"] == null)
+                {
+
+                    this.DGVSTATUS.Columns.Add("760E", "760E");
+                }
+                else
+                {
+                    this.DGVSTATUS.Columns.Remove("760E");
+                    this.DGVSTATUS.Columns.Add("760E", "760E");
+                }
+            }
+            if (check760f.Checked == true)
+            {
+                if (DGVSTATUS.Columns["760F"] == null)
+                {
+
+                    this.DGVSTATUS.Columns.Add("760F", "760F");
+                }
+                else
+                {
+                    this.DGVSTATUS.Columns.Remove("760F");
+                    this.DGVSTATUS.Columns.Add("760F", "760F");
+                }
+            }
+            if (checksysfile.Checked == true)
+            {
+                if (DGVSTATUS.Columns["SysFile"] == null)
+                {
+
+                    this.DGVSTATUS.Columns.Add("SysFile", "SysFile");
+                }
+                else
+                {
+                    this.DGVSTATUS.Columns.Remove("SysFile");
+                    this.DGVSTATUS.Columns.Add("SysFile", "SysFile");
+                }
+            }
+            if (checkflash.Checked == true)
+            {
+                if (DGVSTATUS.Columns["FLASH"] == null)
+                {
+
+                    this.DGVSTATUS.Columns.Add("FLASH", "FLASH");
+                }
+                else
+                {
+                    this.DGVSTATUS.Columns.Remove("FLASH");
+                    this.DGVSTATUS.Columns.Add("FLASH", "FLASH");
+                }
+            }
+            if (checkyaffs.Checked == true)
+            {
+                if (DGVSTATUS.Columns["YAFFS"] == null)
+                {
+
+                    this.DGVSTATUS.Columns.Add("YAFFS", "YAFFS");
+                }
+                else
+                {
+                    this.DGVSTATUS.Columns.Remove("YAFFS");
+                    this.DGVSTATUS.Columns.Add("YAFFS", "YAFFS");
+                }
+            }
+            if (checkconfig.Checked == true)
+            {
+                if (DGVSTATUS.Columns["Config"] == null)
+                {
+
+                    this.DGVSTATUS.Columns.Add("Config", "Config");
+                }
+                else
+                {
+                    this.DGVSTATUS.Columns.Remove("Config");
+                    this.DGVSTATUS.Columns.Add("Config", "Config");
+                }
+            }
+            if (checkdb.Checked == true)
+            {
+                if (DGVSTATUS.Columns["Db"] == null)
+                {
+
+                    this.DGVSTATUS.Columns.Add("Db", "Db");
+                }
+                else
+                {
+                    this.DGVSTATUS.Columns.Remove("Db");
+                    this.DGVSTATUS.Columns.Add("Db", "Db");
+                }
+            }
+            if (checkslotconfig.Checked == true)
+            {
+                if (DGVSTATUS.Columns["SlotConfig"] == null)
+                {
+
+                    this.DGVSTATUS.Columns.Add("SlotConfig", "SlotConfig");
+                }
+                else
+                {
+                    this.DGVSTATUS.Columns.Remove("SlotConfig");
+                    this.DGVSTATUS.Columns.Add("SlotConfig", "SlotConfig");
+                }
+            }
+
+
+
+        }
+        private void DataGridViewCreeatGuding()
+        {
+
+            if (DGVSTATUS.Columns["升级优先级"] == null)
+            {
+
+                this.DGVSTATUS.Columns.Add("升级优先级", "升级优先级");
+            }
+            else
+            {
+                this.DGVSTATUS.Columns.Remove("升级优先级");
+                this.DGVSTATUS.Columns.Add("升级优先级", "升级优先级");
+            }
+            if (DGVSTATUS.Columns["ip地址"] == null)
+            {
+
+                this.DGVSTATUS.Columns.Add("ip地址", "ip地址");
+            }
+            else
+            {
+                this.DGVSTATUS.Columns.Remove("ip地址");
+                this.DGVSTATUS.Columns.Add("ip地址", "ip地址");
+            }
+            if (DGVSTATUS.Columns["FTP操作命令"] == null)
+            {
+
+                this.DGVSTATUS.Columns.Add("FTP操作命令", "FTP操作命令");
+            }
+            else
+            {
+                this.DGVSTATUS.Columns.Remove("FTP操作命令");
+                this.DGVSTATUS.Columns.Add("FTP操作命令", "FTP操作命令");
+            }
+            if (DGVSTATUS.Columns["重启设备"] == null)
+            {
+                DataGridViewCheckBoxColumn newColumn = new DataGridViewCheckBoxColumn
+                {
+                    Name = "重启设备",
+                    HeaderText = "重启设备"
+                };
+                DGVSTATUS.Columns.Add(newColumn);
+            }
+        }
+        private void buttbatchdownload_Click(object sender, EventArgs e)
+        {
+            LoadCountsum = 0;
+            LoadCountany = 0;
+
+
+            if (buttbatchdownload.Text == "批量下载")
+            {
+
+
+
+                if (FtpPortEnable == false || FtpStatusEnable == false)
+                {
+                    MessageBox.Show("请先③启动FTP服务器,进行后续操作！");
+                    return;
+                }
+                string shengjiip = "";
+
+                for (int i = 0; i < DGVSTATUS.Rows.Count - 1; i++)
+                {
+                    if ((bool)DGVSTATUS.Rows[i].Cells["执行"].EditedFormattedValue == true)
+                    {
+                        int c = 1;
+                        LoadCountsum = LoadCountsum + c;
+                        string asd = DGVSTATUS.Rows[i].Cells["ip地址"].Value.ToString();
+                        shengjiip = shengjiip + asd + "\r\n";     //设备IP地址
+                    }
+
+
+                }
+                DialogResult dr = MessageBox.Show("是否确认 升级如下设备？\r\n" + shengjiip + "\r\n一共：" + LoadCountsum.ToString() + "台设备", "提示", MessageBoxButtons.YesNo);
+                if (dr == DialogResult.Yes)
+                {
+                    // DGVSTATUS.DataSource = null;
+                    //DGVSTATUS.Rows.Clear();
+                    ftpCtrlFlagID = "2";
+                    int i = DGVSTATUS.ColumnCount;
+                    //MessageBox.Show(i.ToString());
+                    for (int a = 10; a < i; a++)
+                    {
+                        // MessageBox.Show(a.ToString());
+                        DGVSTATUS.Columns.RemoveAt(10);
+
+
+                    }
+                    DGVSTATUS.Refresh();
+                    // DGVSTATUS.Columns.Clear();
+                    //DataGridViewCreeatGuding();
+                    datagridviewcreat();
+                    string task = "BatchDownload";
+                    ParameterizedThreadStart p = new ParameterizedThreadStart(Xianchengchi);
+                    Thread t = new Thread(p);
+                    t.Start(task);
+                    buttbatchdownload.Text = "批量重启";
+                }
+                if (dr == DialogResult.No)
+                {
+                    buttbatchdownload.Text = "批量重启";
+                }
+
+
+            }
+            else
+            {
+                string chognqiip = "";
+
+                for (int i = 0; i < DGVSTATUS.Rows.Count - 1; i++)
+                {
+                    if ((bool)DGVSTATUS.Rows[i].Cells["重启选择"].EditedFormattedValue == true)
+                    {
+                        string asd = DGVSTATUS.Rows[i].Cells["ip地址"].Value.ToString();
+                        chognqiip = chognqiip + asd + "\r\n";     //设备IP地址
+                    }
+
+
+                }
+                DialogResult dr = MessageBox.Show("是否重启 勾选的设备？\r\n" + chognqiip, "提示", MessageBoxButtons.YesNo);
+                if (dr == DialogResult.Yes)
+                {
+                    int a = 0;
+                    for (int i = 0; i < DGVSTATUS.Rows.Count - 1; i++)
+                    {
+                        a = int.Parse(DGVSTATUS.Rows[i].Cells["优先级"].Value.ToString());
+                        DGVSTATUS.Rows[i].Cells["优先级"].Value = a;
+
+                    }
+                    DGVSTATUS.Sort(DGVSTATUS.Columns[2], ListSortDirection.Ascending);
+                    //对重启选择优先级进行排序
+                    if (DGVSTATUS.Columns["重启设备"] == null)
+                    {
+
+                        this.DGVSTATUS.Columns.Add("重启设备", "重启设备");
+                    }
+                    else
+                    {
+                        this.DGVSTATUS.Columns.Remove("重启设备");
+                        this.DGVSTATUS.Columns.Add("重启设备", "重启设备");
+                    }
+                    string task = "reboot";
+                    ParameterizedThreadStart p = new ParameterizedThreadStart(Xianchengchi);
+                    Thread t = new Thread(p);
+                    t.Start(task);
+                    buttbatchdownload.Text = "批量下载";
+                }
+                if (dr == DialogResult.No)
+                {
+                    buttbatchdownload.Text = "批量下载";
+                }
+            }
+
+
+        }
+        private void Xianchengchi(object obj)
+        {
+            //int i = 1;
+            ThreadPool.SetMinThreads(5, 5);
+            ThreadPool.SetMaxThreads(20, 20);
+            for (int i = 0; i < DGVSTATUS.Rows.Count - 1; i++)
+            {
+                if (obj.ToString() == "BatchDownload" && (bool)DGVSTATUS.Rows[i].Cells["执行"].EditedFormattedValue == true)
+                {
+                    ThreadPool.QueueUserWorkItem(new WaitCallback(MibFtpTransentFile), i.ToString());
+                }
+                if (obj.ToString() == "reboot" && (bool)DGVSTATUS.Rows[i].Cells["重启选择"].EditedFormattedValue == true)
+                {
+                    ThreadPool.QueueUserWorkItem(new WaitCallback(MibReboot), i.ToString());
+                }
+            }
+        }
+        private void MibReboot(object obj)
+        {
+            int i = int.Parse(obj.ToString());
+            string gpnip = DGVSTATUS.Rows[i].Cells["ip地址"].Value.ToString();
+            string Rebootoid = "1.3.6.1.4.1.10072.6.2.1.1.1.14.1";
+            string readcommunity = textReadCommunity.Text;      //读团体
+            string writecommunity = textWriteCommunity.Text;    //写团体
+            int pingcunt = 5;
+            Ping ping = new Ping();
+            PingReply pingReply = ping.Send(gpnip, 120);
+            bool link = false;
+            //判断请求是否超时
+            for (int but = 0; but < pingcunt; but++)
+            {
+
+                pingReply = ping.Send(gpnip, 120);
+                if (pingReply.Status == IPStatus.Success)
+                {
+                    link = true;
+                    DGVSTATUS.Rows[i].Cells["ping测试"].Value = "OK";
+                    DGVSTATUS.Rows[i].Cells["ping测试"].Style.BackColor = Color.GreenYellow;
+
+                    break;
+                }
+                Thread.Sleep(XHTime);
+            }
+            if (link == false)
+            {
+                DGVSTATUS.Rows[i].Cells["ping测试"].Value = "NOK";
+                DGVSTATUS.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString("hh:mm:ss");
+                DGVSTATUS.Rows[i].Cells["ping测试"].Style.BackColor = Color.Yellow;
+                return;
+            }
+
+            // Prepare target
+            UdpTarget target = new UdpTarget((IPAddress)new IpAddress(gpnip), 161, 4000, 2);
+            // Create a SET PDU
+            Pdu pdu = new Pdu(PduType.Set);
+            // Set sysLocation.0 to a new string
+            pdu.VbList.Add(new Oid(Rebootoid), new Integer32(2));
+            AgentParameters aparam = new AgentParameters(SnmpVersion.Ver2, new OctetString(writecommunity), true);
+            SnmpV2Packet response = null;
+
+            try
+            {
+                // Send request and wait for response
+                response = target.Request(pdu, aparam) as SnmpV2Packet;
+            }
+            catch
+            {
+                DGVSTATUS.Rows[i].Cells["重启设备"].Value = "OK";
+                DGVSTATUS.Rows[i].Cells["重启设备"].Style.BackColor = Color.GreenYellow;
+            }
+            DGVSTATUS.Rows[i].Cells["重启设备"].Value = "OK";
+            DGVSTATUS.Rows[i].Cells["重启设备"].Style.BackColor = Color.GreenYellow;
+
+
+
+        }
+        private void MibFtpTransentFile(object obj)
+        {
+
+
+
+            int i = int.Parse(obj.ToString());
+            string ftpServerIP = comftpip.Text;     //FTP服务器IP
+            string ftpUserName = textftpusr.Text;   //FTP用户名
+            string ftpPassWord = textftppsd.Text;   //FTP密码
+            string ftpFileName = comcode.Text;                //FTP服务器文件名称
+            string ftpLoadStatus = "";              //执行操作状态
+            string ftpLoadFile = "";                //文件类型
+            string ftpDeviceFileName = "";          //自定义文件名称
+            string gpnip = DGVSTATUS.Rows[i].Cells["ip地址"].Value.ToString();       //设备IP地址
+            string readcommunity = textReadCommunity.Text;      //读团体
+            string writecommunity = textWriteCommunity.Text;    //写团体
+            int pingcunt = 5;
+            string dcnautooid = "1.3.6.1.4.1.10072.6.2.6.8.0";
+            string saveoid = "1.3.6.1.4.1.10072.6.62.1.1.3.0";
+            string ftpipoid = "1.3.6.1.4.1.10072.2.12.2.1.0";
+            string ftpiusernameoid = "1.3.6.1.4.1.10072.2.12.2.2.0";
+            string ftppassdwordoid = "1.3.6.1.4.1.10072.2.12.2.3.0";
+            string ftpfilenameoid = "1.3.6.1.4.1.10072.2.12.2.5.0";
+            string ftpctrlflagoid = "1.3.6.1.4.1.10072.2.12.2.6.0";
+            string ftploadstatusoid = "1.3.6.1.4.1.10072.2.12.2.7.0";
+            string ftploadfileoid = "1.3.6.1.4.1.10072.2.12.2.11.0";
+            string ftpdevicefilenameoid = "1.3.6.1.4.1.10072.2.12.2.12.0";
+            string appversionoid = "1.3.6.1.4.1.10072.6.2.1.1.1.8.1";
+            string fpgaoid = "1.3.6.1.4.1.10072.6.2.1.1.1.7.1";
+            // pdu.VbList.Add("1.3.6.1.4.1.10072.6.2.2.1.1.6.1.11");   //11槽位主备状态
+            //  pdu.VbList.Add("1.3.6.1.4.1.10072.6.2.2.1.1.6.1.12");   //12槽位主备状态
+            //  pdu.VbList.Add("1.3.6.1.4.1.10072.6.2.2.1.1.6.1.17");   //17槽位主备状态
+            //  pdu.VbList.Add("1.3.6.1.4.1.10072.6.2.2.1.1.6.1.18");   //18槽位主备状态
+            string slot11oid = "1.3.6.1.4.1.10072.6.2.2.1.1.8.1.11";
+            string slot12oid = "1.3.6.1.4.1.10072.6.2.2.1.1.8.1.12";
+            string slot17oid = "1.3.6.1.4.1.10072.6.2.2.1.1.8.1.17";
+            string slot18oid = "1.3.6.1.4.1.10072.6.2.2.1.1.8.1.18";
+            string runningcountstr = "";
+            int runningcount = 0;
+            DGVSTATUS.Rows[i].Cells["开始时间"].Value = DateTime.Now.ToString("hh:mm:ss");
+
+            Ping ping = new Ping();
+            PingReply pingReply = ping.Send(gpnip, 120);
+            bool link = false;
+            //判断请求是否超时
+            for (int but = 0; but < pingcunt; but++)
+            {
+
+                pingReply = ping.Send(gpnip, 120);
+                if (pingReply.Status == IPStatus.Success)
+                {
+                    link = true;
+                    DGVSTATUS.Rows[i].Cells["ping测试"].Value = "OK";
+                    DGVSTATUS.Rows[i].Cells["ping测试"].Style.BackColor = Color.GreenYellow;
+
+                    break;
+                }
+                Thread.Sleep(XHTime);
+            }
+            if (link == false)
+            {
+                DGVSTATUS.Rows[i].Cells["ping测试"].Value = "NOK";
+                DGVSTATUS.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString("hh:mm:ss");
+                DGVSTATUS.Rows[i].Cells["ping测试"].Style.BackColor = Color.Yellow;
+                lock (PiLiangShengJi)
+                {
+                    LoadCountany++;
+                }
+                return;
+            }
+
+
+
+            // Prepare target
+            UdpTarget target = new UdpTarget((IPAddress)new IpAddress(gpnip), 161, 4000, 2);
+            // Create a SET PDU
+            Pdu pdu = new Pdu(PduType.Set);
+            // Set sysLocation.0 to a new string
+            pdu.VbList.Add(new Oid(saveoid), new Integer32(2));
+            AgentParameters aparam = new AgentParameters(SnmpVersion.Ver2, new OctetString(writecommunity), true);
+            SnmpV2Packet response = null;
+
+            try
+            {
+                // Send request and wait for response
+                response = target.Request(pdu, aparam) as SnmpV2Packet;
+            }
+            catch
+            {
+                // If exception happens, it will be returned here
+                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " save " + "请求后未收到回复" + "\r\n");
+                lock (PiLiangShengJi)
+                {
+                    LoadCountany++;
+                }
+                return;
+
+            }
+            // Make sure we received a response
+            if (response == null)
+            {
+                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " save " + "发送错误的SNMP请求" + "\r\n");
+                lock (PiLiangShengJi)
+                {
+                    LoadCountany++;
+                }
+                return;
+
+            }
+            else
+            {
+                // Check if we received an SNMP error from the agent
+                if (response.Pdu.ErrorStatus != 0)
+                {
+                    textDOS.AppendText(String.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " save " + "SNMP回复错误！错误码 {0} 错误索引：第 {1} 行\r\n",
+                    FindDevType.FindErrorCode(response.Pdu.ErrorStatus), response.Pdu.ErrorIndex));
+
+                    DGVSTATUS.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString("hh:mm:ss");
+                    lock (PiLiangShengJi)
+                    {
+                        LoadCountany++;
+                    }
+                    return;
+                }
+                else
+                {
+                    for (int a = 0; a <= XHCount; a++)
+                    {
+                        pdu.Reset();
+                        pdu = new Pdu(PduType.Get);
+                        pdu.VbList.Add(saveoid);
+                        pdu.VbList.Add(appversionoid);
+                        pdu.VbList.Add(fpgaoid);
+                        pdu.VbList.Add(slot11oid);
+                        pdu.VbList.Add(slot12oid);
+                        pdu.VbList.Add(slot17oid);
+                        pdu.VbList.Add(slot18oid);
+                        aparam = new AgentParameters(SnmpVersion.Ver2, new OctetString(readcommunity), true);
+                        SnmpPacket result = null;
+                        try
+                        {
+                            result = target.Request(pdu, aparam);
+                        }
+                        catch (SnmpException ex)
+                        {
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " save " + ex.Message + "\r\n");
+                        }
+                        if (result != null)
+                        {
+                            if (result.Pdu.ErrorStatus != 0)
+                            {
+                                textDOS.AppendText(String.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " save " + "SNMP回复错误！错误代码：{0} 错误索引：第 {1} 行\r\n", FindDevType.FindErrorCode(result.Pdu.ErrorStatus), result.Pdu.ErrorIndex));
+                                DGVSTATUS.Rows[i].Cells["保存"].Value = "失败";
+                                DGVSTATUS.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString("hh:mm:ss");
+                                break;
+                            }
+                            else
+                            {
+                                if (result.Pdu.VbList[0].Value.ToString() == "1")
+                                {
+
+                                    DGVSTATUS.Rows[i].Cells["保存"].Value = "成功";
+                                    DGVSTATUS.Rows[i].Cells["保存"].Style.BackColor = Color.GreenYellow;
+                                    DGVSTATUS.Rows[i].Cells["当前版本"].Value = "APP:" + result.Pdu.VbList[1].Value.ToString() + " FPGA:" + result.Pdu.VbList[2].Value.ToString();
+                                    runningcountstr = result.Pdu.VbList[3].Value.ToString() + result.Pdu.VbList[4].Value.ToString() + result.Pdu.VbList[5].Value.ToString() + result.Pdu.VbList[6].Value.ToString();
+                                    textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 板卡运行状态11/12/17/18槽位 4-running 1-null ：" + runningcountstr + "\r\n"));
+                                    runningcount = runningcountstr.Split(new char[] { '4' }).Length - 1;
+
+
+                                    break;
+                                }
+                                if (result.Pdu.VbList[0].Value.ToString() == "3")
+                                {
+                                    DGVSTATUS.Rows[i].Cells["保存"].Value = "清空";
+                                }
+                                if (result.Pdu.VbList[0].Value.ToString() == "4")
+                                {
+                                    DGVSTATUS.Rows[i].Cells["保存"].Value = "执行中";
+                                }
+                                if (result.Pdu.VbList[0].Value.ToString() == "5")
+                                {
+                                    DGVSTATUS.Rows[i].Cells["保存"].Value = "禁止";
+                                    DGVSTATUS.Rows[i].Cells["保存"].Style.BackColor = Color.Yellow;
+                                }
+                                if (result.Pdu.VbList[0].Value.ToString() == "6")
+                                {
+                                    DGVSTATUS.Rows[i].Cells["保存"].Value = "失败";
+
+                                    DGVSTATUS.Rows[i].Cells["保存"].Style.BackColor = Color.Yellow;
+
+                                }
+
+                            }
+                        }
+                        Thread.Sleep(3 * XHTime);
+                    }
+                }
+            }
+
+
+            int colunms = DGVSTATUS.ColumnCount;
+            string[,] array = new string[,] {
+                { "APP","2",comapp.Text,""},
+                { "CODE","7",comcode.Text,""},
+                { "NMS","6",comnms.Text,""},
+                { "SW","5",comsw.Text,""},
+                { "Config","11",comconfig.Text,""},
+                { "Db","12",comdb.Text,""},
+                { "SlotConfig","18",comslotconfig.Text,""},
+                { "FLASH","15",comflash.Text,""},
+                { "SysFile","13",comsysfile.Text,""},
+               // { "OTNPACK","20",com760f.Text,""},
+                { "YAFFS","",comyaffs.Text,""},
+                { "760S","14",com760s.Text,"/yaffs/sys/760s.fpga"},
+                { "760B","14",com760b.Text,"/yaffs/sys/760b.fpga"},
+                { "760C","14",com760c.Text,"/yaffs/sys/760c.fpga"},
+                { "760D","14",com760d.Text,"/yaffs/sys/760d.fpga"},
+                { "760E","14",com760e.Text,"/yaffs/sys/760e.fpga"},
+                { "760F","14",com760f.Text,"/yaffs/sys/760f.fpga"},
+            };
+            int row = array.GetLength(0);
+            for (int c = 8; c < colunms; c++)
+            {
+                string header = DGVSTATUS.Columns[c].HeaderText;
+
+                for (int d = 0; d < row; d++)
+                {
+                    if (array[d, 0].ToString() == header)
+                    {
+
+                        if (ftpCtrlFlagID == "2")
+                        {
+                            ftpFileName = array[d, 2].ToString();
+                            textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 开始下载 文件类型：{0} 文件加载码：{1} 文件名称：{2}\r\n", array[d, 0].ToString(), array[d, 1].ToString(), array[d, 2].ToString()));
+
+
+                        }
+                        else
+                        {
+
+                            ftpFileName = gpnip + "_" + DateTime.Now.ToString("yyyy-MM-dd") + "_" + header + ".bin";
+                            textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 开始上传 文件类型：{0} 文件加载码：{1} 文件名称：{2}\r\n", array[d, 0].ToString(), array[d, 1].ToString(), ftpFileName));
+
+                        }
+                        ftpLoadFile = array[d, 1].ToString();
+                        ftpDeviceFileName = array[d, 3].ToString();
+
+                        pdu.Reset();
+                        pdu = new Pdu(PduType.Set);
+                        pdu.VbList.Add(new Oid(ftpipoid), new IpAddress(ftpServerIP));
+                        pdu.VbList.Add(new Oid(ftpiusernameoid), new OctetString(ftpUserName));
+                        pdu.VbList.Add(new Oid(ftppassdwordoid), new OctetString(ftpPassWord));
+                        pdu.VbList.Add(new Oid(ftpfilenameoid), new OctetString(ftpFileName));
+                        pdu.VbList.Add(new Oid(ftploadfileoid), new Integer32(ftpLoadFile));
+                        pdu.VbList.Add(new Oid(ftpdevicefilenameoid), new OctetString(ftpDeviceFileName));
+                        aparam = new AgentParameters(SnmpVersion.Ver2, new OctetString(writecommunity), true);
+                        response = null;
+
+                        try
+                        {
+                            // Send request and wait for response
+                            response = target.Request(pdu, aparam) as SnmpV2Packet;
+                        }
+
+                        catch
+                        {
+                            // If exception happens, it will be returned here
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " " + header + " 请求后未收到回复" + "\r\n");
+                            break;
+                        }
+
+                        // Make sure we received a response
+                        if (response == null)
+                        {
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " " + header + " 发送错误的SNMP请求" + "\r\n");
+                            break;
+                        }
+                        else
+                        {
+                            // Check if we received an SNMP error from the agent
+                            if (response.Pdu.ErrorStatus != 0)
+                            {
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " " + header + String.Format(" SNMP回复错误！错误代码{0} 错误索引：第{1}行\r\n", FindDevType.FindErrorCode(response.Pdu.ErrorStatus), response.Pdu.ErrorIndex));
+                                break;
+                            }
+                            else
+                            {
+                                Thread.Sleep(2 * XHTime);
+                                pdu.Reset();
+                                pdu.VbList.Add(new Oid(ftpctrlflagoid), new Integer32(ftpCtrlFlagID));
+                                aparam = new AgentParameters(SnmpVersion.Ver2, new OctetString(writecommunity), true);
+                                try
+                                {
+                                    response = target.Request(pdu, aparam) as SnmpV2Packet;
+                                }
+
+                                catch
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " " + header + " 请求后未收到回复" + "\r\n");
+                                }
+                                if (response == null)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " " + header + " 发送错误的SNMP请求" + "\r\n");
+                                }
+                                else
+                                {
+                                    // Check if we received an SNMP error from the agent
+                                    if (response.Pdu.ErrorStatus != 0)
+                                    {
+                                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " " + header + String.Format(" SNMP回复错误！错误码 {0} 错误索引：第 {1} 行\r\n", FindDevType.FindErrorCode(response.Pdu.ErrorStatus), response.Pdu.ErrorIndex));
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        if (ftpCtrlFlagID == "2")
+                                        {
+                                            DGVSTATUS.Rows[i].Cells["操作命令"].Value = "下载";
+                                        }
+                                        if (ftpCtrlFlagID == "3")
+                                        {
+                                            DGVSTATUS.Rows[i].Cells["操作命令"].Value = "上传";
+                                        }
+                                        if (ftpCtrlFlagID == "1")
+                                        {
+                                            DGVSTATUS.Rows[i].Cells["操作命令"].Value = "未操作";
+                                        }
+                                    }
+                                }
+
+                            }
+                        }
+                        Thread.Sleep(3 * XHTime);
+                        for (int a = 0; a <= XHCount; a++)
+                        {
+
+                            pdu.Reset();
+                            pdu = new Pdu(PduType.Get);
+                            pdu.VbList.Add(ftploadstatusoid);
+                            aparam = new AgentParameters(SnmpVersion.Ver2, new OctetString(readcommunity), true);
+                            SnmpPacket result = null;
+                            try
+                            {
+                                result = target.Request(pdu, aparam);
+                            }
+                            catch
+                            {
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " " + header + " 请求后未收到回复" + "\r\n");
+
+                                break;
+
+                            }
+                            if (result != null)
+                            {
+                                if (result.Pdu.ErrorStatus != 0)
+                                {
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " " + header + String.Format(" SNMP回复错误！错误码 {0} 错误索引：第 {1} 行\r\n", FindDevType.FindErrorCode(result.Pdu.ErrorStatus), result.Pdu.ErrorIndex));
+                                    break;
+                                }
+                                else
+                                {
+                                    if (result.Pdu.VbList[0].Value.ToString() == "1")
+                                    {
+
+
+
+
+                                        if (header == "APP" && runningcount == 2 && ftpCtrlFlagID == "2")
+                                        {
+                                            DGVSTATUS.Rows[i].Cells[header].Value = "同步中";
+
+                                            if (DGVSTATUS.ColumnCount > 10)
+                                            {
+                                                textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 主要影响APP同步升级的板卡有：" + runningcount.ToString() + "块" +
+"需要等待4分钟后继续执行其他操作\r\n"));
+                                                Thread.Sleep(240 * XHTime);
+                                            }
+                                        }
+                                        if (header == "APP" && runningcount >= 3 && ftpCtrlFlagID == "2")
+                                        {
+                                            DGVSTATUS.Rows[i].Cells[header].Value = "同步中";
+
+                                            if (DGVSTATUS.ColumnCount > 10)
+                                            {
+                                                textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 主要影响APP同步升级的板卡有：" + runningcount.ToString() + "块" +
+"需要等待8分钟后继续执行其他操作\r\n"));
+                                                Thread.Sleep(480 * XHTime);
+                                            }
+                                        }
+                                        if (header == "CODE" && runningcount >= 2 && ftpCtrlFlagID == "2")
+                                        {
+                                            DGVSTATUS.Rows[i].Cells[header].Value = "同步中";
+                                            if (DGVSTATUS.ColumnCount > 10)
+                                            {
+                                                textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 主要影响CODE同步升级的板卡有：" + runningcount.ToString() + "块" +
+"需要等待1分钟后继续执行其他操作\r\n"));
+                                                Thread.Sleep(60 * XHTime);
+                                            }
+                                        }
+                                        if (header == "NMS" && runningcount >= 2 && ftpCtrlFlagID == "2")
+                                        {
+                                            DGVSTATUS.Rows[i].Cells[header].Value = "同步中";
+                                            if (DGVSTATUS.ColumnCount > 10)
+                                            {
+                                                textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 主要影响NMS同步升级的板卡有：" + runningcount.ToString() + "块" +
+"需要等待40秒后继续执行其他操作\r\n"));
+                                                Thread.Sleep(40 * XHTime);
+                                            }
+                                        }
+
+                                        if (header == "SW" && runningcount >= 2 && ftpCtrlFlagID == "2")
+                                        {
+                                            DGVSTATUS.Rows[i].Cells[header].Value = "同步中";
+                                            if (DGVSTATUS.ColumnCount > 10)
+                                            {
+                                                textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 主要影响SW同步升级的板卡有：" + runningcount.ToString() + "块" +
+"需要等待20秒后继续执行其他操作\r\n"));
+                                                Thread.Sleep(20 * XHTime);
+                                            }
+                                        }
+                                        if (header == "SysFile" && runningcount >= 2 && ftpCtrlFlagID == "2")
+                                        {
+                                            DGVSTATUS.Rows[i].Cells[header].Value = "同步中";
+
+                                            if (DGVSTATUS.ColumnCount > 10)
+                                            {
+                                                textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 主要影响Sysfile同步升级的板卡有：" + runningcount.ToString() + "块" +
+"需要等待20秒后继续执行其他操作\r\n"));
+                                                Thread.Sleep(20 * XHTime);
+                                            }
+                                        }
+                                        if (ftpCtrlFlagID == "2")
+                                        {
+                                            DGVSTATUS.Rows[i].Cells["重启选择"].Value = true;
+
+                                        }
+                                        DGVSTATUS.Rows[i].Cells[header].Value = "成功";
+                                        DGVSTATUS.Rows[i].Cells[header].Style.BackColor = Color.GreenYellow;
+                                        DGVSTATUS.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString("hh:mm:ss");
+                                        break;
+                                    }
+                                    if (result.Pdu.VbList[0].Value.ToString() == "2")
+                                    {
+                                        DGVSTATUS.Rows[i].Cells[header].Value = "下载中";
+                                    }
+                                    if (result.Pdu.VbList[0].Value.ToString() == "3")
+                                    {
+                                        DGVSTATUS.Rows[i].Cells[header].Value = "上传中";
+                                    }
+                                    if (result.Pdu.VbList[0].Value.ToString() == "4")
+                                    {
+                                        DGVSTATUS.Rows[i].Cells[header].Value = "FTP错误";
+                                        DGVSTATUS.Rows[i].Cells[header].Style.BackColor = Color.Yellow;
+                                        break;
+                                    }
+                                    if (result.Pdu.VbList[0].Value.ToString() == "5")
+                                    {
+                                        DGVSTATUS.Rows[i].Cells[header].Value = "文件名错误";
+                                        DGVSTATUS.Rows[i].Cells[header].Style.BackColor = Color.Yellow;
+                                        break;
+                                    }
+
+                                    if (result.Pdu.VbList[0].Value.ToString() == "6")
+                                    {
+                                        DGVSTATUS.Rows[i].Cells[header].Value = "其他错误";
+                                        DGVSTATUS.Rows[i].Cells[header].Style.BackColor = Color.Yellow;
+                                        break;
+                                    }
+
+                                }
+                            }
+                            Thread.Sleep(3 * XHTime);
+                        }
+
+                    }
+
+                }
+
+
+                Thread.Sleep(3 * XHTime);
+
+            }
+            lock(PiLiangShengJi){
+                LoadCountany++;
+                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 累计完成设备数量：" + LoadCountany.ToString() + "\r\n");
+                if (LoadCountsum == LoadCountany)
+                {
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "执行完成！，一共执行：" + LoadCountany.ToString() + "台设备" + "\r\n");
+                    MessageBox.Show("执行完成！，一共执行：" + LoadCountany.ToString() + "台设备");
+                    LoadCountsum = 0;
+                    LoadCountany = 0;
+
+                }
+            }
+
+
+
+
+
+
+
+        }
+
+        private void buttAddIp_Click(object sender, EventArgs e)
+        {
+            int index = DGVSTATUS.Rows.Add();
+            DGVSTATUS.Rows[index].Cells["ip地址"].Value = comip.Text;
+            DGVSTATUS.Rows[index].Cells["优先级"].Value = 1;
+            DGVSTATUS.RowsDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+        }
+
+        private void buttbatchupload_Click(object sender, EventArgs e)
+        {
+            if (FtpPortEnable == false || FtpStatusEnable == false)
+            {
+                MessageBox.Show("请先③启动FTP服务器,进行后续操作！");
+                return;
+            }
+
+            LoadCountsum = 0;
+            LoadCountany = 0;
+            string shengjiip = "";
+
+            for (int i = 0; i < DGVSTATUS.Rows.Count - 1; i++)
+            {
+                if ((bool)DGVSTATUS.Rows[i].Cells["执行"].EditedFormattedValue == true)
+                {
+                    int c = 1;
+                    LoadCountsum = LoadCountsum + c;
+                    string asd = DGVSTATUS.Rows[i].Cells["ip地址"].Value.ToString();
+                    shengjiip = shengjiip + asd + "\r\n";     //设备IP地址
+                }
+
+
+            }
+            DialogResult dr = MessageBox.Show("是否确认 上载如下设备？\r\n" + shengjiip + "\r\n一共：" + LoadCountsum.ToString() + "台设备", "提示", MessageBoxButtons.YesNo);
+            if (dr == DialogResult.Yes)
+            {
+                // DGVSTATUS.DataSource = null;
+                //DGVSTATUS.Rows.Clear();
+                ftpCtrlFlagID = "3";
+                int i = DGVSTATUS.ColumnCount;
+                //MessageBox.Show(i.ToString());
+                for (int a = 10; a < i; a++)
+                {
+                    // MessageBox.Show(a.ToString());
+                    DGVSTATUS.Columns.RemoveAt(10);
+
+
+                }
+                DGVSTATUS.Refresh();
+                // DGVSTATUS.Columns.Clear();
+                //DataGridViewCreeatGuding();
+                datagridviewcreat();
+                string task = "BatchDownload";
+                ParameterizedThreadStart p = new ParameterizedThreadStart(Xianchengchi);
+                Thread t = new Thread(p);
+                t.Start(task);
+            }
+            if (dr == DialogResult.No)
+            {
+                //  buttbatchdownload.Text = "批量重启";
+            }
+
+
+
+
+        }
+
+
+        private void del_Click(object sender, EventArgs e)
+        {
+
+
+            try
+            {
+                Gpnip user = new Gpnip();
+                // 登录时 如果没有Data.bin文件就创建、有就打开
+                FileStream fs = new FileStream(@"C:\gpn\gpnip.bin", FileMode.OpenOrCreate);
+                BinaryFormatter bf = new BinaryFormatter();
+                // 保存在实体类属性中
+                string gpnip = DGVSTATUS.Rows[DGVSTATUS.CurrentCell.RowIndex].Cells["ip地址"].Value.ToString();       //设备IP地址
+                user.GpnIP = gpnip;
+                //保存密码选中状态
+
+                if (MessageBox.Show("正在删除当前ip:" + gpnip + "，是否删除？", "提示", MessageBoxButtons.OKCancel) == DialogResult.OK)
+                {
+                    userss.Remove(user.GpnIP);
+                    try
+                    {
+                        if (DGVSTATUS != null && DGVSTATUS.CurrentCell != null && DGVSTATUS.CurrentCell.RowIndex != -1)
+                        {
+                            DGVSTATUS.Rows.RemoveAt(DGVSTATUS.CurrentCell.RowIndex);
+                        }
+                    }
+                    catch
+                    {
+                        MessageBox.Show("空白行无法删除");
+                    }
+                }
+                //写入文件
+                bf.Serialize(fs, userss);
+                //关闭
+                fs.Close();
+            }
+            catch
+            {
+                MessageBox.Show("空白行无法删除");
+            }
+
+
+
+
+        }
+
+        private void add_Click(object sender, EventArgs e)
+        {
+            int index = DGVSTATUS.Rows.Add();
+            DGVSTATUS.Rows[index].Cells["ip地址"].Value = comip.Text;
+            DGVSTATUS.Rows[index].Cells["优先级"].Value = index + 1;
+            DGVSTATUS.RowsDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+
+
+
+
+            Gpnip user = new Gpnip();
+            // 登录时 如果没有Data.bin文件就创建、有就打开
+            FileStream fs = new FileStream(@"C:\gpn\gpnip.bin", FileMode.OpenOrCreate);
+            BinaryFormatter bf = new BinaryFormatter();
+            // 保存在实体类属性中
+            user.GpnIP = comip.Text;
+            if (userss.ContainsKey(user.GpnIP))
+            {
+                //如果有清掉
+                userss.Remove(user.GpnIP);
+                // MessageBox.Show("ip已经存在，替换完成");
+            }
+            //添加用户信息到集合
+            userss.Add(user.GpnIP, user);
+            //写入文件
+            bf.Serialize(fs, userss);
+
+            fs.Close();
+
+
+
+
+
+
+        }
+
+
+        private void 导出前俩列ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string strPath = @"C:\gpn\batchip.xls";//完整的路径名
+
+            int lie = 2;
+            HSSFWorkbook wb = new HSSFWorkbook();
+            HSSFSheet sheet = (HSSFSheet)wb.CreateSheet("sheet1");
+            HSSFRow headRow = (HSSFRow)sheet.CreateRow(0);
+            for (int i = 0; i < lie; i++)
+            {
+                HSSFCell headCell = (HSSFCell)headRow.CreateCell(i, CellType.String);
+                headCell.SetCellValue(DGVSTATUS.Columns[i].HeaderText);
+            }
+            for (int i = 0; i < DGVSTATUS.Rows.Count; i++)
+            {
+                HSSFRow row = (HSSFRow)sheet.CreateRow(i + 1);
+                for (int j = 0; j < lie; j++)
+                {
+                    HSSFCell cell = (HSSFCell)row.CreateCell(j);
+                    if (DGVSTATUS.Rows[i].Cells[j].Value == null)
+                    {
+                        cell.SetCellType(CellType.Blank);
+                    }
+                    else
+                    {
+
+                        cell.SetCellValue(DGVSTATUS.Rows[i].Cells[j].Value.ToString());
+                    }
+
+                }
+
+            }
+            for (int i = 0; i < lie; i++)
+            {
+                sheet.AutoSizeColumn(i);
+            }
+            using (FileStream fs = new FileStream(strPath, FileMode.Create))
+            {
+                wb.Write(fs);
+            }
+            wb.Close();
+
+
+
+
+            //NPOIExcel ET = new NPOIExcel();
+            //ET.ExportExcel("sheet1", DGVSTATUS, 2);
+        }
+
+        private void 导入前俩列ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+            DGVSTATUS.DataSource = null;
+            DGVSTATUS.Columns.Clear();
+            //  DGVSTATUS.Rows.Clear();
+            //OpenFileDialog ofd = new OpenFileDialog();
+            string strPath = @"C:\gpn\batchip.xls";//完整的路径名
+
+            try
+            {
+
+                //strPath = ofd.FileName;
+                DataTable dataTable = null;
+                dataTable = ExcelUtility.ExcelToDataTable(strPath, true);
+                //DataView dv = ds.Tables[0].DefaultView;
+                // dataTable.DefaultView.RowFilter = "ip地址 = '" + comtype.Text + "'";
+
+                DGVSTATUS.DataSource = dataTable;
+                //dataTable.Clear();
+
+                if (DGVSTATUS.Columns["ping测试"] == null)
+                {
+
+                    this.DGVSTATUS.Columns.Add("ping测试", "ping测试");
+                }
+                else
+                {
+                    this.DGVSTATUS.Columns.Remove("ping测试");
+                    this.DGVSTATUS.Columns.Add("ping测试", "ping测试");
+                }
+                if (DGVSTATUS.Columns["操作命令"] == null)
+                {
+
+                    this.DGVSTATUS.Columns.Add("操作命令", "操作命令");
+                }
+                else
+                {
+                    this.DGVSTATUS.Columns.Remove("操作命令");
+                    this.DGVSTATUS.Columns.Add("操作命令", "操作命令");
+                }
+                if (DGVSTATUS.Columns["重启选择"] == null)
+                {
+                    DataGridViewCheckBoxColumn newColumn = new DataGridViewCheckBoxColumn
+                    {
+                        Name = "重启选择",
+                        HeaderText = "重启选择"
+                    };
+                    DGVSTATUS.Columns.Add(newColumn);
+                }
+                if (DGVSTATUS.Columns["开始时间"] == null)
+                {
+
+                    this.DGVSTATUS.Columns.Add("开始时间", "开始时间");
+                }
+                else
+                {
+                    this.DGVSTATUS.Columns.Remove("开始时间");
+                    this.DGVSTATUS.Columns.Add("开始时间", "开始时间");
+                }
+                if (DGVSTATUS.Columns["结束时间"] == null)
+                {
+
+                    this.DGVSTATUS.Columns.Add("结束时间", "结束时间");
+                }
+                else
+                {
+                    this.DGVSTATUS.Columns.Remove("结束时间");
+                    this.DGVSTATUS.Columns.Add("结束时间", "结束时间");
+                }
+                if (DGVSTATUS.Columns["保存"] == null)
+                {
+
+                    this.DGVSTATUS.Columns.Add("保存", "保存");
+                }
+                else
+                {
+                    this.DGVSTATUS.Columns.Remove("保存");
+                    this.DGVSTATUS.Columns.Add("保存", "保存");
+                }
+
+
+                DGVSTATUS.RowsDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);//捕捉异常
+            }
+
+        }
+
+        private void butbatchip_Click(object sender, EventArgs e)
+        {
+
+
+
+            int index = DGVSTATUS.Rows.Add();
+            DGVSTATUS.Rows[index].Cells["ip地址"].Value = comip.Text;
+            DGVSTATUS.Rows[index].Cells["执行"].Value = true;
+            DGVSTATUS.RowsDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+            int[] array = new int[DGVSTATUS.Rows.Count-1];
+            int aa = 0;
+            for (int i = 0; i < DGVSTATUS.Rows.Count - 2; i++, aa++)
+            {
+                array[i] = int.Parse(DGVSTATUS.Rows[aa].Cells[2].Value.ToString());
+
+            }
+            int temp = 0;
+            int index1 = 0;
+
+            for (int i = 0; i < array.Length; i++)
+            {
+                if (temp < array[i])    //如果用<= 则找bai到的是最大du值(多个中zhi的最后一个) <则是多个中的第一dao个
+                {
+                    temp = array[i];
+                    index1 = i;
+                }
+            }
+            DGVSTATUS.Rows[index].Cells["优先级"].Value = temp + 1;
+
+
+            Gpnip user = new Gpnip();
+            // 登录时 如果没有Data.bin文件就创建、有就打开
+            FileStream fs = new FileStream(@"C:\gpn\gpnip.bin", FileMode.OpenOrCreate);
+            BinaryFormatter bf = new BinaryFormatter();
+            // 保存在实体类属性中
+            user.GpnIP = comip.Text;
+            user.GpnPRY = temp + 1;
+            user.GpnZX = true;
+            if (userss.ContainsKey(user.GpnIP))
+            {
+                //如果有清掉
+                userss.Remove(user.GpnIP);
+                // MessageBox.Show("ip已经存在，替换完成");
+            }
+            //添加用户信息到集合
+            userss.Add(user.GpnIP, user);
+            //写入文件
+            bf.Serialize(fs, userss);
+
+            fs.Close();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            //  ToStringArray(DGVSTATUS, false);
+            //  textDOS.AppendText(ToStringArray(DGVSTATUS, false) + "\r\n");
+            object[,] abc = FindDevType.Orderby(ToStringArray(DGVSTATUS, false), new int[]{2}, 0);
+            for (int i = 0; i < DGVSTATUS.Rows.Count-1; i++ )
+            {
+                textDOS.AppendText(string.Format(abc[i,2] + "\r\n"));
+            }
+
+
+            }
+        public object[,] ToStringArray(DataGridView dataGridView, bool includeColumnText)
+        {
+            #region 实现...
+            object[,] arrReturn = null;
+            int rowsCount = dataGridView.Rows.Count;
+            int colsCount = 3;
+            if (rowsCount > 0)
+            {
+                //最后一行是供输入的行时，不用读数据。
+                if (dataGridView.Rows[rowsCount - 1].IsNewRow)
+                {
+                    rowsCount--;
+                }
+            }
+            int i = 0;
+            //包括列标题
+            if (includeColumnText)
+            {
+                rowsCount++;
+                arrReturn = new object[rowsCount, colsCount];
+                for (i = 0; i < colsCount; i++)
+                {
+                    arrReturn[0, i] = dataGridView.Columns[i].HeaderText;
+                }
+                i = 1;
+            }
+            else
+            {
+                arrReturn = new object[rowsCount, colsCount];
+            }
+            //读取单元格数据
+            int rowIndex = 0;
+            for (; i < rowsCount; i++, rowIndex++)
+            {
+                for (int j = 0; j < colsCount; j++)
+                {
+                    if (j == 2)
+                    {
+                        arrReturn[i, j] = int.Parse(dataGridView.Rows[rowIndex].Cells[j].Value.ToString());
+                    }
+                    else {
+                        arrReturn[i, j] = dataGridView.Rows[rowIndex].Cells[j].Value.ToString();
+                    }
+
+                    // textDOS.AppendText(string.Format(arrReturn[i, j] + "\r\n"));
+                }
+            }
+            return arrReturn;
+            #endregion 实现
+        }
+
+        private void DGVSTATUS_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
+        {
+
+            if (this.DGVSTATUS.CurrentCell.ColumnIndex == 2)
+            {
+                e.Control.KeyPress += new KeyPressEventHandler(TextBoxDec_KeyPress);
+
+            }
+        }
+        private void TextBoxDec_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar != 8 && !Char.IsDigit(e.KeyChar) && e.KeyChar != '.')
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void tabPageGpn_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

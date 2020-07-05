@@ -13,7 +13,7 @@ namespace MyGpnSoftware
 {
     class NPOIExcel
     {
-        public void ExportExcel(string fileName, DataGridView dgv)
+        public void ExportExcel(string fileName, DataGridView dgv,int limit)
         {
             if (dgv.Rows.Count == 0)
             {
@@ -27,10 +27,15 @@ namespace MyGpnSoftware
             {
                 return;
             }
+            int lie = dgv.Columns.Count;
+
+            if (limit != 0) {
+                lie = limit;
+            }
             HSSFWorkbook wb = new HSSFWorkbook();
             HSSFSheet sheet = (HSSFSheet)wb.CreateSheet(fileName);
             HSSFRow headRow = (HSSFRow)sheet.CreateRow(0);
-            for (int i = 0; i < dgv.Columns.Count; i++)
+            for (int i = 0; i < lie; i++)
             {
                 HSSFCell headCell = (HSSFCell)headRow.CreateCell(i, CellType.String);
                 headCell.SetCellValue(dgv.Columns[i].HeaderText);
@@ -38,7 +43,7 @@ namespace MyGpnSoftware
             for (int i = 0; i < dgv.Rows.Count; i++)
             {
                 HSSFRow row = (HSSFRow)sheet.CreateRow(i + 1);
-                for (int j = 0; j < dgv.Columns.Count; j++)
+                for (int j = 0; j < lie; j++)
                 {
                     HSSFCell cell = (HSSFCell)row.CreateCell(j);
                     if (dgv.Rows[i].Cells[j].Value == null)
@@ -54,7 +59,7 @@ namespace MyGpnSoftware
                 }
 
             }
-            for (int i = 0; i < dgv.Columns.Count; i++)
+            for (int i = 0; i < lie; i++)
             {
                 sheet.AutoSizeColumn(i);
             }

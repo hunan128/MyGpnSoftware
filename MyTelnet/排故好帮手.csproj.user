@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <PublishUrlHistory>ftp://60.205.155.127:801/ftp/|ftp://60.205.155.127/ftp/|ftp://otrs.gw.com/ftp/|ftp://otrs.gw.com/gpn/|D:\software\GPN工具\</PublishUrlHistory>
-    <InstallUrlHistory>http://60.205.155.127/ftp/|http://otrs.gw.com/ftp/|http://otrs.gw.com/gpn/</InstallUrlHistory>
-    <SupportUrlHistory>http://60.205.155.127/ftp/index.htm|http://otrs.gw.com/ftp/publish.htm</SupportUrlHistory>
-    <UpdateUrlHistory />
+    <PublishUrlHistory>ftp://60.205.155.127:801/gpn/|ftp://60.205.155.127:801/ftp/|ftp://60.205.155.127/ftp/|ftp://otrs.gw.com/ftp/|ftp://otrs.gw.com/gpn/</PublishUrlHistory>
+    <InstallUrlHistory>http://60.205.155.127/ftp/gpn/|http://60.205.155.127/ftp/|http://otrs.gw.com/ftp/|http://otrs.gw.com/gpn/</InstallUrlHistory>
+    <SupportUrlHistory>http://60.205.155.127/ftp/index.html|http://60.205.155.127/ftp/index.htm|http://otrs.gw.com/ftp/publish.htm</SupportUrlHistory>
+    <UpdateUrlHistory>http://60.205.155.127/ftp/gpn/|http://60.205.155.127/ftp/gpn/index.html/</UpdateUrlHistory>
     <BootstrapperUrlHistory>http://otrs.gw.com/ftp/Application%2520Files/|http://192.168.22.250/ftp/Application%2520Files/</BootstrapperUrlHistory>
     <ErrorReportUrlHistory />
     <FallbackCulture>zh-CN</FallbackCulture>

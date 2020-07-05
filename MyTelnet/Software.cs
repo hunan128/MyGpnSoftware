@@ -26,7 +26,7 @@ namespace MyGpnSoftware
 
         private void metroLink1_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("http://60.205.155.127/ftp/index.htm");
+            System.Diagnostics.Process.Start("http://60.205.155.127/");
 
         }
 
@@ -45,9 +45,12 @@ namespace MyGpnSoftware
 
         private void Software_Load(object sender, EventArgs e)
         {
-            metroTextBox2.Text = "1、百度云网盘需下载整个【排故好帮手】目录文件，方可正常运行。" +
-                "\r\n"+"2、下载后按照下方图片内容进行双击运行。";
+            metroTextBox2.Text = "官方唯一网站：www.hunan128.com \r\n官方唯一公网：60.205.155.127";
         }
 
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("http://60.205.155.127/");
+        }
     }
 }

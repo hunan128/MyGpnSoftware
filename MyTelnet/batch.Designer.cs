@@ -66,6 +66,7 @@
             this.label9 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.butoid = new System.Windows.Forms.Button();
             this.butUtility = new System.Windows.Forms.Button();
             this.metroLabel1 = new MetroFramework.Controls.MetroLabel();
             this.metroCom603gsysfile = new MetroFramework.Controls.MetroComboBox();
@@ -76,8 +77,8 @@
             this.TextStopIp = new System.Windows.Forms.TextBox();
             this.TextStartIp = new System.Windows.Forms.TextBox();
             this.dataGridView2 = new System.Windows.Forms.DataGridView();
-            this.butoid = new System.Windows.Forms.Button();
-            this.textselect = new System.Windows.Forms.TextBox();
+            this.metroLabel2 = new MetroFramework.Controls.MetroLabel();
+            this.textselect = new MetroFramework.Controls.MetroTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.statusStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -120,7 +121,7 @@
             this.dataGridView1.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             this.dataGridView1.RowHeadersVisible = false;
             this.dataGridView1.RowTemplate.Height = 23;
-            this.dataGridView1.Size = new System.Drawing.Size(1069, 342);
+            this.dataGridView1.Size = new System.Drawing.Size(1069, 365);
             this.dataGridView1.TabIndex = 0;
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridView1_CellContentClick);
             // 
@@ -215,7 +216,7 @@
             this.toolStripStatusLabel3,
             this.toolStripStatusLabelyichang,
             this.toolStripStatusLabeltime});
-            this.statusStrip1.Location = new System.Drawing.Point(20, 485);
+            this.statusStrip1.Location = new System.Drawing.Point(20, 530);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(1069, 26);
             this.statusStrip1.TabIndex = 43;
@@ -434,19 +435,20 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.textselect);
+            this.panel1.Controls.Add(this.metroLabel2);
             this.panel1.Controls.Add(this.panel2);
+            this.panel1.Controls.Add(this.butoid);
             this.panel1.Controls.Add(this.dataGridView1);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(20, 60);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1069, 425);
+            this.panel1.Size = new System.Drawing.Size(1069, 470);
             this.panel1.TabIndex = 68;
             // 
             // panel2
             // 
             this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.panel2.Controls.Add(this.textselect);
-            this.panel2.Controls.Add(this.butoid);
             this.panel2.Controls.Add(this.butUtility);
             this.panel2.Controls.Add(this.metroLabel1);
             this.panel2.Controls.Add(this.metroCom603gsysfile);
@@ -469,10 +471,25 @@
             this.panel2.Controls.Add(this.butip);
             this.panel2.Controls.Add(this.comMaxThreads);
             this.panel2.Controls.Add(this.butsave);
-            this.panel2.Location = new System.Drawing.Point(3, 347);
+            this.panel2.Location = new System.Drawing.Point(3, 365);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(1066, 75);
             this.panel2.TabIndex = 69;
+            // 
+            // butoid
+            // 
+            this.butoid.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.butoid.BackColor = System.Drawing.Color.DodgerBlue;
+            this.butoid.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.butoid.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.butoid.ForeColor = System.Drawing.Color.White;
+            this.butoid.Location = new System.Drawing.Point(462, 439);
+            this.butoid.Name = "butoid";
+            this.butoid.Size = new System.Drawing.Size(161, 34);
+            this.butoid.TabIndex = 77;
+            this.butoid.Text = "Mib节点在线查询";
+            this.butoid.UseVisualStyleBackColor = false;
+            this.butoid.Click += new System.EventHandler(this.butoid_Click);
             // 
             // butUtility
             // 
@@ -629,42 +646,60 @@
             this.dataGridView2.Size = new System.Drawing.Size(1071, 62);
             this.dataGridView2.TabIndex = 0;
             // 
-            // butoid
+            // metroLabel2
             // 
-            this.butoid.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.butoid.BackColor = System.Drawing.Color.DodgerBlue;
-            this.butoid.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.butoid.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butoid.ForeColor = System.Drawing.Color.White;
-            this.butoid.Location = new System.Drawing.Point(762, 37);
-            this.butoid.Name = "butoid";
-            this.butoid.Size = new System.Drawing.Size(75, 34);
-            this.butoid.TabIndex = 77;
-            this.butoid.Text = "Mib查询";
-            this.butoid.UseVisualStyleBackColor = false;
-            this.butoid.Click += new System.EventHandler(this.butoid_Click);
+            this.metroLabel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.metroLabel2.AutoSize = true;
+            this.metroLabel2.Location = new System.Drawing.Point(5, 446);
+            this.metroLabel2.Name = "metroLabel2";
+            this.metroLabel2.Size = new System.Drawing.Size(79, 19);
+            this.metroLabel2.TabIndex = 79;
+            this.metroLabel2.Text = "输入关键字";
             // 
             // textselect
             // 
             this.textselect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.textselect.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
-            this.textselect.Location = new System.Drawing.Point(664, 41);
+            // 
+            // 
+            // 
+            this.textselect.CustomButton.Image = null;
+            this.textselect.CustomButton.Location = new System.Drawing.Point(344, 1);
+            this.textselect.CustomButton.Name = "";
+            this.textselect.CustomButton.Size = new System.Drawing.Size(21, 21);
+            this.textselect.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
+            this.textselect.CustomButton.TabIndex = 1;
+            this.textselect.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
+            this.textselect.CustomButton.UseSelectable = true;
+            this.textselect.CustomButton.Visible = false;
+            this.textselect.FontSize = MetroFramework.MetroTextBoxSize.Medium;
+            this.textselect.Lines = new string[] {
+        "Telnet"};
+            this.textselect.Location = new System.Drawing.Point(90, 443);
+            this.textselect.MaxLength = 32767;
             this.textselect.Name = "textselect";
-            this.textselect.Size = new System.Drawing.Size(83, 26);
-            this.textselect.TabIndex = 78;
-            this.textselect.Text = "SSH";
-            this.textselect.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textselect.PasswordChar = '\0';
+            this.textselect.ScrollBars = System.Windows.Forms.ScrollBars.None;
+            this.textselect.SelectedText = "";
+            this.textselect.SelectionLength = 0;
+            this.textselect.SelectionStart = 0;
+            this.textselect.ShortcutsEnabled = true;
+            this.textselect.Size = new System.Drawing.Size(366, 23);
+            this.textselect.TabIndex = 80;
+            this.textselect.Text = "Telnet";
+            this.textselect.UseSelectable = true;
+            this.textselect.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
+            this.textselect.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
             // 
             // Batch
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1109, 531);
+            this.ClientSize = new System.Drawing.Size(1109, 576);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.statusStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Batch";
-            this.Text = "批量操作";
+            this.Text = "批量工具";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.Batch_Paint);
             this.Resize += new System.EventHandler(this.Batch_Resize);
@@ -672,6 +707,7 @@
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();
@@ -722,7 +758,8 @@
         private MetroFramework.Controls.MetroLabel metroLabel1;
         private MetroFramework.Controls.MetroComboBox metroCom603gsysfile;
         private System.Windows.Forms.Button butUtility;
-        private System.Windows.Forms.TextBox textselect;
         private System.Windows.Forms.Button butoid;
+        private MetroFramework.Controls.MetroLabel metroLabel2;
+        private MetroFramework.Controls.MetroTextBox textselect;
     }
 }

@@ -154,7 +154,7 @@ namespace MyGpnSoftware
         private void Butout_Click(object sender, EventArgs e)
         {
             NPOIExcel ET = new NPOIExcel();
-            ET.ExportExcel("sheet1", dataGridView1);
+            ET.ExportExcel("sheet1", dataGridView1,0);
         }
 
         //保存业务函数

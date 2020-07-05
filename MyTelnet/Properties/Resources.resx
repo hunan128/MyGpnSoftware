@@ -121,14 +121,8 @@
   <data name="导入要求" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\bin\导入要求.jpg;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="运行exe1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\运行exe1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="下载升级" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\bin\下载升级.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="运行exe" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\运行exe.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="官方网站" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\bin\官方网站.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="批量" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\bin\批量.jpg;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -136,10 +130,13 @@
   <data name="故障排查1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\bin\故障排查1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="GPN" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\bin\x86\Debug\排故好帮手\app.publish\Application Files\排故好帮手_4_1_1_51\GPN.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="排查故障2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\bin\排查故障2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="GPN" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\bin\x86\Debug\排故好帮手\app.publish\Application Files\排故好帮手_4_1_1_51\GPN.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="升级" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\bin\升级.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

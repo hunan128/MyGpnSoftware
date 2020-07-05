@@ -33,6 +33,8 @@ using System.Runtime.InteropServices;
                          + "2020.06.11 新增SNMP/MIB节点查询功能，支持Trap监听功能" + "\r\n"
                          + "2020.06.13 新增Try命令完善下载、上传、EOS排故、OTN排故、检查文件、连接、打开窗口异常输出,防止软件卡死" + "\r\n"
                          + "2020.06.22 新增Mib节点在线查询功能" + "\r\n"
+                         + "2020.07.01 增加GPN设备批量下载和上传功能" + "\r\n"
+                         + "2020.07.04 解决了批量升级的一些BUG" + "\r\n"
 
                          + "")]
 [assembly: AssemblyConfiguration("")]
@@ -57,4 +59,4 @@ using System.Runtime.InteropServices;
 //      内部版本号
 //      修订号
 //
-[assembly: AssemblyVersion("4.1.2.5")]
+[assembly: AssemblyVersion("4.1.2.27")]
