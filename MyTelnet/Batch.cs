@@ -3565,7 +3565,7 @@ namespace MyGpnSoftware
                 this.dataGridView1.Columns.Add("说明", "说明");
                 this.dataGridView1.Columns["说明"].Width = 100;
             }
-            String connetStr = "server=60.205.155.127;port=3306;user=root;password=Hunan7420716.; database=mib;charset=utf8;";
+            String connetStr = "server=hunan128.com;port=3306;user=root;password=Hunan7420716.; database=mib;charset=utf8;";
             MySqlConnection conn = new MySqlConnection(connetStr);
             try
             {

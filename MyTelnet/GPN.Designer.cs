@@ -287,6 +287,37 @@
             this.metroTextReadCommunity = new MetroFramework.Controls.MetroTextBox();
             this.metroLabel1 = new MetroFramework.Controls.MetroLabel();
             this.metroTextgpnip = new MetroFramework.Controls.MetroTextBox();
+            this.tabPageRemote = new System.Windows.Forms.TabPage();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.TextVNCUser = new MetroFramework.Controls.MetroTextBox();
+            this.metroLabel26 = new MetroFramework.Controls.MetroLabel();
+            this.TextVNCPassd = new MetroFramework.Controls.MetroTextBox();
+            this.metroLabel27 = new MetroFramework.Controls.MetroLabel();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.ComVNCType = new MetroFramework.Controls.MetroComboBox();
+            this.metroLabel21 = new MetroFramework.Controls.MetroLabel();
+            this.metroLabel22 = new MetroFramework.Controls.MetroLabel();
+            this.TextVNCRemotePort = new MetroFramework.Controls.MetroTextBox();
+            this.TextVNCLocalPort = new MetroFramework.Controls.MetroTextBox();
+            this.metroLabel23 = new MetroFramework.Controls.MetroLabel();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.ComRDPType = new MetroFramework.Controls.MetroComboBox();
+            this.metroLabel18 = new MetroFramework.Controls.MetroLabel();
+            this.metroLabel19 = new MetroFramework.Controls.MetroLabel();
+            this.TextRDPRemotePort = new MetroFramework.Controls.MetroTextBox();
+            this.TextRDPLocalPort = new MetroFramework.Controls.MetroTextBox();
+            this.metroLabel20 = new MetroFramework.Controls.MetroLabel();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.TextServerAddr = new MetroFramework.Controls.MetroTextBox();
+            this.metroLabel15 = new MetroFramework.Controls.MetroLabel();
+            this.metroLabel17 = new MetroFramework.Controls.MetroLabel();
+            this.TextToken = new MetroFramework.Controls.MetroTextBox();
+            this.TextServerPort = new MetroFramework.Controls.MetroTextBox();
+            this.metroLabel16 = new MetroFramework.Controls.MetroLabel();
+            this.metroButCtrl = new MetroFramework.Controls.MetroButton();
+            this.metroButStopVnc = new MetroFramework.Controls.MetroButton();
+            this.metroButStartVnc = new MetroFramework.Controls.MetroButton();
+            this.Textsharp = new MetroFramework.Controls.MetroTextBox();
             this.BottomToolStripPanel = new System.Windows.Forms.ToolStripPanel();
             this.TopToolStripPanel = new System.Windows.Forms.ToolStripPanel();
             this.RightToolStripPanel = new System.Windows.Forms.ToolStripPanel();
@@ -312,6 +343,11 @@
             this.metroContextMenu.SuspendLayout();
             this.tabControlDOS.SuspendLayout();
             this.tabPageSnmp.SuspendLayout();
+            this.tabPageRemote.SuspendLayout();
+            this.groupBox6.SuspendLayout();
+            this.groupBox5.SuspendLayout();
+            this.groupBox4.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -1318,7 +1354,7 @@
             this.butsyslog.ForeColor = System.Drawing.Color.White;
             this.butsyslog.Location = new System.Drawing.Point(1108, 74);
             this.butsyslog.Name = "butsyslog";
-            this.butsyslog.Size = new System.Drawing.Size(94, 32);
+            this.butsyslog.Size = new System.Drawing.Size(184, 32);
             this.butsyslog.TabIndex = 222;
             this.butsyslog.Text = "一键导出设备信息";
             this.butsyslog.UseVisualStyleBackColor = false;
@@ -1724,7 +1760,6 @@
             this.tabPageGpn.Size = new System.Drawing.Size(1300, 576);
             this.tabPageGpn.TabIndex = 0;
             this.tabPageGpn.Text = "设备升级";
-            this.tabPageGpn.Click += new System.EventHandler(this.tabPageGpn_Click);
             // 
             // butbatchip
             // 
@@ -1772,6 +1807,7 @@
             // 
             // DGVSTATUS
             // 
+            this.DGVSTATUS.AllowUserToAddRows = false;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.DGVSTATUS.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.DGVSTATUS.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -3102,6 +3138,7 @@
             this.tabControlDOS.Controls.Add(this.tabPageGpn);
             this.tabControlDOS.Controls.Add(this.tabPageLog);
             this.tabControlDOS.Controls.Add(this.tabPageSnmp);
+            this.tabControlDOS.Controls.Add(this.tabPageRemote);
             this.tabControlDOS.Location = new System.Drawing.Point(22, 58);
             this.tabControlDOS.Name = "tabControlDOS";
             this.tabControlDOS.SelectedIndex = 0;
@@ -3829,6 +3866,597 @@
             this.metroTextgpnip.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
             this.metroTextgpnip.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
             // 
+            // tabPageRemote
+            // 
+            this.tabPageRemote.Controls.Add(this.groupBox6);
+            this.tabPageRemote.Controls.Add(this.groupBox5);
+            this.tabPageRemote.Controls.Add(this.groupBox4);
+            this.tabPageRemote.Controls.Add(this.groupBox3);
+            this.tabPageRemote.Controls.Add(this.metroButCtrl);
+            this.tabPageRemote.Controls.Add(this.metroButStopVnc);
+            this.tabPageRemote.Controls.Add(this.metroButStartVnc);
+            this.tabPageRemote.Controls.Add(this.Textsharp);
+            this.tabPageRemote.Location = new System.Drawing.Point(4, 22);
+            this.tabPageRemote.Name = "tabPageRemote";
+            this.tabPageRemote.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageRemote.Size = new System.Drawing.Size(1300, 576);
+            this.tabPageRemote.TabIndex = 3;
+            this.tabPageRemote.Text = "远程共享";
+            this.tabPageRemote.UseVisualStyleBackColor = true;
+            // 
+            // groupBox6
+            // 
+            this.groupBox6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox6.Controls.Add(this.TextVNCUser);
+            this.groupBox6.Controls.Add(this.metroLabel26);
+            this.groupBox6.Controls.Add(this.TextVNCPassd);
+            this.groupBox6.Controls.Add(this.metroLabel27);
+            this.groupBox6.Location = new System.Drawing.Point(950, 368);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(349, 80);
+            this.groupBox6.TabIndex = 55;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "用户信息";
+            // 
+            // TextVNCUser
+            // 
+            this.TextVNCUser.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // 
+            // 
+            this.TextVNCUser.CustomButton.Image = null;
+            this.TextVNCUser.CustomButton.Location = new System.Drawing.Point(226, 1);
+            this.TextVNCUser.CustomButton.Name = "";
+            this.TextVNCUser.CustomButton.Size = new System.Drawing.Size(27, 27);
+            this.TextVNCUser.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
+            this.TextVNCUser.CustomButton.TabIndex = 1;
+            this.TextVNCUser.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
+            this.TextVNCUser.CustomButton.UseSelectable = true;
+            this.TextVNCUser.CustomButton.Visible = false;
+            this.TextVNCUser.FontSize = MetroFramework.MetroTextBoxSize.Medium;
+            this.TextVNCUser.Lines = new string[0];
+            this.TextVNCUser.Location = new System.Drawing.Point(95, 19);
+            this.TextVNCUser.MaxLength = 32767;
+            this.TextVNCUser.Name = "TextVNCUser";
+            this.TextVNCUser.PasswordChar = '\0';
+            this.TextVNCUser.ScrollBars = System.Windows.Forms.ScrollBars.None;
+            this.TextVNCUser.SelectedText = "";
+            this.TextVNCUser.SelectionLength = 0;
+            this.TextVNCUser.SelectionStart = 0;
+            this.TextVNCUser.ShortcutsEnabled = true;
+            this.TextVNCUser.Size = new System.Drawing.Size(254, 29);
+            this.TextVNCUser.TabIndex = 49;
+            this.TextVNCUser.UseSelectable = true;
+            this.TextVNCUser.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
+            this.TextVNCUser.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
+            // 
+            // metroLabel26
+            // 
+            this.metroLabel26.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.metroLabel26.AutoSize = true;
+            this.metroLabel26.Location = new System.Drawing.Point(10, 23);
+            this.metroLabel26.Name = "metroLabel26";
+            this.metroLabel26.Size = new System.Drawing.Size(79, 19);
+            this.metroLabel26.TabIndex = 46;
+            this.metroLabel26.Text = "英文用户名";
+            // 
+            // TextVNCPassd
+            // 
+            this.TextVNCPassd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // 
+            // 
+            this.TextVNCPassd.CustomButton.Image = null;
+            this.TextVNCPassd.CustomButton.Location = new System.Drawing.Point(226, 1);
+            this.TextVNCPassd.CustomButton.Name = "";
+            this.TextVNCPassd.CustomButton.Size = new System.Drawing.Size(27, 27);
+            this.TextVNCPassd.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
+            this.TextVNCPassd.CustomButton.TabIndex = 1;
+            this.TextVNCPassd.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
+            this.TextVNCPassd.CustomButton.UseSelectable = true;
+            this.TextVNCPassd.CustomButton.Visible = false;
+            this.TextVNCPassd.FontSize = MetroFramework.MetroTextBoxSize.Medium;
+            this.TextVNCPassd.Lines = new string[] {
+        "密码不写，用户名必写"};
+            this.TextVNCPassd.Location = new System.Drawing.Point(95, 47);
+            this.TextVNCPassd.MaxLength = 32767;
+            this.TextVNCPassd.Name = "TextVNCPassd";
+            this.TextVNCPassd.PasswordChar = '\0';
+            this.TextVNCPassd.ScrollBars = System.Windows.Forms.ScrollBars.None;
+            this.TextVNCPassd.SelectedText = "";
+            this.TextVNCPassd.SelectionLength = 0;
+            this.TextVNCPassd.SelectionStart = 0;
+            this.TextVNCPassd.ShortcutsEnabled = true;
+            this.TextVNCPassd.Size = new System.Drawing.Size(254, 29);
+            this.TextVNCPassd.TabIndex = 47;
+            this.TextVNCPassd.Text = "密码不写，用户名必写";
+            this.TextVNCPassd.UseSelectable = true;
+            this.TextVNCPassd.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
+            this.TextVNCPassd.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
+            // 
+            // metroLabel27
+            // 
+            this.metroLabel27.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.metroLabel27.AutoSize = true;
+            this.metroLabel27.Location = new System.Drawing.Point(10, 49);
+            this.metroLabel27.Name = "metroLabel27";
+            this.metroLabel27.Size = new System.Drawing.Size(37, 19);
+            this.metroLabel27.TabIndex = 48;
+            this.metroLabel27.Text = "密码";
+            // 
+            // groupBox5
+            // 
+            this.groupBox5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox5.Controls.Add(this.ComVNCType);
+            this.groupBox5.Controls.Add(this.metroLabel21);
+            this.groupBox5.Controls.Add(this.metroLabel22);
+            this.groupBox5.Controls.Add(this.TextVNCRemotePort);
+            this.groupBox5.Controls.Add(this.TextVNCLocalPort);
+            this.groupBox5.Controls.Add(this.metroLabel23);
+            this.groupBox5.Location = new System.Drawing.Point(948, 244);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(349, 118);
+            this.groupBox5.TabIndex = 53;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "远程共享设置";
+            // 
+            // ComVNCType
+            // 
+            this.ComVNCType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.ComVNCType.ItemHeight = 23;
+            this.ComVNCType.Items.AddRange(new object[] {
+            "tcp",
+            "udp",
+            "stcp"});
+            this.ComVNCType.Location = new System.Drawing.Point(95, 19);
+            this.ComVNCType.Name = "ComVNCType";
+            this.ComVNCType.Size = new System.Drawing.Size(253, 29);
+            this.ComVNCType.TabIndex = 54;
+            this.ComVNCType.UseSelectable = true;
+            // 
+            // metroLabel21
+            // 
+            this.metroLabel21.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.metroLabel21.AutoSize = true;
+            this.metroLabel21.Location = new System.Drawing.Point(10, 79);
+            this.metroLabel21.Name = "metroLabel21";
+            this.metroLabel21.Size = new System.Drawing.Size(65, 19);
+            this.metroLabel21.TabIndex = 50;
+            this.metroLabel21.Text = "远程端口";
+            // 
+            // metroLabel22
+            // 
+            this.metroLabel22.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.metroLabel22.AutoSize = true;
+            this.metroLabel22.Location = new System.Drawing.Point(10, 23);
+            this.metroLabel22.Name = "metroLabel22";
+            this.metroLabel22.Size = new System.Drawing.Size(37, 19);
+            this.metroLabel22.TabIndex = 46;
+            this.metroLabel22.Text = "协议";
+            // 
+            // TextVNCRemotePort
+            // 
+            this.TextVNCRemotePort.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // 
+            // 
+            this.TextVNCRemotePort.CustomButton.Image = null;
+            this.TextVNCRemotePort.CustomButton.Location = new System.Drawing.Point(226, 1);
+            this.TextVNCRemotePort.CustomButton.Name = "";
+            this.TextVNCRemotePort.CustomButton.Size = new System.Drawing.Size(27, 27);
+            this.TextVNCRemotePort.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
+            this.TextVNCRemotePort.CustomButton.TabIndex = 1;
+            this.TextVNCRemotePort.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
+            this.TextVNCRemotePort.CustomButton.UseSelectable = true;
+            this.TextVNCRemotePort.CustomButton.Visible = false;
+            this.TextVNCRemotePort.FontSize = MetroFramework.MetroTextBoxSize.Medium;
+            this.TextVNCRemotePort.Lines = new string[] {
+        "59001"};
+            this.TextVNCRemotePort.Location = new System.Drawing.Point(95, 75);
+            this.TextVNCRemotePort.MaxLength = 32767;
+            this.TextVNCRemotePort.Name = "TextVNCRemotePort";
+            this.TextVNCRemotePort.PasswordChar = '\0';
+            this.TextVNCRemotePort.ScrollBars = System.Windows.Forms.ScrollBars.None;
+            this.TextVNCRemotePort.SelectedText = "";
+            this.TextVNCRemotePort.SelectionLength = 0;
+            this.TextVNCRemotePort.SelectionStart = 0;
+            this.TextVNCRemotePort.ShortcutsEnabled = true;
+            this.TextVNCRemotePort.Size = new System.Drawing.Size(254, 29);
+            this.TextVNCRemotePort.TabIndex = 49;
+            this.TextVNCRemotePort.Text = "59001";
+            this.TextVNCRemotePort.UseSelectable = true;
+            this.TextVNCRemotePort.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
+            this.TextVNCRemotePort.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
+            // 
+            // TextVNCLocalPort
+            // 
+            this.TextVNCLocalPort.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // 
+            // 
+            this.TextVNCLocalPort.CustomButton.Image = null;
+            this.TextVNCLocalPort.CustomButton.Location = new System.Drawing.Point(226, 1);
+            this.TextVNCLocalPort.CustomButton.Name = "";
+            this.TextVNCLocalPort.CustomButton.Size = new System.Drawing.Size(27, 27);
+            this.TextVNCLocalPort.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
+            this.TextVNCLocalPort.CustomButton.TabIndex = 1;
+            this.TextVNCLocalPort.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
+            this.TextVNCLocalPort.CustomButton.UseSelectable = true;
+            this.TextVNCLocalPort.CustomButton.Visible = false;
+            this.TextVNCLocalPort.FontSize = MetroFramework.MetroTextBoxSize.Medium;
+            this.TextVNCLocalPort.Lines = new string[] {
+        "5900"};
+            this.TextVNCLocalPort.Location = new System.Drawing.Point(95, 47);
+            this.TextVNCLocalPort.MaxLength = 32767;
+            this.TextVNCLocalPort.Name = "TextVNCLocalPort";
+            this.TextVNCLocalPort.PasswordChar = '\0';
+            this.TextVNCLocalPort.ScrollBars = System.Windows.Forms.ScrollBars.None;
+            this.TextVNCLocalPort.SelectedText = "";
+            this.TextVNCLocalPort.SelectionLength = 0;
+            this.TextVNCLocalPort.SelectionStart = 0;
+            this.TextVNCLocalPort.ShortcutsEnabled = true;
+            this.TextVNCLocalPort.Size = new System.Drawing.Size(254, 29);
+            this.TextVNCLocalPort.TabIndex = 47;
+            this.TextVNCLocalPort.Text = "5900";
+            this.TextVNCLocalPort.UseSelectable = true;
+            this.TextVNCLocalPort.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
+            this.TextVNCLocalPort.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
+            // 
+            // metroLabel23
+            // 
+            this.metroLabel23.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.metroLabel23.AutoSize = true;
+            this.metroLabel23.Location = new System.Drawing.Point(10, 49);
+            this.metroLabel23.Name = "metroLabel23";
+            this.metroLabel23.Size = new System.Drawing.Size(65, 19);
+            this.metroLabel23.TabIndex = 48;
+            this.metroLabel23.Text = "本地端口";
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox4.Controls.Add(this.ComRDPType);
+            this.groupBox4.Controls.Add(this.metroLabel18);
+            this.groupBox4.Controls.Add(this.metroLabel19);
+            this.groupBox4.Controls.Add(this.TextRDPRemotePort);
+            this.groupBox4.Controls.Add(this.TextRDPLocalPort);
+            this.groupBox4.Controls.Add(this.metroLabel20);
+            this.groupBox4.Location = new System.Drawing.Point(945, 120);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(349, 118);
+            this.groupBox4.TabIndex = 52;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "远程桌面设置";
+            // 
+            // ComRDPType
+            // 
+            this.ComRDPType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.ComRDPType.ItemHeight = 23;
+            this.ComRDPType.Items.AddRange(new object[] {
+            "tcp",
+            "udp",
+            "stcp"});
+            this.ComRDPType.Location = new System.Drawing.Point(95, 19);
+            this.ComRDPType.Name = "ComRDPType";
+            this.ComRDPType.Size = new System.Drawing.Size(253, 29);
+            this.ComRDPType.TabIndex = 55;
+            this.ComRDPType.UseSelectable = true;
+            // 
+            // metroLabel18
+            // 
+            this.metroLabel18.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.metroLabel18.AutoSize = true;
+            this.metroLabel18.Location = new System.Drawing.Point(10, 79);
+            this.metroLabel18.Name = "metroLabel18";
+            this.metroLabel18.Size = new System.Drawing.Size(65, 19);
+            this.metroLabel18.TabIndex = 50;
+            this.metroLabel18.Text = "远程端口";
+            // 
+            // metroLabel19
+            // 
+            this.metroLabel19.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.metroLabel19.AutoSize = true;
+            this.metroLabel19.Location = new System.Drawing.Point(10, 23);
+            this.metroLabel19.Name = "metroLabel19";
+            this.metroLabel19.Size = new System.Drawing.Size(37, 19);
+            this.metroLabel19.TabIndex = 46;
+            this.metroLabel19.Text = "协议";
+            // 
+            // TextRDPRemotePort
+            // 
+            this.TextRDPRemotePort.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // 
+            // 
+            this.TextRDPRemotePort.CustomButton.Image = null;
+            this.TextRDPRemotePort.CustomButton.Location = new System.Drawing.Point(226, 1);
+            this.TextRDPRemotePort.CustomButton.Name = "";
+            this.TextRDPRemotePort.CustomButton.Size = new System.Drawing.Size(27, 27);
+            this.TextRDPRemotePort.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
+            this.TextRDPRemotePort.CustomButton.TabIndex = 1;
+            this.TextRDPRemotePort.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
+            this.TextRDPRemotePort.CustomButton.UseSelectable = true;
+            this.TextRDPRemotePort.CustomButton.Visible = false;
+            this.TextRDPRemotePort.FontSize = MetroFramework.MetroTextBoxSize.Medium;
+            this.TextRDPRemotePort.Lines = new string[] {
+        "33891"};
+            this.TextRDPRemotePort.Location = new System.Drawing.Point(95, 75);
+            this.TextRDPRemotePort.MaxLength = 32767;
+            this.TextRDPRemotePort.Name = "TextRDPRemotePort";
+            this.TextRDPRemotePort.PasswordChar = '\0';
+            this.TextRDPRemotePort.ScrollBars = System.Windows.Forms.ScrollBars.None;
+            this.TextRDPRemotePort.SelectedText = "";
+            this.TextRDPRemotePort.SelectionLength = 0;
+            this.TextRDPRemotePort.SelectionStart = 0;
+            this.TextRDPRemotePort.ShortcutsEnabled = true;
+            this.TextRDPRemotePort.Size = new System.Drawing.Size(254, 29);
+            this.TextRDPRemotePort.TabIndex = 49;
+            this.TextRDPRemotePort.Text = "33891";
+            this.TextRDPRemotePort.UseSelectable = true;
+            this.TextRDPRemotePort.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
+            this.TextRDPRemotePort.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
+            // 
+            // TextRDPLocalPort
+            // 
+            this.TextRDPLocalPort.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // 
+            // 
+            this.TextRDPLocalPort.CustomButton.Image = null;
+            this.TextRDPLocalPort.CustomButton.Location = new System.Drawing.Point(226, 1);
+            this.TextRDPLocalPort.CustomButton.Name = "";
+            this.TextRDPLocalPort.CustomButton.Size = new System.Drawing.Size(27, 27);
+            this.TextRDPLocalPort.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
+            this.TextRDPLocalPort.CustomButton.TabIndex = 1;
+            this.TextRDPLocalPort.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
+            this.TextRDPLocalPort.CustomButton.UseSelectable = true;
+            this.TextRDPLocalPort.CustomButton.Visible = false;
+            this.TextRDPLocalPort.FontSize = MetroFramework.MetroTextBoxSize.Medium;
+            this.TextRDPLocalPort.Lines = new string[] {
+        "3389"};
+            this.TextRDPLocalPort.Location = new System.Drawing.Point(95, 47);
+            this.TextRDPLocalPort.MaxLength = 32767;
+            this.TextRDPLocalPort.Name = "TextRDPLocalPort";
+            this.TextRDPLocalPort.PasswordChar = '\0';
+            this.TextRDPLocalPort.ScrollBars = System.Windows.Forms.ScrollBars.None;
+            this.TextRDPLocalPort.SelectedText = "";
+            this.TextRDPLocalPort.SelectionLength = 0;
+            this.TextRDPLocalPort.SelectionStart = 0;
+            this.TextRDPLocalPort.ShortcutsEnabled = true;
+            this.TextRDPLocalPort.Size = new System.Drawing.Size(254, 29);
+            this.TextRDPLocalPort.TabIndex = 47;
+            this.TextRDPLocalPort.Text = "3389";
+            this.TextRDPLocalPort.UseSelectable = true;
+            this.TextRDPLocalPort.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
+            this.TextRDPLocalPort.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
+            // 
+            // metroLabel20
+            // 
+            this.metroLabel20.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.metroLabel20.AutoSize = true;
+            this.metroLabel20.Location = new System.Drawing.Point(10, 49);
+            this.metroLabel20.Name = "metroLabel20";
+            this.metroLabel20.Size = new System.Drawing.Size(65, 19);
+            this.metroLabel20.TabIndex = 48;
+            this.metroLabel20.Text = "本地端口";
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox3.Controls.Add(this.TextServerAddr);
+            this.groupBox3.Controls.Add(this.metroLabel15);
+            this.groupBox3.Controls.Add(this.metroLabel17);
+            this.groupBox3.Controls.Add(this.TextToken);
+            this.groupBox3.Controls.Add(this.TextServerPort);
+            this.groupBox3.Controls.Add(this.metroLabel16);
+            this.groupBox3.Location = new System.Drawing.Point(945, 6);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(349, 111);
+            this.groupBox3.TabIndex = 51;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "服务器设置";
+            // 
+            // TextServerAddr
+            // 
+            this.TextServerAddr.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // 
+            // 
+            this.TextServerAddr.CustomButton.Image = null;
+            this.TextServerAddr.CustomButton.Location = new System.Drawing.Point(226, 1);
+            this.TextServerAddr.CustomButton.Name = "";
+            this.TextServerAddr.CustomButton.Size = new System.Drawing.Size(27, 27);
+            this.TextServerAddr.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
+            this.TextServerAddr.CustomButton.TabIndex = 1;
+            this.TextServerAddr.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
+            this.TextServerAddr.CustomButton.UseSelectable = true;
+            this.TextServerAddr.CustomButton.Visible = false;
+            this.TextServerAddr.FontSize = MetroFramework.MetroTextBoxSize.Medium;
+            this.TextServerAddr.Lines = new string[] {
+        "hunan128.com"};
+            this.TextServerAddr.Location = new System.Drawing.Point(95, 19);
+            this.TextServerAddr.MaxLength = 32767;
+            this.TextServerAddr.Name = "TextServerAddr";
+            this.TextServerAddr.PasswordChar = '\0';
+            this.TextServerAddr.ScrollBars = System.Windows.Forms.ScrollBars.None;
+            this.TextServerAddr.SelectedText = "";
+            this.TextServerAddr.SelectionLength = 0;
+            this.TextServerAddr.SelectionStart = 0;
+            this.TextServerAddr.ShortcutsEnabled = true;
+            this.TextServerAddr.Size = new System.Drawing.Size(254, 29);
+            this.TextServerAddr.TabIndex = 45;
+            this.TextServerAddr.Text = "hunan128.com";
+            this.TextServerAddr.UseSelectable = true;
+            this.TextServerAddr.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
+            this.TextServerAddr.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
+            // 
+            // metroLabel15
+            // 
+            this.metroLabel15.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.metroLabel15.AutoSize = true;
+            this.metroLabel15.Location = new System.Drawing.Point(10, 79);
+            this.metroLabel15.Name = "metroLabel15";
+            this.metroLabel15.Size = new System.Drawing.Size(79, 19);
+            this.metroLabel15.TabIndex = 50;
+            this.metroLabel15.Text = "服务器密钥";
+            // 
+            // metroLabel17
+            // 
+            this.metroLabel17.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.metroLabel17.AutoSize = true;
+            this.metroLabel17.Location = new System.Drawing.Point(10, 23);
+            this.metroLabel17.Name = "metroLabel17";
+            this.metroLabel17.Size = new System.Drawing.Size(79, 19);
+            this.metroLabel17.TabIndex = 46;
+            this.metroLabel17.Text = "服务器地址";
+            // 
+            // TextToken
+            // 
+            this.TextToken.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // 
+            // 
+            this.TextToken.CustomButton.Image = null;
+            this.TextToken.CustomButton.Location = new System.Drawing.Point(226, 1);
+            this.TextToken.CustomButton.Name = "";
+            this.TextToken.CustomButton.Size = new System.Drawing.Size(27, 27);
+            this.TextToken.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
+            this.TextToken.CustomButton.TabIndex = 1;
+            this.TextToken.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
+            this.TextToken.CustomButton.UseSelectable = true;
+            this.TextToken.CustomButton.Visible = false;
+            this.TextToken.FontSize = MetroFramework.MetroTextBoxSize.Medium;
+            this.TextToken.Lines = new string[] {
+        "123456"};
+            this.TextToken.Location = new System.Drawing.Point(95, 75);
+            this.TextToken.MaxLength = 32767;
+            this.TextToken.Name = "TextToken";
+            this.TextToken.PasswordChar = '*';
+            this.TextToken.ScrollBars = System.Windows.Forms.ScrollBars.None;
+            this.TextToken.SelectedText = "";
+            this.TextToken.SelectionLength = 0;
+            this.TextToken.SelectionStart = 0;
+            this.TextToken.ShortcutsEnabled = true;
+            this.TextToken.Size = new System.Drawing.Size(254, 29);
+            this.TextToken.TabIndex = 49;
+            this.TextToken.Text = "123456";
+            this.TextToken.UseSelectable = true;
+            this.TextToken.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
+            this.TextToken.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
+            // 
+            // TextServerPort
+            // 
+            this.TextServerPort.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // 
+            // 
+            this.TextServerPort.CustomButton.Image = null;
+            this.TextServerPort.CustomButton.Location = new System.Drawing.Point(226, 1);
+            this.TextServerPort.CustomButton.Name = "";
+            this.TextServerPort.CustomButton.Size = new System.Drawing.Size(27, 27);
+            this.TextServerPort.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
+            this.TextServerPort.CustomButton.TabIndex = 1;
+            this.TextServerPort.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
+            this.TextServerPort.CustomButton.UseSelectable = true;
+            this.TextServerPort.CustomButton.Visible = false;
+            this.TextServerPort.FontSize = MetroFramework.MetroTextBoxSize.Medium;
+            this.TextServerPort.Lines = new string[] {
+        "7000"};
+            this.TextServerPort.Location = new System.Drawing.Point(95, 47);
+            this.TextServerPort.MaxLength = 32767;
+            this.TextServerPort.Name = "TextServerPort";
+            this.TextServerPort.PasswordChar = '\0';
+            this.TextServerPort.ScrollBars = System.Windows.Forms.ScrollBars.None;
+            this.TextServerPort.SelectedText = "";
+            this.TextServerPort.SelectionLength = 0;
+            this.TextServerPort.SelectionStart = 0;
+            this.TextServerPort.ShortcutsEnabled = true;
+            this.TextServerPort.Size = new System.Drawing.Size(254, 29);
+            this.TextServerPort.TabIndex = 47;
+            this.TextServerPort.Text = "7000";
+            this.TextServerPort.UseSelectable = true;
+            this.TextServerPort.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
+            this.TextServerPort.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
+            // 
+            // metroLabel16
+            // 
+            this.metroLabel16.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.metroLabel16.AutoSize = true;
+            this.metroLabel16.Location = new System.Drawing.Point(10, 49);
+            this.metroLabel16.Name = "metroLabel16";
+            this.metroLabel16.Size = new System.Drawing.Size(79, 19);
+            this.metroLabel16.TabIndex = 48;
+            this.metroLabel16.Text = "服务器端口";
+            // 
+            // metroButCtrl
+            // 
+            this.metroButCtrl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.metroButCtrl.Location = new System.Drawing.Point(1187, 454);
+            this.metroButCtrl.Name = "metroButCtrl";
+            this.metroButCtrl.Size = new System.Drawing.Size(106, 35);
+            this.metroButCtrl.TabIndex = 44;
+            this.metroButCtrl.Text = "远程控制";
+            this.metroButCtrl.UseSelectable = true;
+            this.metroButCtrl.Click += new System.EventHandler(this.metroButCtrl_Click);
+            // 
+            // metroButStopVnc
+            // 
+            this.metroButStopVnc.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.metroButStopVnc.Location = new System.Drawing.Point(1060, 454);
+            this.metroButStopVnc.Name = "metroButStopVnc";
+            this.metroButStopVnc.Size = new System.Drawing.Size(106, 35);
+            this.metroButStopVnc.TabIndex = 43;
+            this.metroButStopVnc.Text = "停止共享";
+            this.metroButStopVnc.UseSelectable = true;
+            this.metroButStopVnc.Click += new System.EventHandler(this.metroButStopVnc_Click);
+            // 
+            // metroButStartVnc
+            // 
+            this.metroButStartVnc.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.metroButStartVnc.Location = new System.Drawing.Point(948, 454);
+            this.metroButStartVnc.Name = "metroButStartVnc";
+            this.metroButStartVnc.Size = new System.Drawing.Size(106, 35);
+            this.metroButStartVnc.TabIndex = 42;
+            this.metroButStartVnc.Text = "开始共享";
+            this.metroButStartVnc.UseSelectable = true;
+            this.metroButStartVnc.Click += new System.EventHandler(this.metroButStartVnc_Click);
+            // 
+            // Textsharp
+            // 
+            this.Textsharp.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // 
+            // 
+            this.Textsharp.CustomButton.Image = null;
+            this.Textsharp.CustomButton.Location = new System.Drawing.Point(347, 2);
+            this.Textsharp.CustomButton.Name = "";
+            this.Textsharp.CustomButton.Size = new System.Drawing.Size(575, 575);
+            this.Textsharp.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
+            this.Textsharp.CustomButton.TabIndex = 1;
+            this.Textsharp.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
+            this.Textsharp.CustomButton.UseSelectable = true;
+            this.Textsharp.CustomButton.Visible = false;
+            this.Textsharp.Lines = new string[] {
+        "暂时只支持64位操作系统。自定义使用请灵活更改：远端端口33891-59100之间"};
+            this.Textsharp.Location = new System.Drawing.Point(0, 0);
+            this.Textsharp.MaxLength = 32767;
+            this.Textsharp.Multiline = true;
+            this.Textsharp.Name = "Textsharp";
+            this.Textsharp.PasswordChar = '\0';
+            this.Textsharp.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.Textsharp.SelectedText = "";
+            this.Textsharp.SelectionLength = 0;
+            this.Textsharp.SelectionStart = 0;
+            this.Textsharp.ShortcutsEnabled = true;
+            this.Textsharp.Size = new System.Drawing.Size(925, 580);
+            this.Textsharp.TabIndex = 40;
+            this.Textsharp.Text = "暂时只支持64位操作系统。自定义使用请灵活更改：远端端口33891-59100之间";
+            this.Textsharp.UseSelectable = true;
+            this.Textsharp.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
+            this.Textsharp.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
+            // 
             // BottomToolStripPanel
             // 
             this.BottomToolStripPanel.Location = new System.Drawing.Point(0, 0);
@@ -3988,6 +4616,15 @@
             this.tabControlDOS.ResumeLayout(false);
             this.tabPageSnmp.ResumeLayout(false);
             this.tabPageSnmp.PerformLayout();
+            this.tabPageRemote.ResumeLayout(false);
+            this.groupBox6.ResumeLayout(false);
+            this.groupBox6.PerformLayout();
+            this.groupBox5.ResumeLayout(false);
+            this.groupBox5.PerformLayout();
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -4269,6 +4906,37 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn 结束时间;
         private System.Windows.Forms.DataGridViewTextBoxColumn 保存;
         private System.Windows.Forms.DataGridViewTextBoxColumn 当前版本;
+        private System.Windows.Forms.TabPage tabPageRemote;
+        private MetroFramework.Controls.MetroButton metroButStopVnc;
+        private MetroFramework.Controls.MetroButton metroButStartVnc;
+        private MetroFramework.Controls.MetroTextBox Textsharp;
+        private MetroFramework.Controls.MetroButton metroButCtrl;
+        private System.Windows.Forms.GroupBox groupBox5;
+        private MetroFramework.Controls.MetroComboBox ComVNCType;
+        private MetroFramework.Controls.MetroLabel metroLabel21;
+        private MetroFramework.Controls.MetroLabel metroLabel22;
+        private MetroFramework.Controls.MetroTextBox TextVNCRemotePort;
+        private MetroFramework.Controls.MetroTextBox TextVNCLocalPort;
+        private MetroFramework.Controls.MetroLabel metroLabel23;
+        private System.Windows.Forms.GroupBox groupBox4;
+        private MetroFramework.Controls.MetroComboBox ComRDPType;
+        private MetroFramework.Controls.MetroLabel metroLabel18;
+        private MetroFramework.Controls.MetroLabel metroLabel19;
+        private MetroFramework.Controls.MetroTextBox TextRDPRemotePort;
+        private MetroFramework.Controls.MetroTextBox TextRDPLocalPort;
+        private MetroFramework.Controls.MetroLabel metroLabel20;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private MetroFramework.Controls.MetroTextBox TextServerAddr;
+        private MetroFramework.Controls.MetroLabel metroLabel15;
+        private MetroFramework.Controls.MetroLabel metroLabel17;
+        private MetroFramework.Controls.MetroTextBox TextToken;
+        private MetroFramework.Controls.MetroTextBox TextServerPort;
+        private MetroFramework.Controls.MetroLabel metroLabel16;
+        private System.Windows.Forms.GroupBox groupBox6;
+        private MetroFramework.Controls.MetroTextBox TextVNCUser;
+        private MetroFramework.Controls.MetroLabel metroLabel26;
+        private MetroFramework.Controls.MetroTextBox TextVNCPassd;
+        private MetroFramework.Controls.MetroLabel metroLabel27;
     }
 }
 

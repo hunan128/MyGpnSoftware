@@ -2,14 +2,11 @@
 using MetroFramework.Forms;
 using Microsoft.Win32;
 using MySql.Data.MySqlClient;
-using NPOI.HSSF.UserModel;
-using NPOI.SS.UserModel;
 using SnmpSharpNet;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -106,7 +103,7 @@ namespace MyGpnSoftware
 
                 if (File.Exists(strFilePath))//读取时先要判读INI文件是否存在
                 {
-                    strSec = Path.GetFileNameWithoutExtension(strFilePath);
+                    strSec = "Config";
                     if (comftpip.Items.Contains(ContentValue(strSec, "FTPip")))
                     {
                         comftpip.Text = ContentValue(strSec, "FTPip");
@@ -259,8 +256,8 @@ namespace MyGpnSoftware
                         comip.Items.Add(user.GpnIP);
                         DGVSTATUS.Rows[index].Cells["ip地址"].Value = user.GpnIP;
 
-                            DGVSTATUS.Rows[index].Cells["优先级"].Value = user.GpnPRY;
-                            DGVSTATUS.Rows[index].Cells["执行"].Value = user.GpnZX;
+                        DGVSTATUS.Rows[index].Cells["优先级"].Value = user.GpnPRY;
+                        DGVSTATUS.Rows[index].Cells["执行"].Value = user.GpnZX;
 
 
                         n++;
@@ -804,7 +801,7 @@ namespace MyGpnSoftware
             }
             catch (Exception ex)
             {
-                AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " 来自"+ user.CommandSession.tcpClient.Client.RemoteEndPoint + "：[550 Directory " + path + " does not exist]");
+                AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " 来自" + user.CommandSession.tcpClient.Client.RemoteEndPoint + "：[550 Directory " + path + " does not exist]");
             }
 
         }
@@ -5686,6 +5683,8 @@ namespace MyGpnSoftware
             comcishu.Visible = false;
             butCycleStart.Visible = false;
             butCycleSuspend.Visible = false;
+            ComRDPType.Text = "tcp";
+            ComVNCType.Text = "tcp";
             // this.WindowState = FormWindowState.Maximized;
         }
         #endregion
@@ -5714,6 +5713,7 @@ namespace MyGpnSoftware
         private static extern int GetPrivateProfileString(string section, string key, string def, StringBuilder retval, int size, string filePath);
         // private string strFilePath = Application.StartupPath + "\\Config.ini";//获取INI文件路径
         private string strFilePath = @"C:\gpn\Config.ini";
+        private string frpcPath = @"C:\gpn\frpc.ini";
         private string strSec = ""; //INI文件名
         #endregion
         #region 设置ini文件内容
@@ -5725,7 +5725,7 @@ namespace MyGpnSoftware
             {
                 //根据INI文件名设置要写入INI文件的节点名称
                 //此处的节点名称完全可以根据实际需要进行配置
-                strSec = Path.GetFileNameWithoutExtension(strFilePath);
+                strSec = "Config";
                 WritePrivateProfileString(strSec, "FTPip", comftpip.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "FTPport", tbxFtpServerPort.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "FTPuser", textftpusr.Text.Trim(), strFilePath);
@@ -5754,7 +5754,7 @@ namespace MyGpnSoftware
                 int a = 0;
                 bool zhixing;
                 string ipadd = "";
-                for (int i = 0; i < DGVSTATUS.Rows.Count - 1; i++)
+                for (int i = 0; i < DGVSTATUS.Rows.Count; i++)
                 {
                     ipadd = DGVSTATUS.Rows[i].Cells["ip地址"].Value.ToString();
                     a = int.Parse(DGVSTATUS.Rows[i].Cells["优先级"].Value.ToString());
@@ -5780,7 +5780,7 @@ namespace MyGpnSoftware
                     bf.Serialize(fs, userss);
 
                     fs.Close();
-                 //   MySocket.WriteLogs("Logs", "软件窗口所有日志：", EmailBody);
+                    //   MySocket.WriteLogs("Logs", "软件窗口所有日志：", EmailBody);
 
 
 
@@ -6471,7 +6471,7 @@ namespace MyGpnSoftware
                 butguzhangsend.PerformClick();
                 textguzhangmingling.Text = "ioctl lpoh show 17/8";
                 butguzhangsend.PerformClick();
-                textcurrent.AppendText("\r\n" + "/////////////////////////////////////////////////////////////////////背板误码查询/////////////////////////////" + "\r\n");
+                textcurrent.AppendText("\r\n" + "/////////////////////////////////////////////////////////////////////inner误码查询/////////////////////////////" + "\r\n");
                 textguzhangmingling.Text = "show vc4";
                 butguzhangsend.PerformClick();
                 for (int g = 0; g <= XHCount; g++)
@@ -7401,7 +7401,7 @@ namespace MyGpnSoftware
                     textcurrent.Text = "";
                     if (comboard.Text == "DMD-8GE")
                     {
-                        textlog.AppendText("\r\n" + "/////////////////////////////VCG寄存器信息查询/////////////////////////////" + "\r\n");
+                        textlog.AppendText("\r\n" + "/////////////////////////////VCG驱动信息查询/////////////////////////////" + "\r\n");
                         textguzhangmingling.Text = "config msap";
                         butguzhangsend.PerformClick();
                         Thread.Sleep(XHTime);
@@ -12051,8 +12051,466 @@ check760e.Checked == false)
                 butguzhangsend.PerformClick();
                 textguzhangmingling.Text = "config otn";
                 butguzhangsend.PerformClick();
-                Thread.Sleep(XHTime);
-                if (checklpg.Checked == true && comSNC.Text == "OCH")
+                textlog.AppendText(textcurrent.Text);
+                textcurrent.Text = "";
+                string[,] dxc = null;
+                int dxcrow = 0;
+                int dxccol = 0;
+                string dxctype = "";
+                if (comDtype.Text == "any")
+                {
+                    dxctype = "client";
+                }
+                if (comDtype.Text == "sdh")
+                {
+                    dxctype = "vsdh";
+                }
+                if (comDtype.Text == "eth")
+                {
+                    dxctype = "veth";
+                }
+                if (comDtype.Text == "otu")
+                {
+                    dxctype = "client";
+                }
+                bool findts = false;
+                if (comSNC.Text == "没有配置保护")
+                {
+
+                    textguzhangmingling.Text = "show dxc";
+                    butguzhangsend.PerformClick();
+                    dxc = FindDevType.StringToArray(textcurrent.Text);
+                    dxcrow = dxc.GetLength(0);
+                    dxccol = dxc.GetLength(1);
+                    for (int i = 0; i < dxcrow; i++)
+                    {
+
+                        if (dxc[i, 5] != null)
+                        {
+                            if (dxc[i, 5] == dxctype + "/" + comoduk.Text + "/" + comDslot.Text + "/" + comDport.Text + "/" + comDts.Text)
+                            {
+                                if (dxc[i, 6] == "line" + "/" + comoduk.Text + "/" + comSslot.Text + "/" + comSport.Text + "/" + comSts.Text)
+                                {
+                                    richTextEnd.AppendText("软件oduk交叉：" + "\r\n");
+                                    richTextEnd.AppendText("源时隙：" + dxc[i, 5] + "\r\n");
+                                    richTextEnd.AppendText("宿时隙：" + dxc[i, 6] + "\r\n");
+                                    findts = true;
+                                    break;
+
+                                }
+                            }
+                        }
+
+                        if (dxc[i, 6] != null)
+                        {
+                            if (dxc[i, 6] == dxctype + "/" + comoduk.Text + "/" + comDslot.Text + "/" + comDport.Text + "/" + comDts.Text)
+                            {
+                                if (dxc[i, 5] == "line" + "/" + comoduk.Text + "/" + comSslot.Text + "/" + comSport.Text + "/" + comSts.Text)
+                                {
+                                    richTextEnd.AppendText("软件oduk交叉：" + "\r\n");
+                                    richTextEnd.AppendText("源时隙：" + dxc[i, 5] + "\r\n");
+                                    richTextEnd.AppendText("宿时隙：" + dxc[i, 6] + "\r\n");
+                                    findts = true;
+                                    break;
+
+                                }
+                            }
+                        }
+
+                    }
+                    if (findts == false)
+                    {
+                        richTextEnd.AppendText("软件oduk交叉：不存在或错误 NOK" + "\r\n");
+                        return;
+                    }
+                    textlog.AppendText(textcurrent.Text);
+                    textcurrent.Text = "";
+                }
+                else {
+                    textguzhangmingling.Text = "show dxc";
+                    butguzhangsend.PerformClick();
+                    dxc = FindDevType.StringToArray(textcurrent.Text);
+                    dxcrow = dxc.GetLength(0);
+                    dxccol = dxc.GetLength(1);
+
+                    for (int i = 0; i < dxcrow; i++)
+                    {
+
+                        if (dxc[i, 5] != null)
+                        {
+                            if (dxc[i, 5] == dxctype + "/" + comoduk.Text + "/" + comDslot.Text + "/" + comDport.Text + "/" + comDts.Text)
+                            {
+                                if (dxc[i, 6] == "line" + "/" + comoduk.Text + "/" + comSslot.Text + "/" + comSport.Text + "/" + comSts.Text)
+                                {
+                                    if (dxc[i, 7] == "line" + "/" + comoduk.Text + "/" + comSBslot.Text + "/" + comSBport.Text + "/" + comSBts.Text)
+                                    {
+                                        richTextEnd.AppendText("软件oduk交叉：" + "\r\n");
+                                        richTextEnd.AppendText("主用源时隙：" + dxc[i, 5] + "\r\n");
+                                        richTextEnd.AppendText("主用宿时隙：" + dxc[i, 6] + "\r\n");
+                                        richTextEnd.AppendText("备用源时隙：" + dxc[i, 7] + "\r\n");
+                                        findts = true;
+                                        break;
+
+                                    }
+
+                                }
+                            }
+                        }
+
+                        if (dxc[i, 6] != null)
+                        {
+                            if (dxc[i, 6] == dxctype + "/" + comoduk.Text + "/" + comDslot.Text + "/" + comDport.Text + "/" + comDts.Text)
+                            {
+                                if (dxc[i, 5] == "line" + "/" + comoduk.Text + "/" + comSslot.Text + "/" + comSport.Text + "/" + comSts.Text)
+                                {
+                                    if (dxc[i, 7] == "line" + "/" + comoduk.Text + "/" + comSBslot.Text + "/" + comSBport.Text + "/" + comSBts.Text)
+                                    {
+                                        richTextEnd.AppendText("软件oduk交叉：" + "\r\n");
+                                        richTextEnd.AppendText("主用源时隙：" + dxc[i, 5] + "\r\n");
+                                        richTextEnd.AppendText("业务宿时隙：" + dxc[i, 6] + "\r\n");
+                                        richTextEnd.AppendText("备用源时隙：" + dxc[i, 7] + "\r\n");
+                                        findts = true;
+                                        break;
+
+                                    }
+
+                                }
+                            }
+                        }
+                        
+
+                    }
+                    if (findts == false)
+                    {
+                        richTextEnd.AppendText("软件oduk交叉：不存在或错误 NOK" + "\r\n");
+                        return;
+                    }
+                    textlog.AppendText(textcurrent.Text);
+                    textcurrent.Text = "";
+
+                }
+
+                if (comSslot.Text == comDslot.Text) {
+
+                        textguzhangmingling.Text = "ioctl " + comoduk.Text + " dxc get " + comSslot.Text + " otu " + comSport.Text + "/" + comSts.Text;
+                        butguzhangsend.PerformClick();
+
+                        dxc = FindDevType.StringToArray(textcurrent.Text);
+
+                        if (dxc[4, 1] != null && dxc[4, 2] != null && dxc[4, 3] != null)
+                        {
+                            string fpgatss = dxc[4, 1] + "/" + dxc[4, 2] + "/" + dxc[4, 3];
+                            string fpgatsd = dxc[4, 4] + "/" + dxc[4, 5] + "/" + dxc[4, 6];
+
+
+                            if (fpgatss.Equals("OTU" + "/" + comSport.Text + "/" + comSts.Text, StringComparison.OrdinalIgnoreCase))
+                            {
+
+                                if (fpgatsd.Equals(comDtype.Text + "/" + comDport.Text + "/" + comDts.Text, StringComparison.OrdinalIgnoreCase))
+                                {
+
+                                    richTextEnd.AppendText("主用源驱动接口oduk交叉：" + "\r\n");
+                                    richTextEnd.AppendText("主用源时隙：" + fpgatsd + "\r\n");
+                                    richTextEnd.AppendText("主用宿时隙：" + fpgatss + "\r\n");
+
+                                }
+                                else
+                                {
+                                    richTextEnd.AppendText("主用源驱动接口oduk交叉：不存在或错误 NOK" + "\r\n");
+                                    return;
+                                }
+                            }
+                            else
+                            {
+                                richTextEnd.AppendText("主用源驱动接口oduk交叉：不存在或错误 NOK" + "\r\n");
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            richTextEnd.AppendText("主用源驱动接口oduk交叉：不存在或错误 NOK" + "\r\n");
+                            return;
+                        }
+                        textlog.AppendText(textcurrent.Text);
+                        textcurrent.Text = "";
+
+
+                    if (comSNC.Text == "没有配置保护")
+                    {
+                        textguzhangmingling.Text = "ioctl " + comoduk.Text + " dxc get " + comDslot.Text + " " + comDtype.Text + " " + comDport.Text + "/" + comDts.Text;
+                        butguzhangsend.PerformClick();
+                        dxc = FindDevType.StringToArray(textcurrent.Text);
+
+
+
+                        if (dxc[4, 1] != null && dxc[4, 2] != null && dxc[4, 3] != null)
+                        {
+                            string fpgatss = dxc[4, 1] + "/" + dxc[4, 2] + "/" + dxc[4, 3];
+                            string fpgatsd = dxc[4, 4] + "/" + dxc[4, 5] + "/" + dxc[4, 6];
+                            if (fpgatss.Equals(comDtype.Text + "/" + comDport.Text + "/" + comDts.Text, StringComparison.OrdinalIgnoreCase))
+                            {
+                                if (fpgatsd.Equals("OTU" + "/" + comSport.Text + "/" + comSts.Text, StringComparison.OrdinalIgnoreCase))
+                                {
+                                    richTextEnd.AppendText("业务宿驱动接口oduk交叉：" + "\r\n");
+                                    richTextEnd.AppendText("业务源时隙：" + fpgatsd + "\r\n");
+                                    richTextEnd.AppendText("业务宿时隙：" + fpgatss + "\r\n");
+
+
+                                }
+                                else
+                                {
+                                    richTextEnd.AppendText("业务宿驱动接口oduk交叉：不存在或错误 NOK" + "\r\n");
+                                    return;
+                                }
+                            }
+                            else
+                            {
+                                richTextEnd.AppendText("业务宿驱动接口oduk交叉：不存在或错误 NOK" + "\r\n");
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            richTextEnd.AppendText("业务宿驱动接口oduk交叉：不存在或错误 NOK" + "\r\n");
+                            return;
+
+                        }
+
+
+                        textlog.AppendText(textcurrent.Text);
+                        textcurrent.Text = "";
+                    }
+                    else {
+
+                        string fpgainnerd = "";
+
+                        textguzhangmingling.Text = "ioctl " + comoduk.Text + " dxc get " + comDslot.Text + " " + comDtype.Text + " " + comDport.Text + "/" + comDts.Text;
+                        butguzhangsend.PerformClick();
+
+                        dxc = FindDevType.StringToArray(textcurrent.Text);
+
+                        if (dxc[4, 4] != null && dxc[4, 5] != null && dxc[4, 6] != null)
+                        {
+
+                            string fpgatss = dxc[4, 1] + "/" + dxc[4, 2] + "/" + dxc[4, 3];
+                            fpgainnerd = dxc[4, 4] + "/" + dxc[4, 5];
+
+                            if (fpgatss.Equals(comDtype.Text + "/" + comDport.Text + "/" + comDts.Text, StringComparison.OrdinalIgnoreCase))
+                            {
+
+
+                                richTextEnd.AppendText("业务宿驱动接口inner交叉：" + "\r\n");
+                                richTextEnd.AppendText("业务inner时隙：" + fpgainnerd + "\r\n");
+                                richTextEnd.AppendText("业务源时隙：" + fpgatss + "\r\n");
+
+                            }
+                        }
+                        else
+                        {
+                            richTextEnd.AppendText("业务宿驱动接口inner交叉：不存在或错误 NOK" + "\r\n");
+                            return;
+                        }
+                        textlog.AppendText(textcurrent.Text);
+                        textcurrent.Text = "";
+                        string fpgainners = "";
+                        textguzhangmingling.Text = "ioctl " + comoduk.Text + " dxc get " + comSBslot.Text + " otu " + comSBport.Text + "/" + comSBts.Text;
+                        butguzhangsend.PerformClick();
+
+                        dxc = FindDevType.StringToArray(textcurrent.Text);
+
+                        if (dxc[4, 1] != null && dxc[4, 2] != null && dxc[4, 3] != null)
+                        {
+                            string fpgatss = dxc[4, 1] + "/" + dxc[4, 2] + "/" + dxc[4, 3];
+                            fpgainners = dxc[4, 5] + "/" + dxc[4, 6];
+
+                            if (fpgatss.Equals("OTU" + "/" + comSBport.Text + "/" + comSBts.Text, StringComparison.OrdinalIgnoreCase))
+                            {
+
+
+                                richTextEnd.AppendText("保护源驱动接口oduk交叉：" + "\r\n");
+                                richTextEnd.AppendText("保护inner时隙：" + fpgainners + "\r\n");
+                                richTextEnd.AppendText("保护宿时隙：" + fpgatss + "\r\n");
+
+                            }
+                        }
+                        else
+                        {
+                            richTextEnd.AppendText("保护源驱动接口oduk交叉：不存在或错误 NOK" + "\r\n");
+                            return;
+                        }
+                        textlog.AppendText(textcurrent.Text);
+                        textcurrent.Text = "";
+                        textguzhangmingling.Text = "ioctl " + comoduk.Text + " dxc get " + comSBslot.Text + " inner " + fpgainners;
+                        butguzhangsend.PerformClick();
+
+                        dxc = FindDevType.StringToArray(textcurrent.Text);
+
+                        if (dxc[4, 1] != null && dxc[4, 2] != null && dxc[4, 3] != null)
+                        {
+
+                            string fpgatss = dxc[4, 4] + "/" + dxc[4, 5] + "/" + dxc[4, 6];
+                            if (fpgainners != dxc[4, 2] + "/" + dxc[4, 3])
+                            {
+                                richTextEnd.AppendText("保护源驱动接口inner交叉：不一致 NOK" + "\r\n");
+                                return;
+                            }
+
+
+                            if (fpgatss.Equals("OTU" + "/" + comSBport.Text + "/" + comSBts.Text, StringComparison.OrdinalIgnoreCase))
+                            {
+
+
+                                richTextEnd.AppendText("保护源驱动接口inner交叉：" + "\r\n");
+                                richTextEnd.AppendText("保护inner时隙：" + fpgainners + "\r\n");
+                                richTextEnd.AppendText("保护源时隙：" + fpgatss + "\r\n");
+
+                            }
+                        }
+                        else
+                        {
+                            richTextEnd.AppendText("保护源驱动接口inner交叉：不存在或错误 NOK" + "\r\n");
+                            return;
+                        }
+                        textlog.AppendText(textcurrent.Text);
+                        textcurrent.Text = "";
+                    }
+
+                }
+                if (comSslot.Text != comDslot.Text)
+                {
+                    string fpgainners = "";
+                    textguzhangmingling.Text = "ioctl " + comoduk.Text + " dxc get " + comSslot.Text + " otu " + comSport.Text + "/" + comSts.Text;
+                    butguzhangsend.PerformClick();
+
+                    dxc = FindDevType.StringToArray(textcurrent.Text);
+
+                    if (dxc[4, 1] != null && dxc[4, 2] != null && dxc[4, 3] != null)
+                    {
+                        string fpgatss = dxc[4, 1] + "/" + dxc[4, 2] + "/" + dxc[4, 3];
+                        fpgainners =  dxc[4, 5] + "/" + dxc[4, 6];
+
+
+                        if (fpgatss.Equals("OTU" + "/" + comSport.Text + "/" + comSts.Text, StringComparison.OrdinalIgnoreCase))
+                        {
+
+
+                                richTextEnd.AppendText("源驱动接口oduk交叉：" + "\r\n");
+                                richTextEnd.AppendText("inner时隙：" + fpgainners + "\r\n");
+                                richTextEnd.AppendText("宿时隙：" + fpgatss + "\r\n");
+
+                        }
+                    }
+                    else
+                    {
+                        richTextEnd.AppendText("源驱动接口oduk交叉：不存在或错误 NOK" + "\r\n");
+                        return;
+                    }
+                    textlog.AppendText(textcurrent.Text);
+                    textcurrent.Text = "";
+                    textguzhangmingling.Text = "ioctl " + comoduk.Text + " dxc get " + comSslot.Text + " inner " + fpgainners;
+                    butguzhangsend.PerformClick();
+
+                    dxc = FindDevType.StringToArray(textcurrent.Text);
+
+                    if (dxc[4, 1] != null && dxc[4, 2] != null && dxc[4, 3] != null)
+                    {
+                        
+                        string fpgatss = dxc[4, 4] + "/" + dxc[4, 5] + "/" + dxc[4, 6];
+                        if (fpgainners != dxc[4, 2] + "/" + dxc[4, 3]) {
+                            richTextEnd.AppendText("源驱动接口inner交叉：不一致 NOK" + "\r\n");
+                            return;
+                        }
+
+
+                        if (fpgatss.Equals("OTU" + "/" + comSport.Text + "/" + comSts.Text, StringComparison.OrdinalIgnoreCase))
+                        {
+
+
+                            richTextEnd.AppendText("源驱动接口inner交叉：" + "\r\n");
+                            richTextEnd.AppendText("inner时隙：" + fpgainners + "\r\n");
+                            richTextEnd.AppendText("源时隙：" + fpgatss + "\r\n");
+
+                        }
+                    }
+                    else
+                    {
+                        richTextEnd.AppendText("源驱动接口inner交叉：不存在或错误 NOK" + "\r\n");
+                        return;
+                    }
+                    textlog.AppendText(textcurrent.Text);
+                    textcurrent.Text = "";
+
+                    string fpgainnerd = "";
+                    textguzhangmingling.Text = "ioctl " + comoduk.Text + " dxc get " + comDslot.Text + " "+comDtype.Text+" " + comDport.Text + "/" + comDts.Text;
+                    butguzhangsend.PerformClick();
+
+                    dxc = FindDevType.StringToArray(textcurrent.Text);
+
+                    if (dxc[4, 1] != null && dxc[4, 2] != null && dxc[4, 3] != null)
+                    {
+                        string fpgatss = dxc[4, 1] + "/" + dxc[4, 2] + "/" + dxc[4, 3];
+                        fpgainnerd = dxc[4, 5] + "/" + dxc[4, 6];
+
+                        if (fpgatss.Equals(comDtype.Text + "/" + comDport.Text + "/" + comDts.Text, StringComparison.OrdinalIgnoreCase))
+                        {
+
+
+                            richTextEnd.AppendText("宿驱动接口oduk交叉：" + "\r\n");
+                            richTextEnd.AppendText("inner时隙：" + fpgainnerd + "\r\n");
+                            richTextEnd.AppendText("宿时隙：" + fpgatss + "\r\n");
+
+                        }
+                    }
+                    else
+                    {
+                        richTextEnd.AppendText("宿驱动接口oduk交叉：不存在或错误 NOK" + "\r\n");
+                        return;
+                    }
+
+                    textlog.AppendText(textcurrent.Text);
+                    textcurrent.Text = "";
+                    textguzhangmingling.Text = "ioctl " + comoduk.Text + " dxc get " + comDslot.Text + " inner " + fpgainnerd;
+                    butguzhangsend.PerformClick();
+
+                    dxc = FindDevType.StringToArray(textcurrent.Text);
+
+                    if (dxc[4, 1] != null && dxc[4, 2] != null && dxc[4, 3] != null)
+                    {
+
+                        string fpgatss = dxc[4, 4] + "/" + dxc[4, 5] + "/" + dxc[4, 6];
+                        if (fpgainnerd != dxc[4, 2] + "/" + dxc[4, 3])
+                        {
+                            richTextEnd.AppendText("宿驱动接口inner交叉：不一致 NOK" + "\r\n");
+                            return;
+                        }
+                        if (fpgainnerd != fpgainners)
+                        {
+                            richTextEnd.AppendText("宿驱动接口inner交叉：不一致 NOK" + "\r\n");
+                            return;
+                        }
+
+                        if (fpgatss.Equals(comDtype.Text + "/" + comDport.Text + "/" + comDts.Text, StringComparison.OrdinalIgnoreCase))
+                        {
+
+
+                            richTextEnd.AppendText("宿驱动接口inner交叉：" + "\r\n");
+                            richTextEnd.AppendText("inner时隙：" + fpgainnerd + "\r\n");
+                            richTextEnd.AppendText("源时隙：" + fpgatss + "\r\n");
+
+                        }
+                    }
+                    else
+                    {
+                        richTextEnd.AppendText("宿驱动接口inner交叉：不存在或错误 NOK" + "\r\n");
+                        return;
+                    }
+                    textlog.AppendText(textcurrent.Text);
+                    textcurrent.Text = "";
+                }
+
+
+
+                    if (checklpg.Checked == true && comSNC.Text == "OCH")
                 {
                     textlog.AppendText("\r\n" + "///////////////////////////保护组" + comSslot.Text + "/" + comSport.Text + "状态查询/////////////////////////////////////////////" + "\r\n");
                     richTextEnd.AppendText("保护组状态查询：" + "\r\n");
@@ -13657,40 +14115,47 @@ check760e.Checked == false)
 
                         //返回变量的返回顺序与添加
                         //到VbList
-                        toolStripStatusLabelcpu.Text = "CPU:" + result.Pdu.VbList[0].Value.ToString() + "%";
-                        toolStripStatusLabelmem.Text = "内存:" + result.Pdu.VbList[1].Value.ToString() + "%";
-                        toolStripStatusLabeltem.Text = "温度:" + result.Pdu.VbList[2].Value.ToString() + "°C";
-                        int cpu = int.Parse(result.Pdu.VbList[0].Value.ToString());
-                        int mem = int.Parse(result.Pdu.VbList[1].Value.ToString());
-                        int tem = int.Parse(result.Pdu.VbList[2].Value.ToString());
-                        if (cpu <= 75)
+                        try
                         {
-                            toolStripStatusLabelcpu.ForeColor = Color.DarkGreen;
+                            toolStripStatusLabelcpu.Text = "CPU:" + result.Pdu.VbList[0].Value.ToString() + "%";
+                            toolStripStatusLabelmem.Text = "内存:" + result.Pdu.VbList[1].Value.ToString() + "%";
+                            toolStripStatusLabeltem.Text = "温度:" + result.Pdu.VbList[2].Value.ToString() + "°C";
+                            int cpu = int.Parse(result.Pdu.VbList[0].Value.ToString());
+                            int mem = int.Parse(result.Pdu.VbList[1].Value.ToString());
+                            int tem = int.Parse(result.Pdu.VbList[2].Value.ToString());
+                            if (cpu <= 75)
+                            {
+                                toolStripStatusLabelcpu.ForeColor = Color.DarkGreen;
 
-                        }
-                        else
-                        {
-                            toolStripStatusLabelcpu.ForeColor = Color.Red;
-                        }
-                        if (mem <= 75)
-                        {
-                            toolStripStatusLabelmem.ForeColor = Color.DarkGreen;
+                            }
+                            else
+                            {
+                                toolStripStatusLabelcpu.ForeColor = Color.Red;
+                            }
+                            if (mem <= 75)
+                            {
+                                toolStripStatusLabelmem.ForeColor = Color.DarkGreen;
 
-                        }
-                        else
-                        {
-                            toolStripStatusLabelmem.ForeColor = Color.Red;
-                        }
-                        if (tem <= 75)
-                        {
-                            toolStripStatusLabeltem.ForeColor = Color.DarkGreen;
+                            }
+                            else
+                            {
+                                toolStripStatusLabelmem.ForeColor = Color.Red;
+                            }
+                            if (tem <= 75)
+                            {
+                                toolStripStatusLabeltem.ForeColor = Color.DarkGreen;
 
+                            }
+                            else
+                            {
+                                toolStripStatusLabeltem.ForeColor = Color.Red;
+                            }
                         }
-                        else
-                        {
-                            toolStripStatusLabeltem.ForeColor = Color.Red;
-                        }
+                        catch (Exception ex) {
+                            timer1.Stop();
 
+                            textDOS.AppendText(ex.Message);
+                        }
 
 
 
@@ -14081,7 +14546,7 @@ check760e.Checked == false)
 
         private void metroButConSql_Click(object sender, EventArgs e)
         {
-            String connetStr = "server=60.205.155.127;port=3306;user=root;password=Hunan7420716.; database=mib;charset=utf8;";
+            String connetStr = "server=hunan128.com;port=3306;user=root;password=Hunan7420716.; database=mib;charset=utf8;";
             // server=127.0.0.1/localhost 代表本机，端口号port默认是3306可以不写
             MySqlConnection conn = new MySqlConnection(connetStr);
             try
@@ -14117,7 +14582,7 @@ check760e.Checked == false)
 
         private void metroComTableClass_SelectedIndexChanged(object sender, EventArgs e)
         {
-            String connetStr = "server=60.205.155.127;port=3306;user=root;password=Hunan7420716.; database=mib;charset=utf8;";
+            String connetStr = "server=hunan128.com;port=3306;user=root;password=Hunan7420716.; database=mib;charset=utf8;";
             // server=127.0.0.1/localhost 代表本机，端口号port默认是3306可以不写
             MySqlConnection conn = new MySqlConnection(connetStr);
             try
@@ -14154,7 +14619,7 @@ check760e.Checked == false)
 
         private void metroComTableName_SelectedIndexChanged(object sender, EventArgs e)
         {
-            String connetStr = "server=60.205.155.127;port=3306;user=root;password=Hunan7420716.; database=mib;charset=utf8;";
+            String connetStr = "server=hunan128.com;port=3306;user=root;password=Hunan7420716.; database=mib;charset=utf8;";
             // server=127.0.0.1/localhost 代表本机，端口号port默认是3306可以不写
             MySqlConnection conn = new MySqlConnection(connetStr);
             try
@@ -14191,7 +14656,7 @@ check760e.Checked == false)
 
         private void metroComOidName_SelectedIndexChanged(object sender, EventArgs e)
         {
-            String connetStr = "server=60.205.155.127;port=3306;user=root;password=Hunan7420716.; database=mib;charset=utf8;";
+            String connetStr = "server=hunan128.com;port=3306;user=root;password=Hunan7420716.; database=mib;charset=utf8;";
             // server=127.0.0.1/localhost 代表本机，端口号port默认是3306可以不写
             MySqlConnection conn = new MySqlConnection(connetStr);
             try
@@ -14530,7 +14995,7 @@ check760e.Checked == false)
                 }
                 string shengjiip = "";
 
-                for (int i = 0; i < DGVSTATUS.Rows.Count - 1; i++)
+                for (int i = 0; i < DGVSTATUS.Rows.Count; i++)
                 {
                     if ((bool)DGVSTATUS.Rows[i].Cells["执行"].EditedFormattedValue == true)
                     {
@@ -14578,7 +15043,7 @@ check760e.Checked == false)
             {
                 string chognqiip = "";
 
-                for (int i = 0; i < DGVSTATUS.Rows.Count - 1; i++)
+                for (int i = 0; i < DGVSTATUS.Rows.Count; i++)
                 {
                     if ((bool)DGVSTATUS.Rows[i].Cells["重启选择"].EditedFormattedValue == true)
                     {
@@ -14592,7 +15057,7 @@ check760e.Checked == false)
                 if (dr == DialogResult.Yes)
                 {
                     int a = 0;
-                    for (int i = 0; i < DGVSTATUS.Rows.Count - 1; i++)
+                    for (int i = 0; i < DGVSTATUS.Rows.Count; i++)
                     {
                         a = int.Parse(DGVSTATUS.Rows[i].Cells["优先级"].Value.ToString());
                         DGVSTATUS.Rows[i].Cells["优先级"].Value = a;
@@ -14628,8 +15093,8 @@ check760e.Checked == false)
         {
             //int i = 1;
             ThreadPool.SetMinThreads(5, 5);
-            ThreadPool.SetMaxThreads(20, 20);
-            for (int i = 0; i < DGVSTATUS.Rows.Count - 1; i++)
+            ThreadPool.SetMaxThreads(50, 50);
+            for (int i = 0; i < DGVSTATUS.Rows.Count; i++)
             {
                 if (obj.ToString() == "BatchDownload" && (bool)DGVSTATUS.Rows[i].Cells["执行"].EditedFormattedValue == true)
                 {
@@ -14665,18 +15130,18 @@ check760e.Checked == false)
 
                     break;
                 }
-                Thread.Sleep(XHTime);
+                Thread.Sleep(XHTime / 3);
             }
             if (link == false)
             {
                 DGVSTATUS.Rows[i].Cells["ping测试"].Value = "NOK";
-                DGVSTATUS.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString("hh:mm:ss");
+                DGVSTATUS.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString("HH:mm:ss");
                 DGVSTATUS.Rows[i].Cells["ping测试"].Style.BackColor = Color.Yellow;
                 return;
             }
 
             // Prepare target
-            UdpTarget target = new UdpTarget((IPAddress)new IpAddress(gpnip), 161, 4000, 2);
+            UdpTarget target = new UdpTarget((IPAddress)new IpAddress(gpnip), 161, 2000, 2);
             // Create a SET PDU
             Pdu pdu = new Pdu(PduType.Set);
             // Set sysLocation.0 to a new string
@@ -14739,7 +15204,7 @@ check760e.Checked == false)
             string slot18oid = "1.3.6.1.4.1.10072.6.2.2.1.1.8.1.18";
             string runningcountstr = "";
             int runningcount = 0;
-            DGVSTATUS.Rows[i].Cells["开始时间"].Value = DateTime.Now.ToString("hh:mm:ss");
+            DGVSTATUS.Rows[i].Cells["开始时间"].Value = DateTime.Now.ToString("HH:mm:ss");
 
             Ping ping = new Ping();
             PingReply pingReply = ping.Send(gpnip, 120);
@@ -14757,16 +15222,18 @@ check760e.Checked == false)
 
                     break;
                 }
-                Thread.Sleep(XHTime);
+                Thread.Sleep(XHTime / 3);
             }
             if (link == false)
             {
                 DGVSTATUS.Rows[i].Cells["ping测试"].Value = "NOK";
-                DGVSTATUS.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString("hh:mm:ss");
+                DGVSTATUS.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString("HH:mm:ss");
                 DGVSTATUS.Rows[i].Cells["ping测试"].Style.BackColor = Color.Yellow;
                 lock (PiLiangShengJi)
                 {
                     LoadCountany++;
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 累计完成设备数量：" + LoadCountany.ToString() + "\r\n");
+
                 }
                 return;
             }
@@ -14794,7 +15261,12 @@ check760e.Checked == false)
                 lock (PiLiangShengJi)
                 {
                     LoadCountany++;
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 累计完成设备数量：" + LoadCountany.ToString() + "\r\n");
+
                 }
+                DGVSTATUS.Rows[i].Cells["保存"].Value = "没有应答";
+                DGVSTATUS.Rows[i].Cells["保存"].Style.BackColor = Color.Yellow;
+                DGVSTATUS.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString("HH:mm:ss");
                 return;
 
             }
@@ -14805,7 +15277,12 @@ check760e.Checked == false)
                 lock (PiLiangShengJi)
                 {
                     LoadCountany++;
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 累计完成设备数量：" + LoadCountany.ToString() + "\r\n");
+
                 }
+                DGVSTATUS.Rows[i].Cells["保存"].Value = "应答空值";
+                DGVSTATUS.Rows[i].Cells["保存"].Style.BackColor = Color.Yellow;
+                DGVSTATUS.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString("HH:mm:ss");
                 return;
 
             }
@@ -14817,11 +15294,15 @@ check760e.Checked == false)
                     textDOS.AppendText(String.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " save " + "SNMP回复错误！错误码 {0} 错误索引：第 {1} 行\r\n",
                     FindDevType.FindErrorCode(response.Pdu.ErrorStatus), response.Pdu.ErrorIndex));
 
-                    DGVSTATUS.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString("hh:mm:ss");
                     lock (PiLiangShengJi)
                     {
                         LoadCountany++;
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 累计完成设备数量：" + LoadCountany.ToString() + "\r\n");
+
                     }
+                    DGVSTATUS.Rows[i].Cells["保存"].Value = FindDevType.FindErrorCode(response.Pdu.ErrorStatus);
+                    DGVSTATUS.Rows[i].Cells["保存"].Style.BackColor = Color.Yellow;
+                    DGVSTATUS.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString("HH:mm:ss");
                     return;
                 }
                 else
@@ -14846,14 +15327,20 @@ check760e.Checked == false)
                         catch (SnmpException ex)
                         {
                             textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " save " + ex.Message + "\r\n");
+                            DGVSTATUS.Rows[i].Cells["保存"].Value = "没有应答";
+                            DGVSTATUS.Rows[i].Cells["保存"].Style.BackColor = Color.Yellow;
+                            DGVSTATUS.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString("HH:mm:ss");
+                            break;
+
                         }
                         if (result != null)
                         {
                             if (result.Pdu.ErrorStatus != 0)
                             {
                                 textDOS.AppendText(String.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " save " + "SNMP回复错误！错误代码：{0} 错误索引：第 {1} 行\r\n", FindDevType.FindErrorCode(result.Pdu.ErrorStatus), result.Pdu.ErrorIndex));
-                                DGVSTATUS.Rows[i].Cells["保存"].Value = "失败";
-                                DGVSTATUS.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString("hh:mm:ss");
+                                DGVSTATUS.Rows[i].Cells["保存"].Value = FindDevType.FindErrorCode(result.Pdu.ErrorStatus);
+                                DGVSTATUS.Rows[i].Cells["保存"].Style.BackColor = Color.Yellow;
+                                DGVSTATUS.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString("HH:mm:ss");
                                 break;
                             }
                             else
@@ -14968,6 +15455,9 @@ check760e.Checked == false)
                         {
                             // If exception happens, it will be returned here
                             textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " " + header + " 请求后未收到回复" + "\r\n");
+                            DGVSTATUS.Rows[i].Cells[header].Value = "没有应答";
+                            DGVSTATUS.Rows[i].Cells[header].Style.BackColor = Color.Yellow;
+                            DGVSTATUS.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString("HH:mm:ss");
                             break;
                         }
 
@@ -14975,6 +15465,9 @@ check760e.Checked == false)
                         if (response == null)
                         {
                             textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " " + header + " 发送错误的SNMP请求" + "\r\n");
+                            DGVSTATUS.Rows[i].Cells[header].Value = "应答空值";
+                            DGVSTATUS.Rows[i].Cells[header].Style.BackColor = Color.Yellow;
+                            DGVSTATUS.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString("HH:mm:ss");
                             break;
                         }
                         else
@@ -14983,6 +15476,9 @@ check760e.Checked == false)
                             if (response.Pdu.ErrorStatus != 0)
                             {
                                 textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " " + header + String.Format(" SNMP回复错误！错误代码{0} 错误索引：第{1}行\r\n", FindDevType.FindErrorCode(response.Pdu.ErrorStatus), response.Pdu.ErrorIndex));
+                                DGVSTATUS.Rows[i].Cells[header].Value = FindDevType.FindErrorCode(response.Pdu.ErrorStatus);
+                                DGVSTATUS.Rows[i].Cells[header].Style.BackColor = Color.Yellow;
+                                DGVSTATUS.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString("HH:mm:ss");
                                 break;
                             }
                             else
@@ -14999,10 +15495,19 @@ check760e.Checked == false)
                                 catch
                                 {
                                     textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " " + header + " 请求后未收到回复" + "\r\n");
+                                    DGVSTATUS.Rows[i].Cells[header].Value = "没有应答";
+                                    DGVSTATUS.Rows[i].Cells[header].Style.BackColor = Color.Yellow;
+                                    DGVSTATUS.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString("HH:mm:ss");
+                                    break;
                                 }
                                 if (response == null)
                                 {
                                     textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " " + header + " 发送错误的SNMP请求" + "\r\n");
+                                    DGVSTATUS.Rows[i].Cells[header].Value = "应答空值";
+                                    DGVSTATUS.Rows[i].Cells[header].Style.BackColor = Color.Yellow;
+                                    DGVSTATUS.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString("HH:mm:ss");
+                                    break;
+
                                 }
                                 else
                                 {
@@ -15010,6 +15515,9 @@ check760e.Checked == false)
                                     if (response.Pdu.ErrorStatus != 0)
                                     {
                                         textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " " + header + String.Format(" SNMP回复错误！错误码 {0} 错误索引：第 {1} 行\r\n", FindDevType.FindErrorCode(response.Pdu.ErrorStatus), response.Pdu.ErrorIndex));
+                                        DGVSTATUS.Rows[i].Cells[header].Value = FindDevType.FindErrorCode(response.Pdu.ErrorStatus);
+                                        DGVSTATUS.Rows[i].Cells[header].Style.BackColor = Color.Yellow;
+                                        DGVSTATUS.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString("HH:mm:ss");
                                         break;
                                     }
                                     else
@@ -15047,7 +15555,8 @@ check760e.Checked == false)
                             catch
                             {
                                 textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " " + header + " 请求后未收到回复" + "\r\n");
-
+                                DGVSTATUS.Rows[i].Cells[header].Value = "应答空值";
+                                DGVSTATUS.Rows[i].Cells[header].Style.BackColor = Color.Yellow;
                                 break;
 
                             }
@@ -15056,6 +15565,10 @@ check760e.Checked == false)
                                 if (result.Pdu.ErrorStatus != 0)
                                 {
                                     textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " " + header + String.Format(" SNMP回复错误！错误码 {0} 错误索引：第 {1} 行\r\n", FindDevType.FindErrorCode(result.Pdu.ErrorStatus), result.Pdu.ErrorIndex));
+                                    DGVSTATUS.Rows[i].Cells[header].Value = FindDevType.FindErrorCode(response.Pdu.ErrorStatus);
+                                    DGVSTATUS.Rows[i].Cells[header].Style.BackColor = Color.Yellow;
+                                    DGVSTATUS.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString("HH:mm:ss");
+
                                     break;
                                 }
                                 else
@@ -15130,14 +15643,10 @@ check760e.Checked == false)
                                                 Thread.Sleep(20 * XHTime);
                                             }
                                         }
-                                        if (ftpCtrlFlagID == "2")
-                                        {
-                                            DGVSTATUS.Rows[i].Cells["重启选择"].Value = true;
 
-                                        }
                                         DGVSTATUS.Rows[i].Cells[header].Value = "成功";
                                         DGVSTATUS.Rows[i].Cells[header].Style.BackColor = Color.GreenYellow;
-                                        DGVSTATUS.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString("hh:mm:ss");
+                                        DGVSTATUS.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString("HH:mm:ss");
                                         break;
                                     }
                                     if (result.Pdu.VbList[0].Value.ToString() == "2")
@@ -15181,13 +15690,46 @@ check760e.Checked == false)
                 Thread.Sleep(3 * XHTime);
 
             }
-            lock(PiLiangShengJi){
+
+            for (int C = 10; C < DGVSTATUS.ColumnCount; C++)
+            {
+                if (DGVSTATUS.Rows[i].Cells[C].Value.ToString() == "成功")
+                {
+                    DGVSTATUS.Rows[i].Cells["ip地址"].Style.BackColor = Color.GreenYellow;
+                    DGVSTATUS.Rows[i].Cells["操作命令"].Style.BackColor = Color.GreenYellow;
+
+                    if (ftpCtrlFlagID == "2")
+                    {
+                        DGVSTATUS.Rows[i].Cells["重启选择"].Value = true;
+                        DGVSTATUS.Rows[i].Cells["重启选择"].Style.BackColor = Color.GreenYellow;
+
+                    }
+
+                }
+                else
+                {
+                    DGVSTATUS.Rows[i].Cells["ip地址"].Style.BackColor = Color.Yellow;
+                    DGVSTATUS.Rows[i].Cells["操作命令"].Style.BackColor = Color.Yellow;
+                    if (ftpCtrlFlagID == "2")
+                    {
+                        DGVSTATUS.Rows[i].Cells["重启选择"].Value = true;
+                        DGVSTATUS.Rows[i].Cells["重启选择"].Style.BackColor = Color.Yellow;
+
+                    }
+                }
+            }
+
+
+
+            lock (PiLiangShengJi)
+            {
                 LoadCountany++;
                 textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 累计完成设备数量：" + LoadCountany.ToString() + "\r\n");
                 if (LoadCountsum == LoadCountany)
                 {
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "执行完成！，一共执行：" + LoadCountany.ToString() + "台设备" + "\r\n");
-                    MessageBox.Show("执行完成！，一共执行：" + LoadCountany.ToString() + "台设备");
+
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "执行完成！一共执行：" + LoadCountany.ToString() + "台设备" + "\r\n");
+                    MessageBox.Show("执行完成！一共执行：" + LoadCountany.ToString() + "台设备");
                     LoadCountsum = 0;
                     LoadCountany = 0;
 
@@ -15316,13 +15858,32 @@ check760e.Checked == false)
 
         private void add_Click(object sender, EventArgs e)
         {
+
+
             int index = DGVSTATUS.Rows.Add();
             DGVSTATUS.Rows[index].Cells["ip地址"].Value = comip.Text;
-            DGVSTATUS.Rows[index].Cells["优先级"].Value = index + 1;
+            DGVSTATUS.Rows[index].Cells["执行"].Value = true;
             DGVSTATUS.RowsDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
+            int[] array = new int[DGVSTATUS.Rows.Count];
+            int aa = 0;
+            for (int i = 0; i < DGVSTATUS.Rows.Count - 1; i++, aa++)
+            {
+                array[i] = int.Parse(DGVSTATUS.Rows[aa].Cells[2].Value.ToString());
 
+            }
+            int temp = 0;
+            int index1 = 0;
 
+            for (int i = 0; i < array.Length; i++)
+            {
+                if (temp < array[i])    //如果用<= 则找bai到的是最大du值(多个中zhi的最后一个) <则是多个中的第一dao个
+                {
+                    temp = array[i];
+                    index1 = i;
+                }
+            }
+            DGVSTATUS.Rows[index].Cells["优先级"].Value = temp + 1;
 
 
             Gpnip user = new Gpnip();
@@ -15331,6 +15892,8 @@ check760e.Checked == false)
             BinaryFormatter bf = new BinaryFormatter();
             // 保存在实体类属性中
             user.GpnIP = comip.Text;
+            user.GpnPRY = temp + 1;
+            user.GpnZX = true;
             if (userss.ContainsKey(user.GpnIP))
             {
                 //如果有清掉
@@ -15348,152 +15911,9 @@ check760e.Checked == false)
 
 
 
-
         }
 
 
-        private void 导出前俩列ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            string strPath = @"C:\gpn\batchip.xls";//完整的路径名
-
-            int lie = 2;
-            HSSFWorkbook wb = new HSSFWorkbook();
-            HSSFSheet sheet = (HSSFSheet)wb.CreateSheet("sheet1");
-            HSSFRow headRow = (HSSFRow)sheet.CreateRow(0);
-            for (int i = 0; i < lie; i++)
-            {
-                HSSFCell headCell = (HSSFCell)headRow.CreateCell(i, CellType.String);
-                headCell.SetCellValue(DGVSTATUS.Columns[i].HeaderText);
-            }
-            for (int i = 0; i < DGVSTATUS.Rows.Count; i++)
-            {
-                HSSFRow row = (HSSFRow)sheet.CreateRow(i + 1);
-                for (int j = 0; j < lie; j++)
-                {
-                    HSSFCell cell = (HSSFCell)row.CreateCell(j);
-                    if (DGVSTATUS.Rows[i].Cells[j].Value == null)
-                    {
-                        cell.SetCellType(CellType.Blank);
-                    }
-                    else
-                    {
-
-                        cell.SetCellValue(DGVSTATUS.Rows[i].Cells[j].Value.ToString());
-                    }
-
-                }
-
-            }
-            for (int i = 0; i < lie; i++)
-            {
-                sheet.AutoSizeColumn(i);
-            }
-            using (FileStream fs = new FileStream(strPath, FileMode.Create))
-            {
-                wb.Write(fs);
-            }
-            wb.Close();
-
-
-
-
-            //NPOIExcel ET = new NPOIExcel();
-            //ET.ExportExcel("sheet1", DGVSTATUS, 2);
-        }
-
-        private void 导入前俩列ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-            DGVSTATUS.DataSource = null;
-            DGVSTATUS.Columns.Clear();
-            //  DGVSTATUS.Rows.Clear();
-            //OpenFileDialog ofd = new OpenFileDialog();
-            string strPath = @"C:\gpn\batchip.xls";//完整的路径名
-
-            try
-            {
-
-                //strPath = ofd.FileName;
-                DataTable dataTable = null;
-                dataTable = ExcelUtility.ExcelToDataTable(strPath, true);
-                //DataView dv = ds.Tables[0].DefaultView;
-                // dataTable.DefaultView.RowFilter = "ip地址 = '" + comtype.Text + "'";
-
-                DGVSTATUS.DataSource = dataTable;
-                //dataTable.Clear();
-
-                if (DGVSTATUS.Columns["ping测试"] == null)
-                {
-
-                    this.DGVSTATUS.Columns.Add("ping测试", "ping测试");
-                }
-                else
-                {
-                    this.DGVSTATUS.Columns.Remove("ping测试");
-                    this.DGVSTATUS.Columns.Add("ping测试", "ping测试");
-                }
-                if (DGVSTATUS.Columns["操作命令"] == null)
-                {
-
-                    this.DGVSTATUS.Columns.Add("操作命令", "操作命令");
-                }
-                else
-                {
-                    this.DGVSTATUS.Columns.Remove("操作命令");
-                    this.DGVSTATUS.Columns.Add("操作命令", "操作命令");
-                }
-                if (DGVSTATUS.Columns["重启选择"] == null)
-                {
-                    DataGridViewCheckBoxColumn newColumn = new DataGridViewCheckBoxColumn
-                    {
-                        Name = "重启选择",
-                        HeaderText = "重启选择"
-                    };
-                    DGVSTATUS.Columns.Add(newColumn);
-                }
-                if (DGVSTATUS.Columns["开始时间"] == null)
-                {
-
-                    this.DGVSTATUS.Columns.Add("开始时间", "开始时间");
-                }
-                else
-                {
-                    this.DGVSTATUS.Columns.Remove("开始时间");
-                    this.DGVSTATUS.Columns.Add("开始时间", "开始时间");
-                }
-                if (DGVSTATUS.Columns["结束时间"] == null)
-                {
-
-                    this.DGVSTATUS.Columns.Add("结束时间", "结束时间");
-                }
-                else
-                {
-                    this.DGVSTATUS.Columns.Remove("结束时间");
-                    this.DGVSTATUS.Columns.Add("结束时间", "结束时间");
-                }
-                if (DGVSTATUS.Columns["保存"] == null)
-                {
-
-                    this.DGVSTATUS.Columns.Add("保存", "保存");
-                }
-                else
-                {
-                    this.DGVSTATUS.Columns.Remove("保存");
-                    this.DGVSTATUS.Columns.Add("保存", "保存");
-                }
-
-
-                DGVSTATUS.RowsDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-
-
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);//捕捉异常
-            }
-
-        }
 
         private void butbatchip_Click(object sender, EventArgs e)
         {
@@ -15505,9 +15925,9 @@ check760e.Checked == false)
             DGVSTATUS.Rows[index].Cells["执行"].Value = true;
             DGVSTATUS.RowsDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
-            int[] array = new int[DGVSTATUS.Rows.Count-1];
+            int[] array = new int[DGVSTATUS.Rows.Count];
             int aa = 0;
-            for (int i = 0; i < DGVSTATUS.Rows.Count - 2; i++, aa++)
+            for (int i = 0; i < DGVSTATUS.Rows.Count - 1; i++, aa++)
             {
                 array[i] = int.Parse(DGVSTATUS.Rows[aa].Cells[2].Value.ToString());
 
@@ -15552,14 +15972,14 @@ check760e.Checked == false)
         {
             //  ToStringArray(DGVSTATUS, false);
             //  textDOS.AppendText(ToStringArray(DGVSTATUS, false) + "\r\n");
-            object[,] abc = FindDevType.Orderby(ToStringArray(DGVSTATUS, false), new int[]{2}, 0);
-            for (int i = 0; i < DGVSTATUS.Rows.Count-1; i++ )
+            object[,] abc = FindDevType.Orderby(ToStringArray(DGVSTATUS, false), new int[] { 2 }, 0);
+            for (int i = 0; i < DGVSTATUS.Rows.Count; i++)
             {
-                textDOS.AppendText(string.Format(abc[i,2] + "\r\n"));
+                textDOS.AppendText(string.Format(abc[i, 2] + "\r\n"));
             }
 
 
-            }
+        }
         public object[,] ToStringArray(DataGridView dataGridView, bool includeColumnText)
         {
             #region 实现...
@@ -15600,7 +16020,8 @@ check760e.Checked == false)
                     {
                         arrReturn[i, j] = int.Parse(dataGridView.Rows[rowIndex].Cells[j].Value.ToString());
                     }
-                    else {
+                    else
+                    {
                         arrReturn[i, j] = dataGridView.Rows[rowIndex].Cells[j].Value.ToString();
                     }
 
@@ -15628,9 +16049,296 @@ check760e.Checked == false)
             }
         }
 
-        private void tabPageGpn_Click(object sender, EventArgs e)
+
+
+
+
+
+        private void metroButStartVnc_Click(object sender, EventArgs e)
+        {
+            if (TextVNCUser.Text == "") {
+
+                MessageBox.Show("请填写英文用户名后再次尝试！");
+                return;
+            }
+
+
+            if (File.Exists(frpcPath))//读取时先要判读INI文件是否存在
+            {
+                File.Delete(frpcPath);
+            }
+
+            Textsharp.AppendText("\r\n");
+
+            Thread FrpcSave = new Thread(FrpcIni);
+            FrpcSave.Start();
+            Thread start = new Thread(StartVnc);
+            start.Start();
+        }
+
+        private void FrpcIni()
         {
 
+            try
+            {
+                //根据INI文件名设置要写入INI文件的节点名称
+                //此处的节点名称完全可以根据实际需要进行配置
+                strSec = "common";
+                WritePrivateProfileString(strSec, "server_addr", TextServerAddr.Text.Trim(), frpcPath);
+                WritePrivateProfileString(strSec, "server_port", TextServerPort.Text.Trim(), frpcPath);
+                WritePrivateProfileString(strSec, "token", TextToken.Text.Trim(), frpcPath);
+                strSec = TextVNCUser.Text+"RDP";
+                WritePrivateProfileString(strSec, "type", ComRDPType.Text.Trim(), frpcPath);
+                WritePrivateProfileString(strSec, "local_ip", "127.0.0.1", frpcPath);
+                WritePrivateProfileString(strSec, "local_port", TextRDPLocalPort.Text.Trim(), frpcPath);
+                WritePrivateProfileString(strSec, "remote_port", TextRDPRemotePort.Text.Trim(), frpcPath);
+                strSec = TextVNCUser.Text + "VNC";
+                WritePrivateProfileString(strSec, "type", ComVNCType.Text.Trim(), frpcPath);
+                WritePrivateProfileString(strSec, "local_ip", "127.0.0.1", frpcPath);
+                WritePrivateProfileString(strSec, "local_port", TextVNCLocalPort.Text.Trim(), frpcPath);
+                WritePrivateProfileString(strSec, "remote_port", TextVNCRemotePort.Text.Trim(), frpcPath);
+
+               
+
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        private void metroButStopVnc_Click(object sender, EventArgs e)
+        {
+            Textsharp.AppendText("\r\n");
+            Thread stop = new Thread(StopVnc);
+            stop.Start();
+        }
+
+        private void StopVnc() {
+            string strZipPath = @"C:\gpn\" + "frpc_stop.bat";
+            if (File.Exists(strZipPath))//读取时先要判读INI文件是否存在
+            {
+                System.Diagnostics.Process.Start(strZipPath);
+                Textsharp.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "远程共享模块停止成功============================================OK" + "\r\n");
+                return;
+            }
+            FileStream stream;
+            //string gpnname = comgpn76list.Text;
+            string url = "http://hunan128.com/wp-content/uploads/2020/07/frpc_stop.bat";
+            //string strZipPath = @"C:\gpn\" + "frpc_start.exe";
+            //   string strUnZipPath = @"C:\gpn\";
+            int percent = 0;
+            stream = new FileStream(strZipPath, FileMode.Create);
+            // bool overWrite = true;
+            try
+            {
+                Textsharp.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "远程共享模块下载中==============================================OK" + "\r\n");
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                HttpWebResponse response = request.GetResponse() as HttpWebResponse;
+                Stream responseStream = response.GetResponseStream();
+                long totalDownloadedByte = 0;
+                long totalBytes = response.ContentLength;
+                byte[] bArr = new byte[1024];
+                int size = responseStream.Read(bArr, 0, bArr.Length);
+                while (size > 0)
+                {
+                    totalDownloadedByte = size + totalDownloadedByte;
+                    stream.Write(bArr, 0, size);
+                    size = responseStream.Read(bArr, 0, bArr.Length);
+                    //p = (int)Math.Floor((double)100 / a);
+                    percent = (int)Math.Floor((float)totalDownloadedByte / (float)totalBytes * 100);
+                    // textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") +" "+percent.ToString() + "\r\n");
+                    //labjindu.Text = percent.ToString() + "%";
+                    myProgressBarjindu.Value = percent;
+                    // System.Windows.Forms.Application.DoEvents();
+                }
+                stream.Close();
+                responseStream.Close();
+                Textsharp.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "远程共享模块成功============================================OK" + "\r\n");
+                Textsharp.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "远程共享模块保存路径：" + strZipPath + "\r\n");
+
+            }
+            catch (Exception)
+            {
+                stream.Close();
+                MessageBox.Show("无法进行下载，请检查下载链接！");
+                //flag = false;       //返回false下载失败
+            }
+
+            System.Diagnostics.Process.Start(strZipPath);
+            Textsharp.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "远程共享模块停止成功============================================OK" + "\r\n");
+            // MessageBox.Show("GPN7600 EMS模块已安装成功！");
+        }
+
+        private void StartVnc() {
+            string strtvnsPath = @"C:\gpn\" + "tvnserver.exe";
+            string strfrpcPath = @"C:\gpn\" + "frpc.exe";
+            string strfrpcstartPath = @"C:\gpn\" + "frpc_start.bat";
+            string strZvncsPath = @"C:\gpn\" + "vncs.reg";
+            if (File.Exists(strfrpcstartPath))//读取时先要判读INI文件是否存在
+            {
+                Process.Start(strfrpcstartPath);
+                Textsharp.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "远程共享模块启动成功============================================OK" + "\r\n");
+                Textsharp.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "服务器：" + TextServerAddr.Text + "，远程共享端口号：" + TextVNCRemotePort.Text + "，请使用控制端输入："+ TextServerAddr.Text+":"+ TextVNCRemotePort.Text + "进行VNC连接" + "\r\n");
+                Textsharp.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "服务器：" + TextServerAddr.Text + "，远程桌面端口号：" + TextRDPRemotePort.Text + "，打开远程桌面输入：" + TextServerAddr.Text + ":" + TextRDPRemotePort.Text + "进行RDP连接" + "\r\n");
+
+                return;
+            }
+            FileStream stream;
+            //string gpnname = comgpn76list.Text;
+            string tvnserverurl = "http://hunan128.com/wp-content/uploads/2020/07/tvnserver.exe";
+            string frpcurl = "http://hunan128.com/wp-content/uploads/2020/07/frpc.exe";
+            string frpcstarturl = "http://hunan128.com/wp-content/uploads/2020/07/frpc_start.bat";
+            string vncsurl = "http://hunan128.com/wp-content/uploads/2020/07/vncs.reg";
+            string strZipPath = "";
+            string url = "";
+            for (int i = 0; i < 4; i ++)
+            {
+                //string strZipPath = @"C:\gpn\" + "frpc_start.exe";
+                //   string strUnZipPath = @"C:\gpn\";
+                if (i == 0) {
+                    url = tvnserverurl;
+                    strZipPath = strtvnsPath;
+                }
+                if (i == 1)
+                {
+                    url = frpcurl;
+                    strZipPath = strfrpcPath;
+                }
+                if (i == 2)
+                {
+                    url = frpcstarturl;
+                    strZipPath = strfrpcstartPath;
+                }
+                if (i == 3)
+                {
+                    url = vncsurl;
+                    strZipPath = strZvncsPath;
+                }
+                int percent = 0;
+                stream = new FileStream(strZipPath, FileMode.Create);
+                // bool overWrite = true;
+                try
+                {
+                    Textsharp.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "远程共享模块下载中==============================================OK" + "\r\n");
+                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                    HttpWebResponse response = request.GetResponse() as HttpWebResponse;
+                    Stream responseStream = response.GetResponseStream();
+                    long totalDownloadedByte = 0;
+                    long totalBytes = response.ContentLength;
+                    byte[] bArr = new byte[1024];
+                    int size = responseStream.Read(bArr, 0, bArr.Length);
+                    while (size > 0)
+                    {
+                        totalDownloadedByte = size + totalDownloadedByte;
+                        stream.Write(bArr, 0, size);
+                        size = responseStream.Read(bArr, 0, bArr.Length);
+                        //p = (int)Math.Floor((double)100 / a);
+                        percent = (int)Math.Floor((float)totalDownloadedByte / (float)totalBytes * 100);
+                        // textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") +" "+percent.ToString() + "\r\n");
+                        //labjindu.Text = percent.ToString() + "%";
+                        myProgressBarjindu.Value = percent;
+                        // System.Windows.Forms.Application.DoEvents();
+                    }
+                    stream.Close();
+                    responseStream.Close();
+                    Textsharp.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "远程共享模块成功============================================OK" + "\r\n");
+                    Textsharp.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "远程共享模块保存路径：" + strZipPath + "\r\n");
+
+                }
+                catch (Exception)
+                {
+                    stream.Close();
+                    MessageBox.Show("无法进行下载，请检查下载链接！");
+                    //flag = false;       //返回false下载失败
+                }
+            }
+          
+
+            Process.Start(strfrpcstartPath);
+            Textsharp.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "远程共享模块启动成功============================================OK" + "\r\n");
+            Textsharp.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "服务器：" + TextServerAddr.Text + "，远程共享端口号：" + TextVNCRemotePort.Text + "，请使用控制端输入：" + TextServerAddr.Text + ":" + TextVNCRemotePort.Text + "进行VNC连接" + "\r\n");
+            Textsharp.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "服务器：" + TextServerAddr.Text + "，远程桌面端口号：" + TextRDPRemotePort.Text + "，打开远程桌面输入：" + TextServerAddr.Text + ":" + TextRDPRemotePort.Text + "进行RDP连接" + "\r\n");
+            // MessageBox.Show("GPN7600 EMS模块已安装成功！");
+        }
+
+        private void metroButCtrl_Click(object sender, EventArgs e)
+        {
+            Textsharp.AppendText("\r\n");
+            Thread view = new Thread(ViewVnc);
+            view.Start();
+        }
+        private void ViewVnc() {
+            string strZipPath = @"C:\gpn\" + "VNC-Viewer-5.3.0-Windows-64bit.exe";
+            if (File.Exists(strZipPath))//读取时先要判读INI文件是否存在
+            {
+                System.Diagnostics.Process.Start(strZipPath);
+                Textsharp.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "远程控制模块启动成功============================================OK" + "\r\n");
+                return;
+            }
+            FileStream stream;
+            //string gpnname = comgpn76list.Text;
+            string url = "http://hunan128.com/wp-content/uploads/2020/07/VNC-Viewer-5.3.0-Windows-64bit.exe";
+            //string strZipPath = @"C:\gpn\" + "frpc_start.exe";
+            //   string strUnZipPath = @"C:\gpn\";
+            int percent = 0;
+            stream = new FileStream(strZipPath, FileMode.Create);
+            // bool overWrite = true;
+            try
+            {
+                Textsharp.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "远程控制模块下载中==============================================OK" + "\r\n");
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                HttpWebResponse response = request.GetResponse() as HttpWebResponse;
+                Stream responseStream = response.GetResponseStream();
+                long totalDownloadedByte = 0;
+                long totalBytes = response.ContentLength;
+                byte[] bArr = new byte[1024];
+                int size = responseStream.Read(bArr, 0, bArr.Length);
+                while (size > 0)
+                {
+                    totalDownloadedByte = size + totalDownloadedByte;
+                    stream.Write(bArr, 0, size);
+                    size = responseStream.Read(bArr, 0, bArr.Length);
+                    //p = (int)Math.Floor((double)100 / a);
+                    percent = (int)Math.Floor((float)totalDownloadedByte / (float)totalBytes * 100);
+                    // textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") +" "+percent.ToString() + "\r\n");
+                    //labjindu.Text = percent.ToString() + "%";
+                    myProgressBarjindu.Value = percent;
+                    // System.Windows.Forms.Application.DoEvents();
+                }
+                stream.Close();
+                responseStream.Close();
+                Textsharp.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "远程控制模块成功============================================OK" + "\r\n");
+                Textsharp.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "远程控制模块保存路径：" + strZipPath + "\r\n");
+
+            }
+            catch (Exception)
+            {
+                stream.Close();
+                MessageBox.Show("无法进行下载，请检查下载链接！");
+                //flag = false;       //返回false下载失败
+            }
+
+            System.Diagnostics.Process.Start(strZipPath);
+            Textsharp.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "远程控制模块停止成功============================================OK" + "\r\n");
+            // MessageBox.Show("GPN7600 EMS模块已安装成功！");
         }
     }
 }

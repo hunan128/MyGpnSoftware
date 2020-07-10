@@ -26,7 +26,7 @@ namespace MyGpnSoftware
 
         private void metroLink1_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("http://60.205.155.127/");
+            System.Diagnostics.Process.Start("http://hunan128.com/");
 
         }
 
@@ -45,12 +45,12 @@ namespace MyGpnSoftware
 
         private void Software_Load(object sender, EventArgs e)
         {
-            metroTextBox2.Text = "官方唯一网站：www.hunan128.com \r\n官方唯一公网：60.205.155.127";
+            metroTextBox2.Text = "官方唯一网站：www.hunan128.com \r\n官方唯一公网：hunan128.com";
         }
 
         private void pictureBox1_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("http://60.205.155.127/");
+            System.Diagnostics.Process.Start("http://hunan128.com/");
         }
     }
 }

@@ -141,7 +141,7 @@
             // 
             // logoPictureBox
             // 
-            this.logoPictureBox.Image = global::MyGpnSoftware.Properties.Resources.GPN;
+
             this.logoPictureBox.Location = new System.Drawing.Point(3, 3);
             this.logoPictureBox.Name = "logoPictureBox";
             this.tableLayoutPanel.SetRowSpan(this.logoPictureBox, 6);

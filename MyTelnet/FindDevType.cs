@@ -306,5 +306,51 @@ namespace MyGpnSoftware
         }
 
 
+        /// <summary>
+        /// 将字符串转换成二维数组
+        /// </summary>
+        /// <param name="original"></param>
+        /// <returns></returns>
+        public static string[,] StringToArray(string original)
+        {
+            if (original.Length == 0)
+            {
+                throw new IndexOutOfRangeException("二维数组导入为空");
+            }
+            //将字符串转换成数组（字符串拼接格式：***,***#***,***#***,***，例如apple,banana#cat,dog#red,black）
+            string[] originalRow = original.Split(new string[] { "\r\n" }, StringSplitOptions.None);
+            string[] originalColstart = null;
+            int[] originalColstartcount = new int [originalRow.Length];
+
+            for (int m = 0; m < originalRow.Length; m++) {
+                originalColstart = Regex.Split(originalRow[m], "\\s+", RegexOptions.IgnoreCase);
+              //  MessageBox.Show(originalColstart.Length.ToString());
+                if (originalColstart != null) {
+                    originalColstartcount[m] = originalColstart.Length;
+
+                }
+            }
+            ArrayList list = new ArrayList(originalColstartcount);
+            list.Sort();
+            int min = Convert.ToInt32(list[0]);
+            int max = Convert.ToInt32(list[list.Count - 1]);
+          //  MessageBox.Show(max.ToString());
+
+            string[] originalCol = new string[max]; //string[,]是等长数组，列维度一样，只要取任意一行的列维度即可确定整个二维数组的列维度
+            int x = originalRow.Length;
+            int y = max;
+            string[,] twoArray = new string[x, y];
+            for (int i = 0; i < x; i++)
+            {
+                originalCol = Regex.Split(originalRow[i], "\\s+", RegexOptions.IgnoreCase);
+                for (int j = 0; j < originalCol.Length; j++)
+                {
+                    twoArray[i, j] = originalCol[j];
+                }
+            }
+            return twoArray;
+        }
+
+
     }
 }
