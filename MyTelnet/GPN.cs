@@ -1052,9 +1052,15 @@ namespace MyGpnSoftware
                 else
                 {
                     StreamWriter streamWriter = new StreamWriter(fs);
-                    while (user.DataSession.streamReader.Peek() > -1)
+                    //while (user.DataSession.streamReader.Peek() > -1)
+                    //{
+                    //    streamWriter.Write(user.DataSession.streamReader.ReadLine());
+                    //    streamWriter.Flush();
+                    //}
+                    while (!user.DataSession.streamReader.EndOfStream)
                     {
-                        streamWriter.Write(user.DataSession.streamReader.ReadLine());
+                        // 一个元素占文件的一行
+                        streamWriter.WriteLine(user.DataSession.streamReader.ReadLine());
                         streamWriter.Flush();
                     }
                 }
@@ -5540,11 +5546,11 @@ namespace MyGpnSoftware
                     + "\r\n ==============================================================================================================="
                     + "\r\n" + textDOS.Text
                     + "\r\n ==============================================================================================================="
-                    + "\r\n" + paichajieguo.ToString()
+                    + "\r\n" + saveString
                     + "\r\n ==============================================================================================================="
                     + "\r\n" + textlog.Text
                     + "\r\n ==============================================================================================================="
-                    + "\r\n" + saveString;
+                    + "\r\n" + paichajieguo.ToString();
                 byte[] buffer = Encoding.Default.GetBytes(jilu);
                 fsWrite.Write(buffer, 0, buffer.Length);
                 MessageBox.Show("保存成功!");
@@ -6786,6 +6792,15 @@ namespace MyGpnSoftware
                     butguzhangsend.PerformClick();
                     Thread.Sleep(XHTime);
                     butguzhangsend.PerformClick();
+                    butguzhangsend.PerformClick();
+                    butguzhangsend.PerformClick();
+                    textcurrent.Text = "";
+                    textguzhangmingling.Text = "show current-state";
+                    butguzhangsend.PerformClick();
+                    Thread.Sleep(XHTime);
+                    butguzhangsend.PerformClick();
+
+
                     for (int g = 0; g <= XHCount; g++)
                     {
                         //MessageBox.Show(g.ToString());
@@ -7306,11 +7321,15 @@ namespace MyGpnSoftware
                     {
                         textguzhangmingling.Text = "ioctl hpoh show " + Tsvc4.ToString();
                         butguzhangsend.PerformClick();
-                        if (textcurrent.Text.Contains("LOS") || textcurrent.Text.Contains("LOF") || textcurrent.Text.Contains("AIS") || textcurrent.Text.Contains("PLM") || textcurrent.Text.Contains("REI") || textcurrent.Text.Contains("RDI") || textcurrent.Text.Contains("add") || textcurrent.Text.Contains("err") || textcurrent.Text.Contains("dnu"))
+                        if (textcurrent.Text.Contains("LOS") || textcurrent.Text.Contains("LOF") || textcurrent.Text.Contains("AIS") || textcurrent.Text.Contains("PLM") || textcurrent.Text.Contains("REI") || textcurrent.Text.Contains("LOP") || textcurrent.Text.Contains("RDI") || textcurrent.Text.Contains("add") || textcurrent.Text.Contains("err") || textcurrent.Text.Contains("dnu"))
                         {
                             if (textcurrent.Text.Contains("AIS"))
                             {
                                 richTextEnd.AppendText(Tsvc4.ToString() + "上联时隙告警：NOK。存在AIS告警，检查上联口的对端和落地MSAP的EOS接口是否配置业务" + "\r\n");
+                            }
+                            if (textcurrent.Text.Contains("LOP"))
+                            {
+                                richTextEnd.AppendText(Tsvc4.ToString() + "上联时隙告警：NOK。存在LOP告警，检查上联口的对端和落地MSAP的EOS接口是否配置业务" + "\r\n");
                             }
                             if (textcurrent.Text.Contains("PLM") && !textcurrent.Text.Contains("AIS"))
                             {
@@ -7589,7 +7608,7 @@ namespace MyGpnSoftware
                                 Regex outd = new Regex(@"Out\s*Discard\s*Frames\s*:([\d\,\d]+)", RegexOptions.IgnoreCase | RegexOptions.Multiline);
                                 EthOutDiscardFrames1 = outd.Match(textcurrent.Text).Groups[1].Value;
                                 Regex inc = new Regex(@"In\s*CRC\s*Error\s*Pkts\s*:([\d\,\d]+)", RegexOptions.IgnoreCase | RegexOptions.Multiline);
-                                EthInCrcErrorPkts1 = ind.Match(textcurrent.Text).Groups[1].Value;
+                                EthInCrcErrorPkts1 = inc.Match(textcurrent.Text).Groups[1].Value;
                                 Regex outc = new Regex(@"Out\s*CRC\s*Error\s*Pkts\s*:([\d\,\d]+)", RegexOptions.IgnoreCase | RegexOptions.Multiline);
                                 EthOutCrcErrorPkts1 = outc.Match(textcurrent.Text).Groups[1].Value;
                                 Regex Sec = new Regex(@"Last\s*([\d]+)(Sec)*", RegexOptions.IgnoreCase | RegexOptions.Multiline);
@@ -7657,21 +7676,21 @@ namespace MyGpnSoftware
                                 EthInCrcErrorPkts2 = inc.Match(textcurrent.Text).Groups[1].Value;
                                 Regex outc = new Regex(@"Out\s*CRC\s*Error\s*Pkts\s*:([\d\,\d]+)", RegexOptions.IgnoreCase | RegexOptions.Multiline);
                                 EthOutCrcErrorPkts2 = outc.Match(textcurrent.Text).Groups[1].Value;
-                                int EthInDiscardFrames01 = int.Parse(EthInDiscardFrames1);
-                                int EthOutDiscardFrames01 = int.Parse(EthOutDiscardFrames1);
-                                int EthInDiscardFrames02 = int.Parse(EthInDiscardFrames2);
-                                int EthOutDiscardFrames02 = int.Parse(EthOutDiscardFrames2);
-                                int EthInCrcErrorPkts01 = int.Parse(EthInCrcErrorPkts1);
-                                int EthOutCrcErrorPkts01 = int.Parse(EthOutCrcErrorPkts1);
-                                int EthInCrcErrorPkts02 = int.Parse(EthInCrcErrorPkts2);
-                                int EthOutCrcErrorPkts02 = int.Parse(EthOutCrcErrorPkts2);
+                                Int64 EthInDiscardFrames01 = Int64.Parse(EthInDiscardFrames1);
+                                Int64 EthOutDiscardFrames01 = Int64.Parse(EthOutDiscardFrames1);
+                                Int64 EthInDiscardFrames02 = Int64.Parse(EthInDiscardFrames2);
+                                Int64 EthOutDiscardFrames02 = Int64.Parse(EthOutDiscardFrames2);
+                                Int64 EthInCrcErrorPkts01 = Int64.Parse(EthInCrcErrorPkts1);
+                                Int64 EthOutCrcErrorPkts01 = Int64.Parse(EthOutCrcErrorPkts1);
+                                Int64 EthInCrcErrorPkts02 = Int64.Parse(EthInCrcErrorPkts2);
+                                Int64 EthOutCrcErrorPkts02 = Int64.Parse(EthOutCrcErrorPkts2);
                                 if (EthInDiscardFrames01 == EthInDiscardFrames02)
                                 {
                                     richTextEnd.AppendText("ETH接口I n丢帧：OK。客户侧无丢帧" + "\r\n");
                                 }
                                 else
                                 {
-                                    int InDis = EthInDiscardFrames02 - EthInDiscardFrames01;
+                                    Int64 InDis = EthInDiscardFrames02 - EthInDiscardFrames01;
                                     richTextEnd.AppendText("ETH接口I n丢帧：NOK。客户侧16秒累计丢帧数量：" + InDis.ToString() + "\r\n");
                                 }
                                 if (EthOutDiscardFrames01 == EthOutDiscardFrames02)
@@ -7680,7 +7699,7 @@ namespace MyGpnSoftware
                                 }
                                 else
                                 {
-                                    int OutDis = EthOutDiscardFrames02 - EthOutDiscardFrames01;
+                                    Int64 OutDis = EthOutDiscardFrames02 - EthOutDiscardFrames01;
                                     richTextEnd.AppendText("ETH接口Out丢帧：NOK。传输侧16秒累计丢帧数量：" + OutDis.ToString() + "\r\n");
                                 }
                                 if (EthInCrcErrorPkts01 == EthInCrcErrorPkts02)
@@ -7689,7 +7708,7 @@ namespace MyGpnSoftware
                                 }
                                 else
                                 {
-                                    int InCRC = EthInCrcErrorPkts02 - EthInCrcErrorPkts01;
+                                    Int64 InCRC = EthInCrcErrorPkts02 - EthInCrcErrorPkts01;
                                     richTextEnd.AppendText("ETH接口I n错包：NOK。客户侧16秒累CRC错包数量：" + InCRC.ToString() + "\r\n");
                                 }
                                 if (EthOutCrcErrorPkts01 == EthOutCrcErrorPkts02)
@@ -7698,7 +7717,7 @@ namespace MyGpnSoftware
                                 }
                                 else
                                 {
-                                    int OutCRC = EthOutCrcErrorPkts02 - EthOutCrcErrorPkts01;
+                                    Int64 OutCRC = EthOutCrcErrorPkts02 - EthOutCrcErrorPkts01;
                                     richTextEnd.AppendText("ETH接口Out错包：NOK。传输侧16秒累CRC错包数量：" + OutCRC.ToString() + "\r\n");
                                 }
                                 textguzhangmingling.Text = "exit";
@@ -12074,121 +12093,206 @@ check760e.Checked == false)
                     dxctype = "client";
                 }
                 bool findts = false;
-                if (comSNC.Text == "没有配置保护")
-                {
 
-                    textguzhangmingling.Text = "show dxc";
+                string SDTS = comDtype.Text + " " + comDslot.Text + "/" + comDport.Text + "/" + comDts.Text;
+                string SATS = "otu " + comSslot.Text + "/" + comSport.Text + "/" + comSts.Text;
+                string SBTS = "otu " + comSBslot.Text + "/" + comSBport.Text + "/" + comSBts.Text;
+
+                if (toolStripStatusLabeldevtype.Text.Contains("GPN800"))
+                {
+                    string s = (int.Parse(comSslot.Text) - 2).ToString("x");
+                    textguzhangmingling.Text = "dm 0xf9" + s + "00100 10";
                     butguzhangsend.PerformClick();
+
                     dxc = FindDevType.StringToArray(textcurrent.Text);
                     dxcrow = dxc.GetLength(0);
                     dxccol = dxc.GetLength(1);
-                    for (int i = 0; i < dxcrow; i++)
-                    {
-
-                        if (dxc[i, 5] != null)
-                        {
-                            if (dxc[i, 5] == dxctype + "/" + comoduk.Text + "/" + comDslot.Text + "/" + comDport.Text + "/" + comDts.Text)
-                            {
-                                if (dxc[i, 6] == "line" + "/" + comoduk.Text + "/" + comSslot.Text + "/" + comSport.Text + "/" + comSts.Text)
-                                {
-                                    richTextEnd.AppendText("软件oduk交叉：" + "\r\n");
-                                    richTextEnd.AppendText("源时隙：" + dxc[i, 5] + "\r\n");
-                                    richTextEnd.AppendText("宿时隙：" + dxc[i, 6] + "\r\n");
-                                    findts = true;
-                                    break;
-
-                                }
-                            }
-                        }
-
-                        if (dxc[i, 6] != null)
-                        {
-                            if (dxc[i, 6] == dxctype + "/" + comoduk.Text + "/" + comDslot.Text + "/" + comDport.Text + "/" + comDts.Text)
-                            {
-                                if (dxc[i, 5] == "line" + "/" + comoduk.Text + "/" + comSslot.Text + "/" + comSport.Text + "/" + comSts.Text)
-                                {
-                                    richTextEnd.AppendText("软件oduk交叉：" + "\r\n");
-                                    richTextEnd.AppendText("源时隙：" + dxc[i, 5] + "\r\n");
-                                    richTextEnd.AppendText("宿时隙：" + dxc[i, 6] + "\r\n");
-                                    findts = true;
-                                    break;
-
-                                }
-                            }
-                        }
-
-                    }
-                    if (findts == false)
-                    {
-                        richTextEnd.AppendText("软件oduk交叉：不存在或错误 NOK" + "\r\n");
-                        return;
-                    }
+                    richTextEnd.AppendText("主用槽位FPGA查询：" + "\r\n");
+                    richTextEnd.AppendText(comSslot.Text + "槽位FPGA类型：" + dxc[2, 1] + dxc[2, 2] + "\r\n");
+                    richTextEnd.AppendText(comSslot.Text + "槽位FPGA版本：" + dxc[2, 4] + dxc[2, 6] + "\r\n");
+                    richTextEnd.AppendText(comSslot.Text + "槽位FPGA时间：" + dxc[2, 7] + dxc[2, 8] + "-" + dxc[2, 9] + "-" + dxc[2, 10] + "\r\n");
                     textlog.AppendText(textcurrent.Text);
                     textcurrent.Text = "";
                 }
                 else {
-                    textguzhangmingling.Text = "show dxc";
-                    butguzhangsend.PerformClick();
-                    dxc = FindDevType.StringToArray(textcurrent.Text);
-                    dxcrow = dxc.GetLength(0);
-                    dxccol = dxc.GetLength(1);
-
-                    for (int i = 0; i < dxcrow; i++)
+                    if (comSNC.Text == "没有配置保护" || comSNC.Text == "OCH")
                     {
+                        string s = (int.Parse(comSslot.Text) - 1).ToString("x");
+                        textguzhangmingling.Text = "dm 0xf9" + s + "00100 10";
+                        butguzhangsend.PerformClick();
 
-                        if (dxc[i, 5] != null)
+                        dxc = FindDevType.StringToArray(textcurrent.Text);
+                        dxcrow = dxc.GetLength(0);
+                        dxccol = dxc.GetLength(1);
+                        richTextEnd.AppendText("主用槽位FPGA查询：" + "\r\n");
+                        richTextEnd.AppendText(comSslot.Text + "槽位FPGA类型：" + dxc[2, 1] + dxc[2, 2] + "\r\n");
+                        richTextEnd.AppendText(comSslot.Text + "槽位FPGA版本：" + dxc[2, 4] + dxc[2, 6] + "\r\n");
+                        richTextEnd.AppendText(comSslot.Text + "槽位FPGA时间：" + dxc[2, 7] + dxc[2, 8] + "-" + dxc[2, 9] + "-" + dxc[2, 10] + "\r\n");
+                        textlog.AppendText(textcurrent.Text);
+                        textcurrent.Text = "";
+                        if (comSNC.Text == "OCH")
                         {
-                            if (dxc[i, 5] == dxctype + "/" + comoduk.Text + "/" + comDslot.Text + "/" + comDport.Text + "/" + comDts.Text)
+                            string sb = (int.Parse(comSBslot.Text) - 1).ToString("x");
+                            textguzhangmingling.Text = "dm 0xf9" + sb + "00100 10";
+                            butguzhangsend.PerformClick();
+
+                            dxc = FindDevType.StringToArray(textcurrent.Text);
+                            dxcrow = dxc.GetLength(0);
+                            dxccol = dxc.GetLength(1);
+                            richTextEnd.AppendText("备用槽位FPGA查询：" + "\r\n");
+                            richTextEnd.AppendText(comSBslot.Text + "槽位FPGA类型：" + dxc[2, 1] + dxc[2, 2] + "\r\n");
+                            richTextEnd.AppendText(comSBslot.Text + "槽位FPGA版本：" + dxc[2, 4] + dxc[2, 6] + "\r\n");
+                            richTextEnd.AppendText(comSBslot.Text + "槽位FPGA时间：" + dxc[2, 7] + dxc[2, 8] + "-" + dxc[2, 9] + "-" + dxc[2, 10] + "\r\n");
+                            textlog.AppendText(textcurrent.Text);
+                            textcurrent.Text = "";
+                        }
+                        textguzhangmingling.Text = "show dxc";
+                        butguzhangsend.PerformClick();
+                        dxc = FindDevType.StringToArray(textcurrent.Text);
+                        dxcrow = dxc.GetLength(0);
+                        dxccol = dxc.GetLength(1);
+                        for (int i = 0; i < dxcrow; i++)
+                        {
+
+                            if (dxc[i, 5] != null)
                             {
-                                if (dxc[i, 6] == "line" + "/" + comoduk.Text + "/" + comSslot.Text + "/" + comSport.Text + "/" + comSts.Text)
+                                if (dxc[i, 5] == dxctype + "/" + comoduk.Text + "/" + comDslot.Text + "/" + comDport.Text + "/" + comDts.Text)
                                 {
-                                    if (dxc[i, 7] == "line" + "/" + comoduk.Text + "/" + comSBslot.Text + "/" + comSBport.Text + "/" + comSBts.Text)
+                                    if (dxc[i, 6] == "line" + "/" + comoduk.Text + "/" + comSslot.Text + "/" + comSport.Text + "/" + comSts.Text)
                                     {
                                         richTextEnd.AppendText("软件oduk交叉：" + "\r\n");
-                                        richTextEnd.AppendText("主用源时隙：" + dxc[i, 5] + "\r\n");
-                                        richTextEnd.AppendText("主用宿时隙：" + dxc[i, 6] + "\r\n");
-                                        richTextEnd.AppendText("备用源时隙：" + dxc[i, 7] + "\r\n");
+                                        richTextEnd.AppendText(SDTS + "源时隙：" + dxc[i, 5] + "\r\n");
+                                        richTextEnd.AppendText(SATS + "宿时隙：" + dxc[i, 6] + "\r\n");
                                         findts = true;
                                         break;
 
                                     }
-
                                 }
                             }
-                        }
 
-                        if (dxc[i, 6] != null)
-                        {
-                            if (dxc[i, 6] == dxctype + "/" + comoduk.Text + "/" + comDslot.Text + "/" + comDport.Text + "/" + comDts.Text)
+                            if (dxc[i, 6] != null)
                             {
-                                if (dxc[i, 5] == "line" + "/" + comoduk.Text + "/" + comSslot.Text + "/" + comSport.Text + "/" + comSts.Text)
+                                if (dxc[i, 6] == dxctype + "/" + comoduk.Text + "/" + comDslot.Text + "/" + comDport.Text + "/" + comDts.Text)
                                 {
-                                    if (dxc[i, 7] == "line" + "/" + comoduk.Text + "/" + comSBslot.Text + "/" + comSBport.Text + "/" + comSBts.Text)
+                                    if (dxc[i, 5] == "line" + "/" + comoduk.Text + "/" + comSslot.Text + "/" + comSport.Text + "/" + comSts.Text)
                                     {
                                         richTextEnd.AppendText("软件oduk交叉：" + "\r\n");
-                                        richTextEnd.AppendText("主用源时隙：" + dxc[i, 5] + "\r\n");
-                                        richTextEnd.AppendText("业务宿时隙：" + dxc[i, 6] + "\r\n");
-                                        richTextEnd.AppendText("备用源时隙：" + dxc[i, 7] + "\r\n");
+                                        richTextEnd.AppendText(SATS + "源时隙：" + dxc[i, 5] + "\r\n");
+                                        richTextEnd.AppendText(SDTS + "宿时隙：" + dxc[i, 6] + "\r\n");
                                         findts = true;
                                         break;
 
                                     }
-
                                 }
                             }
+
                         }
-                        
-
+                        if (findts == false)
+                        {
+                            richTextEnd.AppendText("软件oduk交叉：不存在或错误 NOK" + "\r\n");
+                            richTextEnd.AppendText("您勾选源时隙：" + comSslot.Text + "/" + comSport.Text + "/" + comSts.Text + "\r\n");
+                            richTextEnd.AppendText("您勾选宿时隙：" + comDtype.Text + " " + comoduk.Text + " " + comDslot.Text + "/" + comDport.Text + "/" + comDts.Text + "\r\n");
+                        }
+                        textlog.AppendText(textcurrent.Text);
+                        textcurrent.Text = "";
                     }
-                    if (findts == false)
+                    else
                     {
-                        richTextEnd.AppendText("软件oduk交叉：不存在或错误 NOK" + "\r\n");
-                        return;
-                    }
-                    textlog.AppendText(textcurrent.Text);
-                    textcurrent.Text = "";
 
+                        string s = (int.Parse(comSslot.Text) - 1).ToString("x");
+                        textguzhangmingling.Text = "dm 0xf9" + s + "00100 10";
+                        butguzhangsend.PerformClick();
+
+                        dxc = FindDevType.StringToArray(textcurrent.Text);
+                        dxcrow = dxc.GetLength(0);
+                        dxccol = dxc.GetLength(1);
+                        richTextEnd.AppendText("主用槽位FPGA查询：" + "\r\n");
+                        richTextEnd.AppendText(comSslot.Text + "槽位FPGA类型：" + dxc[2, 1] + dxc[2, 2] + "\r\n");
+                        richTextEnd.AppendText(comSslot.Text + "槽位FPGA版本：" + dxc[2, 4] + dxc[2, 6] + "\r\n");
+                        richTextEnd.AppendText(comSslot.Text + "槽位FPGA时间：" + dxc[2, 7] + dxc[2, 8] + "-" + dxc[2, 9] + "-" + dxc[2, 10] + "\r\n");
+                        textlog.AppendText(textcurrent.Text);
+                        textcurrent.Text = "";
+                        string sb = (int.Parse(comSBslot.Text) - 1).ToString("x");
+                        textguzhangmingling.Text = "dm 0xf9" + sb + "00100 10";
+                        butguzhangsend.PerformClick();
+
+                        dxc = FindDevType.StringToArray(textcurrent.Text);
+                        dxcrow = dxc.GetLength(0);
+                        dxccol = dxc.GetLength(1);
+                        richTextEnd.AppendText("备用槽位FPGA查询：" + "\r\n");
+                        richTextEnd.AppendText(comSBslot.Text + "槽位FPGA类型：" + dxc[2, 1] + dxc[2, 2] + "\r\n");
+                        richTextEnd.AppendText(comSBslot.Text + "槽位FPGA版本：" + dxc[2, 4] + dxc[2, 6] + "\r\n");
+                        richTextEnd.AppendText(comSBslot.Text + "槽位FPGA时间：" + dxc[2, 7] + dxc[2, 8] + "-" + dxc[2, 9] + "-" + dxc[2, 10] + "\r\n");
+                        textlog.AppendText(textcurrent.Text);
+                        textcurrent.Text = "";
+
+
+                        textguzhangmingling.Text = "show dxc";
+                        butguzhangsend.PerformClick();
+                        dxc = FindDevType.StringToArray(textcurrent.Text);
+                        dxcrow = dxc.GetLength(0);
+                        dxccol = dxc.GetLength(1);
+
+                        for (int i = 0; i < dxcrow; i++)
+                        {
+
+                            if (dxc[i, 5] != null)
+                            {
+                                if (dxc[i, 5] == dxctype + "/" + comoduk.Text + "/" + comDslot.Text + "/" + comDport.Text + "/" + comDts.Text)
+                                {
+                                    if (dxc[i, 6] == "line" + "/" + comoduk.Text + "/" + comSslot.Text + "/" + comSport.Text + "/" + comSts.Text)
+                                    {
+                                        if (dxc[i, 7] == "line" + "/" + comoduk.Text + "/" + comSBslot.Text + "/" + comSBport.Text + "/" + comSBts.Text)
+                                        {
+                                            richTextEnd.AppendText("软件oduk交叉：" + "\r\n");
+                                            richTextEnd.AppendText(SDTS + "源时隙：" + dxc[i, 5] + "\r\n");
+                                            richTextEnd.AppendText(SATS + "宿时隙：" + dxc[i, 6] + "\r\n");
+                                            richTextEnd.AppendText(SBTS + "备时隙：" + dxc[i, 7] + "\r\n");
+                                            findts = true;
+                                            break;
+
+                                        }
+
+                                    }
+                                }
+                            }
+
+                            if (dxc[i, 6] != null)
+                            {
+                                if (dxc[i, 6] == dxctype + "/" + comoduk.Text + "/" + comDslot.Text + "/" + comDport.Text + "/" + comDts.Text)
+                                {
+                                    if (dxc[i, 5] == "line" + "/" + comoduk.Text + "/" + comSslot.Text + "/" + comSport.Text + "/" + comSts.Text)
+                                    {
+                                        if (dxc[i, 7] == "line" + "/" + comoduk.Text + "/" + comSBslot.Text + "/" + comSBport.Text + "/" + comSBts.Text)
+                                        {
+                                            richTextEnd.AppendText("软件oduk交叉：" + "\r\n");
+                                            richTextEnd.AppendText(SATS + "源时隙：" + dxc[i, 5] + "\r\n");
+                                            richTextEnd.AppendText(SDTS + "宿时隙：" + dxc[i, 6] + "\r\n");
+                                            richTextEnd.AppendText(SBTS + "备时隙：" + dxc[i, 7] + "\r\n");
+                                            findts = true;
+                                            break;
+
+                                        }
+
+                                    }
+                                }
+                            }
+
+
+                        }
+                        if (findts == false)
+                        {
+                            richTextEnd.AppendText("软件oduk交叉：不存在或错误 NOK" + "\r\n");
+                            richTextEnd.AppendText("您勾选主用源时隙：" + comSslot.Text + "/" + comSport.Text + "/" + comSts.Text + "\r\n");
+                            richTextEnd.AppendText("您勾选备用源时隙：" + comSBslot.Text + "/" + comSBport.Text + "/" + comSBts.Text + "\r\n");
+                            richTextEnd.AppendText("您勾选业务宿时隙：" + comDtype.Text + " " + comoduk.Text + " " + comDslot.Text + "/" + comDport.Text + "/" + comDts.Text + "\r\n");
+                        }
+                        textlog.AppendText(textcurrent.Text);
+                        textcurrent.Text = "";
+
+                    }
                 }
+
 
                 if (comSslot.Text == comDslot.Text) {
 
@@ -12209,27 +12313,24 @@ check760e.Checked == false)
                                 if (fpgatsd.Equals(comDtype.Text + "/" + comDport.Text + "/" + comDts.Text, StringComparison.OrdinalIgnoreCase))
                                 {
 
-                                    richTextEnd.AppendText("主用源驱动接口oduk交叉：" + "\r\n");
+                                    richTextEnd.AppendText(SATS+"源驱动交叉：" + "\r\n");
                                     richTextEnd.AppendText("主用源时隙：" + fpgatsd + "\r\n");
                                     richTextEnd.AppendText("主用宿时隙：" + fpgatss + "\r\n");
 
                                 }
                                 else
                                 {
-                                    richTextEnd.AppendText("主用源驱动接口oduk交叉：不存在或错误 NOK" + "\r\n");
-                                    return;
+                                    richTextEnd.AppendText(SATS + "源驱动交叉：不存在或错误 NOK" + "\r\n");
                                 }
                             }
                             else
                             {
-                                richTextEnd.AppendText("主用源驱动接口oduk交叉：不存在或错误 NOK" + "\r\n");
-                                return;
+                                richTextEnd.AppendText(SATS + "源驱动交叉：不存在或错误 NOK" + "\r\n");
                             }
                         }
                         else
                         {
-                            richTextEnd.AppendText("主用源驱动接口oduk交叉：不存在或错误 NOK" + "\r\n");
-                            return;
+                            richTextEnd.AppendText(SATS + "源驱动交叉：不存在或错误 NOK" + "\r\n");
                         }
                         textlog.AppendText(textcurrent.Text);
                         textcurrent.Text = "";
@@ -12251,7 +12352,7 @@ check760e.Checked == false)
                             {
                                 if (fpgatsd.Equals("OTU" + "/" + comSport.Text + "/" + comSts.Text, StringComparison.OrdinalIgnoreCase))
                                 {
-                                    richTextEnd.AppendText("业务宿驱动接口oduk交叉：" + "\r\n");
+                                    richTextEnd.AppendText(SDTS+"宿驱动交叉：" + "\r\n");
                                     richTextEnd.AppendText("业务源时隙：" + fpgatsd + "\r\n");
                                     richTextEnd.AppendText("业务宿时隙：" + fpgatss + "\r\n");
 
@@ -12259,20 +12360,17 @@ check760e.Checked == false)
                                 }
                                 else
                                 {
-                                    richTextEnd.AppendText("业务宿驱动接口oduk交叉：不存在或错误 NOK" + "\r\n");
-                                    return;
+                                    richTextEnd.AppendText(SDTS + "宿驱动交叉：不存在或错误 NOK" + "\r\n");
                                 }
                             }
                             else
                             {
-                                richTextEnd.AppendText("业务宿驱动接口oduk交叉：不存在或错误 NOK" + "\r\n");
-                                return;
+                                richTextEnd.AppendText(SDTS + "宿驱动交叉：不存在或错误 NOK" + "\r\n");
                             }
                         }
                         else
                         {
-                            richTextEnd.AppendText("业务宿驱动接口oduk交叉：不存在或错误 NOK" + "\r\n");
-                            return;
+                            richTextEnd.AppendText(SDTS + "宿驱动交叉：不存在或错误 NOK" + "\r\n");
 
                         }
 
@@ -12299,7 +12397,7 @@ check760e.Checked == false)
                             {
 
 
-                                richTextEnd.AppendText("业务宿驱动接口inner交叉：" + "\r\n");
+                                richTextEnd.AppendText(SDTS+"宿驱动inner交叉：" + "\r\n");
                                 richTextEnd.AppendText("业务inner时隙：" + fpgainnerd + "\r\n");
                                 richTextEnd.AppendText("业务源时隙：" + fpgatss + "\r\n");
 
@@ -12307,8 +12405,7 @@ check760e.Checked == false)
                         }
                         else
                         {
-                            richTextEnd.AppendText("业务宿驱动接口inner交叉：不存在或错误 NOK" + "\r\n");
-                            return;
+                            richTextEnd.AppendText(SDTS+"宿驱动inner交叉：不存在或错误 NOK" + "\r\n");
                         }
                         textlog.AppendText(textcurrent.Text);
                         textcurrent.Text = "";
@@ -12327,7 +12424,7 @@ check760e.Checked == false)
                             {
 
 
-                                richTextEnd.AppendText("保护源驱动接口oduk交叉：" + "\r\n");
+                                richTextEnd.AppendText(SBTS+"备驱动交叉：" + "\r\n");
                                 richTextEnd.AppendText("保护inner时隙：" + fpgainners + "\r\n");
                                 richTextEnd.AppendText("保护宿时隙：" + fpgatss + "\r\n");
 
@@ -12335,8 +12432,7 @@ check760e.Checked == false)
                         }
                         else
                         {
-                            richTextEnd.AppendText("保护源驱动接口oduk交叉：不存在或错误 NOK" + "\r\n");
-                            return;
+                            richTextEnd.AppendText(SBTS+"备驱动交叉：不存在或错误 NOK" + "\r\n");
                         }
                         textlog.AppendText(textcurrent.Text);
                         textcurrent.Text = "";
@@ -12351,8 +12447,7 @@ check760e.Checked == false)
                             string fpgatss = dxc[4, 4] + "/" + dxc[4, 5] + "/" + dxc[4, 6];
                             if (fpgainners != dxc[4, 2] + "/" + dxc[4, 3])
                             {
-                                richTextEnd.AppendText("保护源驱动接口inner交叉：不一致 NOK" + "\r\n");
-                                return;
+                                richTextEnd.AppendText(SBTS+"备驱动inner交叉：不一致 NOK" + "\r\n");
                             }
 
 
@@ -12360,7 +12455,7 @@ check760e.Checked == false)
                             {
 
 
-                                richTextEnd.AppendText("保护源驱动接口inner交叉：" + "\r\n");
+                                richTextEnd.AppendText(SBTS+"备驱动inner交叉：" + "\r\n");
                                 richTextEnd.AppendText("保护inner时隙：" + fpgainners + "\r\n");
                                 richTextEnd.AppendText("保护源时隙：" + fpgatss + "\r\n");
 
@@ -12368,8 +12463,7 @@ check760e.Checked == false)
                         }
                         else
                         {
-                            richTextEnd.AppendText("保护源驱动接口inner交叉：不存在或错误 NOK" + "\r\n");
-                            return;
+                            richTextEnd.AppendText(SBTS+"备驱动inner交叉：不存在或错误 NOK" + "\r\n");
                         }
                         textlog.AppendText(textcurrent.Text);
                         textcurrent.Text = "";
@@ -12394,7 +12488,7 @@ check760e.Checked == false)
                         {
 
 
-                                richTextEnd.AppendText("源驱动接口oduk交叉：" + "\r\n");
+                                richTextEnd.AppendText(SATS+"源驱动交叉：" + "\r\n");
                                 richTextEnd.AppendText("inner时隙：" + fpgainners + "\r\n");
                                 richTextEnd.AppendText("宿时隙：" + fpgatss + "\r\n");
 
@@ -12402,8 +12496,7 @@ check760e.Checked == false)
                     }
                     else
                     {
-                        richTextEnd.AppendText("源驱动接口oduk交叉：不存在或错误 NOK" + "\r\n");
-                        return;
+                        richTextEnd.AppendText(SATS+"源驱动交叉：不存在或错误 NOK" + "\r\n");
                     }
                     textlog.AppendText(textcurrent.Text);
                     textcurrent.Text = "";
@@ -12417,8 +12510,7 @@ check760e.Checked == false)
                         
                         string fpgatss = dxc[4, 4] + "/" + dxc[4, 5] + "/" + dxc[4, 6];
                         if (fpgainners != dxc[4, 2] + "/" + dxc[4, 3]) {
-                            richTextEnd.AppendText("源驱动接口inner交叉：不一致 NOK" + "\r\n");
-                            return;
+                            richTextEnd.AppendText(SATS+"源驱动inner交叉：不一致 NOK" + "\r\n");
                         }
 
 
@@ -12426,7 +12518,7 @@ check760e.Checked == false)
                         {
 
 
-                            richTextEnd.AppendText("源驱动接口inner交叉：" + "\r\n");
+                            richTextEnd.AppendText(SATS+"源驱动inner交叉：" + "\r\n");
                             richTextEnd.AppendText("inner时隙：" + fpgainners + "\r\n");
                             richTextEnd.AppendText("源时隙：" + fpgatss + "\r\n");
 
@@ -12434,8 +12526,7 @@ check760e.Checked == false)
                     }
                     else
                     {
-                        richTextEnd.AppendText("源驱动接口inner交叉：不存在或错误 NOK" + "\r\n");
-                        return;
+                        richTextEnd.AppendText(SATS+"源驱动inner交叉：不存在或错误 NOK" + "\r\n");
                     }
                     textlog.AppendText(textcurrent.Text);
                     textcurrent.Text = "";
@@ -12455,7 +12546,7 @@ check760e.Checked == false)
                         {
 
 
-                            richTextEnd.AppendText("宿驱动接口oduk交叉：" + "\r\n");
+                            richTextEnd.AppendText(SDTS+"宿驱动交叉：" + "\r\n");
                             richTextEnd.AppendText("inner时隙：" + fpgainnerd + "\r\n");
                             richTextEnd.AppendText("宿时隙：" + fpgatss + "\r\n");
 
@@ -12463,8 +12554,7 @@ check760e.Checked == false)
                     }
                     else
                     {
-                        richTextEnd.AppendText("宿驱动接口oduk交叉：不存在或错误 NOK" + "\r\n");
-                        return;
+                        richTextEnd.AppendText(SDTS+"宿驱动交叉：不存在或错误 NOK" + "\r\n");
                     }
 
                     textlog.AppendText(textcurrent.Text);
@@ -12480,20 +12570,18 @@ check760e.Checked == false)
                         string fpgatss = dxc[4, 4] + "/" + dxc[4, 5] + "/" + dxc[4, 6];
                         if (fpgainnerd != dxc[4, 2] + "/" + dxc[4, 3])
                         {
-                            richTextEnd.AppendText("宿驱动接口inner交叉：不一致 NOK" + "\r\n");
-                            return;
+                            richTextEnd.AppendText(SDTS+"宿驱动inner交叉：不一致 NOK" + "\r\n");
                         }
                         if (fpgainnerd != fpgainners)
                         {
-                            richTextEnd.AppendText("宿驱动接口inner交叉：不一致 NOK" + "\r\n");
-                            return;
+                            richTextEnd.AppendText(SDTS+"宿驱动inner交叉：不一致 NOK" + "\r\n");
                         }
 
                         if (fpgatss.Equals(comDtype.Text + "/" + comDport.Text + "/" + comDts.Text, StringComparison.OrdinalIgnoreCase))
                         {
 
 
-                            richTextEnd.AppendText("宿驱动接口inner交叉：" + "\r\n");
+                            richTextEnd.AppendText(SDTS+"宿驱动inner交叉：" + "\r\n");
                             richTextEnd.AppendText("inner时隙：" + fpgainnerd + "\r\n");
                             richTextEnd.AppendText("源时隙：" + fpgatss + "\r\n");
 
@@ -12501,22 +12589,21 @@ check760e.Checked == false)
                     }
                     else
                     {
-                        richTextEnd.AppendText("宿驱动接口inner交叉：不存在或错误 NOK" + "\r\n");
-                        return;
+                        richTextEnd.AppendText(SDTS+"宿驱动inner交叉：不存在或错误 NOK" + "\r\n");
                     }
                     textlog.AppendText(textcurrent.Text);
                     textcurrent.Text = "";
+                    
                 }
 
 
 
-                    if (checklpg.Checked == true && comSNC.Text == "OCH")
+                if (checklpg.Checked == true && comSNC.Text == "OCH")
                 {
                     textlog.AppendText("\r\n" + "///////////////////////////保护组" + comSslot.Text + "/" + comSport.Text + "状态查询/////////////////////////////////////////////" + "\r\n");
                     richTextEnd.AppendText("保护组状态查询：" + "\r\n");
                     textguzhangmingling.Text = "show lpg";
                     butguzhangsend.PerformClick();
-                    //string lpgname = "lpg" + comlpgID.Text;
                     string lpggrop = ".*otn" + comSslot.Text + "/" + comSport.Text;
                     Regex lpggrop0 = new Regex(lpggrop, RegexOptions.IgnoreCase);
                     string lpggrop1 = lpggrop0.Match(textcurrent.Text).Groups[0].Value;
@@ -12531,37 +12618,10 @@ check760e.Checked == false)
                     }
                     string[] VCGINFOFengGe = Regex.Split(lpggrop1, "\\s+", RegexOptions.IgnoreCase);
                     string LpgID = VCGINFOFengGe[1];
-                    //string[] lpghangshu = textcurrent.Text.Split(new string[] { "\r\n" }, StringSplitOptions.None);
-                    //string LpgHang = "";
-                    //string[] lpgidnem = new string[] { "" };
-                    //string MemberSum = "";
-                    //bool Lpgidfind = false;
+
                     bool WorkingAlarm = false;
                     bool ProtectAlarm = false;
-                    //for (int a = 0; a < lpghangshu.Length; a++)
-                    //{
-                    //    LpgHang = lpghangshu[a];
-                    //    lpgidnem = Regex.Split(LpgHang, "\\s+", RegexOptions.IgnoreCase);
-                    //    if (lpgidnem.Length > 1)
-                    //    {
-                    //        MemberSum = lpgidnem[1];
-                    //        if (MemberSum == comlpgID.Text)
-                    //        {
-                    //            richTextEnd.AppendText("保护组ID：" + MemberSum + "\r\n");
-                    //            Lpgidfind = true;
-                    //            break;
-                    //        }
-                    //    }
-                    //}
-                    //if (Lpgidfind == false)
-                    //{
-                    //    textlog.AppendText(textcurrent.Text);
-                    //    textcurrent.Text = "";
-                    //    textguzhangmingling.Text = "exit";
-                    //    butguzhangsend.PerformClick();
-                    //    MessageBox.Show("保护组ID:" + comlpgID.Text + "  未找到，请重新输入！");
-                    //    return;
-                    //}
+
                     textguzhangmingling.Text = "create lpg " + LpgID;
                     butguzhangsend.PerformClick();
                     textguzhangmingling.Text = "show";
@@ -12639,6 +12699,21 @@ check760e.Checked == false)
                                 textlog.AppendText("\r\n" + "///////////////////////////主用OTU接口告警查询/////////////////////////////////////////////" + "\r\n");
                                 textguzhangmingling.Text = "ioctl otu show " + Working;
                                 richTextEnd.AppendText("主用线路OTU接口告警查询：" + "\r\n");
+                                butguzhangsend.PerformClick();
+                                for (int h = 0; h <= 1000; h++)
+                                {
+                                    if (textcurrent.Text.Contains("Ctrl+c"))
+                                    {
+                                        butguzhangsend.PerformClick();
+                                    }
+                                    else {
+                                        
+                                        break;
+                                    }
+                                }
+                                textcurrent.Text = "";
+                                Thread.Sleep(XHTime);
+                                textguzhangmingling.Text = "ioctl otu show " + Working;
                                 butguzhangsend.PerformClick();
                                 for (int h = 0; h <= 1000; h++)
                                 {
@@ -12738,8 +12813,24 @@ check760e.Checked == false)
                             if (ProtectAlarm == true)
                             {
                                 textlog.AppendText("\r\n" + "///////////////////////////备用OTU接口告警查询/////////////////////////////////////////////" + "\r\n");
-                                textguzhangmingling.Text = "ioctl otu show " + Protect;
                                 richTextEnd.AppendText("备用线路OTU接口告警查询：" + "\r\n");
+                                textguzhangmingling.Text = "ioctl otu show " + Protect;                           
+                                butguzhangsend.PerformClick();
+                                for (int h = 0; h <= 1000; h++)
+                                {
+                                    if (textcurrent.Text.Contains("Ctrl+c"))
+                                    {
+                                        butguzhangsend.PerformClick();
+                                    }
+                                    else
+                                    {
+                                        
+                                        break;
+                                    }
+                                }
+                                textcurrent.Text = "";
+                                Thread.Sleep(XHTime);
+                                textguzhangmingling.Text = "ioctl otu show " + Protect;
                                 butguzhangsend.PerformClick();
                                 for (int y = 0; y <= 1000; y++)
                                 {
@@ -12850,7 +12941,7 @@ check760e.Checked == false)
                             if (richTextEnd.Text.Contains("NOK"))
                             {
                                 richTextEnd.AppendText("排查结果：存在故障！" + "\r\n");
-                                MessageBox.Show("排查结果：存在故障，请排查NOK项！" + "\r\n" + "如果告警项目存在NOK，请环回所有时隙后，再次点击排查故障，确认是否为我司问题");
+                                MessageBox.Show("排查结果：存在故障，请排查NOK项！" + "\r\n" + "请将OTN光口尾纤环回或者配置光口系统侧环回，再次点击排查故障，确认是否为我司问题");
                             }
                             else
                             {
@@ -12865,6 +12956,22 @@ check760e.Checked == false)
                 textlog.AppendText("\r\n" + "///////////////////////////主用OTU接口告警查询/////////////////////////////////////////////" + "\r\n");
                 textguzhangmingling.Text = "ioctl otu show " + comSslot.Text + "/" + comSport.Text;
                 richTextEnd.AppendText("主用线路OTU接口告警查询：" + "\r\n");
+                butguzhangsend.PerformClick();
+                for (int h = 0; h <= 1000; h++)
+                {
+                    if (textcurrent.Text.Contains("Ctrl+c"))
+                    {
+                        butguzhangsend.PerformClick();
+                    }
+                    else
+                    {
+
+                        break;
+                    }
+                }
+                textcurrent.Text = "";
+                Thread.Sleep(XHTime);
+                textguzhangmingling.Text = "ioctl otu show " + comSslot.Text + "/" + comSport.Text;
                 butguzhangsend.PerformClick();
                 for (int g = 0; g <= XHCount; g++)
                 {
@@ -12967,6 +13074,22 @@ check760e.Checked == false)
                     textguzhangmingling.Text = "ioctl otu show " + comSBslot.Text + "/" + comSBport.Text;
                     richTextEnd.AppendText("备用线路OTU接口告警查询：" + "\r\n");
                     butguzhangsend.PerformClick();
+                    for (int h = 0; h <= 1000; h++)
+                    {
+                        if (textcurrent.Text.Contains("Ctrl+c"))
+                        {
+                            butguzhangsend.PerformClick();
+                        }
+                        else
+                        {
+
+                            break;
+                        }
+                    }
+                    textcurrent.Text = "";
+                    Thread.Sleep(XHTime);
+                    textguzhangmingling.Text = "ioctl otu show " + comSBslot.Text + "/" + comSBport.Text;
+                    butguzhangsend.PerformClick();
                     for (int g = 0; g <= XHCount; g++)
                     {
                         if (textcurrent.Text.Contains("Ctrl+c"))
@@ -13067,6 +13190,22 @@ check760e.Checked == false)
                 textguzhangmingling.Text = "ioctl " + comoduk.Text + " show " + comSslot.Text + " otu " + comSport.Text + "/" + comSts.Text;
                 richTextEnd.AppendText("主用线路" + comoduk.Text + "时隙告警查询：" + "\r\n");
                 butguzhangsend.PerformClick();
+                for (int h = 0; h <= 1000; h++)
+                {
+                    if (textcurrent.Text.Contains("Ctrl+c"))
+                    {
+                        butguzhangsend.PerformClick();
+                    }
+                    else
+                    {
+
+                        break;
+                    }
+                }
+                textcurrent.Text = "";
+                Thread.Sleep(XHTime);
+                textguzhangmingling.Text = "ioctl " + comoduk.Text + " show " + comSslot.Text + " otu " + comSport.Text + "/" + comSts.Text;
+                butguzhangsend.PerformClick();
                 for (int g = 0; g <= XHCount; g++)
                 {
                     if (textcurrent.Text.Contains("Ctrl+c"))
@@ -13101,11 +13240,75 @@ check760e.Checked == false)
                     Thread.Sleep(XHTime);
                 }
                 Thread.Sleep(XHTime);
+                if (comSNC.Text == "SNC-S") {
+                    Thread.Sleep(XHTime);
+                    textlog.AppendText("\r\n" + "///////////////////////////主用TCM时隙告警查询/////////////////////////////////////////////" + "\r\n");
+                    textguzhangmingling.Text = "ioctl tcm show " + comoduk.Text  + " otu " + comSslot.Text + "/" + comSport.Text + "/" + comSts.Text + "/" + comtcm.Text;
+                    richTextEnd.AppendText("主用线路TCM时隙告警查询：" + "\r\n");
+                    butguzhangsend.PerformClick();
+                    for (int h = 0; h <= 1000; h++)
+                    {
+                        if (textcurrent.Text.Contains("Ctrl+c"))
+                        {
+                            butguzhangsend.PerformClick();
+                        }
+                        else
+                        {
+
+                            break;
+                        }
+                    }
+                    textcurrent.Text = "";
+                    Thread.Sleep(XHTime);
+                    textguzhangmingling.Text = "ioctl tcm show " + comoduk.Text + " otu " + comSslot.Text + "/" + comSport.Text + "/" + comSts.Text + "/" + comtcm.Text;
+                    butguzhangsend.PerformClick();
+                    for (int g = 0; g <= XHCount; g++)
+                    {
+                        if (textcurrent.Text.Contains("Ctrl+c"))
+                        {
+                            butguzhangsend.PerformClick();
+                        }
+                        else
+                        {
+                            Regex alarm = new Regex(@"TCM\s*Status:\s*([\w\d\|\.]+)\s*( )*", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                            string AlarmStatus = alarm.Match(textcurrent.Text).Groups[1].Value;
+                            if (AlarmStatus.Contains("OCI") || AlarmStatus.Contains("AIS") || AlarmStatus.Contains("LCK")  || AlarmStatus.Contains("LTC"))
+                            {
+                                richTextEnd.AppendText(comSslot.Text + "/" + comSport.Text + "/" + comSts.Text + "/" + comtcm.Text + "告警：" + AlarmStatus + "  NOK" + "\r\n");
+                            }
+                            else
+                            {
+                                richTextEnd.AppendText(comSslot.Text + "/" + comSport.Text + "/" + comSts.Text + "/" + comtcm.Text + "告警：" + AlarmStatus + "\r\n");
+                            }
+                            textlog.AppendText(textcurrent.Text);
+                            textcurrent.Text = "";
+                            break;
+                        }
+                        Thread.Sleep(XHTime);
+                    }
+                    Thread.Sleep(XHTime);
+                }
                 if (comSNC.Text != "没有配置保护")
                 {
                     textlog.AppendText("\r\n" + "///////////////////////////备用ODUK时隙告警查询/////////////////////////////////////////////" + "\r\n");
                     textguzhangmingling.Text = "ioctl " + comoduk.Text + " show " + comSBslot.Text + " otu " + comSBport.Text + "/" + comSBts.Text;
                     richTextEnd.AppendText("备用线路" + comoduk.Text + "时隙告警查询：" + "\r\n");
+                    butguzhangsend.PerformClick();
+                    for (int h = 0; h <= 1000; h++)
+                    {
+                        if (textcurrent.Text.Contains("Ctrl+c"))
+                        {
+                            butguzhangsend.PerformClick();
+                        }
+                        else
+                        {
+
+                            break;
+                        }
+                    }
+                    textcurrent.Text = "";
+                    Thread.Sleep(XHTime);
+                    textguzhangmingling.Text = "ioctl " + comoduk.Text + " show " + comSBslot.Text + " otu " + comSBport.Text + "/" + comSBts.Text;
                     butguzhangsend.PerformClick();
                     for (int g = 0; g <= XHCount; g++)
                     {
@@ -13140,11 +13343,76 @@ check760e.Checked == false)
                         }
                         Thread.Sleep(XHTime);
                     }
+                    if (comSNC.Text == "SNC-S")
+                    {
+                        Thread.Sleep(XHTime);
+                        textlog.AppendText("\r\n" + "///////////////////////////备用TCM时隙告警查询/////////////////////////////////////////////" + "\r\n");
+                        textguzhangmingling.Text = "ioctl tcm show " + comoduk.Text + " otu " + comSBslot.Text + "/" + comSBport.Text + "/" + comSBts.Text + "/" + comtcm.Text;
+                        richTextEnd.AppendText("备用线路TCM时隙告警查询：" + "\r\n");
+                        butguzhangsend.PerformClick();
+                        for (int h = 0; h <= 1000; h++)
+                        {
+                            if (textcurrent.Text.Contains("Ctrl+c"))
+                            {
+                                butguzhangsend.PerformClick();
+                            }
+                            else
+                            {
+
+                                break;
+                            }
+                        }
+                        textcurrent.Text = "";
+                        Thread.Sleep(XHTime);
+                        textguzhangmingling.Text = "ioctl tcm show " + comoduk.Text + " otu " + comSBslot.Text + "/" + comSBport.Text + "/" + comSBts.Text + "/" + comtcm.Text;
+                        butguzhangsend.PerformClick();
+                        for (int g = 0; g <= XHCount; g++)
+                        {
+                            if (textcurrent.Text.Contains("Ctrl+c"))
+                            {
+                                butguzhangsend.PerformClick();
+                            }
+                            else
+                            {
+                                Regex alarm = new Regex(@"TCM\s*Status:\s*([\w\d\|\.]+)\s*( )*", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                                string AlarmStatus = alarm.Match(textcurrent.Text).Groups[1].Value;
+                                if (AlarmStatus.Contains("OCI") || AlarmStatus.Contains("AIS") || AlarmStatus.Contains("LCK") || AlarmStatus.Contains("LTC"))
+                                {
+                                    richTextEnd.AppendText(comSBslot.Text + "/" + comSBport.Text + "/" + comSBts.Text + "/" + comtcm.Text + "告警：" + AlarmStatus + "  NOK" + "\r\n");
+                                }
+                                else
+                                {
+                                    richTextEnd.AppendText(comSBslot.Text + "/" + comSBport.Text + "/" + comSBts.Text + "/" + comtcm.Text + "告警：" + AlarmStatus + "\r\n");
+                                }
+                                textlog.AppendText(textcurrent.Text);
+                                textcurrent.Text = "";
+                                break;
+                            }
+                            Thread.Sleep(XHTime);
+                        }
+                        Thread.Sleep(XHTime);
+                    }
                 }
                 Thread.Sleep(XHTime);
                 textlog.AppendText("\r\n" + "///////////////////////////业务" + comDtype.Text + "接口告警查询/////////////////////////////////////////////" + "\r\n");
                 textguzhangmingling.Text = "ioctl " + comDtype.Text + " show " + comDslot.Text + "/" + comDport.Text;
                 richTextEnd.AppendText("业务线路" + comDtype.Text + "接口告警查询：" + "\r\n");
+                butguzhangsend.PerformClick();
+                for (int h = 0; h <= 1000; h++)
+                {
+                    if (textcurrent.Text.Contains("Ctrl+c"))
+                    {
+                        butguzhangsend.PerformClick();
+                    }
+                    else
+                    {
+
+                        break;
+                    }
+                }
+                textcurrent.Text = "";
+                Thread.Sleep(XHTime);
+                textguzhangmingling.Text = "ioctl " + comDtype.Text + " show " + comDslot.Text + "/" + comDport.Text;
                 butguzhangsend.PerformClick();
                 for (int g = 0; g <= XHCount; g++)
                 {
@@ -13247,6 +13515,22 @@ check760e.Checked == false)
                 textguzhangmingling.Text = "ioctl " + comoduk.Text + " show " + comDslot.Text + " " + comDtype.Text + " " + comDport.Text + "/" + comDts.Text;
                 richTextEnd.AppendText("业务线路" + comoduk.Text + "时隙告警查询：" + "\r\n");
                 butguzhangsend.PerformClick();
+                for (int h = 0; h <= 1000; h++)
+                {
+                    if (textcurrent.Text.Contains("Ctrl+c"))
+                    {
+                        butguzhangsend.PerformClick();
+                    }
+                    else
+                    {
+
+                        break;
+                    }
+                }
+                textcurrent.Text = "";
+                Thread.Sleep(XHTime);
+                textguzhangmingling.Text = "ioctl " + comoduk.Text + " show " + comDslot.Text + " " + comDtype.Text + " " + comDport.Text + "/" + comDts.Text;
+                butguzhangsend.PerformClick();
                 for (int g = 0; g <= XHCount; g++)
                 {
                     if (textcurrent.Text.Contains("Ctrl+c"))
@@ -13257,11 +13541,11 @@ check760e.Checked == false)
                     {
                         Regex alarm = new Regex(@"Alarm\s*Status:\s*([\w\d\|\.]+)\s*( )*", RegexOptions.IgnoreCase | RegexOptions.Multiline);
                         string AlarmStatus = alarm.Match(textcurrent.Text).Groups[1].Value;
-                        Regex pttx = new Regex(@"Tx\s*=\s*([\d]+)\s*(h)*", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                        Regex pttx = new Regex(@"Tx\s*=\s*([\d\w]+)*(h)*", RegexOptions.IgnoreCase | RegexOptions.Multiline);
                         string PtTx = pttx.Match(textcurrent.Text).Groups[1].Value;
-                        Regex ptrx = new Regex(@"Rx\s*=\s*([\d]+)\s*(h)*", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                        Regex ptrx = new Regex(@"Rx\s*=\s*([\d\w]+)*(h)*", RegexOptions.IgnoreCase | RegexOptions.Multiline);
                         string PtRx = ptrx.Match(textcurrent.Text).Groups[1].Value;
-                        Regex ptexp = new Regex(@"Exp\s*=\s*([\d]+)\s*(h)*", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                        Regex ptexp = new Regex(@"Exp\s*=\s*([\d\w]+)*(h)*", RegexOptions.IgnoreCase | RegexOptions.Multiline);
                         string PtExp = ptexp.Match(textcurrent.Text).Groups[1].Value;
                         if (AlarmStatus.Contains("LOS") || AlarmStatus.Contains("LOF") || AlarmStatus.Contains("LOM") || AlarmStatus.Contains("AIS") || AlarmStatus.Contains("SSF"))
                         {
@@ -13281,7 +13565,7 @@ check760e.Checked == false)
                     Thread.Sleep(XHTime);
                 }
                 Thread.Sleep(XHTime);
-                if (comSNC.Text != "没有配置保护")
+                if (comSNC.Text == "SNC-I"|| comSNC.Text == "SNC-N" || comSNC.Text == "SNC-S")
                 {
                     textlog.AppendText("\r\n" + "///////////////////////////保护组" + comSslot.Text + "/" + comSport.Text + "/" + comSts.Text + "状态查询/////////////////////////////////////////////" + "\r\n");
                     richTextEnd.AppendText("保护组状态查询：" + "\r\n");
@@ -13301,35 +13585,7 @@ check760e.Checked == false)
                     }
                     string[] VCGINFOFengGe = Regex.Split(lpggrop1, "\\s+", RegexOptions.IgnoreCase);
                     string LpgID = VCGINFOFengGe[1];
-                    //string lpgname = "lpg" + comlpgID.Text;
-                    //string[] lpghangshu = textcurrent.Text.Split(new string[] { "\r\n" }, StringSplitOptions.None);
-                    //string LpgHang  = "";
-                    //string[] lpgidnem = new string[] {""};
-                    //string MemberSum = "";
-                    //bool Lpgidfind = false;
-                    //for (int a = 0; a < lpghangshu.Length; a++)
-                    //{
-                    //    LpgHang = lpghangshu[a];
-                    //    lpgidnem = Regex.Split(LpgHang, "\\s+", RegexOptions.IgnoreCase);
-                    //    if (lpgidnem.Length > 1)
-                    //    {
-                    //        MemberSum = lpgidnem[1];
-                    //        if (MemberSum == comlpgID.Text)
-                    //        {
-                    //            richTextEnd.AppendText("保护组ID：" + MemberSum + "\r\n");
-                    //            Lpgidfind = true;
-                    //            break;
-                    //        }
-                    //    }
-                    //}
-                    //if(Lpgidfind == false){
-                    //    textlog.AppendText(textcurrent.Text);
-                    //    textcurrent.Text = "";
-                    //    textguzhangmingling.Text = "exit";
-                    //    butguzhangsend.PerformClick();
-                    //    MessageBox.Show("保护组ID:" + comlpgID.Text + "  未找到，请重新输入！");
-                    //    return;
-                    //}
+
                     textguzhangmingling.Text = "create lpg " + LpgID;
                     butguzhangsend.PerformClick();
                     textguzhangmingling.Text = "show";
@@ -13390,6 +13646,106 @@ check760e.Checked == false)
                         Thread.Sleep(XHTime);
                     }
                 }
+                if (comSNC.Text == "OCH") {
+                    textlog.AppendText("\r\n" + "///////////////////////////保护组" + comSslot.Text + "/" + comSport.Text + "状态查询/////////////////////////////////////////////" + "\r\n");
+                    richTextEnd.AppendText("保护组状态查询：" + "\r\n");
+                    textguzhangmingling.Text = "show lpg";
+                    butguzhangsend.PerformClick();
+                    string lpggrop = ".*otn" + comSslot.Text + "/" + comSport.Text;
+                    Regex lpggrop0 = new Regex(lpggrop, RegexOptions.IgnoreCase);
+                    string lpggrop1 = lpggrop0.Match(textcurrent.Text).Groups[0].Value;
+                    if (lpggrop1 == "")
+                    {
+                        textlog.AppendText(textcurrent.Text);
+                        textcurrent.Text = "";
+                        textguzhangmingling.Text = "exit";
+                        butguzhangsend.PerformClick();
+                        MessageBox.Show("保护组端口:" + comSslot.Text + "/" + comSport.Text + "  未找到，请重新输入！");
+                        return;
+                    }
+                    string[] VCGINFOFengGe = Regex.Split(lpggrop1, "\\s+", RegexOptions.IgnoreCase);
+                    string LpgID = VCGINFOFengGe[1];
+
+                    textlog.AppendText(textcurrent.Text);
+                    textcurrent.Text = "";
+
+                    textguzhangmingling.Text = "create lpg " + LpgID;
+                    butguzhangsend.PerformClick();
+                    textguzhangmingling.Text = "show";
+                    butguzhangsend.PerformClick();
+                    for (int g = 0; g <= XHCount; g++)
+                    {
+                        if (textcurrent.Text.Contains("Ctrl+c"))
+                        {
+                            butguzhangsend.PerformClick();
+                        }
+                        else
+                        {
+                            Regex protection = new Regex(@"protection\s*type:\s*([\w]+)\s*( )*", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                            string Protection = protection.Match(textcurrent.Text).Groups[1].Value;
+                            if (Protection == "SNC")
+                            {
+                                textguzhangmingling.Text = "exit";
+                                butguzhangsend.PerformClick();
+                                textlog.AppendText(textcurrent.Text);
+                                textcurrent.Text = "";
+                                textguzhangmingling.Text = "exit";
+                                butguzhangsend.PerformClick();
+                                MessageBox.Show("当前为SNC保护，请重新选择光口后尝试");
+                                return;
+                            }
+                            Regex monitor = new Regex(@"monitor\s*mode:\s*([\w\d\/\.]+)\s*( )*", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                            string Monitor = monitor.Match(textcurrent.Text).Groups[1].Value;
+                            Regex working = new Regex(@"working\s*port:\s*([\d\-\w\/\(\)\ \+]+)\s*( )*", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                            string Working = working.Match(textcurrent.Text).Groups[1].Value;
+                            Regex protect = new Regex(@"protect\s*port:\s*([\d\-\w\/\(\)\ \+]+)\s*( )*", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                            string Protect = protect.Match(textcurrent.Text).Groups[1].Value;
+                            Regex service = new Regex(@"service\s*port:\s*([\d\-\w\/\(\)\ \+]+)\s*( )*", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                            string Service = service.Match(textcurrent.Text).Groups[1].Value;
+                            Regex lpgstate = new Regex(@"lpg-state:\s*([\d\-\w\/\(\)\ \+\:]+)\s*( )*", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                            string LpgState = lpgstate.Match(textcurrent.Text).Groups[1].Value;
+                            Regex count = new Regex(@"switch\s*count:\s*([\d\-\w\/\(\)\ \+\:]+)\s*( )*", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                            string Count = count.Match(textcurrent.Text).Groups[1].Value;
+                            if (Monitor.Contains("LOS") || Monitor.Contains("LOF") || Monitor.Contains("LOM") || Monitor.Contains("AIS") || Monitor.Contains("SSF"))
+                            {
+                                richTextEnd.AppendText("检测模式：" + Monitor + "  NOK" + "\r\n");
+                            }
+                            else
+                            {
+                                richTextEnd.AppendText("检测模式：" + Monitor + "\r\n");
+                            }
+                            if (Working.Contains("SF") || Working.Contains("SD"))
+                            {
+                                richTextEnd.AppendText("主用：" + Working + "  NOK" + "\r\n");
+                                working = new Regex(@"working\s*port:\s*otn([\d\/\d]+)", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                                Working = working.Match(textcurrent.Text).Groups[1].Value;
+                            }
+                            else
+                            {
+                                richTextEnd.AppendText("主用：" + Working + "\r\n");
+                            }
+                            if (Protect.Contains("SF") || Protect.Contains("SD"))
+                            {
+                                richTextEnd.AppendText("备用：" + Protect + "  NOK" + "\r\n");
+                                protect = new Regex(@"protect\s*port:\s*otn([\d\/\d]+)", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                                Protect = protect.Match(textcurrent.Text).Groups[1].Value;
+                            }
+                            else
+                            {
+                                richTextEnd.AppendText("备用：" + Protect + "\r\n");
+                            }
+                            //richTextEnd.AppendText(comDslot.Text + "/" + comDport.Text + "/" + comDts.Text + "宿：" + Service + "\r\n");
+                            richTextEnd.AppendText("倒换原因：" + LpgState + "\r\n");
+                            richTextEnd.AppendText("倒换次数：" + Count + "\r\n");
+                            break;
+                        }
+                    }
+                    textlog.AppendText(textcurrent.Text);
+                    textcurrent.Text = "";
+                    textguzhangmingling.Text = "exit";
+                    butguzhangsend.PerformClick();
+                }
+
                 textguzhangmingling.Text = "exit";
                 butguzhangsend.PerformClick();
                 ArrayList list = getIndexArray(richTextEnd.Text, "NOK");
@@ -13402,7 +13758,7 @@ check760e.Checked == false)
                 if (richTextEnd.Text.Contains("NOK"))
                 {
                     richTextEnd.AppendText("排查结果：存在故障！" + "\r\n");
-                    MessageBox.Show("排查结果：存在故障，请排查NOK项！" + "\r\n" + "如果告警项目存在NOK，请环回所有时隙后，再次点击排查故障，确认是否为我司问题");
+                    MessageBox.Show("排查结果：存在故障，请排查NOK项！" + "\r\n" + "如果告警项目存在NOK，请环回所有时隙或上联光接口，再次点击排查故障，确认是否为我司问题");
                 }
                 else
                 {
@@ -15374,7 +15730,6 @@ check760e.Checked == false)
                                 if (result.Pdu.VbList[0].Value.ToString() == "6")
                                 {
                                     DGVSTATUS.Rows[i].Cells["保存"].Value = "失败";
-
                                     DGVSTATUS.Rows[i].Cells["保存"].Style.BackColor = Color.Yellow;
 
                                 }

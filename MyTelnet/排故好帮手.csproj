@@ -17,7 +17,7 @@
     <OldToolsVersion>2.0</OldToolsVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <IsWebBootstrapper>true</IsWebBootstrapper>
-    <PublishUrl>ftp://60.205.155.127:801/gpn/</PublishUrl>
+    <PublishUrl>ftp://hunan128.com:801/gpn/</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -27,15 +27,15 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>false</MapFileExtensions>
-    <InstallUrl>http://60.205.155.127/ftp/gpn/</InstallUrl>
-    <UpdateUrl>http://60.205.155.127/ftp/gpn/</UpdateUrl>
-    <SupportUrl>http://60.205.155.127/ftp/index.html</SupportUrl>
+    <InstallUrl>http://hunan128.com/ftp/gpn/</InstallUrl>
+    <UpdateUrl>http://hunan128.com/ftp/gpn/</UpdateUrl>
+    <SupportUrl>http://hunan128.com/ftp/index.html</SupportUrl>
     <TargetCulture>zh-CN</TargetCulture>
     <ProductName>排故好帮手</ProductName>
     <PublisherName>排故好帮手</PublisherName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>index.html</WebPage>
-    <ApplicationRevision>35</ApplicationRevision>
+    <ApplicationRevision>47</ApplicationRevision>
     <ApplicationVersion>4.1.2.%2a</ApplicationVersion>
     <UseApplicationTrust>true</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>

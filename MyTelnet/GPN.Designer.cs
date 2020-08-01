@@ -63,7 +63,6 @@
             this.label6 = new System.Windows.Forms.Label();
             this.comcishu = new System.Windows.Forms.ComboBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.butSelectPathId = new System.Windows.Forms.Button();
             this.butgaizhi = new System.Windows.Forms.Button();
             this.comotnslot = new System.Windows.Forms.ComboBox();
             this.comotnboardmode = new System.Windows.Forms.ComboBox();
@@ -119,7 +118,6 @@
             this.textguzhangmingling = new System.Windows.Forms.TextBox();
             this.textlog = new System.Windows.Forms.TextBox();
             this.textcurrent = new System.Windows.Forms.TextBox();
-            this.label10 = new System.Windows.Forms.Label();
             this.butguzhangsend = new System.Windows.Forms.Button();
             this.tabPageGpn = new System.Windows.Forms.TabPage();
             this.butbatchip = new System.Windows.Forms.Button();
@@ -334,6 +332,8 @@
             this.关于软件OToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.myProgressBarjindu = new MetroFramework.Controls.MetroProgressBar();
+            this.comtcm = new System.Windows.Forms.ComboBox();
+            this.label4 = new System.Windows.Forms.Label();
             this.statusStrip1.SuspendLayout();
             this.tabPageLog.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -537,7 +537,6 @@
             this.tabPageLog.Controls.Add(this.textguzhangmingling);
             this.tabPageLog.Controls.Add(this.textlog);
             this.tabPageLog.Controls.Add(this.textcurrent);
-            this.tabPageLog.Controls.Add(this.label10);
             this.tabPageLog.Controls.Add(this.butguzhangsend);
             this.tabPageLog.Location = new System.Drawing.Point(4, 22);
             this.tabPageLog.Name = "tabPageLog";
@@ -697,7 +696,8 @@
             // groupBox1
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox1.Controls.Add(this.butSelectPathId);
+            this.groupBox1.Controls.Add(this.label4);
+            this.groupBox1.Controls.Add(this.comtcm);
             this.groupBox1.Controls.Add(this.butgaizhi);
             this.groupBox1.Controls.Add(this.comotnslot);
             this.groupBox1.Controls.Add(this.comotnboardmode);
@@ -736,26 +736,12 @@
             this.groupBox1.Controls.Add(this.label11);
             this.groupBox1.Controls.Add(this.comoduk);
             this.groupBox1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox1.Location = new System.Drawing.Point(997, 108);
+            this.groupBox1.Location = new System.Drawing.Point(989, 109);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(311, 330);
             this.groupBox1.TabIndex = 233;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "OTN板卡";
-            // 
-            // butSelectPathId
-            // 
-            this.butSelectPathId.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butSelectPathId.BackColor = System.Drawing.Color.DodgerBlue;
-            this.butSelectPathId.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.butSelectPathId.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butSelectPathId.ForeColor = System.Drawing.Color.White;
-            this.butSelectPathId.Location = new System.Drawing.Point(251, 34);
-            this.butSelectPathId.Name = "butSelectPathId";
-            this.butSelectPathId.Size = new System.Drawing.Size(54, 74);
-            this.butSelectPathId.TabIndex = 282;
-            this.butSelectPathId.Text = "SDH交叉PathID 查询";
-            this.butSelectPathId.UseVisualStyleBackColor = false;
             // 
             // butgaizhi
             // 
@@ -846,7 +832,7 @@
             // 
             this.checklpg.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.checklpg.AutoSize = true;
-            this.checklpg.Location = new System.Drawing.Point(247, 13);
+            this.checklpg.Location = new System.Drawing.Point(210, 32);
             this.checklpg.Name = "checklpg";
             this.checklpg.Size = new System.Drawing.Size(49, 15);
             this.checklpg.TabIndex = 276;
@@ -861,7 +847,7 @@
             this.butoptbackoff.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.butoptbackoff.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.butoptbackoff.ForeColor = System.Drawing.Color.White;
-            this.butoptbackoff.Location = new System.Drawing.Point(231, 225);
+            this.butoptbackoff.Location = new System.Drawing.Point(231, 241);
             this.butoptbackoff.Name = "butoptbackoff";
             this.butoptbackoff.Size = new System.Drawing.Size(74, 39);
             this.butoptbackoff.TabIndex = 275;
@@ -874,11 +860,11 @@
             this.label20.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label20.AutoSize = true;
             this.label20.BackColor = System.Drawing.Color.Transparent;
-            this.label20.Location = new System.Drawing.Point(5, 166);
+            this.label20.Location = new System.Drawing.Point(5, 182);
             this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(65, 12);
+            this.label20.Size = new System.Drawing.Size(77, 12);
             this.label20.TabIndex = 274;
-            this.label20.Text = "业务宿通道";
+            this.label20.Text = "业务宿通道ID";
             // 
             // comDts
             // 
@@ -892,9 +878,9 @@
             "6",
             "7",
             "8"});
-            this.comDts.Location = new System.Drawing.Point(79, 163);
+            this.comDts.Location = new System.Drawing.Point(84, 179);
             this.comDts.Name = "comDts";
-            this.comDts.Size = new System.Drawing.Size(167, 20);
+            this.comDts.Size = new System.Drawing.Size(176, 20);
             this.comDts.TabIndex = 273;
             this.comDts.Text = "1";
             // 
@@ -905,7 +891,7 @@
             this.butoptoff.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.butoptoff.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.butoptoff.ForeColor = System.Drawing.Color.White;
-            this.butoptoff.Location = new System.Drawing.Point(156, 225);
+            this.butoptoff.Location = new System.Drawing.Point(156, 241);
             this.butoptoff.Name = "butoptoff";
             this.butoptoff.Size = new System.Drawing.Size(74, 39);
             this.butoptoff.TabIndex = 272;
@@ -920,7 +906,7 @@
             this.butyingcang.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.butyingcang.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.butyingcang.ForeColor = System.Drawing.Color.White;
-            this.butyingcang.Location = new System.Drawing.Point(81, 185);
+            this.butyingcang.Location = new System.Drawing.Point(81, 201);
             this.butyingcang.Name = "butyingcang";
             this.butyingcang.Size = new System.Drawing.Size(74, 39);
             this.butyingcang.TabIndex = 269;
@@ -935,7 +921,7 @@
             this.butTim.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.butTim.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.butTim.ForeColor = System.Drawing.Color.White;
-            this.butTim.Location = new System.Drawing.Point(6, 185);
+            this.butTim.Location = new System.Drawing.Point(6, 201);
             this.butTim.Name = "butTim";
             this.butTim.Size = new System.Drawing.Size(74, 39);
             this.butTim.TabIndex = 268;
@@ -948,7 +934,7 @@
             this.label19.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label19.AutoSize = true;
             this.label19.BackColor = System.Drawing.Color.Transparent;
-            this.label19.Location = new System.Drawing.Point(8, 16);
+            this.label19.Location = new System.Drawing.Point(8, 13);
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(47, 12);
             this.label19.TabIndex = 265;
@@ -963,9 +949,9 @@
             "SNC-S",
             "OCH",
             "没有配置保护"});
-            this.comSNC.Location = new System.Drawing.Point(79, 12);
+            this.comSNC.Location = new System.Drawing.Point(84, 9);
             this.comSNC.Name = "comSNC";
-            this.comSNC.Size = new System.Drawing.Size(167, 20);
+            this.comSNC.Size = new System.Drawing.Size(176, 20);
             this.comSNC.TabIndex = 264;
             this.comSNC.Text = "没有配置保护";
             // 
@@ -974,18 +960,18 @@
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
             this.label2.BackColor = System.Drawing.Color.Transparent;
-            this.label2.Location = new System.Drawing.Point(129, 91);
+            this.label2.Location = new System.Drawing.Point(134, 107);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(65, 12);
+            this.label2.Size = new System.Drawing.Size(77, 12);
             this.label2.TabIndex = 263;
-            this.label2.Text = "保护源通道";
+            this.label2.Text = "保护源通道ID";
             // 
             // label17
             // 
             this.label17.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label17.AutoSize = true;
             this.label17.BackColor = System.Drawing.Color.Transparent;
-            this.label17.Location = new System.Drawing.Point(129, 72);
+            this.label17.Location = new System.Drawing.Point(134, 88);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(65, 12);
             this.label17.TabIndex = 262;
@@ -1003,7 +989,7 @@
             "6",
             "7",
             "8"});
-            this.comSBts.Location = new System.Drawing.Point(197, 88);
+            this.comSBts.Location = new System.Drawing.Point(211, 104);
             this.comSBts.Name = "comSBts";
             this.comSBts.Size = new System.Drawing.Size(49, 20);
             this.comSBts.TabIndex = 261;
@@ -1021,7 +1007,7 @@
             "6",
             "7",
             "8"});
-            this.comSBport.Location = new System.Drawing.Point(197, 69);
+            this.comSBport.Location = new System.Drawing.Point(211, 85);
             this.comSBport.Name = "comSBport";
             this.comSBport.Size = new System.Drawing.Size(49, 20);
             this.comSBport.TabIndex = 260;
@@ -1032,7 +1018,7 @@
             this.label18.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label18.AutoSize = true;
             this.label18.BackColor = System.Drawing.Color.Transparent;
-            this.label18.Location = new System.Drawing.Point(129, 53);
+            this.label18.Location = new System.Drawing.Point(134, 69);
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(65, 12);
             this.label18.TabIndex = 259;
@@ -1060,7 +1046,7 @@
             "16",
             "17",
             "18"});
-            this.comSBslot.Location = new System.Drawing.Point(197, 50);
+            this.comSBslot.Location = new System.Drawing.Point(211, 66);
             this.comSBslot.Name = "comSBslot";
             this.comSBslot.Size = new System.Drawing.Size(49, 20);
             this.comSBslot.TabIndex = 258;
@@ -1074,7 +1060,7 @@
             this.butotnpaigu.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.butotnpaigu.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.butotnpaigu.ForeColor = System.Drawing.Color.White;
-            this.butotnpaigu.Location = new System.Drawing.Point(6, 225);
+            this.butotnpaigu.Location = new System.Drawing.Point(6, 241);
             this.butotnpaigu.Name = "butotnpaigu";
             this.butotnpaigu.Size = new System.Drawing.Size(149, 39);
             this.butotnpaigu.TabIndex = 234;
@@ -1087,7 +1073,7 @@
             this.label16.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label16.AutoSize = true;
             this.label16.BackColor = System.Drawing.Color.Transparent;
-            this.label16.Location = new System.Drawing.Point(5, 129);
+            this.label16.Location = new System.Drawing.Point(5, 145);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(65, 12);
             this.label16.TabIndex = 257;
@@ -1098,7 +1084,7 @@
             this.label15.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label15.AutoSize = true;
             this.label15.BackColor = System.Drawing.Color.Transparent;
-            this.label15.Location = new System.Drawing.Point(5, 147);
+            this.label15.Location = new System.Drawing.Point(5, 163);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(65, 12);
             this.label15.TabIndex = 256;
@@ -1109,18 +1095,18 @@
             this.label14.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label14.AutoSize = true;
             this.label14.BackColor = System.Drawing.Color.Transparent;
-            this.label14.Location = new System.Drawing.Point(4, 91);
+            this.label14.Location = new System.Drawing.Point(4, 107);
             this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(65, 12);
+            this.label14.Size = new System.Drawing.Size(77, 12);
             this.label14.TabIndex = 255;
-            this.label14.Text = "主用源通道";
+            this.label14.Text = "主用源通道ID";
             // 
             // label12
             // 
             this.label12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label12.AutoSize = true;
             this.label12.BackColor = System.Drawing.Color.Transparent;
-            this.label12.Location = new System.Drawing.Point(4, 72);
+            this.label12.Location = new System.Drawing.Point(4, 88);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(65, 12);
             this.label12.TabIndex = 254;
@@ -1134,9 +1120,9 @@
             "sdh",
             "eth",
             "otu"});
-            this.comDtype.Location = new System.Drawing.Point(79, 126);
+            this.comDtype.Location = new System.Drawing.Point(84, 142);
             this.comDtype.Name = "comDtype";
-            this.comDtype.Size = new System.Drawing.Size(167, 20);
+            this.comDtype.Size = new System.Drawing.Size(176, 20);
             this.comDtype.TabIndex = 253;
             this.comDtype.Text = "any";
             // 
@@ -1152,9 +1138,9 @@
             "6",
             "7",
             "8"});
-            this.comDport.Location = new System.Drawing.Point(79, 144);
+            this.comDport.Location = new System.Drawing.Point(84, 160);
             this.comDport.Name = "comDport";
-            this.comDport.Size = new System.Drawing.Size(167, 20);
+            this.comDport.Size = new System.Drawing.Size(176, 20);
             this.comDport.TabIndex = 252;
             this.comDport.Text = "1";
             // 
@@ -1163,7 +1149,7 @@
             this.lab.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lab.AutoSize = true;
             this.lab.BackColor = System.Drawing.Color.Transparent;
-            this.lab.Location = new System.Drawing.Point(5, 111);
+            this.lab.Location = new System.Drawing.Point(5, 127);
             this.lab.Name = "lab";
             this.lab.Size = new System.Drawing.Size(65, 12);
             this.lab.TabIndex = 251;
@@ -1191,9 +1177,9 @@
             "16",
             "17",
             "18"});
-            this.comDslot.Location = new System.Drawing.Point(79, 107);
+            this.comDslot.Location = new System.Drawing.Point(84, 123);
             this.comDslot.Name = "comDslot";
-            this.comDslot.Size = new System.Drawing.Size(167, 20);
+            this.comDslot.Size = new System.Drawing.Size(176, 20);
             this.comDslot.TabIndex = 250;
             this.comDslot.Text = "13";
             // 
@@ -1204,7 +1190,7 @@
             this.butsdhfast.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.butsdhfast.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.butsdhfast.ForeColor = System.Drawing.Color.White;
-            this.butsdhfast.Location = new System.Drawing.Point(156, 185);
+            this.butsdhfast.Location = new System.Drawing.Point(156, 201);
             this.butsdhfast.Name = "butsdhfast";
             this.butsdhfast.Size = new System.Drawing.Size(74, 39);
             this.butsdhfast.TabIndex = 243;
@@ -1219,7 +1205,7 @@
             this.butotnfast.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.butotnfast.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.butotnfast.ForeColor = System.Drawing.Color.White;
-            this.butotnfast.Location = new System.Drawing.Point(231, 185);
+            this.butotnfast.Location = new System.Drawing.Point(231, 201);
             this.butotnfast.Name = "butotnfast";
             this.butotnfast.Size = new System.Drawing.Size(74, 39);
             this.butotnfast.TabIndex = 242;
@@ -1239,7 +1225,7 @@
             "6",
             "7",
             "8"});
-            this.comSts.Location = new System.Drawing.Point(79, 88);
+            this.comSts.Location = new System.Drawing.Point(84, 104);
             this.comSts.Name = "comSts";
             this.comSts.Size = new System.Drawing.Size(49, 20);
             this.comSts.TabIndex = 238;
@@ -1257,7 +1243,7 @@
             "6",
             "7",
             "8"});
-            this.comSport.Location = new System.Drawing.Point(79, 69);
+            this.comSport.Location = new System.Drawing.Point(84, 85);
             this.comSport.Name = "comSport";
             this.comSport.Size = new System.Drawing.Size(49, 20);
             this.comSport.TabIndex = 236;
@@ -1268,7 +1254,7 @@
             this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label7.AutoSize = true;
             this.label7.BackColor = System.Drawing.Color.Transparent;
-            this.label7.Location = new System.Drawing.Point(4, 53);
+            this.label7.Location = new System.Drawing.Point(4, 69);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(65, 12);
             this.label7.TabIndex = 234;
@@ -1296,7 +1282,7 @@
             "16",
             "17",
             "18"});
-            this.comSslot.Location = new System.Drawing.Point(79, 50);
+            this.comSslot.Location = new System.Drawing.Point(84, 66);
             this.comSslot.Name = "comSslot";
             this.comSslot.Size = new System.Drawing.Size(49, 20);
             this.comSslot.TabIndex = 233;
@@ -1307,7 +1293,7 @@
             this.label11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label11.AutoSize = true;
             this.label11.BackColor = System.Drawing.Color.Transparent;
-            this.label11.Location = new System.Drawing.Point(8, 34);
+            this.label11.Location = new System.Drawing.Point(8, 50);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(53, 12);
             this.label11.TabIndex = 231;
@@ -1322,9 +1308,9 @@
             "oduf",
             "odu2",
             "tcm"});
-            this.comoduk.Location = new System.Drawing.Point(79, 31);
+            this.comoduk.Location = new System.Drawing.Point(84, 47);
             this.comoduk.Name = "comoduk";
-            this.comoduk.Size = new System.Drawing.Size(167, 20);
+            this.comoduk.Size = new System.Drawing.Size(176, 20);
             this.comoduk.TabIndex = 230;
             this.comoduk.Text = "odu0";
             // 
@@ -1566,7 +1552,7 @@
             this.richTextEnd.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedVertical;
             this.richTextEnd.Size = new System.Drawing.Size(279, 352);
             this.richTextEnd.TabIndex = 108;
-            this.richTextEnd.Text = "故障排查结果：";
+            this.richTextEnd.Text = "排查结果：";
             this.richTextEnd.TextChanged += new System.EventHandler(this.RichTextEnd_TextChanged);
             // 
             // textguzhangmingling
@@ -1575,10 +1561,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textguzhangmingling.Enabled = false;
             this.textguzhangmingling.Font = new System.Drawing.Font("微软雅黑", 14.25F);
-            this.textguzhangmingling.Location = new System.Drawing.Point(68, 545);
+            this.textguzhangmingling.Location = new System.Drawing.Point(3, 544);
             this.textguzhangmingling.Multiline = true;
             this.textguzhangmingling.Name = "textguzhangmingling";
-            this.textguzhangmingling.Size = new System.Drawing.Size(805, 30);
+            this.textguzhangmingling.Size = new System.Drawing.Size(873, 30);
             this.textguzhangmingling.TabIndex = 102;
             this.textguzhangmingling.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Textguzhangmingling_KeyUp);
             // 
@@ -1598,7 +1584,7 @@
             this.textlog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textlog.Size = new System.Drawing.Size(705, 352);
             this.textlog.TabIndex = 8;
-            this.textlog.Text = "故障日志：";
+            this.textlog.Text = "排查命令行日志：";
             // 
             // textcurrent
             // 
@@ -1608,7 +1594,7 @@
             this.textcurrent.BackColor = System.Drawing.Color.Black;
             this.textcurrent.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textcurrent.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.textcurrent.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.textcurrent.Font = new System.Drawing.Font("宋体", 9F);
             this.textcurrent.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
             this.textcurrent.Location = new System.Drawing.Point(0, 354);
             this.textcurrent.Multiline = true;
@@ -1617,17 +1603,6 @@
             this.textcurrent.Size = new System.Drawing.Size(984, 186);
             this.textcurrent.TabIndex = 7;
             this.textcurrent.Text = "排查窗口：";
-            // 
-            // label10
-            // 
-            this.label10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label10.AutoSize = true;
-            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold);
-            this.label10.Location = new System.Drawing.Point(1, 548);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(70, 24);
-            this.label10.TabIndex = 105;
-            this.label10.Text = "命令行";
             // 
             // butguzhangsend
             // 
@@ -1973,22 +1948,22 @@
             // textWriteCommunity
             // 
             this.textWriteCommunity.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.textWriteCommunity.Location = new System.Drawing.Point(1197, 39);
+            this.textWriteCommunity.Location = new System.Drawing.Point(1186, 39);
             this.textWriteCommunity.Multiline = true;
             this.textWriteCommunity.Name = "textWriteCommunity";
             this.textWriteCommunity.PasswordChar = '*';
-            this.textWriteCommunity.Size = new System.Drawing.Size(48, 21);
+            this.textWriteCommunity.Size = new System.Drawing.Size(59, 21);
             this.textWriteCommunity.TabIndex = 242;
             this.textWriteCommunity.Text = "private";
             // 
             // textReadCommunity
             // 
             this.textReadCommunity.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.textReadCommunity.Location = new System.Drawing.Point(1149, 39);
+            this.textReadCommunity.Location = new System.Drawing.Point(1128, 39);
             this.textReadCommunity.Multiline = true;
             this.textReadCommunity.Name = "textReadCommunity";
             this.textReadCommunity.PasswordChar = '*';
-            this.textReadCommunity.Size = new System.Drawing.Size(49, 21);
+            this.textReadCommunity.Size = new System.Drawing.Size(62, 21);
             this.textReadCommunity.TabIndex = 241;
             this.textReadCommunity.Text = "public";
             // 
@@ -1997,7 +1972,7 @@
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
             this.label1.BackColor = System.Drawing.Color.Transparent;
-            this.label1.Location = new System.Drawing.Point(1084, 44);
+            this.label1.Location = new System.Drawing.Point(1077, 44);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(53, 12);
             this.label1.TabIndex = 240;
@@ -2433,10 +2408,10 @@
             // textpsden
             // 
             this.textpsden.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.textpsden.Location = new System.Drawing.Point(1149, 59);
+            this.textpsden.Location = new System.Drawing.Point(1128, 59);
             this.textpsden.Name = "textpsden";
             this.textpsden.PasswordChar = '*';
-            this.textpsden.Size = new System.Drawing.Size(96, 21);
+            this.textpsden.Size = new System.Drawing.Size(117, 21);
             this.textpsden.TabIndex = 127;
             this.textpsden.Text = "greenway";
             // 
@@ -3025,10 +3000,10 @@
             // textpsd
             // 
             this.textpsd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.textpsd.Location = new System.Drawing.Point(1074, 59);
+            this.textpsd.Location = new System.Drawing.Point(1027, 59);
             this.textpsd.Name = "textpsd";
             this.textpsd.PasswordChar = '*';
-            this.textpsd.Size = new System.Drawing.Size(76, 21);
+            this.textpsd.Size = new System.Drawing.Size(103, 21);
             this.textpsd.TabIndex = 126;
             this.textpsd.Text = "greenway";
             // 
@@ -3047,7 +3022,7 @@
             this.textusr.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.textusr.Location = new System.Drawing.Point(979, 59);
             this.textusr.Name = "textusr";
-            this.textusr.Size = new System.Drawing.Size(96, 21);
+            this.textusr.Size = new System.Drawing.Size(49, 21);
             this.textusr.TabIndex = 125;
             this.textusr.Text = "admin";
             // 
@@ -4521,14 +4496,14 @@
             // 保存ToolStripMenuItem
             // 
             this.保存ToolStripMenuItem.Name = "保存ToolStripMenuItem";
-            this.保存ToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.保存ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.保存ToolStripMenuItem.Text = "保存串口日志";
             this.保存ToolStripMenuItem.Click += new System.EventHandler(this.保存ToolStripMenuItem_Click);
             // 
             // 设置ToolStripMenuItem
             // 
             this.设置ToolStripMenuItem.Name = "设置ToolStripMenuItem";
-            this.设置ToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.设置ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.设置ToolStripMenuItem.Text = "保存配置记忆";
             this.设置ToolStripMenuItem.Click += new System.EventHandler(this.设置ToolStripMenuItem_Click);
             // 
@@ -4580,6 +4555,33 @@
             this.myProgressBarjindu.Name = "myProgressBarjindu";
             this.myProgressBarjindu.Size = new System.Drawing.Size(1300, 23);
             this.myProgressBarjindu.TabIndex = 49;
+            // 
+            // comtcm
+            // 
+            this.comtcm.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.comtcm.Items.AddRange(new object[] {
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6"});
+            this.comtcm.Location = new System.Drawing.Point(84, 28);
+            this.comtcm.Name = "comtcm";
+            this.comtcm.Size = new System.Drawing.Size(120, 20);
+            this.comtcm.TabIndex = 282;
+            this.comtcm.Text = "1";
+            // 
+            // label4
+            // 
+            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label4.AutoSize = true;
+            this.label4.BackColor = System.Drawing.Color.Transparent;
+            this.label4.Location = new System.Drawing.Point(8, 32);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(47, 12);
+            this.label4.TabIndex = 283;
+            this.label4.Text = "Tcm时隙";
             // 
             // GPN
             // 
@@ -4650,7 +4652,6 @@
         private System.Windows.Forms.TextBox textguzhangmingling;
         private System.Windows.Forms.TextBox textlog;
         private System.Windows.Forms.TextBox textcurrent;
-        private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Button butguzhangsend;
         private System.Windows.Forms.TabPage tabPageGpn;
         private System.Windows.Forms.ListBox lstboxStatus;
@@ -4881,7 +4882,6 @@
         private MetroFramework.Controls.MetroLabel metroLabel3;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
         private MetroFramework.Controls.MetroProgressBar myProgressBarjindu;
-        private System.Windows.Forms.Button butSelectPathId;
         private MetroFramework.Controls.MetroButton metroButselect;
         private MetroFramework.Controls.MetroTextBox metroTextOidPermission;
         private MetroFramework.Controls.MetroTextBox metroTextOidType;
@@ -4937,6 +4937,8 @@
         private MetroFramework.Controls.MetroLabel metroLabel26;
         private MetroFramework.Controls.MetroTextBox TextVNCPassd;
         private MetroFramework.Controls.MetroLabel metroLabel27;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.ComboBox comtcm;
     }
 }
 
