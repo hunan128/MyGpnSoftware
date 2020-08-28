@@ -21,7 +21,7 @@
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
+    <UpdateMode>Background</UpdateMode>
     <UpdateInterval>7</UpdateInterval>
     <UpdateIntervalUnits>Hours</UpdateIntervalUnits>
     <UpdatePeriodically>false</UpdatePeriodically>
@@ -35,7 +35,7 @@
     <PublisherName>排故好帮手</PublisherName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>index.html</WebPage>
-    <ApplicationRevision>47</ApplicationRevision>
+    <ApplicationRevision>51</ApplicationRevision>
     <ApplicationVersion>4.1.2.%2a</ApplicationVersion>
     <UseApplicationTrust>true</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -203,12 +203,6 @@
       <DependentUpon>GPN.cs</DependentUpon>
     </Compile>
     <Compile Include="Gpnip.cs" />
-    <Compile Include="Help.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Help.Designer.cs">
-      <DependentUpon>Help.cs</DependentUpon>
-    </Compile>
     <Compile Include="MySocket.cs" />
     <Compile Include="NPOIExcel.cs" />
     <Compile Include="Program.cs" />
@@ -236,9 +230,6 @@
     <EmbeddedResource Include="GPN.resx">
       <SubType>Designer</SubType>
       <DependentUpon>GPN.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Help.resx">
-      <DependentUpon>Help.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -277,13 +268,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <None Include="bin\批量.jpg" />
-    <None Include="bin\导入要求.jpg" />
-    <None Include="bin\故障排查1.png" />
-    <None Include="bin\排查故障2.png" />
-    <None Include="bin\x86\Debug\排故好帮手\app.publish\Application Files\排故好帮手_4_1_1_51\GPN.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <COMReference Include="VBIDE">
       <Guid>{0002E157-0000-0000-C000-000000000046}</Guid>
       <VersionMajor>5</VersionMajor>
@@ -298,13 +282,9 @@
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="bin\官方网站.png" />
-    <None Include="bin\升级.png" />
     <Content Include="GPN.ico" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -16,6 +16,7 @@ using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
@@ -112,6 +113,7 @@ namespace MyGpnSoftware
                     textftpusr.Text = ContentValue(strSec, "FTPuser");
                     textftppsd.Text = ContentValue(strSec, "FTPpsd");
                     tbxFtpRoot.Text = ContentValue(strSec, "FTPpath");
+                    TextVNCUser.Text = ContentValue(strSec, "VNCUSER");
                     if (ContentValue(strSec, "ReadCommunity") != "")
                     {
                         textReadCommunity.Text = ContentValue(strSec, "ReadCommunity");
@@ -186,6 +188,40 @@ namespace MyGpnSoftware
                     }
                     comgpn76list.Text = ContentValue(strSec, "GPN7600EMS");
                 }
+                if (File.Exists(frpcPath))//读取时先要判读INI文件是否存在
+                {
+
+
+                    strSec = "common";
+                    TextServerAddr.Text = "hunan128.com";
+                    TextServerAddr.Text = ContentValueFrpc(strSec, "server_addr");
+                    TextServerPort.Text = ContentValueFrpc(strSec, "server_port");
+                    TextToken.Text = ContentValueFrpc(strSec, "token");
+
+                    strSec = TextVNCUser.Text + "RDP";
+                    ComRDPType.Text = ContentValueFrpc(strSec, "type");
+                    //TextServerPort.Text = ContentValueFrpc(strSec, "local_ip");
+                    TextRDPLocalPort.Text = ContentValueFrpc(strSec, "local_port");
+                    if (TextRDPLocalPort.Text == "")
+                    {
+                        TextRDPLocalPort.Text = "3389";
+                    }
+                    TextRDPRemotePort.Text = ContentValueFrpc(strSec, "remote_port");
+
+                    strSec = TextVNCUser.Text + "VNC";
+                    ComVNCType.Text = ContentValueFrpc(strSec, "type");
+                    TextVNCLocalPort.Text = ContentValueFrpc(strSec, "local_port");
+                    if (TextVNCLocalPort.Text == "")
+                    {
+                        TextVNCLocalPort.Text = "5900";
+                    }
+                    TextVNCRemotePort.Text = ContentValueFrpc(strSec, "remote_port");
+
+
+                }
+                else {
+                    TextServerAddr.Text = "hunan128.com";
+                }
             }
             catch (Exception ex)
             {
@@ -198,44 +234,7 @@ namespace MyGpnSoftware
         private Dictionary<string, Batchip> batchipread = new Dictionary<string, Batchip>();
         private void readgpnip()
         {
-            //FileStream fs = new FileStream(@"C:\gpn\gpnip.bin", FileMode.OpenOrCreate);
-            //if (fs.Length > 0)
-            //{
-            //    try
-            //    {
-            //        BinaryFormatter bf = new BinaryFormatter();
-            //        //读出存在Data.bin 里的用户信息
-            //        userss = bf.Deserialize(fs) as Dictionary<string, Gpnip>;
-            //        //循环添加到Combox1
-            //        int n = 1;
-            //        foreach (Gpnip user in userss.Values)
-            //        {
-            //            int index = DGVSTATUS.Rows.Add();
 
-            //            comip.Items.Add(user.GpnIP);
-            //            DGVSTATUS.Rows[index].Cells["ip地址"].Value = user.GpnIP;
-            //            DGVSTATUS.Rows[index].Cells["优先级"].Value = n;
-            //            DGVSTATUS.Rows[index].Cells["执行"].Value = true;
-            //            n++;
-
-            //        }
-            //        //combox1 用户名默认选中第一个
-            //        if (comip.Items.Count > 0)
-            //        {
-            //            comip.SelectedIndex = comip.Items.Count - 1;
-            //        }
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        fs.Close();
-            //        File.Delete(@"C:\gpn\gpnip.bin");
-            //        MessageBox.Show(ex.Message);
-            //    }
-
-            //}
-            //DGVSTATUS.RowsDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-
-            //fs.Close();
 
 
 
@@ -291,40 +290,6 @@ namespace MyGpnSoftware
 
 
 
-        }
-        private void readbatchip()
-        {
-            FileStream fs = new FileStream(@"C:\gpn\batchip.bin", FileMode.OpenOrCreate);
-            if (fs.Length > 0)
-            {
-                try
-                {
-                    BinaryFormatter bf = new BinaryFormatter();
-                    //读出存在Data.bin 里的用户信息
-                    batchipread = bf.Deserialize(fs) as Dictionary<string, Batchip>;
-                    //循环添加到Combox1
-
-                    foreach (Batchip ID in batchipread.Values)
-                    {
-
-                        int index = DGVSTATUS.Rows.Add();
-                        DGVSTATUS.Rows[index].Cells["ip地址"].Value = ID.BatchIP;
-
-                        DGVSTATUS.Rows[index].Cells["优先级"].Value = ID.Pry;
-                        MessageBox.Show(index.ToString());
-                    }
-
-                }
-                catch (Exception ex)
-                {
-                    fs.Close();
-                    File.Delete(@"C:\gpn\batchip.bin");
-                    MessageBox.Show(ex.Message);
-                }
-
-                DGVSTATUS.RowsDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            }
-            fs.Close();
         }
         #region ③启动FTP服务器
 
@@ -5373,7 +5338,7 @@ namespace MyGpnSoftware
             }
             foreach (string s in fileNames)
             {
-                if (s.Contains(".bin") && !s.Contains("code") && !s.Contains("sysfile") && !s.Contains("db") && !s.Contains("slot") && !s.Contains("config") && !s.Contains(".fpga"))
+                if (s.Contains(".bin") && !s.Contains("code") && !s.Contains("sysfile") && !s.Contains("db") && !s.Contains("slot") && !s.Contains("config") && !s.Contains(".fpga" )&& !s.Contains("Config") && !s.Contains("CONFIG") && !s.Contains("slotconfig") && !s.Contains("SlotConfig") && !s.Contains("SlotConfig") && !s.Contains("SLOTCONFIG") && !s.Contains("DB") && !s.Contains("Db"))
                 {
                     comapp.Items.Add(s);
                     if (comapp.Items.Count > 0)
@@ -5405,7 +5370,7 @@ namespace MyGpnSoftware
                         comsw.SelectedIndex = comsw.Items.Count - 1;
                     }
                 }
-                if ((s.Contains("config") || s.Contains("Config") || s.Contains("CONFIG")) && (!s.Contains("slotconfig") && !s.Contains("SlotConfig")))
+                if ((s.Contains("config") || s.Contains("Config") || s.Contains("CONFIG")) && !s.Contains("slotconfig") && !s.Contains("SlotConfig") && !s.Contains("SlotConfig") && !s.Contains("SLOTCONFIG") && !s.Contains("DB") && !s.Contains("Db"))
                 {
                     comconfig.Items.Add(s);
                     if (comconfig.Items.Count > 0)
@@ -5669,6 +5634,7 @@ namespace MyGpnSoftware
             btnFtpServerStartStop.PerformClick();
             metroComreadoid.Text = "WALK";
             tbxFtpServerPort.Text = "21";
+            
             //checkpssd.CheckedChanged = true;
             labelboard.Visible = false;
             labelslot.Visible = false;
@@ -5692,6 +5658,36 @@ namespace MyGpnSoftware
             ComRDPType.Text = "tcp";
             ComVNCType.Text = "tcp";
             // this.WindowState = FormWindowState.Maximized;
+            Process[] pro = Process.GetProcesses();
+            int count = 0;
+            foreach (var item in pro)
+            {
+                if (item.ProcessName == "frpc")
+                {
+                    count++;
+
+                }
+                if (item.ProcessName == "tvnserver")
+                {
+                    count++;
+
+                }
+
+            }
+            if (count == 3)
+            {
+                tabPageRemote.Text = "远程桌面共享：已启动";
+                metroButStartVnc.Text = "停止桌面共享";
+                Textsharp.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "远程共享模块已经启动============================================OK" + "\r\n");
+                Textsharp.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "请打开（Windows/Mac/iPhone/iPad/Android） VNC Viewer  远程桌面软件输入：" + TextServerAddr.Text + ":" + TextVNCRemotePort.Text + " 进行VNC连接" + "\r\n");
+                Textsharp.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "请打开（windows/Mac/iPad/iPhone/Android）     RD Client   远程桌面软件输入：" + TextServerAddr.Text + ":" + TextRDPRemotePort.Text + " 进行RDP连接" + "\r\n");
+                //   Textsharp.AppendText("\r\n桌面共享已开启，无需重启启动！");
+            }
+            else
+            {
+                tabPageRemote.Text = "远程桌面共享：未启动";
+
+            }
         }
         #endregion
         #region 声明ini变量
@@ -5757,6 +5753,7 @@ namespace MyGpnSoftware
                 WritePrivateProfileString(strSec, "Flash", comflash.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "Yaffs", comyaffs.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "GPN7600EMS", comgpn76list.Text.Trim(), strFilePath);
+                WritePrivateProfileString(strSec, "VNCUSER", TextVNCUser.Text.Trim(), strFilePath);
                 int a = 0;
                 bool zhixing;
                 string ipadd = "";
@@ -5811,6 +5808,12 @@ namespace MyGpnSoftware
         {
             StringBuilder temp = new StringBuilder(1024);
             GetPrivateProfileString(Section, key, "", temp, 1024, strFilePath);
+            return temp.ToString();
+        }
+        private string ContentValueFrpc(string Section, string key)
+        {
+            StringBuilder temp = new StringBuilder(1024);
+            GetPrivateProfileString(Section, key, "", temp, 1024, frpcPath);
             return temp.ToString();
         }
         #endregion
@@ -7790,7 +7793,7 @@ namespace MyGpnSoftware
             {
                 if (textguzhangmingling.Text == "")
                 {
-                    Thread.Sleep(XHTime / 4);
+                    Thread.Sleep(XHTime / 5);
                     string ctrlc = "Press any key to continue Ctrl+c to stop";
                     string DOS = textcurrent.Text;
                     if (DOS.Contains(ctrlc))
@@ -7804,7 +7807,7 @@ namespace MyGpnSoftware
                 else
                 {
                     com = textguzhangmingling.Text;
-                    Thread.Sleep(XHTime / 4);
+                    Thread.Sleep(XHTime / 5);
                     string ss = mysocket.ReceiveData(int.Parse(ts));
                     textcurrent.AppendText(ss);
                 }
@@ -7870,6 +7873,50 @@ namespace MyGpnSoftware
                 comcishu.Visible = true;
                 butCycleStart.Visible = true;
                 butCycleSuspend.Visible = true;
+            }
+            if (tabControlDOS.SelectedTab == tabPageRemote)
+            {
+                timerYanshi.Start();
+                metroButYanshi.Text = "停止延时测试";
+                Random rand = new Random();
+                string vncuser = System.Environment.UserName;
+                if (TextVNCUser.Text == "") {
+                    TextVNCUser.Text = vncuser;
+                }
+                if (TextRDPRemotePort.Text == "") {
+                    TextRDPRemotePort.Text = rand.Next(40000, 50000).ToString();
+                }
+                if (TextVNCRemotePort.Text == "") {
+                    TextVNCRemotePort.Text = rand.Next(50001, 60000).ToString();
+                }
+
+                Process[] pro = Process.GetProcesses();
+                int count = 0;
+                foreach (var item in pro)
+                {
+                    if (item.ProcessName == "frpc")
+                    {
+                        count++;
+
+                    }
+                    if (item.ProcessName == "tvnserver")
+                    {
+                        count++;
+
+                    }
+
+                }
+                if (count == 3)
+                {
+                    tabPageRemote.Text = "远程桌面共享：已启动";
+                 //   Textsharp.AppendText("\r\n桌面共享已开启，无需重启启动！");
+                }
+                else {
+                    tabPageRemote.Text = "远程桌面共享：未启动";
+
+                }
+                
+
             }
         }
         #endregion
@@ -8170,6 +8217,466 @@ namespace MyGpnSoftware
                 //    }
                 //    //Thread.Sleep(XHTime/10);
                 //}
+
+                //textguzhangmingling.Text = "mpls static vpls domain portvlan 1 etree flood false false false true 32000 tagged";
+                //butguzhangsend.PerformClick();
+                //textguzhangmingling.Text = "int ac acroot1 1";
+                //butguzhangsend.PerformClick();
+                //textguzhangmingling.Text = "mpls vpls portvlan ethernet 10/1 0 0 root delete 1 0 0 0x8100 0x8100";
+                //butguzhangsend.PerformClick();
+                //textguzhangmingling.Text = "exit";
+                //butguzhangsend.PerformClick();
+                //string vplsname = "portvlan";
+                //int vlan0 = 2;
+                //string vethslot = "13";
+                //string vethport1 = "9";
+                //string vethport2 = "10";
+                //string vethport3 = "11";
+                //string vethport4 = "12";
+                //string vethport5 = "13";
+                //string vethport6 = "14";
+                //string vethport7 = "15";
+                //string vethport8 = "16";
+
+                //string veth0 = vethslot + "/" + vethport1;
+                //textguzhangmingling.Text = "int veth " + veth0;
+                //butguzhangsend.PerformClick();
+                //textguzhangmingling.Text = "exit";
+                //butguzhangsend.PerformClick();
+                //for (int g = 0; g < 128; g++)
+                //{
+                //    textguzhangmingling.Text = "interface ac ac" + vlan0 + " " + vlan0;
+                //    butguzhangsend.PerformClick();
+                //    textguzhangmingling.Text = "mpls vpls " + vplsname + " veth " + veth0 + " " + vlan0 + " 0 leaf modify " + vlan0 + " 0 0 0x8100 0x8100";
+                //    butguzhangsend.PerformClick();
+                //    textguzhangmingling.Text = "exit";
+                //    butguzhangsend.PerformClick();
+                //    vlan0++;
+
+                //}
+                //int vlan1 = 130;
+                //string veth1 = vethslot + "/" + vethport2; ;
+                //textguzhangmingling.Text = "int veth " + veth1;
+                //butguzhangsend.PerformClick();
+                //textguzhangmingling.Text = "exit";
+                //butguzhangsend.PerformClick();
+                //for (int g = 0; g < 128; g++)
+                //{
+                //    textguzhangmingling.Text = "interface ac ac" + vlan1 + " " + vlan1;
+                //    butguzhangsend.PerformClick();
+                //    textguzhangmingling.Text = "mpls vpls " + vplsname + " veth " + veth1 + " " + vlan1 + " 0 leaf modify " + vlan1 + " 0 0 0x8100 0x8100";
+                //    butguzhangsend.PerformClick();
+                //    textguzhangmingling.Text = "exit";
+                //    butguzhangsend.PerformClick();
+                //    vlan1++;
+
+                //}
+
+                //int vlan2 = 258;
+                //string veth2 = vethslot + "/" + vethport3; 
+                //textguzhangmingling.Text = "int veth " + veth2;
+                //butguzhangsend.PerformClick();
+                //textguzhangmingling.Text = "exit";
+                //butguzhangsend.PerformClick();
+                //for (int g = 0; g < 128; g++)
+                //{
+                //    textguzhangmingling.Text = "interface ac ac" + vlan2 + " " + vlan2;
+                //    butguzhangsend.PerformClick();
+                //    textguzhangmingling.Text = "mpls vpls " + vplsname + " veth " + veth2 + " " + vlan2 + " 0 leaf modify " + vlan2 + " 0 0 0x8100 0x8100";
+                //    butguzhangsend.PerformClick();
+                //    textguzhangmingling.Text = "exit";
+                //    butguzhangsend.PerformClick();
+                //    vlan2++;
+
+                //}
+                //int vlan3 = 386;
+                //string veth3 = vethslot + "/" + vethport4;
+                //textguzhangmingling.Text = "int veth " + veth3;
+                //butguzhangsend.PerformClick();
+                //textguzhangmingling.Text = "exit";
+                //butguzhangsend.PerformClick();
+                //for (int g = 0; g < 128; g++)
+                //{
+                //    textguzhangmingling.Text = "interface ac ac" + vlan3 + " " + vlan3;
+                //    butguzhangsend.PerformClick();
+                //    textguzhangmingling.Text = "mpls vpls " + vplsname + " veth " + veth3 + " " + vlan3 + " 0 leaf modify " + vlan3 + " 0 0 0x8100 0x8100";
+                //    butguzhangsend.PerformClick();
+                //    textguzhangmingling.Text = "exit";
+                //    butguzhangsend.PerformClick();
+                //    vlan3++;
+
+                //}
+                //int vlan4 = 514;
+                //string veth4 = vethslot + "/" + vethport5;
+                //textguzhangmingling.Text = "int veth " + veth4;
+                //butguzhangsend.PerformClick();
+                //textguzhangmingling.Text = "exit";
+                //butguzhangsend.PerformClick();
+                //for (int g = 0; g < 32; g++)
+                //{
+                //    textguzhangmingling.Text = "interface ac ac" + vlan4 + " " + vlan4;
+                //    butguzhangsend.PerformClick();
+                //    textguzhangmingling.Text = "mpls vpls " + vplsname + " veth " + veth4 + " " + vlan4 + " 0 leaf modify " + vlan4 + " 0 0 0x8100 0x8100";
+                //    butguzhangsend.PerformClick();
+                //    textguzhangmingling.Text = "exit";
+                //    butguzhangsend.PerformClick();
+                //    vlan4++;
+
+                //}
+                //int vlan5 = 546;
+                //string veth5 = vethslot + "/" + vethport6;
+                //textguzhangmingling.Text = "int veth " + veth5;
+                //butguzhangsend.PerformClick();
+                //textguzhangmingling.Text = "exit";
+                //butguzhangsend.PerformClick();
+                //for (int g = 0; g < 32; g++)
+                //{
+                //    textguzhangmingling.Text = "interface ac ac" + vlan5 + " " + vlan5;
+                //    butguzhangsend.PerformClick();
+                //    textguzhangmingling.Text = "mpls vpls " + vplsname + " veth " + veth5 + " " + vlan5 + " 0 leaf modify " + vlan5 + " 0 0 0x8100 0x8100";
+                //    butguzhangsend.PerformClick();
+                //    textguzhangmingling.Text = "exit";
+                //    butguzhangsend.PerformClick();
+                //    vlan5++;
+
+                //}
+                //int vlan6 = 578;
+                //string veth6 = vethslot + "/" + vethport7 ;
+                //textguzhangmingling.Text = "int veth " + veth6;
+                //butguzhangsend.PerformClick();
+                //textguzhangmingling.Text = "exit";
+                //butguzhangsend.PerformClick();
+                //for (int g = 0; g < 32; g++)
+                //{
+                //    textguzhangmingling.Text = "interface ac ac" + vlan6 + " " + vlan6;
+                //    butguzhangsend.PerformClick();
+                //    textguzhangmingling.Text = "mpls vpls " + vplsname + " veth " + veth6 + " " + vlan6 + " 0 leaf modify " + vlan6 + " 0 0 0x8100 0x8100";
+                //    butguzhangsend.PerformClick();
+                //    textguzhangmingling.Text = "exit";
+                //    butguzhangsend.PerformClick();
+                //    vlan6++;
+
+                //}
+                //int vlan7 = 610;
+                //string veth7 = vethslot + "/" + vethport8;
+                //textguzhangmingling.Text = "int veth " + veth7;
+                //butguzhangsend.PerformClick();
+                //textguzhangmingling.Text = "exit";
+                //butguzhangsend.PerformClick();
+                //for (int g = 0; g < 32; g++)
+                //{
+                //    textguzhangmingling.Text = "interface ac ac" + vlan7 + " " + vlan7;
+                //    butguzhangsend.PerformClick();
+                //    textguzhangmingling.Text = "mpls vpls " + vplsname + " veth " + veth7 + " " + vlan7 + " 0 leaf modify " + vlan7 + " 0 0 0x8100 0x8100";
+                //    butguzhangsend.PerformClick();
+                //    textguzhangmingling.Text = "exit";
+                //    butguzhangsend.PerformClick();
+                //    vlan7++;
+
+                //}
+
+
+
+                int vlan0 = 613;
+                int acid = 2;
+                string vethslotroot = "10";
+                string vethslotleaf = "13";
+                string vethport1 = "9";
+                string vethport2 = "10";
+                string vethport3 = "11";
+                string vethport4 = "12";
+                string vethport5 = "13";
+                string vethport6 = "14";
+                string vethport7 = "15";
+                string vethport8 = "16";
+
+                string vethroot = vethslotroot + "/1";
+                string vethac = vethslotleaf + "/" + vethport1;
+                string vethacport = "13/";
+                int vp = 9;
+                for (int g = 0; g < 37; g++)
+                {
+                    textguzhangmingling.Text = "vlan "+vlan0;
+                    butguzhangsend.PerformClick();
+                    textguzhangmingling.Text = "add port 10/1 tag";
+                    butguzhangsend.PerformClick();
+                    for (int ccc = 0; ccc < 8; ccc++) {
+                        textguzhangmingling.Text = "add veth " + vethacport + vp + " tag";
+                        butguzhangsend.PerformClick();
+                        vp++;
+                        //Thread.Sleep(100);
+                    }
+                    vp = 9;
+                    textguzhangmingling.Text = "exit";
+                    butguzhangsend.PerformClick();
+                    vlan0++;
+                    //Thread.Sleep(100);
+                }
+
+
+                vlan0 = 2;
+
+                textguzhangmingling.Text = "int veth " + vethac;
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "exit";
+                butguzhangsend.PerformClick();
+                //textguzhangmingling.Text = "int veth " + vethroot;
+                //butguzhangsend.PerformClick();
+                //textguzhangmingling.Text = "exit";
+                //butguzhangsend.PerformClick();
+                for (int g = 0; g < 128; g++)
+                {
+                    textguzhangmingling.Text = "mpls static vpls domain portvlan"+ vlan0 + " " + vlan0 + " etree flood false false false true 32000 tagged";
+                    butguzhangsend.PerformClick();
+                    textguzhangmingling.Text = "interface ac root" + vlan0 + " " + acid;
+                    butguzhangsend.PerformClick();
+                    textguzhangmingling.Text = "mpls vpls " + "portvlan"+ vlan0  + " ethernet " + vethroot + " " + vlan0 + " 0 root modify " + vlan0 + " 0 0 0x8100 0x8100";
+                    butguzhangsend.PerformClick();
+                    textguzhangmingling.Text = "exit";
+                    butguzhangsend.PerformClick();
+                    acid = acid + 1;
+                    textguzhangmingling.Text = "interface ac ac" + vlan0 + " " + acid;
+                    butguzhangsend.PerformClick();
+                    textguzhangmingling.Text = "mpls vpls " + "portvlan"+ vlan0 + " veth " + vethac + " " + vlan0 + " 0 leaf modify " + vlan0 + " 0 0 0x8100 0x8100";
+                    butguzhangsend.PerformClick();
+                    textguzhangmingling.Text = "exit";
+                    butguzhangsend.PerformClick();
+                    vlan0++;
+                    acid = acid + 1;
+
+                }
+                string vethroot2 = vethslotroot + "/1";
+                string vethac2 = vethslotleaf + "/" + vethport2;
+                vlan0 = 130;
+                
+                textguzhangmingling.Text = "int veth " + vethac2;
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "exit";
+                butguzhangsend.PerformClick();
+                //textguzhangmingling.Text = "int veth " + vethroot2;
+                //butguzhangsend.PerformClick();
+                //textguzhangmingling.Text = "exit";
+                //butguzhangsend.PerformClick();
+                for (int g = 0; g < 128; g++)
+                {
+                    textguzhangmingling.Text = "mpls static vpls domain portvlan" + vlan0 + " " + vlan0 + " etree flood false false false true 32000 tagged";
+                    butguzhangsend.PerformClick();
+                    textguzhangmingling.Text = "interface ac root" + vlan0 + " " + acid;
+                    butguzhangsend.PerformClick();
+                    textguzhangmingling.Text = "mpls vpls " + "portvlan" + vlan0 + " ethernet " + vethroot2 + " " + vlan0 + " 0 root modify " + vlan0 + " 0 0 0x8100 0x8100";
+                    butguzhangsend.PerformClick();
+                    textguzhangmingling.Text = "exit";
+                    butguzhangsend.PerformClick();
+                    acid = acid + 1;
+                    textguzhangmingling.Text = "interface ac ac" + vlan0 + " " + acid;
+                    butguzhangsend.PerformClick();
+                    textguzhangmingling.Text = "mpls vpls " + "portvlan" + vlan0 + " veth " + vethac2 + " " + vlan0 + " 0 leaf modify " + vlan0 + " 0 0 0x8100 0x8100";
+                    butguzhangsend.PerformClick();
+                    textguzhangmingling.Text = "exit";
+                    butguzhangsend.PerformClick();
+                    vlan0++;
+                    acid = acid + 1;
+
+                }
+                string vethroot3 = vethslotroot + "/1";
+                string vethac3 = vethslotleaf + "/" + vethport3;
+                vlan0 = 258;
+
+                textguzhangmingling.Text = "int veth " + vethac3;
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "exit";
+                butguzhangsend.PerformClick();
+                //textguzhangmingling.Text = "int veth " + vethroot3;
+                //butguzhangsend.PerformClick();
+                //textguzhangmingling.Text = "exit";
+                //butguzhangsend.PerformClick();
+                for (int g = 0; g < 128; g++)
+                {
+                    textguzhangmingling.Text = "mpls static vpls domain portvlan" + vlan0 + " " + vlan0 + " etree flood false false false true 32000 tagged";
+                    butguzhangsend.PerformClick();
+                    textguzhangmingling.Text = "interface ac root" + vlan0 + " " + acid;
+                    butguzhangsend.PerformClick();
+                    textguzhangmingling.Text = "mpls vpls " + "portvlan" + vlan0 + " ethernet " + vethroot3 + " " + vlan0 + " 0 root modify " + vlan0 + " 0 0 0x8100 0x8100";
+                    butguzhangsend.PerformClick();
+                    textguzhangmingling.Text = "exit";
+                    butguzhangsend.PerformClick();
+                    acid = acid + 1;
+                    textguzhangmingling.Text = "interface ac ac" + vlan0 + " " + acid;
+                    butguzhangsend.PerformClick();
+                    textguzhangmingling.Text = "mpls vpls " + "portvlan" + vlan0 + " veth " + vethac3 + " " + vlan0 + " 0 leaf modify " + vlan0 + " 0 0 0x8100 0x8100";
+                    butguzhangsend.PerformClick();
+                    textguzhangmingling.Text = "exit";
+                    butguzhangsend.PerformClick();
+                    vlan0++;
+                    acid = acid + 1;
+
+                }
+                string vethroot4 = vethslotroot + "/1";
+                string vethac4 = vethslotleaf + "/" + vethport4;
+                vlan0 = 386;
+
+                textguzhangmingling.Text = "int veth " + vethac4;
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "exit";
+                butguzhangsend.PerformClick();
+                //textguzhangmingling.Text = "int veth " + vethroot4;
+                //butguzhangsend.PerformClick();
+                //textguzhangmingling.Text = "exit";
+                //butguzhangsend.PerformClick();
+                for (int g = 0; g < 128; g++)
+                {
+                    textguzhangmingling.Text = "mpls static vpls domain portvlan" + vlan0 + " " + vlan0 + " etree flood false false false true 32000 tagged";
+                    butguzhangsend.PerformClick();
+                    textguzhangmingling.Text = "interface ac root" + vlan0 + " " + acid;
+                    butguzhangsend.PerformClick();
+                    textguzhangmingling.Text = "mpls vpls " + "portvlan" + vlan0 + " ethernet " + vethroot4 + " " + vlan0 + " 0 root modify " + vlan0 + " 0 0 0x8100 0x8100";
+                    butguzhangsend.PerformClick();
+                    textguzhangmingling.Text = "exit";
+                    butguzhangsend.PerformClick();
+                    acid = acid + 1;
+                    textguzhangmingling.Text = "interface ac ac" + vlan0 + " " + acid;
+                    butguzhangsend.PerformClick();
+                    textguzhangmingling.Text = "mpls vpls " + "portvlan" + vlan0 + " veth " + vethac4 + " " + vlan0 + " 0 leaf modify " + vlan0 + " 0 0 0x8100 0x8100";
+                    butguzhangsend.PerformClick();
+                    textguzhangmingling.Text = "exit";
+                    butguzhangsend.PerformClick();
+                    vlan0++;
+                    acid = acid + 1;
+
+                }
+
+                string vethroot5 = vethslotroot + "/1";
+                string vethac5 = vethslotleaf + "/" + vethport5;
+                vlan0 = 514;
+
+                textguzhangmingling.Text = "int veth " + vethac5;
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "exit";
+                butguzhangsend.PerformClick();
+                //textguzhangmingling.Text = "int veth " + vethroot5;
+                //butguzhangsend.PerformClick();
+                //textguzhangmingling.Text = "exit";
+                //butguzhangsend.PerformClick();
+                for (int g = 0; g < 32; g++)
+                {
+                    textguzhangmingling.Text = "mpls static vpls domain portvlan" + vlan0 + " " + vlan0 + " etree flood false false false true 32000 tagged";
+                    butguzhangsend.PerformClick();
+                    textguzhangmingling.Text = "interface ac root" + vlan0 + " " + acid;
+                    butguzhangsend.PerformClick();
+                    textguzhangmingling.Text = "mpls vpls " + "portvlan" + vlan0 + " ethernet " + vethroot5 + " " + vlan0 + " 0 root modify " + vlan0 + " 0 0 0x8100 0x8100";
+                    butguzhangsend.PerformClick();
+                    textguzhangmingling.Text = "exit";
+                    butguzhangsend.PerformClick();
+                    acid = acid + 1;
+                    textguzhangmingling.Text = "interface ac ac" + vlan0 + " " + acid;
+                    butguzhangsend.PerformClick();
+                    textguzhangmingling.Text = "mpls vpls " + "portvlan" + vlan0 + " veth " + vethac5 + " " + vlan0 + " 0 leaf modify " + vlan0 + " 0 0 0x8100 0x8100";
+                    butguzhangsend.PerformClick();
+                    textguzhangmingling.Text = "exit";
+                    butguzhangsend.PerformClick();
+                    vlan0++;
+                    acid = acid + 1;
+
+                }
+                string vethroot6 = vethslotroot + "/1";
+                string vethac6 = vethslotleaf + "/" + vethport6;
+                vlan0 = 546;
+
+                textguzhangmingling.Text = "int veth " + vethac6;
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "exit";
+                butguzhangsend.PerformClick();
+                //textguzhangmingling.Text = "int veth " + vethroot6;
+                //butguzhangsend.PerformClick();
+                //textguzhangmingling.Text = "exit";
+                //butguzhangsend.PerformClick();
+                for (int g = 0; g < 32; g++)
+                {
+                    textguzhangmingling.Text = "mpls static vpls domain portvlan" + vlan0 + " " + vlan0 + " etree flood false false false true 32000 tagged";
+                    butguzhangsend.PerformClick();
+                    textguzhangmingling.Text = "interface ac root" + vlan0 + " " + acid;
+                    butguzhangsend.PerformClick();
+                    textguzhangmingling.Text = "mpls vpls " + "portvlan" + vlan0 + " ethernet " + vethroot6 + " " + vlan0 + " 0 root modify " + vlan0 + " 0 0 0x8100 0x8100";
+                    butguzhangsend.PerformClick();
+                    textguzhangmingling.Text = "exit";
+                    butguzhangsend.PerformClick();
+                    acid = acid + 1;
+                    textguzhangmingling.Text = "interface ac ac" + vlan0 + " " + acid;
+                    butguzhangsend.PerformClick();
+                    textguzhangmingling.Text = "mpls vpls " + "portvlan" + vlan0 + " veth " + vethac6 + " " + vlan0 + " 0 leaf modify " + vlan0 + " 0 0 0x8100 0x8100";
+                    butguzhangsend.PerformClick();
+                    textguzhangmingling.Text = "exit";
+                    butguzhangsend.PerformClick();
+                    vlan0++;
+                    acid = acid + 1;
+
+                }
+                string vethroot7 = vethslotroot + "/1";
+                string vethac7 = vethslotleaf + "/" + vethport7;
+                vlan0 = 578;
+
+                textguzhangmingling.Text = "int veth " + vethac7;
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "exit";
+                butguzhangsend.PerformClick();
+                //textguzhangmingling.Text = "int veth " + vethroot7;
+                //butguzhangsend.PerformClick();
+                //textguzhangmingling.Text = "exit";
+                //butguzhangsend.PerformClick();
+                for (int g = 0; g < 32; g++)
+                {
+                    textguzhangmingling.Text = "mpls static vpls domain portvlan" + vlan0 + " " + vlan0 + " etree flood false false false true 32000 tagged";
+                    butguzhangsend.PerformClick();
+                    textguzhangmingling.Text = "interface ac root" + vlan0 + " " + acid;
+                    butguzhangsend.PerformClick();
+                    textguzhangmingling.Text = "mpls vpls " + "portvlan" + vlan0 + " ethernet " + vethroot7 + " " + vlan0 + " 0 root modify " + vlan0 + " 0 0 0x8100 0x8100";
+                    butguzhangsend.PerformClick();
+                    textguzhangmingling.Text = "exit";
+                    butguzhangsend.PerformClick();
+                    acid = acid + 1;
+                    textguzhangmingling.Text = "interface ac ac" + vlan0 + " " + acid;
+                    butguzhangsend.PerformClick();
+                    textguzhangmingling.Text = "mpls vpls " + "portvlan" + vlan0 + " veth " + vethac7 + " " + vlan0 + " 0 leaf modify " + vlan0 + " 0 0 0x8100 0x8100";
+                    butguzhangsend.PerformClick();
+                    textguzhangmingling.Text = "exit";
+                    butguzhangsend.PerformClick();
+                    vlan0++;
+                    acid = acid + 1;
+
+                }
+                string vethroot8 = vethslotroot + "/1";
+                string vethac8 = vethslotleaf + "/" + vethport8;
+                vlan0 = 610;
+
+                textguzhangmingling.Text = "int veth " + vethac8;
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "exit";
+                butguzhangsend.PerformClick();
+                //textguzhangmingling.Text = "int veth " + vethroot8;
+                //butguzhangsend.PerformClick();
+                //textguzhangmingling.Text = "exit";
+                //butguzhangsend.PerformClick();
+                for (int g = 0; g < 32; g++)
+                {
+                    textguzhangmingling.Text = "mpls static vpls domain portvlan" + vlan0 + " " + vlan0 + " etree flood false false false true 32000 tagged";
+                    butguzhangsend.PerformClick();
+                    textguzhangmingling.Text = "interface ac root" + vlan0 + " " + acid;
+                    butguzhangsend.PerformClick();
+                    textguzhangmingling.Text = "mpls vpls " + "portvlan" + vlan0 + " ethernet " + vethroot8 + " " + vlan0 + " 0 root modify " + vlan0 + " 0 0 0x8100 0x8100";
+                    butguzhangsend.PerformClick();
+                    textguzhangmingling.Text = "exit";
+                    butguzhangsend.PerformClick();
+                    acid = acid + 1;
+                    textguzhangmingling.Text = "interface ac ac" + vlan0 + " " + acid;
+                    butguzhangsend.PerformClick();
+                    textguzhangmingling.Text = "mpls vpls " + "portvlan" + vlan0 + " veth " + vethac8 + " " + vlan0 + " 0 leaf modify " + vlan0 + " 0 0 0x8100 0x8100";
+                    butguzhangsend.PerformClick();
+                    textguzhangmingling.Text = "exit";
+                    butguzhangsend.PerformClick();
+                    vlan0++;
+                    acid = acid + 1;
+
+                }
                 textguzhangmingling.Text = textcyclemingling.Text;
                 butguzhangsend.PerformClick();
                 textlog.AppendText(textcurrent.Text);
@@ -14896,8 +15403,8 @@ check760e.Checked == false)
 
         private void 关于ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Help Help = new Help();//实例化窗体
-            Help.ShowDialog();// 将窗体显示出来
+            //Help Help = new Help();//实例化窗体
+            //Help.ShowDialog();// 将窗体显示出来
         }
 
         private void metroButConSql_Click(object sender, EventArgs e)
@@ -16411,24 +16918,40 @@ check760e.Checked == false)
 
         private void metroButStartVnc_Click(object sender, EventArgs e)
         {
-            if (TextVNCUser.Text == "") {
-
-                MessageBox.Show("请填写英文用户名后再次尝试！");
-                return;
-            }
-
-
-            if (File.Exists(frpcPath))//读取时先要判读INI文件是否存在
+            if (metroButStartVnc.Text == "开始桌面共享")
             {
-                File.Delete(frpcPath);
+
+                if (TextVNCUser.Text == "")
+                {
+
+                    MessageBox.Show("请填写英文用户名后再次尝试！");
+                    return;
+                }
+
+
+                if (File.Exists(frpcPath))//读取时先要判读INI文件是否存在
+                {
+                    File.Delete(frpcPath);
+                }
+
+                Textsharp.AppendText("\r\n");
+
+                Thread FrpcSave = new Thread(FrpcIni);
+                FrpcSave.Start();
+                Thread start = new Thread(StartVnc);
+                start.Start();
+                metroButStartVnc.Text = "停止桌面共享";
+            }
+            else {
+                Textsharp.AppendText("\r\n");
+                Thread stop = new Thread(StopVnc);
+                stop.Start();
+                metroButStartVnc.Text = "开始桌面共享";
+
             }
 
-            Textsharp.AppendText("\r\n");
 
-            Thread FrpcSave = new Thread(FrpcIni);
-            FrpcSave.Start();
-            Thread start = new Thread(StartVnc);
-            start.Start();
+
         }
 
         private void FrpcIni()
@@ -16447,13 +16970,16 @@ check760e.Checked == false)
                 WritePrivateProfileString(strSec, "local_ip", "127.0.0.1", frpcPath);
                 WritePrivateProfileString(strSec, "local_port", TextRDPLocalPort.Text.Trim(), frpcPath);
                 WritePrivateProfileString(strSec, "remote_port", TextRDPRemotePort.Text.Trim(), frpcPath);
+                WritePrivateProfileString(strSec, "use_compression", "true", frpcPath);
                 strSec = TextVNCUser.Text + "VNC";
                 WritePrivateProfileString(strSec, "type", ComVNCType.Text.Trim(), frpcPath);
                 WritePrivateProfileString(strSec, "local_ip", "127.0.0.1", frpcPath);
                 WritePrivateProfileString(strSec, "local_port", TextVNCLocalPort.Text.Trim(), frpcPath);
                 WritePrivateProfileString(strSec, "remote_port", TextVNCRemotePort.Text.Trim(), frpcPath);
+                WritePrivateProfileString(strSec, "use_compression", "true", frpcPath);
 
-               
+
+
 
 
             }
@@ -16464,34 +16990,14 @@ check760e.Checked == false)
         }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        private void metroButStopVnc_Click(object sender, EventArgs e)
-        {
-            Textsharp.AppendText("\r\n");
-            Thread stop = new Thread(StopVnc);
-            stop.Start();
-        }
-
         private void StopVnc() {
             string strZipPath = @"C:\gpn\" + "frpc_stop.bat";
             if (File.Exists(strZipPath))//读取时先要判读INI文件是否存在
             {
                 System.Diagnostics.Process.Start(strZipPath);
                 Textsharp.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "远程共享模块停止成功============================================OK" + "\r\n");
+                tabPageRemote.Text = "远程桌面共享：未启动";
+
                 return;
             }
             FileStream stream;
@@ -16539,6 +17045,8 @@ check760e.Checked == false)
 
             System.Diagnostics.Process.Start(strZipPath);
             Textsharp.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "远程共享模块停止成功============================================OK" + "\r\n");
+            tabPageRemote.Text = "远程桌面共享：未启动";
+
             // MessageBox.Show("GPN7600 EMS模块已安装成功！");
         }
 
@@ -16550,9 +17058,10 @@ check760e.Checked == false)
             if (File.Exists(strfrpcstartPath))//读取时先要判读INI文件是否存在
             {
                 Process.Start(strfrpcstartPath);
+                Textsharp.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "请打开（Windows/Mac/iPhone/iPad/Android） VNC Viewer  远程桌面软件输入：" + TextServerAddr.Text + ":" + TextVNCRemotePort.Text + " 进行VNC连接" + "\r\n");
+                Textsharp.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "请打开（windows/Mac/iPad/iPhone/Android）     RD Client   远程桌面软件输入：" + TextServerAddr.Text + ":" + TextRDPRemotePort.Text + " 进行RDP连接" + "\r\n");
                 Textsharp.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "远程共享模块启动成功============================================OK" + "\r\n");
-                Textsharp.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "服务器：" + TextServerAddr.Text + "，远程共享端口号：" + TextVNCRemotePort.Text + "，请使用控制端输入："+ TextServerAddr.Text+":"+ TextVNCRemotePort.Text + "进行VNC连接" + "\r\n");
-                Textsharp.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "服务器：" + TextServerAddr.Text + "，远程桌面端口号：" + TextRDPRemotePort.Text + "，打开远程桌面输入：" + TextServerAddr.Text + ":" + TextRDPRemotePort.Text + "进行RDP连接" + "\r\n");
+                tabPageRemote.Text = "远程桌面共享：已启动";
 
                 return;
             }
@@ -16628,9 +17137,11 @@ check760e.Checked == false)
           
 
             Process.Start(strfrpcstartPath);
+            Textsharp.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "请打开（Windows/Mac/iPhone/iPad/Android） VNC Viewer  远程桌面软件输入：" + TextServerAddr.Text + ":" + TextVNCRemotePort.Text + " 进行VNC连接" + "\r\n");
+            Textsharp.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "请打开（windows/Mac/iPad/iPhone/Android）     RD Client   远程桌面软件输入：" + TextServerAddr.Text + ":" + TextRDPRemotePort.Text + " 进行RDP连接" + "\r\n");
             Textsharp.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "远程共享模块启动成功============================================OK" + "\r\n");
-            Textsharp.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "服务器：" + TextServerAddr.Text + "，远程共享端口号：" + TextVNCRemotePort.Text + "，请使用控制端输入：" + TextServerAddr.Text + ":" + TextVNCRemotePort.Text + "进行VNC连接" + "\r\n");
-            Textsharp.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "服务器：" + TextServerAddr.Text + "，远程桌面端口号：" + TextRDPRemotePort.Text + "，打开远程桌面输入：" + TextServerAddr.Text + ":" + TextRDPRemotePort.Text + "进行RDP连接" + "\r\n");
+            tabPageRemote.Text = "远程桌面共享：已启动";
+
             // MessageBox.Show("GPN7600 EMS模块已安装成功！");
         }
 
@@ -16641,7 +17152,7 @@ check760e.Checked == false)
             view.Start();
         }
         private void ViewVnc() {
-            string strZipPath = @"C:\gpn\" + "VNC-Viewer-5.3.0-Windows-64bit.exe";
+            string strZipPath = @"C:\gpn\" + "vncviewer.exe";
             if (File.Exists(strZipPath))//读取时先要判读INI文件是否存在
             {
                 System.Diagnostics.Process.Start(strZipPath);
@@ -16650,7 +17161,7 @@ check760e.Checked == false)
             }
             FileStream stream;
             //string gpnname = comgpn76list.Text;
-            string url = "http://hunan128.com/wp-content/uploads/2020/07/VNC-Viewer-5.3.0-Windows-64bit.exe";
+            string url = "http://hunan128.com/wp-content/uploads/2020/08/vncviewer.exe";
             //string strZipPath = @"C:\gpn\" + "frpc_start.exe";
             //   string strUnZipPath = @"C:\gpn\";
             int percent = 0;
@@ -16694,6 +17205,45 @@ check760e.Checked == false)
             System.Diagnostics.Process.Start(strZipPath);
             Textsharp.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "远程控制模块停止成功============================================OK" + "\r\n");
             // MessageBox.Show("GPN7600 EMS模块已安装成功！");
+        }
+
+
+
+        private void timerYanshi_Tick(object sender, EventArgs e)
+        {
+            Ping ping = new Ping();
+            if (TextServerAddr.Text == "") {
+                return;
+            }
+            PingReply pingReply = ping.Send(TextServerAddr.Text, 1000);
+
+            if (pingReply.Status == IPStatus.Success)
+            {
+                textYanshi.Text = pingReply.RoundtripTime.ToString();
+            }
+            if (pingReply.Status != IPStatus.Success)
+            {
+                textYanshi.Text = pingReply.Status.ToString();
+            }
+            if (tabControlDOS.SelectedTab != tabPageRemote) {
+                timerYanshi.Stop();
+                metroButYanshi.Text = "开始延时测试";
+                textYanshi.Text = "停止测试";
+
+            }
+        }
+
+        private void metroButYanshi_Click(object sender, EventArgs e)
+        {
+            if (metroButYanshi.Text == "开始延时测试") {
+                timerYanshi.Start();
+                metroButYanshi.Text = "停止延时测试";
+            }
+            else {
+                timerYanshi.Stop();
+                metroButYanshi.Text = "开始延时测试";
+                textYanshi.Text = "停止测试";
+            }
         }
     }
 }

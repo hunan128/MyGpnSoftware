@@ -1,5 +1,4 @@
-﻿using MetroFramework.Forms;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -11,41 +10,47 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace MyGpnSoftware
+namespace 排故好帮手下载工具
 {
-    public partial class Software : MetroForm
+    public partial class GPN : Form
     {
-        public Software()
+        public GPN()
         {
             InitializeComponent();
+            Control.CheckForIllegalCrossThreadCalls = false;
         }
 
-
-
-        private void metroLink1_Click(object sender, EventArgs e)
+        private void butdownload_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("http://hunan128.com/");
+            string ver1 = textver1.Text;
+            string ver2 = textver2.Text;
+            string ver3 = textver3.Text;
+            string ver4 = textver4.Text;
+            string apppath =  ver1 + "." + ver2 + "." + ver3 + "." + ver4;
+
+            DialogResult dr = MessageBox.Show("是否下载此版本："+apppath +" ？", "提示", MessageBoxButtons.YesNoCancel);
+            if (dr == DialogResult.Yes)
+            {
+                Thread download = new Thread(downloadapp);
+                download.Start();
+                //户选择确认的操作
+            }
+            else if (dr == DialogResult.No)
+            {
+
+                //户选择取消的操作
+                return;
+            }
+            if (dr == DialogResult.Cancel)
+            {
+                return;
+                //户选择确认的操作
+            }
+
 
         }
-
-
-        private void Software_Load(object sender, EventArgs e)
+        private void downloadapp()
         {
-            Textsharp.Text = "官方唯一网站：www.hunan128.com \r\n官方唯一公网：hunan128.com \r\n";
-        }
-
-
-
-        private void metroButStartVnc_Click(object sender, EventArgs e)
-        {
-            Thread download = new Thread(downloadapp);
-            download.Start();
-
-
-
-        }
-
-        private void downloadapp() {
 
 
             if (!Directory.Exists(@"C:\gpn\download"))
@@ -53,14 +58,14 @@ namespace MyGpnSoftware
                 Directory.CreateDirectory(@"C:\gpn\download");
             }
             // Textsharp.Text = "程序集版本：" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString() + "\r\n";
-            string appversion = Application.ProductVersion.ToString();
+           // string appversion = Application.ProductVersion.ToString();
 
-            string[] appver = appversion.Split(new string[] { "." }, StringSplitOptions.None);
-            string ver1 = appver[0];
-            string ver2 = appver[1];
-            string ver3 = appver[2];
-            string ver4 = appver[3];
-            string apppath = @"c:\gpn\download\" + appversion + @"\";
+           // string[] appver = appversion.Split(new string[] { "." }, StringSplitOptions.None);
+            string ver1 = textver1.Text;
+            string ver2 = textver2.Text;
+            string ver3 = textver3.Text;
+            string ver4 = textver4.Text;
+            string apppath = @"c:\gpn\download\" + ver1 + "." + ver2 + "." + ver3 + "." + ver4 + @"\";
             if (!Directory.Exists(apppath))
             {
                 Directory.CreateDirectory(apppath);
@@ -207,6 +212,11 @@ namespace MyGpnSoftware
             Textsharp.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "保存路径：" + strZipPath + "\r\n");
             MessageBox.Show("绿色免安装版下载完成，请到 " + apppath + " 文件夹获取。");
 
+        }
+
+        private void butnet_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("http://download.microsoft.com/download/9/A/7/9A78F13F-FD62-4F6D-AB6B-1803508A9F56/51209.34209.03/web/NDP452-KB2901954-Web.exe");
         }
     }
 }

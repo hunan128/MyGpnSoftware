@@ -7,6 +7,8 @@ using System.Runtime.InteropServices;
 // 与程序集关联的信息。
 [assembly: AssemblyTitle("排故好帮手")]
 [assembly: AssemblyDescription(""
+    + "2020.08.26 新增了软件下载功能（绿色版下载）" + "\r\n"
+    + "2020.08.20 修改了远程共享设计，端口随机生成，自动获取用户" + "\r\n"
     + "2020.07.24 新增SNC-S的TCM时隙告警查询" + "\r\n"
     + "2020.07.23 解决了EOS、OTN排查故障需要点击俩次问题，支持一次准确定位"+"\r\n"
     + "2020.07.20 解决了EOS故障排出现“值对于Int32太大或太小”的提示" + "\r\n"
@@ -64,4 +66,4 @@ using System.Runtime.InteropServices;
 //      内部版本号
 //      修订号
 //
-[assembly: AssemblyVersion("4.1.2.46")]
+[assembly: AssemblyVersion("4.1.2.51")]

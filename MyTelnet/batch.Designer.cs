@@ -65,8 +65,9 @@
             this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.textselect = new MetroFramework.Controls.MetroTextBox();
+            this.metroLabel2 = new MetroFramework.Controls.MetroLabel();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.butoid = new System.Windows.Forms.Button();
             this.butUtility = new System.Windows.Forms.Button();
             this.metroLabel1 = new MetroFramework.Controls.MetroLabel();
             this.metroCom603gsysfile = new MetroFramework.Controls.MetroComboBox();
@@ -77,8 +78,7 @@
             this.TextStopIp = new System.Windows.Forms.TextBox();
             this.TextStartIp = new System.Windows.Forms.TextBox();
             this.dataGridView2 = new System.Windows.Forms.DataGridView();
-            this.metroLabel2 = new MetroFramework.Controls.MetroLabel();
-            this.textselect = new MetroFramework.Controls.MetroTextBox();
+            this.butoid = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.statusStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -446,6 +446,50 @@
             this.panel1.Size = new System.Drawing.Size(1069, 470);
             this.panel1.TabIndex = 68;
             // 
+            // textselect
+            // 
+            this.textselect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            // 
+            // 
+            // 
+            this.textselect.CustomButton.Image = null;
+            this.textselect.CustomButton.Location = new System.Drawing.Point(344, 1);
+            this.textselect.CustomButton.Name = "";
+            this.textselect.CustomButton.Size = new System.Drawing.Size(21, 21);
+            this.textselect.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
+            this.textselect.CustomButton.TabIndex = 1;
+            this.textselect.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
+            this.textselect.CustomButton.UseSelectable = true;
+            this.textselect.CustomButton.Visible = false;
+            this.textselect.FontSize = MetroFramework.MetroTextBoxSize.Medium;
+            this.textselect.Lines = new string[] {
+        "Telnet"};
+            this.textselect.Location = new System.Drawing.Point(90, 443);
+            this.textselect.MaxLength = 32767;
+            this.textselect.Name = "textselect";
+            this.textselect.PasswordChar = '\0';
+            this.textselect.ScrollBars = System.Windows.Forms.ScrollBars.None;
+            this.textselect.SelectedText = "";
+            this.textselect.SelectionLength = 0;
+            this.textselect.SelectionStart = 0;
+            this.textselect.ShortcutsEnabled = true;
+            this.textselect.Size = new System.Drawing.Size(366, 23);
+            this.textselect.TabIndex = 80;
+            this.textselect.Text = "Telnet";
+            this.textselect.UseSelectable = true;
+            this.textselect.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
+            this.textselect.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
+            // 
+            // metroLabel2
+            // 
+            this.metroLabel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.metroLabel2.AutoSize = true;
+            this.metroLabel2.Location = new System.Drawing.Point(5, 446);
+            this.metroLabel2.Name = "metroLabel2";
+            this.metroLabel2.Size = new System.Drawing.Size(79, 19);
+            this.metroLabel2.TabIndex = 79;
+            this.metroLabel2.Text = "输入关键字";
+            // 
             // panel2
             // 
             this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -475,21 +519,6 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(1066, 75);
             this.panel2.TabIndex = 69;
-            // 
-            // butoid
-            // 
-            this.butoid.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.butoid.BackColor = System.Drawing.Color.DodgerBlue;
-            this.butoid.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.butoid.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butoid.ForeColor = System.Drawing.Color.White;
-            this.butoid.Location = new System.Drawing.Point(462, 439);
-            this.butoid.Name = "butoid";
-            this.butoid.Size = new System.Drawing.Size(161, 34);
-            this.butoid.TabIndex = 77;
-            this.butoid.Text = "Mib节点在线查询";
-            this.butoid.UseVisualStyleBackColor = false;
-            this.butoid.Click += new System.EventHandler(this.butoid_Click);
             // 
             // butUtility
             // 
@@ -646,49 +675,20 @@
             this.dataGridView2.Size = new System.Drawing.Size(1071, 62);
             this.dataGridView2.TabIndex = 0;
             // 
-            // metroLabel2
+            // butoid
             // 
-            this.metroLabel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.metroLabel2.AutoSize = true;
-            this.metroLabel2.Location = new System.Drawing.Point(5, 446);
-            this.metroLabel2.Name = "metroLabel2";
-            this.metroLabel2.Size = new System.Drawing.Size(79, 19);
-            this.metroLabel2.TabIndex = 79;
-            this.metroLabel2.Text = "输入关键字";
-            // 
-            // textselect
-            // 
-            this.textselect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            // 
-            // 
-            // 
-            this.textselect.CustomButton.Image = null;
-            this.textselect.CustomButton.Location = new System.Drawing.Point(344, 1);
-            this.textselect.CustomButton.Name = "";
-            this.textselect.CustomButton.Size = new System.Drawing.Size(21, 21);
-            this.textselect.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
-            this.textselect.CustomButton.TabIndex = 1;
-            this.textselect.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
-            this.textselect.CustomButton.UseSelectable = true;
-            this.textselect.CustomButton.Visible = false;
-            this.textselect.FontSize = MetroFramework.MetroTextBoxSize.Medium;
-            this.textselect.Lines = new string[] {
-        "Telnet"};
-            this.textselect.Location = new System.Drawing.Point(90, 443);
-            this.textselect.MaxLength = 32767;
-            this.textselect.Name = "textselect";
-            this.textselect.PasswordChar = '\0';
-            this.textselect.ScrollBars = System.Windows.Forms.ScrollBars.None;
-            this.textselect.SelectedText = "";
-            this.textselect.SelectionLength = 0;
-            this.textselect.SelectionStart = 0;
-            this.textselect.ShortcutsEnabled = true;
-            this.textselect.Size = new System.Drawing.Size(366, 23);
-            this.textselect.TabIndex = 80;
-            this.textselect.Text = "Telnet";
-            this.textselect.UseSelectable = true;
-            this.textselect.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
-            this.textselect.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
+            this.butoid.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.butoid.BackColor = System.Drawing.Color.DodgerBlue;
+            this.butoid.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.butoid.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.butoid.ForeColor = System.Drawing.Color.White;
+            this.butoid.Location = new System.Drawing.Point(462, 439);
+            this.butoid.Name = "butoid";
+            this.butoid.Size = new System.Drawing.Size(161, 34);
+            this.butoid.TabIndex = 77;
+            this.butoid.Text = "Mib节点在线查询";
+            this.butoid.UseVisualStyleBackColor = false;
+            this.butoid.Click += new System.EventHandler(this.butoid_Click);
             // 
             // Batch
             // 

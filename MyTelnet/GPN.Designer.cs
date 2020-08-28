@@ -63,6 +63,8 @@
             this.label6 = new System.Windows.Forms.Label();
             this.comcishu = new System.Windows.Forms.ComboBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.comtcm = new System.Windows.Forms.ComboBox();
             this.butgaizhi = new System.Windows.Forms.Button();
             this.comotnslot = new System.Windows.Forms.ComboBox();
             this.comotnboardmode = new System.Windows.Forms.ComboBox();
@@ -306,14 +308,17 @@
             this.TextRDPLocalPort = new MetroFramework.Controls.MetroTextBox();
             this.metroLabel20 = new MetroFramework.Controls.MetroLabel();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.TextServerAddr = new MetroFramework.Controls.MetroTextBox();
+            this.metroLabel25 = new MetroFramework.Controls.MetroLabel();
+            this.metroButYanshi = new MetroFramework.Controls.MetroButton();
+            this.textYanshi = new System.Windows.Forms.TextBox();
+            this.metroLabel24 = new MetroFramework.Controls.MetroLabel();
+            this.TextServerAddr = new MetroFramework.Controls.MetroComboBox();
             this.metroLabel15 = new MetroFramework.Controls.MetroLabel();
             this.metroLabel17 = new MetroFramework.Controls.MetroLabel();
             this.TextToken = new MetroFramework.Controls.MetroTextBox();
             this.TextServerPort = new MetroFramework.Controls.MetroTextBox();
             this.metroLabel16 = new MetroFramework.Controls.MetroLabel();
             this.metroButCtrl = new MetroFramework.Controls.MetroButton();
-            this.metroButStopVnc = new MetroFramework.Controls.MetroButton();
             this.metroButStartVnc = new MetroFramework.Controls.MetroButton();
             this.Textsharp = new MetroFramework.Controls.MetroTextBox();
             this.BottomToolStripPanel = new System.Windows.Forms.ToolStripPanel();
@@ -332,8 +337,7 @@
             this.关于软件OToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.myProgressBarjindu = new MetroFramework.Controls.MetroProgressBar();
-            this.comtcm = new System.Windows.Forms.ComboBox();
-            this.label4 = new System.Windows.Forms.Label();
+            this.timerYanshi = new System.Windows.Forms.Timer(this.components);
             this.statusStrip1.SuspendLayout();
             this.tabPageLog.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -742,6 +746,33 @@
             this.groupBox1.TabIndex = 233;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "OTN板卡";
+            // 
+            // label4
+            // 
+            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label4.AutoSize = true;
+            this.label4.BackColor = System.Drawing.Color.Transparent;
+            this.label4.Location = new System.Drawing.Point(8, 32);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(47, 12);
+            this.label4.TabIndex = 283;
+            this.label4.Text = "Tcm时隙";
+            // 
+            // comtcm
+            // 
+            this.comtcm.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.comtcm.Items.AddRange(new object[] {
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6"});
+            this.comtcm.Location = new System.Drawing.Point(84, 28);
+            this.comtcm.Name = "comtcm";
+            this.comtcm.Size = new System.Drawing.Size(120, 20);
+            this.comtcm.TabIndex = 282;
+            this.comtcm.Text = "1";
             // 
             // butgaizhi
             // 
@@ -2869,7 +2900,6 @@
             // comftpip
             // 
             this.comftpip.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.comftpip.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comftpip.FormattingEnabled = true;
             this.comftpip.Location = new System.Drawing.Point(979, 1);
             this.comftpip.Name = "comftpip";
@@ -3848,7 +3878,6 @@
             this.tabPageRemote.Controls.Add(this.groupBox4);
             this.tabPageRemote.Controls.Add(this.groupBox3);
             this.tabPageRemote.Controls.Add(this.metroButCtrl);
-            this.tabPageRemote.Controls.Add(this.metroButStopVnc);
             this.tabPageRemote.Controls.Add(this.metroButStartVnc);
             this.tabPageRemote.Controls.Add(this.Textsharp);
             this.tabPageRemote.Location = new System.Drawing.Point(4, 22);
@@ -3856,7 +3885,7 @@
             this.tabPageRemote.Padding = new System.Windows.Forms.Padding(3);
             this.tabPageRemote.Size = new System.Drawing.Size(1300, 576);
             this.tabPageRemote.TabIndex = 3;
-            this.tabPageRemote.Text = "远程共享";
+            this.tabPageRemote.Text = "远程桌面共享";
             this.tabPageRemote.UseVisualStyleBackColor = true;
             // 
             // groupBox6
@@ -3866,12 +3895,12 @@
             this.groupBox6.Controls.Add(this.metroLabel26);
             this.groupBox6.Controls.Add(this.TextVNCPassd);
             this.groupBox6.Controls.Add(this.metroLabel27);
-            this.groupBox6.Location = new System.Drawing.Point(950, 368);
+            this.groupBox6.Location = new System.Drawing.Point(950, 397);
             this.groupBox6.Name = "groupBox6";
             this.groupBox6.Size = new System.Drawing.Size(349, 80);
             this.groupBox6.TabIndex = 55;
             this.groupBox6.TabStop = false;
-            this.groupBox6.Text = "用户信息";
+            this.groupBox6.Text = "用户注册信息";
             // 
             // TextVNCUser
             // 
@@ -3930,9 +3959,10 @@
             this.TextVNCPassd.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
             this.TextVNCPassd.CustomButton.UseSelectable = true;
             this.TextVNCPassd.CustomButton.Visible = false;
+            this.TextVNCPassd.Enabled = false;
             this.TextVNCPassd.FontSize = MetroFramework.MetroTextBoxSize.Medium;
             this.TextVNCPassd.Lines = new string[] {
-        "密码不写，用户名必写"};
+        "密码不写，用户名必写，点击开始共享"};
             this.TextVNCPassd.Location = new System.Drawing.Point(95, 47);
             this.TextVNCPassd.MaxLength = 32767;
             this.TextVNCPassd.Name = "TextVNCPassd";
@@ -3944,7 +3974,7 @@
             this.TextVNCPassd.ShortcutsEnabled = true;
             this.TextVNCPassd.Size = new System.Drawing.Size(254, 29);
             this.TextVNCPassd.TabIndex = 47;
-            this.TextVNCPassd.Text = "密码不写，用户名必写";
+            this.TextVNCPassd.Text = "密码不写，用户名必写，点击开始共享";
             this.TextVNCPassd.UseSelectable = true;
             this.TextVNCPassd.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
             this.TextVNCPassd.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
@@ -3968,12 +3998,12 @@
             this.groupBox5.Controls.Add(this.TextVNCRemotePort);
             this.groupBox5.Controls.Add(this.TextVNCLocalPort);
             this.groupBox5.Controls.Add(this.metroLabel23);
-            this.groupBox5.Location = new System.Drawing.Point(948, 244);
+            this.groupBox5.Location = new System.Drawing.Point(948, 273);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(349, 118);
             this.groupBox5.TabIndex = 53;
             this.groupBox5.TabStop = false;
-            this.groupBox5.Text = "远程共享设置";
+            this.groupBox5.Text = "VNC远程桌面设置";
             // 
             // ComVNCType
             // 
@@ -4024,9 +4054,9 @@
             this.TextVNCRemotePort.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
             this.TextVNCRemotePort.CustomButton.UseSelectable = true;
             this.TextVNCRemotePort.CustomButton.Visible = false;
+            this.TextVNCRemotePort.Enabled = false;
             this.TextVNCRemotePort.FontSize = MetroFramework.MetroTextBoxSize.Medium;
-            this.TextVNCRemotePort.Lines = new string[] {
-        "59001"};
+            this.TextVNCRemotePort.Lines = new string[0];
             this.TextVNCRemotePort.Location = new System.Drawing.Point(95, 75);
             this.TextVNCRemotePort.MaxLength = 32767;
             this.TextVNCRemotePort.Name = "TextVNCRemotePort";
@@ -4038,7 +4068,6 @@
             this.TextVNCRemotePort.ShortcutsEnabled = true;
             this.TextVNCRemotePort.Size = new System.Drawing.Size(254, 29);
             this.TextVNCRemotePort.TabIndex = 49;
-            this.TextVNCRemotePort.Text = "59001";
             this.TextVNCRemotePort.UseSelectable = true;
             this.TextVNCRemotePort.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
             this.TextVNCRemotePort.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
@@ -4058,6 +4087,7 @@
             this.TextVNCLocalPort.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
             this.TextVNCLocalPort.CustomButton.UseSelectable = true;
             this.TextVNCLocalPort.CustomButton.Visible = false;
+            this.TextVNCLocalPort.Enabled = false;
             this.TextVNCLocalPort.FontSize = MetroFramework.MetroTextBoxSize.Medium;
             this.TextVNCLocalPort.Lines = new string[] {
         "5900"};
@@ -4096,12 +4126,12 @@
             this.groupBox4.Controls.Add(this.TextRDPRemotePort);
             this.groupBox4.Controls.Add(this.TextRDPLocalPort);
             this.groupBox4.Controls.Add(this.metroLabel20);
-            this.groupBox4.Location = new System.Drawing.Point(945, 120);
+            this.groupBox4.Location = new System.Drawing.Point(945, 149);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(349, 118);
             this.groupBox4.TabIndex = 52;
             this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "远程桌面设置";
+            this.groupBox4.Text = "RDP远程桌面设置";
             // 
             // ComRDPType
             // 
@@ -4152,9 +4182,9 @@
             this.TextRDPRemotePort.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
             this.TextRDPRemotePort.CustomButton.UseSelectable = true;
             this.TextRDPRemotePort.CustomButton.Visible = false;
+            this.TextRDPRemotePort.Enabled = false;
             this.TextRDPRemotePort.FontSize = MetroFramework.MetroTextBoxSize.Medium;
-            this.TextRDPRemotePort.Lines = new string[] {
-        "33891"};
+            this.TextRDPRemotePort.Lines = new string[0];
             this.TextRDPRemotePort.Location = new System.Drawing.Point(95, 75);
             this.TextRDPRemotePort.MaxLength = 32767;
             this.TextRDPRemotePort.Name = "TextRDPRemotePort";
@@ -4166,7 +4196,6 @@
             this.TextRDPRemotePort.ShortcutsEnabled = true;
             this.TextRDPRemotePort.Size = new System.Drawing.Size(254, 29);
             this.TextRDPRemotePort.TabIndex = 49;
-            this.TextRDPRemotePort.Text = "33891";
             this.TextRDPRemotePort.UseSelectable = true;
             this.TextRDPRemotePort.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
             this.TextRDPRemotePort.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
@@ -4186,6 +4215,7 @@
             this.TextRDPLocalPort.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
             this.TextRDPLocalPort.CustomButton.UseSelectable = true;
             this.TextRDPLocalPort.CustomButton.Visible = false;
+            this.TextRDPLocalPort.Enabled = false;
             this.TextRDPLocalPort.FontSize = MetroFramework.MetroTextBoxSize.Medium;
             this.TextRDPLocalPort.Lines = new string[] {
         "3389"};
@@ -4218,6 +4248,10 @@
             // groupBox3
             // 
             this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox3.Controls.Add(this.metroLabel25);
+            this.groupBox3.Controls.Add(this.metroButYanshi);
+            this.groupBox3.Controls.Add(this.textYanshi);
+            this.groupBox3.Controls.Add(this.metroLabel24);
             this.groupBox3.Controls.Add(this.TextServerAddr);
             this.groupBox3.Controls.Add(this.metroLabel15);
             this.groupBox3.Controls.Add(this.metroLabel17);
@@ -4226,44 +4260,67 @@
             this.groupBox3.Controls.Add(this.metroLabel16);
             this.groupBox3.Location = new System.Drawing.Point(945, 6);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(349, 111);
+            this.groupBox3.Size = new System.Drawing.Size(349, 137);
             this.groupBox3.TabIndex = 51;
             this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "服务器设置";
+            this.groupBox3.Text = "桌面共享服务器设置";
+            // 
+            // metroLabel25
+            // 
+            this.metroLabel25.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.metroLabel25.AutoSize = true;
+            this.metroLabel25.Location = new System.Drawing.Point(190, 107);
+            this.metroLabel25.Name = "metroLabel25";
+            this.metroLabel25.Size = new System.Drawing.Size(26, 19);
+            this.metroLabel25.TabIndex = 57;
+            this.metroLabel25.Text = "ms";
+            // 
+            // metroButYanshi
+            // 
+            this.metroButYanshi.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.metroButYanshi.Location = new System.Drawing.Point(235, 103);
+            this.metroButYanshi.Name = "metroButYanshi";
+            this.metroButYanshi.Size = new System.Drawing.Size(113, 30);
+            this.metroButYanshi.TabIndex = 56;
+            this.metroButYanshi.Text = "开始延时测试";
+            this.metroButYanshi.UseSelectable = true;
+            this.metroButYanshi.Click += new System.EventHandler(this.metroButYanshi_Click);
+            // 
+            // textYanshi
+            // 
+            this.textYanshi.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textYanshi.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textYanshi.ForeColor = System.Drawing.Color.Green;
+            this.textYanshi.Location = new System.Drawing.Point(95, 103);
+            this.textYanshi.Multiline = true;
+            this.textYanshi.Name = "textYanshi";
+            this.textYanshi.Size = new System.Drawing.Size(89, 30);
+            this.textYanshi.TabIndex = 54;
+            this.textYanshi.Text = "未启动";
+            // 
+            // metroLabel24
+            // 
+            this.metroLabel24.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.metroLabel24.AutoSize = true;
+            this.metroLabel24.Location = new System.Drawing.Point(11, 108);
+            this.metroLabel24.Name = "metroLabel24";
+            this.metroLabel24.Size = new System.Drawing.Size(59, 19);
+            this.metroLabel24.TabIndex = 53;
+            this.metroLabel24.Text = "延时/ms";
             // 
             // TextServerAddr
             // 
             this.TextServerAddr.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            // 
-            // 
-            // 
-            this.TextServerAddr.CustomButton.Image = null;
-            this.TextServerAddr.CustomButton.Location = new System.Drawing.Point(226, 1);
-            this.TextServerAddr.CustomButton.Name = "";
-            this.TextServerAddr.CustomButton.Size = new System.Drawing.Size(27, 27);
-            this.TextServerAddr.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
-            this.TextServerAddr.CustomButton.TabIndex = 1;
-            this.TextServerAddr.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
-            this.TextServerAddr.CustomButton.UseSelectable = true;
-            this.TextServerAddr.CustomButton.Visible = false;
-            this.TextServerAddr.FontSize = MetroFramework.MetroTextBoxSize.Medium;
-            this.TextServerAddr.Lines = new string[] {
-        "hunan128.com"};
-            this.TextServerAddr.Location = new System.Drawing.Point(95, 19);
-            this.TextServerAddr.MaxLength = 32767;
+            this.TextServerAddr.ItemHeight = 23;
+            this.TextServerAddr.Items.AddRange(new object[] {
+            "hunan128.com",
+            "155.138.141.234"});
+            this.TextServerAddr.Location = new System.Drawing.Point(95, 20);
             this.TextServerAddr.Name = "TextServerAddr";
-            this.TextServerAddr.PasswordChar = '\0';
-            this.TextServerAddr.ScrollBars = System.Windows.Forms.ScrollBars.None;
-            this.TextServerAddr.SelectedText = "";
-            this.TextServerAddr.SelectionLength = 0;
-            this.TextServerAddr.SelectionStart = 0;
-            this.TextServerAddr.ShortcutsEnabled = true;
-            this.TextServerAddr.Size = new System.Drawing.Size(254, 29);
-            this.TextServerAddr.TabIndex = 45;
-            this.TextServerAddr.Text = "hunan128.com";
+            this.TextServerAddr.Size = new System.Drawing.Size(253, 29);
+            this.TextServerAddr.TabIndex = 51;
             this.TextServerAddr.UseSelectable = true;
-            this.TextServerAddr.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
-            this.TextServerAddr.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
             // 
             // metroLabel15
             // 
@@ -4300,6 +4357,7 @@
             this.TextToken.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
             this.TextToken.CustomButton.UseSelectable = true;
             this.TextToken.CustomButton.Visible = false;
+            this.TextToken.Enabled = false;
             this.TextToken.FontSize = MetroFramework.MetroTextBoxSize.Medium;
             this.TextToken.Lines = new string[] {
         "123456"};
@@ -4334,6 +4392,7 @@
             this.TextServerPort.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
             this.TextServerPort.CustomButton.UseSelectable = true;
             this.TextServerPort.CustomButton.Visible = false;
+            this.TextServerPort.Enabled = false;
             this.TextServerPort.FontSize = MetroFramework.MetroTextBoxSize.Medium;
             this.TextServerPort.Lines = new string[] {
         "7000"};
@@ -4366,33 +4425,22 @@
             // metroButCtrl
             // 
             this.metroButCtrl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.metroButCtrl.Location = new System.Drawing.Point(1187, 454);
+            this.metroButCtrl.Location = new System.Drawing.Point(1133, 487);
             this.metroButCtrl.Name = "metroButCtrl";
-            this.metroButCtrl.Size = new System.Drawing.Size(106, 35);
+            this.metroButCtrl.Size = new System.Drawing.Size(160, 35);
             this.metroButCtrl.TabIndex = 44;
-            this.metroButCtrl.Text = "远程控制";
+            this.metroButCtrl.Text = "远程控制桌面";
             this.metroButCtrl.UseSelectable = true;
             this.metroButCtrl.Click += new System.EventHandler(this.metroButCtrl_Click);
-            // 
-            // metroButStopVnc
-            // 
-            this.metroButStopVnc.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.metroButStopVnc.Location = new System.Drawing.Point(1060, 454);
-            this.metroButStopVnc.Name = "metroButStopVnc";
-            this.metroButStopVnc.Size = new System.Drawing.Size(106, 35);
-            this.metroButStopVnc.TabIndex = 43;
-            this.metroButStopVnc.Text = "停止共享";
-            this.metroButStopVnc.UseSelectable = true;
-            this.metroButStopVnc.Click += new System.EventHandler(this.metroButStopVnc_Click);
             // 
             // metroButStartVnc
             // 
             this.metroButStartVnc.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.metroButStartVnc.Location = new System.Drawing.Point(948, 454);
+            this.metroButStartVnc.Location = new System.Drawing.Point(948, 487);
             this.metroButStartVnc.Name = "metroButStartVnc";
-            this.metroButStartVnc.Size = new System.Drawing.Size(106, 35);
+            this.metroButStartVnc.Size = new System.Drawing.Size(160, 35);
             this.metroButStartVnc.TabIndex = 42;
-            this.metroButStartVnc.Text = "开始共享";
+            this.metroButStartVnc.Text = "开始桌面共享";
             this.metroButStartVnc.UseSelectable = true;
             this.metroButStartVnc.Click += new System.EventHandler(this.metroButStartVnc_Click);
             // 
@@ -4414,7 +4462,7 @@
             this.Textsharp.CustomButton.UseSelectable = true;
             this.Textsharp.CustomButton.Visible = false;
             this.Textsharp.Lines = new string[] {
-        "暂时只支持64位操作系统。自定义使用请灵活更改：远端端口33891-59100之间"};
+        "暂时只支持64位操作系统。远端端口随机生成，拍照后发给控制端用户，进行远程协助。点击“开始桌面共享”启动~"};
             this.Textsharp.Location = new System.Drawing.Point(0, 0);
             this.Textsharp.MaxLength = 32767;
             this.Textsharp.Multiline = true;
@@ -4427,7 +4475,7 @@
             this.Textsharp.ShortcutsEnabled = true;
             this.Textsharp.Size = new System.Drawing.Size(925, 580);
             this.Textsharp.TabIndex = 40;
-            this.Textsharp.Text = "暂时只支持64位操作系统。自定义使用请灵活更改：远端端口33891-59100之间";
+            this.Textsharp.Text = "暂时只支持64位操作系统。远端端口随机生成，拍照后发给控制端用户，进行远程协助。点击“开始桌面共享”启动~";
             this.Textsharp.UseSelectable = true;
             this.Textsharp.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
             this.Textsharp.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
@@ -4496,14 +4544,14 @@
             // 保存ToolStripMenuItem
             // 
             this.保存ToolStripMenuItem.Name = "保存ToolStripMenuItem";
-            this.保存ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.保存ToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.保存ToolStripMenuItem.Text = "保存串口日志";
             this.保存ToolStripMenuItem.Click += new System.EventHandler(this.保存ToolStripMenuItem_Click);
             // 
             // 设置ToolStripMenuItem
             // 
             this.设置ToolStripMenuItem.Name = "设置ToolStripMenuItem";
-            this.设置ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.设置ToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.设置ToolStripMenuItem.Text = "保存配置记忆";
             this.设置ToolStripMenuItem.Click += new System.EventHandler(this.设置ToolStripMenuItem_Click);
             // 
@@ -4525,7 +4573,7 @@
             // 
             this.获取本地软件SToolStripMenuItem.Name = "获取本地软件SToolStripMenuItem";
             this.获取本地软件SToolStripMenuItem.Size = new System.Drawing.Size(83, 21);
-            this.获取本地软件SToolStripMenuItem.Text = "获取软件(S)";
+            this.获取本地软件SToolStripMenuItem.Text = "软件下载(S)";
             this.获取本地软件SToolStripMenuItem.Click += new System.EventHandler(this.获取本地软件SToolStripMenuItem_Click);
             // 
             // 关于ToolStripMenuItem
@@ -4556,32 +4604,9 @@
             this.myProgressBarjindu.Size = new System.Drawing.Size(1300, 23);
             this.myProgressBarjindu.TabIndex = 49;
             // 
-            // comtcm
+            // timerYanshi
             // 
-            this.comtcm.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.comtcm.Items.AddRange(new object[] {
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6"});
-            this.comtcm.Location = new System.Drawing.Point(84, 28);
-            this.comtcm.Name = "comtcm";
-            this.comtcm.Size = new System.Drawing.Size(120, 20);
-            this.comtcm.TabIndex = 282;
-            this.comtcm.Text = "1";
-            // 
-            // label4
-            // 
-            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label4.AutoSize = true;
-            this.label4.BackColor = System.Drawing.Color.Transparent;
-            this.label4.Location = new System.Drawing.Point(8, 32);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(47, 12);
-            this.label4.TabIndex = 283;
-            this.label4.Text = "Tcm时隙";
+            this.timerYanshi.Tick += new System.EventHandler(this.timerYanshi_Tick);
             // 
             // GPN
             // 
@@ -4907,7 +4932,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn 保存;
         private System.Windows.Forms.DataGridViewTextBoxColumn 当前版本;
         private System.Windows.Forms.TabPage tabPageRemote;
-        private MetroFramework.Controls.MetroButton metroButStopVnc;
         private MetroFramework.Controls.MetroButton metroButStartVnc;
         private MetroFramework.Controls.MetroTextBox Textsharp;
         private MetroFramework.Controls.MetroButton metroButCtrl;
@@ -4926,7 +4950,6 @@
         private MetroFramework.Controls.MetroTextBox TextRDPLocalPort;
         private MetroFramework.Controls.MetroLabel metroLabel20;
         private System.Windows.Forms.GroupBox groupBox3;
-        private MetroFramework.Controls.MetroTextBox TextServerAddr;
         private MetroFramework.Controls.MetroLabel metroLabel15;
         private MetroFramework.Controls.MetroLabel metroLabel17;
         private MetroFramework.Controls.MetroTextBox TextToken;
@@ -4939,6 +4962,12 @@
         private MetroFramework.Controls.MetroLabel metroLabel27;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ComboBox comtcm;
+        private MetroFramework.Controls.MetroComboBox TextServerAddr;
+        private MetroFramework.Controls.MetroLabel metroLabel24;
+        private MetroFramework.Controls.MetroLabel metroLabel25;
+        private MetroFramework.Controls.MetroButton metroButYanshi;
+        private System.Windows.Forms.TextBox textYanshi;
+        private System.Windows.Forms.Timer timerYanshi;
     }
 }
 
