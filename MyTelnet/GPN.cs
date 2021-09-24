@@ -16,7 +16,6 @@ using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
@@ -53,10 +52,11 @@ namespace MyGpnSoftware
         public bool backupfile = false;
         public bool FtpStatusEnable = false;            //FTPserver是否为使能状态
         public bool FtpPortEnable = false;            //FTP 接口是否为使能状态
-        public static string ftpCtrlFlagID = "";                //执行操作命令
+        public static string ftpCtrlFlagID = "";                //执行操作
         public static int LoadCountany = 0;                //上传下载设备个数
         public static int LoadCountsum = 0;                //上传下载设备个数
         public static object PiLiangShengJi = new object(); //批量升级累计完成数量加锁
+        public static bool save = false;                //批量保存设备数据
 
 
         // 保存户名和密码
@@ -92,6 +92,9 @@ namespace MyGpnSoftware
                 }
             }
             #endregion
+            Readini();
+        }
+        private void Readini() {
             #region 读取ini文件
             try
             {
@@ -138,9 +141,29 @@ namespace MyGpnSoftware
                     {
                         comapp.Text = ContentValue(strSec, "APP");
                     }
+                    if (comapp2.Items.Contains(ContentValue(strSec, "APP2")))
+                    {
+                        comapp2.Text = ContentValue(strSec, "APP2");
+                    }
                     if (comcode.Items.Contains(ContentValue(strSec, "FPFA_CODE")))
                     {
                         comcode.Text = ContentValue(strSec, "FPFA_CODE");
+                    }
+                    if (comcode2.Items.Contains(ContentValue(strSec, "FPFA_CODE2")))
+                    {
+                        comcode2.Text = ContentValue(strSec, "FPFA_CODE2");
+                    }
+                    if (comcode3.Items.Contains(ContentValue(strSec, "FPFA_CODE3")))
+                    {
+                        comcode3.Text = ContentValue(strSec, "FPFA_CODE3");
+                    }
+                    if (comcode4.Items.Contains(ContentValue(strSec, "FPFA_CODE4")))
+                    {
+                        comcode4.Text = ContentValue(strSec, "FPFA_CODE4");
+                    }
+                    if (comsdn.Items.Contains(ContentValue(strSec, "SDN")))
+                    {
+                        comsdn.Text = ContentValue(strSec, "SDN");
                     }
                     if (comnms.Items.Contains(ContentValue(strSec, "NMS")))
                     {
@@ -170,13 +193,49 @@ namespace MyGpnSoftware
                     {
                         com760e.Text = ContentValue(strSec, "760E");
                     }
-                    if (com760f.Items.Contains(ContentValue(strSec, "760F")))
+                    if (comuxc.Items.Contains(ContentValue(strSec, "UXC")))
                     {
-                        com760f.Text = ContentValue(strSec, "760F");
+                        comuxc.Text = ContentValue(strSec, "UXC");
+                    }
+                    if (com7610.Items.Contains(ContentValue(strSec, "7610")))
+                    {
+                        com7610.Text = ContentValue(strSec, "7610");
+                    }
+                    if (com7611.Items.Contains(ContentValue(strSec, "7611")))
+                    {
+                        com7611.Text = ContentValue(strSec, "7611");
+                    }
+                    if (com7612.Items.Contains(ContentValue(strSec, "7612")))
+                    {
+                        com7612.Text = ContentValue(strSec, "7612");
+                    }
+                    if (com7613.Items.Contains(ContentValue(strSec, "7613")))
+                    {
+                        com7613.Text = ContentValue(strSec, "7613");
+                    }
+                    if (com7614.Items.Contains(ContentValue(strSec, "7614")))
+                    {
+                        com7614.Text = ContentValue(strSec, "7614");
+                    }
+                    if (com7616.Items.Contains(ContentValue(strSec, "7616")))
+                    {
+                        com7616.Text = ContentValue(strSec, "7616");
                     }
                     if (comsysfile.Items.Contains(ContentValue(strSec, "sysfile")))
                     {
                         comsysfile.Text = ContentValue(strSec, "sysfile");
+                    }
+                    if (comvoss.Items.Contains(ContentValue(strSec, "voss")))
+                    {
+                        comvoss.Text = ContentValue(strSec, "voss");
+                    }
+                    if (comrebootos.Items.Contains(ContentValue(strSec, "rebootos")))
+                    {
+                        comrebootos.Text = ContentValue(strSec, "rebootos");
+                    }
+                    if (comcpld.Items.Contains(ContentValue(strSec, "cpld")))
+                    {
+                        comcpld.Text = ContentValue(strSec, "cpld");
                     }
                     if (comflash.Items.Contains(ContentValue(strSec, "FLASH")))
                     {
@@ -193,7 +252,7 @@ namespace MyGpnSoftware
 
 
                     strSec = "common";
-                    TextServerAddr.Text = "hunan128.com";
+                    TextServerAddr.Text = "dx.hunan128.com";
                     TextServerAddr.Text = ContentValueFrpc(strSec, "server_addr");
                     TextServerPort.Text = ContentValueFrpc(strSec, "server_port");
                     TextToken.Text = ContentValueFrpc(strSec, "token");
@@ -219,8 +278,9 @@ namespace MyGpnSoftware
 
 
                 }
-                else {
-                    TextServerAddr.Text = "hunan128.com";
+                else
+                {
+                    TextServerAddr.Text = "dx.hunan128.com";
                 }
             }
             catch (Exception ex)
@@ -369,6 +429,9 @@ namespace MyGpnSoftware
                     myTcpListener = null;
                     listenThread.Abort();
                     lstboxStatus.Items.Add(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " ③断开FTP服务器成功!--------------IP地址是：" + comftpip.Text);
+                    toolStripStatusLabelFTP.Text = "FTP服务器已断开";
+                    LabFtpLed.ForeColor = Color.Red;
+
                     //lstboxStatus.TopIndex = lstboxStatus.Items.Count - 1;
                     FtpStatusEnable = false;
                     FtpPortEnable = false;
@@ -403,6 +466,8 @@ namespace MyGpnSoftware
                 // 开始监听传入的请求
                 myTcpListener.Start();
                 AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " ③启动FTP服务器成功!--------------IP地址是：" + comftpip.Text);
+                toolStripStatusLabelFTP.Text ="FTP服务器已启动";
+                LabFtpLed.ForeColor = Color.GreenYellow;
                 //AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"开始监听用户端请求....");
                 //          AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"Ftp服务器运行中...[点击”停止“按钮停止FTP服务]");
                 while (true)
@@ -433,6 +498,8 @@ namespace MyGpnSoftware
                 lstboxStatus.Items.Add(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " FTP服务启动失败!--------------FTP服务启动失败!");
                 btnFtpServerStartStop.Text = "③启动FTP服务器";
                 MessageBox.Show("请检查FTP服务器IP地址是否正确!，FTP服务器已关闭！");
+                toolStripStatusLabelFTP.Text = "FTP服务器错误";
+
             }
         }
         #endregion
@@ -764,7 +831,7 @@ namespace MyGpnSoftware
                 RepleyCommandToUser(user, "226 Transfer complete");
 
             }
-            catch (Exception ex)
+            catch 
             {
                 AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " 来自" + user.CommandSession.tcpClient.Client.RemoteEndPoint + "：[550 Directory " + path + " does not exist]");
             }
@@ -1043,84 +1110,6 @@ namespace MyGpnSoftware
             }
         }
         #endregion
-        #region 一键升级开始按钮
-        bool DownLoadFile_Stop = true;
-        bool DownLoadFile_On_Off = false;
-        ManualResetEvent DownLoadFilePause;
-        Thread DownLoadFileThread;
-        /////////////////////////////////////////////////////////////////////////////////////////////////////
-        private void Butupgrade_Click(object sender, EventArgs e)
-        {
-            if (butupgrade.Text == "下载升级")
-            {
-
-                if (FtpPortEnable == false || FtpStatusEnable == false)
-                {
-                    MessageBox.Show("请先③启动FTP服务器,进行后续操作！");
-                    return;
-                }
-
-
-                if (checkapp.Checked == false &&
-                    checkcode.Checked == false &&
-                    checknms.Checked == false &&
-                    checksw.Checked == false &&
-                    check760s.Checked == false &&
-                    check760b.Checked == false &&
-                    check760c.Checked == false &&
-                    check760d.Checked == false &&
-                    check760f.Checked == false &&
-                    checksysfile.Checked == false &&
-                    checkflash.Checked == false &&
-                    checkyaffs.Checked == false &&
-                    checkconfig.Checked == false &&
-                    checkdb.Checked == false &&
-                    checkslotconfig.Checked == false &&
-                    check760e.Checked == false)
-                {
-                    MessageBox.Show("请勾选文件后继续！");
-                    return;
-                }
-                DialogResult dr = MessageBox.Show("升级前是否进行备份设备数据？", "提示", MessageBoxButtons.YesNoCancel);
-                if (dr == DialogResult.Yes)
-                {
-                    DownLoadFile_Stop = false;
-                    DownLoadFileThread = new Thread(DownLoadFile)
-                    {
-                        IsBackground = true
-                    };
-                    DownLoadFileThread.Start();
-                    backupfile = true;
-                    butupgrade.Text = "停止升级";
-                    //户选择确认的操作
-                }
-                else if (dr == DialogResult.No)
-                {
-
-                    //户选择取消的操作
-                    DownLoadFile_Stop = false;
-                    DownLoadFileThread = new Thread(DownLoadFile)
-                    {
-                        IsBackground = true
-                    };
-                    DownLoadFileThread.Start();
-                    backupfile = false;
-                    butupgrade.Text = "停止升级";
-                }
-                if (dr == DialogResult.Cancel)
-                {
-                    return;
-                    //户选择确认的操作
-                }
-            }
-            else
-            {
-                DownLoadFile_Stop = true;
-                backupfile = false;
-                butupgrade.Text = "下载升级";
-            }
-        }
-        #endregion
         #region 定时建立telnet连接
         private void timer2_Tick(object sender, EventArgs e)
         {
@@ -1128,1100 +1117,6 @@ namespace MyGpnSoftware
         }
         #endregion
 
-        #region 正式升级
-        //这里，就是后台进程开始工作时，调工作函数的地方。你可以把你现有的处理函数写在这儿。
-        private void DownLoadFile()
-        {
-            //立即开始计时，时间间隔1000毫秒
-            try
-            {
-                TimeCount = 0;
-                Mytimer.Change(0, 1000);
-                Control.CheckForIllegalCrossThreadCalls = false;
-                Save();
-                Thread.Sleep(XHTime);
-                Testftpser();
-                if (DownLoadFile_Stop)
-                {
-                    textDOS.AppendText(DateTime.Now.ToString("\r\n" + "yyyy-MM-dd HH:mm:ss") + " " + "下载升级已停止！");
-                    return;
-                }
-                if (backupfile)
-                {
-                    Backup();
-                }
-                Thread.Sleep(XHTime);
-                int a = 0;
-                int p = 0;
-                if (checkapp.Checked == true)
-                {
-                    a++;
-                }
-                if (checkcode.Checked == true)
-                {
-                    a++;
-                }
-                if (checknms.Checked == true)
-                {
-                    a++;
-                }
-                if (checksw.Checked == true)
-                {
-                    a++;
-                }
-                if (check760s.Checked == true)
-                {
-                    a++;
-                }
-                if (check760b.Checked == true)
-                {
-                    a++;
-                }
-                if (check760c.Checked == true)
-                {
-                    a++;
-                }
-                if (check760d.Checked == true)
-                {
-                    a++;
-                }
-                if (check760e.Checked == true)
-                {
-                    a++;
-                }
-                if (check760f.Checked == true)
-                {
-                    a++;
-                }
-                if (checksysfile.Checked == true)
-                {
-                    a++;
-                }
-                if (checkflash.Checked == true)
-                {
-                    a++;
-                }
-                if (checkyaffs.Checked == true)
-                {
-                    a++;
-                }
-                if (checkconfig.Checked == true)
-                {
-                    a++;
-                }
-                if (checkdb.Checked == true)
-                {
-                    a++;
-                }
-                if (checkslotconfig.Checked == true)
-                {
-                    a++;
-                }
-                int s = (int)Math.Floor((double)100 / a);
-                p = (int)Math.Floor((double)100 / a);
-                if (checkconfig.Checked == true)
-                {
-                    Downlaodconfig();
-                    if (s == p)
-                    {
-                        if (DownLoadFile_Stop)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
-                            return;
-                        }
-                        if (DownLoadFile_On_Off)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
-                            DownLoadFilePause = new ManualResetEvent(false);
-                            DownLoadFilePause.WaitOne();
-                        }
-                        myProgressBarjindu.Value = p;
-                        //toolStripStatusLabelbar.Text = p + "%";
-                        System.Threading.Thread.Sleep(XHTime);
-                        p = s + p;
-                    }
-                    else
-                    {
-                        if (p > 95 && p <= 100)
-                        {
-                            p = 100;
-                            if (DownLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (DownLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
-                                DownLoadFilePause = new ManualResetEvent(false);
-                                DownLoadFilePause.WaitOne();
-                            }
-                            myProgressBarjindu.Value = p;
-                            //toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                        }
-                        else
-                        {
-                            if (DownLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (DownLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
-                                DownLoadFilePause = new ManualResetEvent(false);
-                                DownLoadFilePause.WaitOne();
-                            }
-                            myProgressBarjindu.Value = p;
-                            //toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                            p = s + p;
-                        }
-                    }
-                }
-                if (checkslotconfig.Checked == true)
-                {
-                    Downloadslot();
-                    if (s == p)
-                    {
-                        if (DownLoadFile_Stop)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
-                            return;
-                        }
-                        if (DownLoadFile_On_Off)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
-                            DownLoadFilePause = new ManualResetEvent(false);
-                            DownLoadFilePause.WaitOne();
-                        }
-                        myProgressBarjindu.Value = p;
-                        //toolStripStatusLabelbar.Text = p + "%";
-                        System.Threading.Thread.Sleep(XHTime);
-                        p = s + p;
-                    }
-                    else
-                    {
-                        if (p > 95 && p <= 100)
-                        {
-                            p = 100;
-                            if (DownLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (DownLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
-                                DownLoadFilePause = new ManualResetEvent(false);
-                                DownLoadFilePause.WaitOne();
-                            }
-                            myProgressBarjindu.Value = p;
-                            //toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                        }
-                        else
-                        {
-                            if (DownLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (DownLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
-                                DownLoadFilePause = new ManualResetEvent(false);
-                                DownLoadFilePause.WaitOne();
-                            }
-                            myProgressBarjindu.Value = p;
-                            //toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                            p = s + p;
-                        }
-                    }
-                }
-                if (checkdb.Checked == true)
-                {
-                    Downloaddb();
-                    if (s == p)
-                    {
-                        if (DownLoadFile_Stop)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
-                            return;
-                        }
-                        if (DownLoadFile_On_Off)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
-                            DownLoadFilePause = new ManualResetEvent(false);
-                            DownLoadFilePause.WaitOne();
-                        }
-                        myProgressBarjindu.Value = p;
-                        //toolStripStatusLabelbar.Text = p + "%";
-                        System.Threading.Thread.Sleep(XHTime);
-                        p = s + p;
-                    }
-                    else
-                    {
-                        if (p > 95 && p <= 100)
-                        {
-                            p = 100;
-                            if (DownLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (DownLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
-                                DownLoadFilePause = new ManualResetEvent(false);
-                                DownLoadFilePause.WaitOne();
-                            }
-                            myProgressBarjindu.Value = p;
-                            //toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                        }
-                        else
-                        {
-                            if (DownLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (DownLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
-                                DownLoadFilePause = new ManualResetEvent(false);
-                                DownLoadFilePause.WaitOne();
-                            }
-                            myProgressBarjindu.Value = p;
-                            //toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                            p = s + p;
-                        }
-                    }
-                }
-                if (checkapp.Checked == true)
-                {
-                    if (slot17 == "" && slot18 == "")
-                    {
-                    }
-                    else
-                    {
-                        Rm();
-                    }
-                    App();
-                    if (s == p)
-                    {
-                        if (DownLoadFile_Stop)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
-                            return;
-                        }
-                        if (DownLoadFile_On_Off)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
-                            DownLoadFilePause = new ManualResetEvent(false);
-                            DownLoadFilePause.WaitOne();
-                        }
-                        myProgressBarjindu.Value = p;
-                        //toolStripStatusLabelbar.Text = p + "%";
-                        System.Threading.Thread.Sleep(XHTime);
-                        p = s + p;
-                    }
-                    else
-                    {
-                        if (p > 95 && p <= 100)
-                        {
-                            p = 100;
-                            if (DownLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (DownLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
-                                DownLoadFilePause = new ManualResetEvent(false);
-                                DownLoadFilePause.WaitOne();
-                            }
-                            myProgressBarjindu.Value = p;
-                            //toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                        }
-                        else
-                        {
-                            if (DownLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (DownLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
-                                DownLoadFilePause = new ManualResetEvent(false);
-                                DownLoadFilePause.WaitOne();
-                            }
-                            myProgressBarjindu.Value = p;
-                            //toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                            p = s + p;
-                        }
-                    }
-                }
-                if (checkcode.Checked == true)
-                {
-                    Fpgacode();
-                    if (s == p)
-                    {
-                        if (DownLoadFile_Stop)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
-                            return;
-                        }
-                        if (DownLoadFile_On_Off)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
-                            DownLoadFilePause = new ManualResetEvent(false);
-                            DownLoadFilePause.WaitOne();
-                        }
-                        myProgressBarjindu.Value = p;
-                        //toolStripStatusLabelbar.Text = p + "%";
-                        System.Threading.Thread.Sleep(XHTime);
-                        p = s + p;
-                    }
-                    else
-                    {
-                        if (p > 95 && p <= 100)
-                        {
-                            p = 100;
-                            if (DownLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (DownLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
-                                DownLoadFilePause = new ManualResetEvent(false);
-                                DownLoadFilePause.WaitOne();
-                            }
-                            myProgressBarjindu.Value = p;
-                            //toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                        }
-                        else
-                        {
-                            if (DownLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (DownLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
-                                DownLoadFilePause = new ManualResetEvent(false);
-                                DownLoadFilePause.WaitOne();
-                            }
-                            myProgressBarjindu.Value = p;
-                            //toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                            p = s + p;
-                        }
-                    }
-                }
-                if (checknms.Checked == true)
-                {
-                    Nms();
-                    if (s == p)
-                    {
-                        if (DownLoadFile_Stop)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
-                            return;
-                        }
-                        if (DownLoadFile_On_Off)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
-                            DownLoadFilePause = new ManualResetEvent(false);
-                            DownLoadFilePause.WaitOne();
-                        }
-                        myProgressBarjindu.Value = p;
-                        //toolStripStatusLabelbar.Text = p + "%";
-                        System.Threading.Thread.Sleep(XHTime);
-                        p = s + p;
-                    }
-                    else
-                    {
-                        if (p > 95 && p <= 100)
-                        {
-                            p = 100;
-                            if (DownLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (DownLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
-                                DownLoadFilePause = new ManualResetEvent(false);
-                                DownLoadFilePause.WaitOne();
-                            }
-                            myProgressBarjindu.Value = p;
-                            //toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                        }
-                        else
-                        {
-                            if (DownLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (DownLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
-                                DownLoadFilePause = new ManualResetEvent(false);
-                                DownLoadFilePause.WaitOne();
-                            }
-                            myProgressBarjindu.Value = p;
-                            //toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                            p = s + p;
-                        }
-                    }
-                }
-                if (checksw.Checked == true)
-                {
-                    Swfpga();
-                    if (s == p)
-                    {
-                        if (DownLoadFile_Stop)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
-                            return;
-                        }
-                        if (DownLoadFile_On_Off)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
-                            DownLoadFilePause = new ManualResetEvent(false);
-                            DownLoadFilePause.WaitOne();
-                        }
-                        myProgressBarjindu.Value = p;
-                        //toolStripStatusLabelbar.Text = p + "%";
-                        System.Threading.Thread.Sleep(XHTime);
-                        p = s + p;
-                    }
-                    else
-                    {
-                        if (p > 95 && p <= 100)
-                        {
-                            p = 100;
-                            if (DownLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (DownLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
-                                DownLoadFilePause = new ManualResetEvent(false);
-                                DownLoadFilePause.WaitOne();
-                            }
-                            myProgressBarjindu.Value = p;
-                            //toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                        }
-                        else
-                        {
-                            if (DownLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (DownLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
-                                DownLoadFilePause = new ManualResetEvent(false);
-                                DownLoadFilePause.WaitOne();
-                            }
-                            myProgressBarjindu.Value = p;
-                            //toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                            p = s + p;
-                        }
-                    }
-                }
-                if (check760s.Checked == true)
-                {
-                    Fpga760s();
-                    if (s == p)
-                    {
-                        if (DownLoadFile_Stop)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
-                            return;
-                        }
-                        if (DownLoadFile_On_Off)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
-                            DownLoadFilePause = new ManualResetEvent(false);
-                            DownLoadFilePause.WaitOne();
-                        }
-                        myProgressBarjindu.Value = p;
-                        //toolStripStatusLabelbar.Text = p + "%";
-                        System.Threading.Thread.Sleep(XHTime);
-                        p = s + p;
-                    }
-                    else
-                    {
-                        if (p > 95 && p <= 100)
-                        {
-                            p = 100;
-                            if (DownLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (DownLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
-                                DownLoadFilePause = new ManualResetEvent(false);
-                                DownLoadFilePause.WaitOne();
-                            }
-                            myProgressBarjindu.Value = p;
-                            //toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                        }
-                        else
-                        {
-                            if (DownLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (DownLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
-                                DownLoadFilePause = new ManualResetEvent(false);
-                                DownLoadFilePause.WaitOne();
-                            }
-                            myProgressBarjindu.Value = p;
-                            //toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                            p = s + p;
-                        }
-                    }
-                }
-                if (check760b.Checked == true)
-                {
-                    Fpga760b();
-                    if (s == p)
-                    {
-                        if (DownLoadFile_Stop)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
-                            return;
-                        }
-                        if (DownLoadFile_On_Off)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
-                            DownLoadFilePause = new ManualResetEvent(false);
-                            DownLoadFilePause.WaitOne();
-                        }
-                        myProgressBarjindu.Value = p;
-                        //toolStripStatusLabelbar.Text = p + "%";
-                        System.Threading.Thread.Sleep(XHTime);
-                        p = s + p;
-                    }
-                    else
-                    {
-                        if (p > 95 && p <= 100)
-                        {
-                            p = 100;
-                            if (DownLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (DownLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
-                                DownLoadFilePause = new ManualResetEvent(false);
-                                DownLoadFilePause.WaitOne();
-                            }
-                            myProgressBarjindu.Value = p;
-                            //toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                        }
-                        else
-                        {
-                            if (DownLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (DownLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
-                                DownLoadFilePause = new ManualResetEvent(false);
-                                DownLoadFilePause.WaitOne();
-                            }
-                            myProgressBarjindu.Value = p;
-                            //toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                            p = s + p;
-                        }
-                    }
-                }
-                if (check760c.Checked == true)
-                {
-                    Fpga760c();
-                    if (s == p)
-                    {
-                        if (DownLoadFile_Stop)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
-                            return;
-                        }
-                        if (DownLoadFile_On_Off)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
-                            DownLoadFilePause = new ManualResetEvent(false);
-                            DownLoadFilePause.WaitOne();
-                        }
-                        myProgressBarjindu.Value = p;
-                        //toolStripStatusLabelbar.Text = p + "%";
-                        System.Threading.Thread.Sleep(XHTime);
-                        p = s + p;
-                    }
-                    else
-                    {
-                        if (p > 95 && p <= 100)
-                        {
-                            p = 100;
-                            if (DownLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (DownLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
-                                DownLoadFilePause = new ManualResetEvent(false);
-                                DownLoadFilePause.WaitOne();
-                            }
-                            myProgressBarjindu.Value = p;
-                            //toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                        }
-                        else
-                        {
-                            if (DownLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (DownLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
-                                DownLoadFilePause = new ManualResetEvent(false);
-                                DownLoadFilePause.WaitOne();
-                            }
-                            myProgressBarjindu.Value = p;
-                            //toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                            p = s + p;
-                        }
-                    }
-                }
-                if (check760d.Checked == true)
-                {
-                    Fpga760d();
-                    if (s == p)
-                    {
-                        if (DownLoadFile_Stop)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
-                            return;
-                        }
-                        if (DownLoadFile_On_Off)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
-                            DownLoadFilePause = new ManualResetEvent(false);
-                            DownLoadFilePause.WaitOne();
-                        }
-                        myProgressBarjindu.Value = p;
-                        //toolStripStatusLabelbar.Text = p + "%";
-                        System.Threading.Thread.Sleep(XHTime);
-                        p = s + p;
-                    }
-                    else
-                    {
-                        if (p > 95 && p <= 100)
-                        {
-                            p = 100;
-                            if (DownLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (DownLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
-                                DownLoadFilePause = new ManualResetEvent(false);
-                                DownLoadFilePause.WaitOne();
-                            }
-                            myProgressBarjindu.Value = p;
-                            //toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                        }
-                        else
-                        {
-                            if (DownLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (DownLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
-                                DownLoadFilePause = new ManualResetEvent(false);
-                                DownLoadFilePause.WaitOne();
-                            }
-                            myProgressBarjindu.Value = p;
-                            //toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                            p = s + p;
-                        }
-                    }
-                }
-                if (check760e.Checked == true)
-                {
-                    Fpga760e();
-                    if (s == p)
-                    {
-                        if (DownLoadFile_Stop)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
-                            return;
-                        }
-                        if (DownLoadFile_On_Off)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
-                            DownLoadFilePause = new ManualResetEvent(false);
-                            DownLoadFilePause.WaitOne();
-                        }
-                        myProgressBarjindu.Value = p;
-                        //toolStripStatusLabelbar.Text = p + "%";
-                        System.Threading.Thread.Sleep(XHTime);
-                        p = s + p;
-                    }
-                    else
-                    {
-                        if (p > 95 && p <= 100)
-                        {
-                            p = 100;
-                            if (DownLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (DownLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
-                                DownLoadFilePause = new ManualResetEvent(false);
-                                DownLoadFilePause.WaitOne();
-                            }
-                            myProgressBarjindu.Value = p;
-                            //toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                        }
-                        else
-                        {
-                            if (DownLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (DownLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
-                                DownLoadFilePause = new ManualResetEvent(false);
-                                DownLoadFilePause.WaitOne();
-                            }
-                            myProgressBarjindu.Value = p;
-                            //toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                            p = s + p;
-                        }
-                    }
-                }
-                if (check760f.Checked == true)
-                {
-                    Fpga760f();
-                    if (s == p)
-                    {
-                        if (DownLoadFile_Stop)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
-                            return;
-                        }
-                        if (DownLoadFile_On_Off)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
-                            DownLoadFilePause = new ManualResetEvent(false);
-                            DownLoadFilePause.WaitOne();
-                        }
-                        myProgressBarjindu.Value = p;
-                        //toolStripStatusLabelbar.Text = p + "%";
-                        System.Threading.Thread.Sleep(XHTime);
-                        p = s + p;
-                    }
-                    else
-                    {
-                        if (p > 95 && p <= 100)
-                        {
-                            p = 100;
-                            if (DownLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (DownLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
-                                DownLoadFilePause = new ManualResetEvent(false);
-                                DownLoadFilePause.WaitOne();
-                            }
-                            myProgressBarjindu.Value = p;
-                            //toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                        }
-                        else
-                        {
-                            if (DownLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (DownLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
-                                DownLoadFilePause = new ManualResetEvent(false);
-                                DownLoadFilePause.WaitOne();
-                            }
-                            myProgressBarjindu.Value = p;
-                            //toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                            p = s + p;
-                        }
-                    }
-                }
-                if (checksysfile.Checked == true)
-                {
-                    Sysfile();
-                    if (s == p)
-                    {
-                        if (DownLoadFile_Stop)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
-                            return;
-                        }
-                        if (DownLoadFile_On_Off)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
-                            DownLoadFilePause = new ManualResetEvent(false);
-                            DownLoadFilePause.WaitOne();
-                        }
-                        myProgressBarjindu.Value = p;
-                        //toolStripStatusLabelbar.Text = p + "%";
-                        System.Threading.Thread.Sleep(XHTime);
-                        p = s + p;
-                    }
-                    else
-                    {
-                        if (p > 95 && p <= 100)
-                        {
-                            p = 100;
-                            if (DownLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (DownLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
-                                DownLoadFilePause = new ManualResetEvent(false);
-                                DownLoadFilePause.WaitOne();
-                            }
-                            myProgressBarjindu.Value = p;
-                            //toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                        }
-                        else
-                        {
-                            if (DownLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (DownLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
-                                DownLoadFilePause = new ManualResetEvent(false);
-                                DownLoadFilePause.WaitOne();
-                            }
-                            myProgressBarjindu.Value = p;
-                            //toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                            p = s + p;
-                        }
-                    }
-                }
-                if (checkflash.Checked == true)
-                {
-                    DownloadFlash();
-                    if (s == p)
-                    {
-                        if (DownLoadFile_Stop)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
-                            return;
-                        }
-                        if (DownLoadFile_On_Off)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
-                            DownLoadFilePause = new ManualResetEvent(false);
-                            DownLoadFilePause.WaitOne();
-                        }
-                        myProgressBarjindu.Value = p;
-                        //toolStripStatusLabelbar.Text = p + "%";
-                        System.Threading.Thread.Sleep(XHTime);
-                        p = s + p;
-                    }
-                    else
-                    {
-                        if (p > 95 && p <= 100)
-                        {
-                            p = 100;
-                            if (DownLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (DownLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
-                                DownLoadFilePause = new ManualResetEvent(false);
-                                DownLoadFilePause.WaitOne();
-                            }
-                            myProgressBarjindu.Value = p;
-                            //toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                        }
-                        else
-                        {
-                            if (DownLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (DownLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
-                                DownLoadFilePause = new ManualResetEvent(false);
-                                DownLoadFilePause.WaitOne();
-                            }
-                            myProgressBarjindu.Value = p;
-                            //toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                            p = s + p;
-                        }
-                    }
-                }
-                if (checkyaffs.Checked == true)
-                {
-                    DownloadYaffs();
-                    if (s == p)
-                    {
-                        if (DownLoadFile_Stop)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
-                            return;
-                        }
-                        if (DownLoadFile_On_Off)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
-                            DownLoadFilePause = new ManualResetEvent(false);
-                            DownLoadFilePause.WaitOne();
-                        }
-                        myProgressBarjindu.Value = p;
-                        //toolStripStatusLabelbar.Text = p + "%";
-                        Thread.Sleep(XHTime);
-                        p = s + p;
-                    }
-                    else
-                    {
-                        if (p > 95 && p <= 100)
-                        {
-                            p = 100;
-                            if (DownLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (DownLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
-                                DownLoadFilePause = new ManualResetEvent(false);
-                                DownLoadFilePause.WaitOne();
-                            }
-                            myProgressBarjindu.Value = p;
-                            //toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                        }
-                        else
-                        {
-                            if (DownLoadFile_Stop)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已停止！\r\n");
-                                return;
-                            }
-                            if (DownLoadFile_On_Off)
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "暂停中！\r\n");
-                                DownLoadFilePause = new ManualResetEvent(false);
-                                DownLoadFilePause.WaitOne();
-                            }
-                            myProgressBarjindu.Value = p;
-                            //toolStripStatusLabelbar.Text = p + "%";
-                            System.Threading.Thread.Sleep(XHTime);
-                            p = s + p;
-                        }
-                    }
-                }
-                Thread.Sleep(XHTime);
-                string canyu = mysocket.ReceiveData(int.Parse(ts));
-                CheckFile();
-                Thread.Sleep(XHTime);
-                string canyu2 = mysocket.ReceiveData(int.Parse(ts));
-                toolStripStatusLabelzt.Text = "已完成";
-                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "下载结束" + "================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
-
-                DownLoadFile_Stop = true;
-                butupgrade.Text = "下载升级";
-                Mytimer.Change(Timeout.Infinite, 1000);
-                Reboot();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            //butsend.PerformClick();
-        }
-        #endregion
         #region 连接断开按钮
         /// <summary>
         /// 验证IP地址是否合法
@@ -2256,10 +1151,6 @@ namespace MyGpnSoftware
                 butpaigu.Enabled = false;
                 butsyslog.Enabled = false;
                 textguzhangmingling.Enabled = false;
-                butupgrade.Text = "下载升级";
-                butupgrade.Enabled = false;
-                butslectfile.Enabled = false;
-                butupload.Enabled = false;
                 butotnpaigu.Enabled = false;
                 toolStripStatusLabelnms.Text = "17:无";
                 toolStripStatusLabelnms18.Text = "18:无";
@@ -2343,9 +1234,6 @@ namespace MyGpnSoftware
                     butsyslog.Enabled = true;
                     butguzhangsend.Enabled = true;
                     textguzhangmingling.Enabled = true;
-                    butupgrade.Enabled = true;
-                    butslectfile.Enabled = true;
-                    butupload.Enabled = true;
                     butotnpaigu.Enabled = true;
                     // textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") +" "+mysocket.ReceiveData(int.Parse(ts)));
                     this.AcceptButton = butsend;
@@ -2533,10 +1421,8 @@ namespace MyGpnSoftware
                             toolStripStatusLabelver.Text = "APP:" + result.Pdu.VbList[4].Value.ToString();
                             toolStripStatusLabelfpgaver.Text = "FPGA:" + result.Pdu.VbList[5].Value.ToString();
                             devtype = result.Pdu.VbList[6].Value.ToString();
-                            string str = "(" + devtype + ")";
-                            FindDevType.finddevtype(str);
-
-                            toolStripStatusLabeldevtype.Text = FindDevType.type;
+                            string str = devtype;
+                            toolStripStatusLabeldevtype.Text = FindDevType.Finddevtype(str);
 
 
 
@@ -2760,10 +1646,8 @@ namespace MyGpnSoftware
                     textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "FTP服务器故障，请点击停止升级后，检查FTP服务器IP地址！");
                     toolStripStatusLabelzt.Text = "FTP的IP地址故障，请检查！";
                     UpLoadFile_Stop = true;
-                    butupload.Text = "上传备份";
-                    DownLoadFile_Stop = true;
                     backupfile = false;
-                    butupgrade.Text = "下载升级";
+
                     MessageBox.Show("请检查FTP服务IP地址后，再次尝试！");
                     return;
                 }
@@ -2784,10 +1668,7 @@ namespace MyGpnSoftware
                     textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "FTP服务器IP地址故障，请点击停止升级后，检查FTP服务器IP地址！" + "\r\n");
                     toolStripStatusLabelzt.Text = "FTP故障，请检查！";
                     UpLoadFile_Stop = true;
-                    butupload.Text = "上传备份";
-                    DownLoadFile_Stop = true;
                     backupfile = false;
-                    butupgrade.Text = "下载升级";
                     MessageBox.Show("请检查FTP服务IP地址后，再次尝试！");
                     return;
                 }
@@ -2796,10 +1677,7 @@ namespace MyGpnSoftware
                     textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "FTP服务器用户名密码错误，请检查！" + "\r\n");
                     toolStripStatusLabelzt.Text = "FTP故障，请检查！";
                     UpLoadFile_Stop = true;
-                    butupload.Text = "上传备份";
-                    DownLoadFile_Stop = true;
                     backupfile = false;
-                    butupgrade.Text = "下载升级";
                     MessageBox.Show("请检查FTP用户名和密码后，再次尝试！");
                     return;
                 }
@@ -4830,7 +3708,7 @@ namespace MyGpnSoftware
             Thread.Sleep(XHTime);
             string cccc = mysocket.ReceiveData(int.Parse(ts));
             toolStripStatusLabelzt.Text = "正在下载760F";
-            mysocket.SendData("download ftp fpga " + comftpip.Text + " " + textftpusr.Text + " " + textftppsd.Text + " " + com760f.Text + " otn");
+            mysocket.SendData("download ftp fpga " + comftpip.Text + " " + textftpusr.Text + " " + textftppsd.Text + " " + comuxc.Text + " otn");
             for (int i = 1; i <= XHCount; i++)
             {
                 string ok = "Write to flash...";
@@ -5278,25 +4156,43 @@ namespace MyGpnSoftware
             //file.Multiselect = true;
             //MessageBox.Show("CTRL+A全选中会自动填写");
             path.SelectedPath = @"C:\";
+
             comconfig.Items.Clear();
             comslotconfig.Items.Clear();
             comdb.Items.Clear();
             comapp.Items.Clear();
+            comapp2.Items.Clear();
             comnms.Items.Clear();
             comcode.Items.Clear();
+            comcode2.Items.Clear();
+            comcode3.Items.Clear();
+            comcode4.Items.Clear();
+            comsdn.Items.Clear();
             comsw.Items.Clear();
             com760s.Items.Clear();
             com760b.Items.Clear();
             com760c.Items.Clear();
             com760d.Items.Clear();
             com760e.Items.Clear();
-            com760f.Items.Clear();
+            comuxc.Items.Clear();
             comsysfile.Items.Clear();
             comflash.Items.Clear();
-            comyaffs.Items.Clear();//清除之前打开的历史  
-                                   //获取文件路径，不带文件名
-                                   // string filePath = file.FileName;
-                                   // string FilePath = Path.GetDirectoryName(filePath);
+            comyaffs.Items.Clear();
+            com7610.Items.Clear();
+            com7611.Items.Clear();
+            com7612.Items.Clear();
+            com7613.Items.Clear();
+            com7614.Items.Clear();
+            com7616.Items.Clear();
+            comvoss.Items.Clear();
+            comrebootos.Items.Clear();
+            comcpld.Items.Clear();
+
+
+            //清除之前打开的历史  
+            //获取文件路径，不带文件名
+            // string filePath = file.FileName;
+            // string FilePath = Path.GetDirectoryName(filePath);
             if (defaultfilePath != "")
             {
                 //设置此次默认目录为上一次选中目录  
@@ -5338,20 +4234,61 @@ namespace MyGpnSoftware
             }
             foreach (string s in fileNames)
             {
-                if (s.Contains(".bin") && !s.Contains("code") && !s.Contains("sysfile") && !s.Contains("db") && !s.Contains("slot") && !s.Contains("config") && !s.Contains(".fpga" )&& !s.Contains("Config") && !s.Contains("CONFIG") && !s.Contains("slotconfig") && !s.Contains("SlotConfig") && !s.Contains("SlotConfig") && !s.Contains("SLOTCONFIG") && !s.Contains("DB") && !s.Contains("Db"))
+                if (s.Contains(".bin") && !s.Contains("code") && !s.Contains("sysfile") && !s.Contains("db") && !s.Contains("slot") && !s.Contains("config") && !s.Contains(".fpga") && !s.Contains("Config") && !s.Contains("CONFIG") && !s.Contains("slotconfig") && !s.Contains("SlotConfig") && !s.Contains("SlotConfig") && !s.Contains("SLOTCONFIG") && !s.Contains("DB") && !s.Contains("Db"))
                 {
                     comapp.Items.Add(s);
-                    if (comapp.Items.Count > 0)
+                    if (comapp.Text !="")
                     {
+                        
                         comapp.SelectedIndex = comapp.Items.Count - 1;
                     }
                 }
-                if (s.Contains("code") || s.Contains("CODE"))
+                if (s.Contains(".bin") && !s.Contains("code") && !s.Contains("sysfile") && !s.Contains("db") && !s.Contains("slot") && !s.Contains("config") && !s.Contains(".fpga") && !s.Contains("Config") && !s.Contains("CONFIG") && !s.Contains("slotconfig") && !s.Contains("SlotConfig") && !s.Contains("SlotConfig") && !s.Contains("SLOTCONFIG") && !s.Contains("DB") && !s.Contains("Db"))
+                {
+                    comapp2.Items.Add(s);
+                    if (comapp2.Items.Count > 0)
+                    {
+                        comapp2.SelectedIndex = comapp2.Items.Count - 1;
+                    }
+                }
+                if (s.Contains("code") || s.Contains("CODE") || s.Contains("CPE"))
                 {
                     comcode.Items.Add(s);
                     if (comcode.Items.Count > 0)
                     {
                         comcode.SelectedIndex = comcode.Items.Count - 1;
+                    }
+                }
+                if (s.Contains("CPE"))
+                {
+                    comcode2.Items.Add(s);
+                    if (comcode2.Items.Count > 0)
+                    {
+                        comcode2.SelectedIndex = comcode2.Items.Count - 1;
+                    }
+                }
+                if (s.Contains("CPE"))
+                {
+                    comcode3.Items.Add(s);
+                    if (comcode3.Items.Count > 0)
+                    {
+                        comcode3.SelectedIndex = comcode3.Items.Count - 1;
+                    }
+                }
+                if ( s.Contains("CPE"))
+                {
+                    comcode4.Items.Add(s);
+                    if (comcode4.Items.Count > 0)
+                    {
+                        comcode4.SelectedIndex = comcode4.Items.Count - 1;
+                    }
+                }
+                if (s.Contains("cc") || s.Contains("CC"))
+                {
+                    comsdn.Items.Add(s);
+                    if (comsdn.Items.Count > 0)
+                    {
+                        comsdn.SelectedIndex = comsdn.Items.Count - 1;
                     }
                 }
                 if (s.Contains("NMS") || s.Contains("nms"))
@@ -5434,12 +4371,60 @@ namespace MyGpnSoftware
                         com760e.SelectedIndex = com760e.Items.Count - 1;
                     }
                 }
-                if (s.Contains("760f") || s.Contains("760F"))
+                if (s.Contains("uxc") || s.Contains("UXC"))
                 {
-                    com760f.Items.Add(s);
-                    if (com760f.Items.Count > 0)
+                    comuxc.Items.Add(s);
+                    if (comuxc.Items.Count > 0)
                     {
-                        com760f.SelectedIndex = com760f.Items.Count - 1;
+                        comuxc.SelectedIndex = comuxc.Items.Count - 1;
+                    }
+                }
+                if (s.Contains("7610"))
+                {
+                    com7610.Items.Add(s);
+                    if (com7610.Items.Count > 0)
+                    {
+                        com7610.SelectedIndex = com7610.Items.Count - 1;
+                    }
+                }
+                if (s.Contains("7611"))
+                {
+                    com7611.Items.Add(s);
+                    if (com7611.Items.Count > 0)
+                    {
+                        com7611.SelectedIndex = com7611.Items.Count - 1;
+                    }
+                }
+                if (s.Contains("7612"))
+                {
+                    com7612.Items.Add(s);
+                    if (com7612.Items.Count > 0)
+                    {
+                        com7612.SelectedIndex = com7612.Items.Count - 1;
+                    }
+                }
+                if (s.Contains("7613"))
+                {
+                    com7613.Items.Add(s);
+                    if (com7613.Items.Count > 0)
+                    {
+                        com7613.SelectedIndex = com7613.Items.Count - 1;
+                    }
+                }
+                if (s.Contains("7614"))
+                {
+                    com7614.Items.Add(s);
+                    if (com7614.Items.Count > 0)
+                    {
+                        com7614.SelectedIndex = com7614.Items.Count - 1;
+                    }
+                }
+                if (s.Contains("7616"))
+                {
+                    com7616.Items.Add(s);
+                    if (com7616.Items.Count > 0)
+                    {
+                        com7616.SelectedIndex = com7616.Items.Count - 1;
                     }
                 }
                 if (s.Contains("sysfile") || s.Contains("Sysfile") || s.Contains("SYSFILE") || s.Contains("SysFile"))
@@ -5448,6 +4433,30 @@ namespace MyGpnSoftware
                     if (comsysfile.Items.Count > 0)
                     {
                         comsysfile.SelectedIndex = comsysfile.Items.Count - 1;
+                    }
+                }
+                if (s.Contains("voss") || s.Contains("VOSS") || s.Contains("Voss"))
+                {
+                    comvoss.Items.Add(s);
+                    if (comvoss.Items.Count > 0)
+                    {
+                        comvoss.SelectedIndex = comvoss.Items.Count - 1;
+                    }
+                }
+                if (s.Contains("rebootos") || s.Contains("Rebootos.sh") || s.Contains("REBOOTOS.SH") )
+                {
+                    comrebootos.Items.Add(s);
+                    if (comrebootos.Items.Count > 0)
+                    {
+                        comrebootos.SelectedIndex = comrebootos.Items.Count - 1;
+                    }
+                }
+                if (s.Contains("cpld") || s.Contains("Cpld") || s.Contains("CPLD") )
+                {
+                    comcpld.Items.Add(s);
+                    if (comcpld.Items.Count > 0)
+                    {
+                        comcpld.SelectedIndex = comcpld.Items.Count - 1;
                     }
                 }
                 if (s.Contains("flash") || s.Contains("Flash") || s.Contains("FLASH"))
@@ -5472,7 +4481,7 @@ namespace MyGpnSoftware
         #region 保存记录内容
         private void Savecom()
         {
-            SaveFileDialog sfd = new SaveFileDialog();
+            System.Windows.Forms.SaveFileDialog sfd = new System.Windows.Forms.SaveFileDialog();
             sfd.Title = "保存打印记录";
             //sfd.InitialDirectory = @"C:\";
             sfd.Filter = "文本文件| *.txt";
@@ -5503,7 +4512,7 @@ namespace MyGpnSoftware
                     + "\r\n" + com760c.Text + ":  " + check760c.Checked
                     + "\r\n" + com760d.Text + ":  " + check760d.Checked
                     + "\r\n" + com760e.Text + ":  " + check760e.Checked
-                    + "\r\n" + com760f.Text + ":  " + check760f.Checked
+                    + "\r\n" + comuxc.Text + ":  " + checkuxc.Checked
                     + "\r\n" + comsysfile.Text + ":  " + checksysfile.Checked
                     + "\r\n" + comflash.Text + ":  " + checkflash.Checked
                     + "\r\n" + comyaffs.Text + ":  " + checkyaffs.Checked
@@ -5630,11 +4639,12 @@ namespace MyGpnSoftware
         //开始计时  
         private void GPN_Load(object sender, EventArgs e)
         {
+
             Mytimer = new System.Threading.Timer(new TimerCallback(TimerUp), null, Timeout.Infinite, 1000);
             btnFtpServerStartStop.PerformClick();
             metroComreadoid.Text = "WALK";
             tbxFtpServerPort.Text = "21";
-            
+
             //checkpssd.CheckedChanged = true;
             labelboard.Visible = false;
             labelslot.Visible = false;
@@ -5674,11 +4684,13 @@ namespace MyGpnSoftware
                 }
 
             }
-            if (count == 3)
+            if (count >= 3)
             {
                 tabPageRemote.Text = "远程桌面共享：已启动";
                 metroButStartVnc.Text = "停止桌面共享";
+                Textsharp.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "VNC登录密码是：http://hunan128.com:88/otrs/customer.pl?Action=CustomerFAQZoom;ItemID=31" + " 谷歌浏览器登录获取" + "\r\n");
                 Textsharp.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "远程共享模块已经启动============================================OK" + "\r\n");
+
                 Textsharp.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "请打开（Windows/Mac/iPhone/iPad/Android） VNC Viewer  远程桌面软件输入：" + TextServerAddr.Text + ":" + TextVNCRemotePort.Text + " 进行VNC连接" + "\r\n");
                 Textsharp.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "请打开（windows/Mac/iPad/iPhone/Android）     RD Client   远程桌面软件输入：" + TextServerAddr.Text + ":" + TextRDPRemotePort.Text + " 进行RDP连接" + "\r\n");
                 //   Textsharp.AppendText("\r\n桌面共享已开启，无需重启启动！");
@@ -5686,6 +4698,8 @@ namespace MyGpnSoftware
             else
             {
                 tabPageRemote.Text = "远程桌面共享：未启动";
+                Textsharp.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "VNC登录密码是：http://hunan128.com:88/otrs/customer.pl?Action=CustomerFAQZoom;ItemID=31" + " 谷歌浏览器登录获取" + "\r\n");
+
 
             }
         }
@@ -5740,7 +4754,12 @@ namespace MyGpnSoftware
                 WritePrivateProfileString(strSec, "WriteCommunity", textWriteCommunity.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "GPNpsden", textpsden.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "APP", comapp.Text.Trim(), strFilePath);
+                WritePrivateProfileString(strSec, "APP2", comapp2.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "FPFA_CODE", comcode.Text.Trim(), strFilePath);
+                WritePrivateProfileString(strSec, "FPFA_CODE2", comcode2.Text.Trim(), strFilePath);
+                WritePrivateProfileString(strSec, "FPFA_CODE3", comcode3.Text.Trim(), strFilePath);
+                WritePrivateProfileString(strSec, "FPFA_CODE4", comcode4.Text.Trim(), strFilePath);
+                WritePrivateProfileString(strSec, "SDN", comsdn.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "NMS", comnms.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "SW", comsw.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "760S", com760s.Text.Trim(), strFilePath);
@@ -5748,8 +4767,17 @@ namespace MyGpnSoftware
                 WritePrivateProfileString(strSec, "760C", com760c.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "760D", com760d.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "760E", com760e.Text.Trim(), strFilePath);
-                WritePrivateProfileString(strSec, "760F", com760f.Text.Trim(), strFilePath);
+                WritePrivateProfileString(strSec, "UXC", comuxc.Text.Trim(), strFilePath);
+                WritePrivateProfileString(strSec, "7610", com7610.Text.Trim(), strFilePath);
+                WritePrivateProfileString(strSec, "7611", com7611.Text.Trim(), strFilePath);
+                WritePrivateProfileString(strSec, "7612", com7612.Text.Trim(), strFilePath);
+                WritePrivateProfileString(strSec, "7613", com7613.Text.Trim(), strFilePath);
+                WritePrivateProfileString(strSec, "7614", com7614.Text.Trim(), strFilePath);
+                WritePrivateProfileString(strSec, "7616", com7616.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "sysfile", comsysfile.Text.Trim(), strFilePath);
+                WritePrivateProfileString(strSec, "voss", comvoss.Text.Trim(), strFilePath);
+                WritePrivateProfileString(strSec, "rebootos", comrebootos.Text.Trim(), strFilePath);
+                WritePrivateProfileString(strSec, "cpld", comcpld.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "Flash", comflash.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "Yaffs", comyaffs.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "GPN7600EMS", comgpn76list.Text.Trim(), strFilePath);
@@ -5906,7 +4934,7 @@ namespace MyGpnSoftware
                 yanshi = ts,
                 app = comapp.Text
             };//实例化窗体
-            batchfrm.ShowDialog();// 将窗体显示出来
+            batchfrm.Show();// 将窗体显示出来
             //this.Hide();//当前窗体隐藏
         }
         private void GPN_Paint(object sender, PaintEventArgs e)
@@ -5924,201 +4952,9 @@ namespace MyGpnSoftware
         {
             this.Invalidate();//重绘窗体
         }
-        private void 关于ToolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-
-        }
         private void 帮助ToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
-        }
-        private void Butgpnall_Click(object sender, EventArgs e)
-        {
-            if (butgpnall.Text == "全部勾选")
-            {
-                checkapp.Checked = false;
-                checkcode.Checked = false;
-                checknms.Checked = false;
-                checksw.Checked = false;
-                check760s.Checked = false;
-                check760b.Checked = false;
-                check760c.Checked = false;
-                check760d.Checked = false;
-                check760e.Checked = false;
-                check760f.Checked = false;
-                checksysfile.Checked = false;
-                checkapp.Checked = true;
-                checkcode.Checked = true;
-                checknms.Checked = true;
-                checksw.Checked = true;
-                check760s.Checked = true;
-                check760b.Checked = true;
-                check760c.Checked = true;
-                check760d.Checked = true;
-                check760e.Checked = true;
-                //    check760f.Checked = true;
-                checksysfile.Checked = true;
-                checkconfig.Checked = true;
-                checkslotconfig.Checked = true;
-                checkdb.Checked = true;
-                butgpnall.Text = "取消勾选";
-                butgpn7600.Text = "GPN76-OTN勾选";
-                butgpn800.Text = "GPN800勾选";
-                butgpn7600old.Text = "GPN76-PTN勾选";
-            }
-            else
-            {
-                checkapp.Checked = false;
-                checkcode.Checked = false;
-                checknms.Checked = false;
-                checksw.Checked = false;
-                check760s.Checked = false;
-                check760b.Checked = false;
-                check760c.Checked = false;
-                check760d.Checked = false;
-                check760e.Checked = false;
-                check760f.Checked = false;
-                checksysfile.Checked = false;
-                checkconfig.Checked = false;
-                checkslotconfig.Checked = false;
-                checkdb.Checked = false;
-                butgpnall.Text = "全部勾选";
-            }
-        }
-        private void Butgpn7600_Click(object sender, EventArgs e)
-        {
-            if (butgpn7600.Text == "GPN76-OTN勾选")
-            {
-                checkconfig.Checked = false;
-                checkslotconfig.Checked = false;
-                checkdb.Checked = false;
-                checkapp.Checked = false;
-                checkcode.Checked = false;
-                checknms.Checked = false;
-                checksw.Checked = false;
-                check760s.Checked = false;
-                check760b.Checked = false;
-                check760c.Checked = false;
-                check760d.Checked = false;
-                check760e.Checked = false;
-                check760f.Checked = false;
-                checksysfile.Checked = false;
-                checkapp.Checked = true;
-                checkcode.Checked = true;
-                checknms.Checked = true;
-                checksw.Checked = true;
-                check760s.Checked = true;
-                check760b.Checked = true;
-                check760c.Checked = true;
-                check760d.Checked = true;
-                check760e.Checked = true;
-                // check760f.Checked = true;
-                checksysfile.Checked = true;
-                butgpn7600.Text = "取消勾选";
-                butgpnall.Text = "全部勾选";
-                butgpn800.Text = "GPN800勾选";
-                butgpn7600old.Text = "GPN76-PTN勾选";
-            }
-            else
-            {
-                checkapp.Checked = false;
-                checkcode.Checked = false;
-                checknms.Checked = false;
-                checksw.Checked = false;
-                check760s.Checked = false;
-                check760b.Checked = false;
-                check760c.Checked = false;
-                check760d.Checked = false;
-                check760e.Checked = false;
-                check760f.Checked = false;
-                checksysfile.Checked = false;
-                butgpn7600.Text = "GPN76-OTN勾选";
-            }
-        }
-        private void Butgpn800_Click(object sender, EventArgs e)
-        {
-            if (butgpn800.Text == "GPN800勾选")
-            {
-                checkconfig.Checked = false;
-                checkslotconfig.Checked = false;
-                checkdb.Checked = false;
-                checkapp.Checked = false;
-                checkcode.Checked = false;
-                checknms.Checked = false;
-                checksw.Checked = false;
-                check760s.Checked = false;
-                check760b.Checked = false;
-                check760c.Checked = false;
-                check760d.Checked = false;
-                check760e.Checked = false;
-                check760f.Checked = false;
-                checksysfile.Checked = false;
-                checkapp.Checked = true;
-                checknms.Checked = true;
-                check760c.Checked = true;
-                check760d.Checked = true;
-                //   check760f.Checked = true;
-                butgpn800.Text = "取消勾选";
-                butgpn7600.Text = "GPN76-OTN勾选";
-                butgpnall.Text = "全部勾选";
-                butgpn7600old.Text = "GPN76-PTN勾选";
-            }
-            else
-            {
-                checkapp.Checked = false;
-                checkcode.Checked = false;
-                checknms.Checked = false;
-                checksw.Checked = false;
-                check760s.Checked = false;
-                check760b.Checked = false;
-                check760c.Checked = false;
-                check760d.Checked = false;
-                check760e.Checked = false;
-                check760f.Checked = false;
-                checksysfile.Checked = false;
-                butgpn800.Text = "GPN800勾选";
-            }
-        }
-        private void Butgpn7600old_Click(object sender, EventArgs e)
-        {
-            if (butgpn7600old.Text == "GPN76-PTN勾选")
-            {
-                checkconfig.Checked = false;
-                checkslotconfig.Checked = false;
-                checkdb.Checked = false;
-                checkapp.Checked = false;
-                checkcode.Checked = false;
-                checknms.Checked = false;
-                checksw.Checked = false;
-                check760s.Checked = false;
-                check760b.Checked = false;
-                check760c.Checked = false;
-                check760d.Checked = false;
-                check760e.Checked = false;
-                checksysfile.Checked = false;
-                checkapp.Checked = true;
-                checkcode.Checked = true;
-                checknms.Checked = true;
-                checksw.Checked = true;
-                butgpn7600old.Text = "取消勾选";
-                butgpn7600.Text = "GPN76-OTN勾选";
-                butgpnall.Text = "全部勾选";
-                butgpn800.Text = "GPN800勾选";
-            }
-            else
-            {
-                checkapp.Checked = false;
-                checkcode.Checked = false;
-                checknms.Checked = false;
-                checksw.Checked = false;
-                check760s.Checked = false;
-                check760b.Checked = false;
-                check760c.Checked = false;
-                check760d.Checked = false;
-                check760e.Checked = false;
-                checksysfile.Checked = false;
-                butgpn7600old.Text = "GPN76-PTN勾选";
-            }
         }
 
         /// <summary>
@@ -7793,7 +6629,7 @@ namespace MyGpnSoftware
             {
                 if (textguzhangmingling.Text == "")
                 {
-                    Thread.Sleep(XHTime / 5);
+                    Thread.Sleep(int.Parse(comguzhangjiange.Text));
                     string ctrlc = "Press any key to continue Ctrl+c to stop";
                     string DOS = textcurrent.Text;
                     if (DOS.Contains(ctrlc))
@@ -7807,7 +6643,7 @@ namespace MyGpnSoftware
                 else
                 {
                     com = textguzhangmingling.Text;
-                    Thread.Sleep(XHTime / 5);
+                    Thread.Sleep(int.Parse(comguzhangjiange.Text));
                     string ss = mysocket.ReceiveData(int.Parse(ts));
                     textcurrent.AppendText(ss);
                 }
@@ -7843,7 +6679,6 @@ namespace MyGpnSoftware
                 butpaigu.Visible = false;
                 butsyslog.Visible = false;
                 butbatch.Visible = true;
-                butupgrade.Visible = true;
                 textcyclemingling.Visible = false;
                 labcishu.Visible = false;
                 comcishu.Visible = false;
@@ -7867,7 +6702,6 @@ namespace MyGpnSoftware
                 butpaigu.Visible = true;
                 butsyslog.Visible = true;
                 butbatch.Visible = false;
-                butupgrade.Visible = false;
                 textcyclemingling.Visible = true;
                 labcishu.Visible = true;
                 comcishu.Visible = true;
@@ -7876,17 +6710,21 @@ namespace MyGpnSoftware
             }
             if (tabControlDOS.SelectedTab == tabPageRemote)
             {
+                timerYanshi.Interval = int.Parse(comjiangeshijian.Text);
                 timerYanshi.Start();
                 metroButYanshi.Text = "停止延时测试";
                 Random rand = new Random();
                 string vncuser = System.Environment.UserName;
-                if (TextVNCUser.Text == "") {
+                if (TextVNCUser.Text == "")
+                {
                     TextVNCUser.Text = vncuser;
                 }
-                if (TextRDPRemotePort.Text == "") {
+                if (TextRDPRemotePort.Text == "")
+                {
                     TextRDPRemotePort.Text = rand.Next(40000, 50000).ToString();
                 }
-                if (TextVNCRemotePort.Text == "") {
+                if (TextVNCRemotePort.Text == "")
+                {
                     TextVNCRemotePort.Text = rand.Next(50001, 60000).ToString();
                 }
 
@@ -7906,16 +6744,17 @@ namespace MyGpnSoftware
                     }
 
                 }
-                if (count == 3)
+                if (count >= 3)
                 {
                     tabPageRemote.Text = "远程桌面共享：已启动";
-                 //   Textsharp.AppendText("\r\n桌面共享已开启，无需重启启动！");
+                    //   Textsharp.AppendText("\r\n桌面共享已开启，无需重启启动！");
                 }
-                else {
+                else
+                {
                     tabPageRemote.Text = "远程桌面共享：未启动";
 
                 }
-                
+
 
             }
         }
@@ -7977,706 +6816,6 @@ namespace MyGpnSoftware
                     ma = new ManualResetEvent(false);
                     ma.WaitOne();
                 }
-
-                //LinkGpn();
-                //textcurrent.AppendText("//////////////////复位5槽位后检查oduk");
-                //textguzhangmingling.Text = "config otn";
-                //butguzhangsend.PerformClick();
-                //Thread.Sleep(300);
-                //textguzhangmingling.Text = "show oduk";
-                //butguzhangsend.PerformClick();
-                //Thread.Sleep(300);
-                //butguzhangsend.PerformClick();
-                //Thread.Sleep(300);
-                //textguzhangmingling.Text = "exit";
-                //butguzhangsend.PerformClick();
-                //Thread.Sleep(300);
-                //textguzhangmingling.Text = "reboot 5";
-                //butguzhangsend.PerformClick();
-                //Thread.Sleep(300);
-                //textguzhangmingling.Text = "y";
-                //butguzhangsend.PerformClick();
-                //textlog.AppendText(textcurrent.Text);
-                //textcurrent.Text = "";
-                //Thread.Sleep(120000);
-                //textcurrent.AppendText("//////////////////复位6槽位后检查oduk");
-                //textguzhangmingling.Text = "config otn";
-                //butguzhangsend.PerformClick();
-                //Thread.Sleep(300);
-                //textguzhangmingling.Text = "show oduk";
-                //butguzhangsend.PerformClick();
-                //Thread.Sleep(300);
-                //butguzhangsend.PerformClick();
-                //Thread.Sleep(300);
-                //textguzhangmingling.Text = "exit";
-                //butguzhangsend.PerformClick();
-                //Thread.Sleep(300);
-                //textguzhangmingling.Text = "reboot 6";
-                //butguzhangsend.PerformClick();
-                //Thread.Sleep(300);
-                //textguzhangmingling.Text = "y";
-                //butguzhangsend.PerformClick();
-                //textlog.AppendText(textcurrent.Text);
-                //textcurrent.Text = "";
-                //Thread.Sleep(120000);
-                //textcurrent.AppendText("//////////////////复位11槽位后检查oduk");
-                //textguzhangmingling.Text = "config otn";
-                //butguzhangsend.PerformClick();
-                //Thread.Sleep(300);
-                //textguzhangmingling.Text = "show oduk";
-                //butguzhangsend.PerformClick();
-                //Thread.Sleep(300);
-                //butguzhangsend.PerformClick();
-                //Thread.Sleep(300);
-                //textguzhangmingling.Text = "exit";
-                //butguzhangsend.PerformClick();
-                //Thread.Sleep(300);
-                //textguzhangmingling.Text = "reboot 11";
-                //butguzhangsend.PerformClick();
-                //Thread.Sleep(300);
-                //textguzhangmingling.Text = "y";
-                //butguzhangsend.PerformClick();
-                //textlog.AppendText(textcurrent.Text);
-                //textcurrent.Text = "";
-                //Thread.Sleep(500000);
-                //textcurrent.AppendText("//////////////////复位12槽位后检查oduk");
-                //textguzhangmingling.Text = "config otn";
-                //butguzhangsend.PerformClick();
-                //Thread.Sleep(300);
-                //textguzhangmingling.Text = "show oduk";
-                //butguzhangsend.PerformClick();
-                //Thread.Sleep(300);
-                //butguzhangsend.PerformClick();
-                //Thread.Sleep(300);
-                //textguzhangmingling.Text = "exit";
-                //butguzhangsend.PerformClick();
-                //Thread.Sleep(300);
-                //textguzhangmingling.Text = "reboot 12";
-                //butguzhangsend.PerformClick();
-                //Thread.Sleep(300);
-                //textguzhangmingling.Text = "y";
-                //butguzhangsend.PerformClick();
-                //textlog.AppendText(textcurrent.Text);
-                //textcurrent.Text = "";
-                //Thread.Sleep(500000);
-                //textcurrent.AppendText("//////////////////复位17槽位后检查oduk");
-                //textguzhangmingling.Text = "config otn";
-                //butguzhangsend.PerformClick();
-                //Thread.Sleep(300);
-                //textguzhangmingling.Text = "show oduk";
-                //butguzhangsend.PerformClick();
-                //Thread.Sleep(300);
-                //butguzhangsend.PerformClick();
-                //Thread.Sleep(300);
-                //textguzhangmingling.Text = "exit";
-                //butguzhangsend.PerformClick();
-                //Thread.Sleep(300);
-                //textguzhangmingling.Text = "reboot 17";
-                //butguzhangsend.PerformClick();
-                //Thread.Sleep(300);
-                //textguzhangmingling.Text = "y";
-                //butguzhangsend.PerformClick();
-                //textlog.AppendText(textcurrent.Text);
-                //textcurrent.Text = "";
-                //mysocket.Close();
-                //Thread.Sleep(1200000);
-
-                //LinkGpn();
-                //textcurrent.AppendText("//////////////////复位18槽位后检查oduk");
-                //textguzhangmingling.Text = "config otn";
-                //butguzhangsend.PerformClick();
-                //Thread.Sleep(300);
-                //textguzhangmingling.Text = "show oduk";
-                //butguzhangsend.PerformClick();
-                //Thread.Sleep(300);
-                //butguzhangsend.PerformClick();
-                //Thread.Sleep(300);
-                //textguzhangmingling.Text = "exit";
-                //butguzhangsend.PerformClick();
-                //Thread.Sleep(300);
-                //textguzhangmingling.Text = "reboot 18";
-                //butguzhangsend.PerformClick();
-                //Thread.Sleep(300);
-                //textguzhangmingling.Text = "y";
-                //butguzhangsend.PerformClick();
-                //textlog.AppendText(textcurrent.Text);
-                //textcurrent.Text = "";
-                //mysocket.Close();
-                //Thread.Sleep(1200000);
-
-
-
-
-
-
-
-                //LinkGpn();
-                //textcurrent.AppendText("//////////////////Telnet登录后开始检查NEID变化");
-                //textguzhangmingling.Text = textcyclemingling.Text;
-                //butguzhangsend.PerformClick();
-                //Thread.Sleep(500);
-                //for (int v = 1; v < 10; v++)
-                //{
-                //    if (textcurrent.Text.Contains("Current"))
-                //    {
-                //        if (!textcurrent.Text.Contains("Current Netid: " + netid))
-                //        {
-                //            textcurrent.AppendText("NEID与检查不一致，已停止");
-                //            on_off = true;
-                //            butCycleSuspend.Text = "继续";
-                //            return;
-                //        }
-                //        if (!textcurrent.Text.Contains("Local   Netid: " + netid))
-                //        {
-                //            textcurrent.AppendText("NEID与检查不一致，已停止");
-                //            on_off = true;
-                //            butCycleSuspend.Text = "继续";
-                //            return;
-                //        }
-                //        break;
-                //    }
-                //    butguzhangsend.PerformClick();
-                //    Thread.Sleep(XHTime);
-                //}
-                //textlog.AppendText(textcurrent.Text);
-                //textcurrent.Text = "";
-                //App();
-                //textcurrent.AppendText("//////////////////APP下载写入陈工后开始检查NEID变化");
-                //textguzhangmingling.Text = textcyclemingling.Text;
-                //butguzhangsend.PerformClick();
-                //Thread.Sleep(500);
-                //for (int v = 1; v < 10; v++)
-                //{
-                //    if (textcurrent.Text.Contains("Current"))
-                //    {
-                //        if (!textcurrent.Text.Contains("Current Netid: " + netid))
-                //        {
-                //            textcurrent.AppendText("NEID与检查不一致，已停止");
-                //            on_off = true;
-                //            butCycleSuspend.Text = "继续";
-                //            return;
-                //        }
-                //        if (!textcurrent.Text.Contains("Local   Netid: " + netid))
-                //        {
-                //            textcurrent.AppendText("NEID与检查不一致，已停止");
-                //            on_off = true;
-                //            butCycleSuspend.Text = "继续";
-                //            return;
-                //        }
-                //        break;
-                //    }
-                //    butguzhangsend.PerformClick();
-                //    Thread.Sleep(XHTime);
-                //}
-                //textlog.AppendText(textcurrent.Text);
-                //textcurrent.Text = "";
-                //UploadNetid();
-                //textcurrent.AppendText("//////////////////上传NEID文件后开始检查NEID变化");
-                ////UploadConfig();
-                //textguzhangmingling.Text = textcyclemingling.Text;
-                //butguzhangsend.PerformClick();
-                //Thread.Sleep(500);
-                //for (int v = 1; v < 10; v++)
-                //{
-                //    if (textcurrent.Text.Contains("Current"))
-                //    {
-                //        if (!textcurrent.Text.Contains("Current Netid: " + netid))
-                //        {
-                //            textcurrent.AppendText("NEID与检查不一致，已停止");
-                //            on_off = true;
-                //            butCycleSuspend.Text = "继续";
-                //            return;
-                //        }
-                //        if (!textcurrent.Text.Contains("Local   Netid: " + netid))
-                //        {
-                //            textcurrent.AppendText("NEID与检查不一致，已停止");
-                //            on_off = true;
-                //            butCycleSuspend.Text = "继续";
-                //            return;
-                //        }
-                //        break;
-                //    }
-                //    butguzhangsend.PerformClick();
-                //    Thread.Sleep(XHTime);
-                //}
-                ////mysocket.SendData("reboot");
-                ////Thread.Sleep(300);
-                ////mysocket.SendData("Y");
-                //butlogin.Text = "①连接设备";
-                //mysocket.Close();
-
-                //for (int g = 0; g <= 100; g++)
-                //{
-                //    if (textcurrent.Text.Contains("Ctrl+c"))
-                //    {
-                //        butguzhangsend.PerformClick();
-                //    }
-                //    else
-                //    {
-                //        break;
-                //    }
-                //    //Thread.Sleep(XHTime/10);
-                //}
-
-                //textguzhangmingling.Text = "mpls static vpls domain portvlan 1 etree flood false false false true 32000 tagged";
-                //butguzhangsend.PerformClick();
-                //textguzhangmingling.Text = "int ac acroot1 1";
-                //butguzhangsend.PerformClick();
-                //textguzhangmingling.Text = "mpls vpls portvlan ethernet 10/1 0 0 root delete 1 0 0 0x8100 0x8100";
-                //butguzhangsend.PerformClick();
-                //textguzhangmingling.Text = "exit";
-                //butguzhangsend.PerformClick();
-                //string vplsname = "portvlan";
-                //int vlan0 = 2;
-                //string vethslot = "13";
-                //string vethport1 = "9";
-                //string vethport2 = "10";
-                //string vethport3 = "11";
-                //string vethport4 = "12";
-                //string vethport5 = "13";
-                //string vethport6 = "14";
-                //string vethport7 = "15";
-                //string vethport8 = "16";
-
-                //string veth0 = vethslot + "/" + vethport1;
-                //textguzhangmingling.Text = "int veth " + veth0;
-                //butguzhangsend.PerformClick();
-                //textguzhangmingling.Text = "exit";
-                //butguzhangsend.PerformClick();
-                //for (int g = 0; g < 128; g++)
-                //{
-                //    textguzhangmingling.Text = "interface ac ac" + vlan0 + " " + vlan0;
-                //    butguzhangsend.PerformClick();
-                //    textguzhangmingling.Text = "mpls vpls " + vplsname + " veth " + veth0 + " " + vlan0 + " 0 leaf modify " + vlan0 + " 0 0 0x8100 0x8100";
-                //    butguzhangsend.PerformClick();
-                //    textguzhangmingling.Text = "exit";
-                //    butguzhangsend.PerformClick();
-                //    vlan0++;
-
-                //}
-                //int vlan1 = 130;
-                //string veth1 = vethslot + "/" + vethport2; ;
-                //textguzhangmingling.Text = "int veth " + veth1;
-                //butguzhangsend.PerformClick();
-                //textguzhangmingling.Text = "exit";
-                //butguzhangsend.PerformClick();
-                //for (int g = 0; g < 128; g++)
-                //{
-                //    textguzhangmingling.Text = "interface ac ac" + vlan1 + " " + vlan1;
-                //    butguzhangsend.PerformClick();
-                //    textguzhangmingling.Text = "mpls vpls " + vplsname + " veth " + veth1 + " " + vlan1 + " 0 leaf modify " + vlan1 + " 0 0 0x8100 0x8100";
-                //    butguzhangsend.PerformClick();
-                //    textguzhangmingling.Text = "exit";
-                //    butguzhangsend.PerformClick();
-                //    vlan1++;
-
-                //}
-
-                //int vlan2 = 258;
-                //string veth2 = vethslot + "/" + vethport3; 
-                //textguzhangmingling.Text = "int veth " + veth2;
-                //butguzhangsend.PerformClick();
-                //textguzhangmingling.Text = "exit";
-                //butguzhangsend.PerformClick();
-                //for (int g = 0; g < 128; g++)
-                //{
-                //    textguzhangmingling.Text = "interface ac ac" + vlan2 + " " + vlan2;
-                //    butguzhangsend.PerformClick();
-                //    textguzhangmingling.Text = "mpls vpls " + vplsname + " veth " + veth2 + " " + vlan2 + " 0 leaf modify " + vlan2 + " 0 0 0x8100 0x8100";
-                //    butguzhangsend.PerformClick();
-                //    textguzhangmingling.Text = "exit";
-                //    butguzhangsend.PerformClick();
-                //    vlan2++;
-
-                //}
-                //int vlan3 = 386;
-                //string veth3 = vethslot + "/" + vethport4;
-                //textguzhangmingling.Text = "int veth " + veth3;
-                //butguzhangsend.PerformClick();
-                //textguzhangmingling.Text = "exit";
-                //butguzhangsend.PerformClick();
-                //for (int g = 0; g < 128; g++)
-                //{
-                //    textguzhangmingling.Text = "interface ac ac" + vlan3 + " " + vlan3;
-                //    butguzhangsend.PerformClick();
-                //    textguzhangmingling.Text = "mpls vpls " + vplsname + " veth " + veth3 + " " + vlan3 + " 0 leaf modify " + vlan3 + " 0 0 0x8100 0x8100";
-                //    butguzhangsend.PerformClick();
-                //    textguzhangmingling.Text = "exit";
-                //    butguzhangsend.PerformClick();
-                //    vlan3++;
-
-                //}
-                //int vlan4 = 514;
-                //string veth4 = vethslot + "/" + vethport5;
-                //textguzhangmingling.Text = "int veth " + veth4;
-                //butguzhangsend.PerformClick();
-                //textguzhangmingling.Text = "exit";
-                //butguzhangsend.PerformClick();
-                //for (int g = 0; g < 32; g++)
-                //{
-                //    textguzhangmingling.Text = "interface ac ac" + vlan4 + " " + vlan4;
-                //    butguzhangsend.PerformClick();
-                //    textguzhangmingling.Text = "mpls vpls " + vplsname + " veth " + veth4 + " " + vlan4 + " 0 leaf modify " + vlan4 + " 0 0 0x8100 0x8100";
-                //    butguzhangsend.PerformClick();
-                //    textguzhangmingling.Text = "exit";
-                //    butguzhangsend.PerformClick();
-                //    vlan4++;
-
-                //}
-                //int vlan5 = 546;
-                //string veth5 = vethslot + "/" + vethport6;
-                //textguzhangmingling.Text = "int veth " + veth5;
-                //butguzhangsend.PerformClick();
-                //textguzhangmingling.Text = "exit";
-                //butguzhangsend.PerformClick();
-                //for (int g = 0; g < 32; g++)
-                //{
-                //    textguzhangmingling.Text = "interface ac ac" + vlan5 + " " + vlan5;
-                //    butguzhangsend.PerformClick();
-                //    textguzhangmingling.Text = "mpls vpls " + vplsname + " veth " + veth5 + " " + vlan5 + " 0 leaf modify " + vlan5 + " 0 0 0x8100 0x8100";
-                //    butguzhangsend.PerformClick();
-                //    textguzhangmingling.Text = "exit";
-                //    butguzhangsend.PerformClick();
-                //    vlan5++;
-
-                //}
-                //int vlan6 = 578;
-                //string veth6 = vethslot + "/" + vethport7 ;
-                //textguzhangmingling.Text = "int veth " + veth6;
-                //butguzhangsend.PerformClick();
-                //textguzhangmingling.Text = "exit";
-                //butguzhangsend.PerformClick();
-                //for (int g = 0; g < 32; g++)
-                //{
-                //    textguzhangmingling.Text = "interface ac ac" + vlan6 + " " + vlan6;
-                //    butguzhangsend.PerformClick();
-                //    textguzhangmingling.Text = "mpls vpls " + vplsname + " veth " + veth6 + " " + vlan6 + " 0 leaf modify " + vlan6 + " 0 0 0x8100 0x8100";
-                //    butguzhangsend.PerformClick();
-                //    textguzhangmingling.Text = "exit";
-                //    butguzhangsend.PerformClick();
-                //    vlan6++;
-
-                //}
-                //int vlan7 = 610;
-                //string veth7 = vethslot + "/" + vethport8;
-                //textguzhangmingling.Text = "int veth " + veth7;
-                //butguzhangsend.PerformClick();
-                //textguzhangmingling.Text = "exit";
-                //butguzhangsend.PerformClick();
-                //for (int g = 0; g < 32; g++)
-                //{
-                //    textguzhangmingling.Text = "interface ac ac" + vlan7 + " " + vlan7;
-                //    butguzhangsend.PerformClick();
-                //    textguzhangmingling.Text = "mpls vpls " + vplsname + " veth " + veth7 + " " + vlan7 + " 0 leaf modify " + vlan7 + " 0 0 0x8100 0x8100";
-                //    butguzhangsend.PerformClick();
-                //    textguzhangmingling.Text = "exit";
-                //    butguzhangsend.PerformClick();
-                //    vlan7++;
-
-                //}
-
-
-
-                int vlan0 = 613;
-                int acid = 2;
-                string vethslotroot = "10";
-                string vethslotleaf = "13";
-                string vethport1 = "9";
-                string vethport2 = "10";
-                string vethport3 = "11";
-                string vethport4 = "12";
-                string vethport5 = "13";
-                string vethport6 = "14";
-                string vethport7 = "15";
-                string vethport8 = "16";
-
-                string vethroot = vethslotroot + "/1";
-                string vethac = vethslotleaf + "/" + vethport1;
-                string vethacport = "13/";
-                int vp = 9;
-                for (int g = 0; g < 37; g++)
-                {
-                    textguzhangmingling.Text = "vlan "+vlan0;
-                    butguzhangsend.PerformClick();
-                    textguzhangmingling.Text = "add port 10/1 tag";
-                    butguzhangsend.PerformClick();
-                    for (int ccc = 0; ccc < 8; ccc++) {
-                        textguzhangmingling.Text = "add veth " + vethacport + vp + " tag";
-                        butguzhangsend.PerformClick();
-                        vp++;
-                        //Thread.Sleep(100);
-                    }
-                    vp = 9;
-                    textguzhangmingling.Text = "exit";
-                    butguzhangsend.PerformClick();
-                    vlan0++;
-                    //Thread.Sleep(100);
-                }
-
-
-                vlan0 = 2;
-
-                textguzhangmingling.Text = "int veth " + vethac;
-                butguzhangsend.PerformClick();
-                textguzhangmingling.Text = "exit";
-                butguzhangsend.PerformClick();
-                //textguzhangmingling.Text = "int veth " + vethroot;
-                //butguzhangsend.PerformClick();
-                //textguzhangmingling.Text = "exit";
-                //butguzhangsend.PerformClick();
-                for (int g = 0; g < 128; g++)
-                {
-                    textguzhangmingling.Text = "mpls static vpls domain portvlan"+ vlan0 + " " + vlan0 + " etree flood false false false true 32000 tagged";
-                    butguzhangsend.PerformClick();
-                    textguzhangmingling.Text = "interface ac root" + vlan0 + " " + acid;
-                    butguzhangsend.PerformClick();
-                    textguzhangmingling.Text = "mpls vpls " + "portvlan"+ vlan0  + " ethernet " + vethroot + " " + vlan0 + " 0 root modify " + vlan0 + " 0 0 0x8100 0x8100";
-                    butguzhangsend.PerformClick();
-                    textguzhangmingling.Text = "exit";
-                    butguzhangsend.PerformClick();
-                    acid = acid + 1;
-                    textguzhangmingling.Text = "interface ac ac" + vlan0 + " " + acid;
-                    butguzhangsend.PerformClick();
-                    textguzhangmingling.Text = "mpls vpls " + "portvlan"+ vlan0 + " veth " + vethac + " " + vlan0 + " 0 leaf modify " + vlan0 + " 0 0 0x8100 0x8100";
-                    butguzhangsend.PerformClick();
-                    textguzhangmingling.Text = "exit";
-                    butguzhangsend.PerformClick();
-                    vlan0++;
-                    acid = acid + 1;
-
-                }
-                string vethroot2 = vethslotroot + "/1";
-                string vethac2 = vethslotleaf + "/" + vethport2;
-                vlan0 = 130;
-                
-                textguzhangmingling.Text = "int veth " + vethac2;
-                butguzhangsend.PerformClick();
-                textguzhangmingling.Text = "exit";
-                butguzhangsend.PerformClick();
-                //textguzhangmingling.Text = "int veth " + vethroot2;
-                //butguzhangsend.PerformClick();
-                //textguzhangmingling.Text = "exit";
-                //butguzhangsend.PerformClick();
-                for (int g = 0; g < 128; g++)
-                {
-                    textguzhangmingling.Text = "mpls static vpls domain portvlan" + vlan0 + " " + vlan0 + " etree flood false false false true 32000 tagged";
-                    butguzhangsend.PerformClick();
-                    textguzhangmingling.Text = "interface ac root" + vlan0 + " " + acid;
-                    butguzhangsend.PerformClick();
-                    textguzhangmingling.Text = "mpls vpls " + "portvlan" + vlan0 + " ethernet " + vethroot2 + " " + vlan0 + " 0 root modify " + vlan0 + " 0 0 0x8100 0x8100";
-                    butguzhangsend.PerformClick();
-                    textguzhangmingling.Text = "exit";
-                    butguzhangsend.PerformClick();
-                    acid = acid + 1;
-                    textguzhangmingling.Text = "interface ac ac" + vlan0 + " " + acid;
-                    butguzhangsend.PerformClick();
-                    textguzhangmingling.Text = "mpls vpls " + "portvlan" + vlan0 + " veth " + vethac2 + " " + vlan0 + " 0 leaf modify " + vlan0 + " 0 0 0x8100 0x8100";
-                    butguzhangsend.PerformClick();
-                    textguzhangmingling.Text = "exit";
-                    butguzhangsend.PerformClick();
-                    vlan0++;
-                    acid = acid + 1;
-
-                }
-                string vethroot3 = vethslotroot + "/1";
-                string vethac3 = vethslotleaf + "/" + vethport3;
-                vlan0 = 258;
-
-                textguzhangmingling.Text = "int veth " + vethac3;
-                butguzhangsend.PerformClick();
-                textguzhangmingling.Text = "exit";
-                butguzhangsend.PerformClick();
-                //textguzhangmingling.Text = "int veth " + vethroot3;
-                //butguzhangsend.PerformClick();
-                //textguzhangmingling.Text = "exit";
-                //butguzhangsend.PerformClick();
-                for (int g = 0; g < 128; g++)
-                {
-                    textguzhangmingling.Text = "mpls static vpls domain portvlan" + vlan0 + " " + vlan0 + " etree flood false false false true 32000 tagged";
-                    butguzhangsend.PerformClick();
-                    textguzhangmingling.Text = "interface ac root" + vlan0 + " " + acid;
-                    butguzhangsend.PerformClick();
-                    textguzhangmingling.Text = "mpls vpls " + "portvlan" + vlan0 + " ethernet " + vethroot3 + " " + vlan0 + " 0 root modify " + vlan0 + " 0 0 0x8100 0x8100";
-                    butguzhangsend.PerformClick();
-                    textguzhangmingling.Text = "exit";
-                    butguzhangsend.PerformClick();
-                    acid = acid + 1;
-                    textguzhangmingling.Text = "interface ac ac" + vlan0 + " " + acid;
-                    butguzhangsend.PerformClick();
-                    textguzhangmingling.Text = "mpls vpls " + "portvlan" + vlan0 + " veth " + vethac3 + " " + vlan0 + " 0 leaf modify " + vlan0 + " 0 0 0x8100 0x8100";
-                    butguzhangsend.PerformClick();
-                    textguzhangmingling.Text = "exit";
-                    butguzhangsend.PerformClick();
-                    vlan0++;
-                    acid = acid + 1;
-
-                }
-                string vethroot4 = vethslotroot + "/1";
-                string vethac4 = vethslotleaf + "/" + vethport4;
-                vlan0 = 386;
-
-                textguzhangmingling.Text = "int veth " + vethac4;
-                butguzhangsend.PerformClick();
-                textguzhangmingling.Text = "exit";
-                butguzhangsend.PerformClick();
-                //textguzhangmingling.Text = "int veth " + vethroot4;
-                //butguzhangsend.PerformClick();
-                //textguzhangmingling.Text = "exit";
-                //butguzhangsend.PerformClick();
-                for (int g = 0; g < 128; g++)
-                {
-                    textguzhangmingling.Text = "mpls static vpls domain portvlan" + vlan0 + " " + vlan0 + " etree flood false false false true 32000 tagged";
-                    butguzhangsend.PerformClick();
-                    textguzhangmingling.Text = "interface ac root" + vlan0 + " " + acid;
-                    butguzhangsend.PerformClick();
-                    textguzhangmingling.Text = "mpls vpls " + "portvlan" + vlan0 + " ethernet " + vethroot4 + " " + vlan0 + " 0 root modify " + vlan0 + " 0 0 0x8100 0x8100";
-                    butguzhangsend.PerformClick();
-                    textguzhangmingling.Text = "exit";
-                    butguzhangsend.PerformClick();
-                    acid = acid + 1;
-                    textguzhangmingling.Text = "interface ac ac" + vlan0 + " " + acid;
-                    butguzhangsend.PerformClick();
-                    textguzhangmingling.Text = "mpls vpls " + "portvlan" + vlan0 + " veth " + vethac4 + " " + vlan0 + " 0 leaf modify " + vlan0 + " 0 0 0x8100 0x8100";
-                    butguzhangsend.PerformClick();
-                    textguzhangmingling.Text = "exit";
-                    butguzhangsend.PerformClick();
-                    vlan0++;
-                    acid = acid + 1;
-
-                }
-
-                string vethroot5 = vethslotroot + "/1";
-                string vethac5 = vethslotleaf + "/" + vethport5;
-                vlan0 = 514;
-
-                textguzhangmingling.Text = "int veth " + vethac5;
-                butguzhangsend.PerformClick();
-                textguzhangmingling.Text = "exit";
-                butguzhangsend.PerformClick();
-                //textguzhangmingling.Text = "int veth " + vethroot5;
-                //butguzhangsend.PerformClick();
-                //textguzhangmingling.Text = "exit";
-                //butguzhangsend.PerformClick();
-                for (int g = 0; g < 32; g++)
-                {
-                    textguzhangmingling.Text = "mpls static vpls domain portvlan" + vlan0 + " " + vlan0 + " etree flood false false false true 32000 tagged";
-                    butguzhangsend.PerformClick();
-                    textguzhangmingling.Text = "interface ac root" + vlan0 + " " + acid;
-                    butguzhangsend.PerformClick();
-                    textguzhangmingling.Text = "mpls vpls " + "portvlan" + vlan0 + " ethernet " + vethroot5 + " " + vlan0 + " 0 root modify " + vlan0 + " 0 0 0x8100 0x8100";
-                    butguzhangsend.PerformClick();
-                    textguzhangmingling.Text = "exit";
-                    butguzhangsend.PerformClick();
-                    acid = acid + 1;
-                    textguzhangmingling.Text = "interface ac ac" + vlan0 + " " + acid;
-                    butguzhangsend.PerformClick();
-                    textguzhangmingling.Text = "mpls vpls " + "portvlan" + vlan0 + " veth " + vethac5 + " " + vlan0 + " 0 leaf modify " + vlan0 + " 0 0 0x8100 0x8100";
-                    butguzhangsend.PerformClick();
-                    textguzhangmingling.Text = "exit";
-                    butguzhangsend.PerformClick();
-                    vlan0++;
-                    acid = acid + 1;
-
-                }
-                string vethroot6 = vethslotroot + "/1";
-                string vethac6 = vethslotleaf + "/" + vethport6;
-                vlan0 = 546;
-
-                textguzhangmingling.Text = "int veth " + vethac6;
-                butguzhangsend.PerformClick();
-                textguzhangmingling.Text = "exit";
-                butguzhangsend.PerformClick();
-                //textguzhangmingling.Text = "int veth " + vethroot6;
-                //butguzhangsend.PerformClick();
-                //textguzhangmingling.Text = "exit";
-                //butguzhangsend.PerformClick();
-                for (int g = 0; g < 32; g++)
-                {
-                    textguzhangmingling.Text = "mpls static vpls domain portvlan" + vlan0 + " " + vlan0 + " etree flood false false false true 32000 tagged";
-                    butguzhangsend.PerformClick();
-                    textguzhangmingling.Text = "interface ac root" + vlan0 + " " + acid;
-                    butguzhangsend.PerformClick();
-                    textguzhangmingling.Text = "mpls vpls " + "portvlan" + vlan0 + " ethernet " + vethroot6 + " " + vlan0 + " 0 root modify " + vlan0 + " 0 0 0x8100 0x8100";
-                    butguzhangsend.PerformClick();
-                    textguzhangmingling.Text = "exit";
-                    butguzhangsend.PerformClick();
-                    acid = acid + 1;
-                    textguzhangmingling.Text = "interface ac ac" + vlan0 + " " + acid;
-                    butguzhangsend.PerformClick();
-                    textguzhangmingling.Text = "mpls vpls " + "portvlan" + vlan0 + " veth " + vethac6 + " " + vlan0 + " 0 leaf modify " + vlan0 + " 0 0 0x8100 0x8100";
-                    butguzhangsend.PerformClick();
-                    textguzhangmingling.Text = "exit";
-                    butguzhangsend.PerformClick();
-                    vlan0++;
-                    acid = acid + 1;
-
-                }
-                string vethroot7 = vethslotroot + "/1";
-                string vethac7 = vethslotleaf + "/" + vethport7;
-                vlan0 = 578;
-
-                textguzhangmingling.Text = "int veth " + vethac7;
-                butguzhangsend.PerformClick();
-                textguzhangmingling.Text = "exit";
-                butguzhangsend.PerformClick();
-                //textguzhangmingling.Text = "int veth " + vethroot7;
-                //butguzhangsend.PerformClick();
-                //textguzhangmingling.Text = "exit";
-                //butguzhangsend.PerformClick();
-                for (int g = 0; g < 32; g++)
-                {
-                    textguzhangmingling.Text = "mpls static vpls domain portvlan" + vlan0 + " " + vlan0 + " etree flood false false false true 32000 tagged";
-                    butguzhangsend.PerformClick();
-                    textguzhangmingling.Text = "interface ac root" + vlan0 + " " + acid;
-                    butguzhangsend.PerformClick();
-                    textguzhangmingling.Text = "mpls vpls " + "portvlan" + vlan0 + " ethernet " + vethroot7 + " " + vlan0 + " 0 root modify " + vlan0 + " 0 0 0x8100 0x8100";
-                    butguzhangsend.PerformClick();
-                    textguzhangmingling.Text = "exit";
-                    butguzhangsend.PerformClick();
-                    acid = acid + 1;
-                    textguzhangmingling.Text = "interface ac ac" + vlan0 + " " + acid;
-                    butguzhangsend.PerformClick();
-                    textguzhangmingling.Text = "mpls vpls " + "portvlan" + vlan0 + " veth " + vethac7 + " " + vlan0 + " 0 leaf modify " + vlan0 + " 0 0 0x8100 0x8100";
-                    butguzhangsend.PerformClick();
-                    textguzhangmingling.Text = "exit";
-                    butguzhangsend.PerformClick();
-                    vlan0++;
-                    acid = acid + 1;
-
-                }
-                string vethroot8 = vethslotroot + "/1";
-                string vethac8 = vethslotleaf + "/" + vethport8;
-                vlan0 = 610;
-
-                textguzhangmingling.Text = "int veth " + vethac8;
-                butguzhangsend.PerformClick();
-                textguzhangmingling.Text = "exit";
-                butguzhangsend.PerformClick();
-                //textguzhangmingling.Text = "int veth " + vethroot8;
-                //butguzhangsend.PerformClick();
-                //textguzhangmingling.Text = "exit";
-                //butguzhangsend.PerformClick();
-                for (int g = 0; g < 32; g++)
-                {
-                    textguzhangmingling.Text = "mpls static vpls domain portvlan" + vlan0 + " " + vlan0 + " etree flood false false false true 32000 tagged";
-                    butguzhangsend.PerformClick();
-                    textguzhangmingling.Text = "interface ac root" + vlan0 + " " + acid;
-                    butguzhangsend.PerformClick();
-                    textguzhangmingling.Text = "mpls vpls " + "portvlan" + vlan0 + " ethernet " + vethroot8 + " " + vlan0 + " 0 root modify " + vlan0 + " 0 0 0x8100 0x8100";
-                    butguzhangsend.PerformClick();
-                    textguzhangmingling.Text = "exit";
-                    butguzhangsend.PerformClick();
-                    acid = acid + 1;
-                    textguzhangmingling.Text = "interface ac ac" + vlan0 + " " + acid;
-                    butguzhangsend.PerformClick();
-                    textguzhangmingling.Text = "mpls vpls " + "portvlan" + vlan0 + " veth " + vethac8 + " " + vlan0 + " 0 leaf modify " + vlan0 + " 0 0 0x8100 0x8100";
-                    butguzhangsend.PerformClick();
-                    textguzhangmingling.Text = "exit";
-                    butguzhangsend.PerformClick();
-                    vlan0++;
-                    acid = acid + 1;
-
-                }
                 textguzhangmingling.Text = textcyclemingling.Text;
                 butguzhangsend.PerformClick();
                 textlog.AppendText(textcurrent.Text);
@@ -8728,9 +6867,8 @@ namespace MyGpnSoftware
         }
         #endregion
         #region 一键改制
-        private void butgaizhi_Click(object sender, EventArgs e)
-        {
-            textcurrent.AppendText("\r\n" + "///////////////////////////改制开始/////////////////////////////////////////////" + "\r\n");
+        private void ExchangeBoard() {
+            textcurrent.AppendText("\r\n" + "///////////////////////////改制开始,请等待20秒钟/////////////////////////////////////////" + "\r\n");
             textguzhangmingling.Text = "grosadvdebug";
             butguzhangsend.PerformClick();
             string mode = "";
@@ -8774,6 +6912,248 @@ namespace MyGpnSoftware
                 mode = "GPN7600-V2-8AT2";
                 textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " type-redefine " + mode;
             }
+            if (comotnboardmode.Text.Contains("EVOG-FE【8ge-32】"))
+            {
+                mode = "GPN7600-V2-EOSC-8GE";
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " type " + mode;
+                butguzhangsend.PerformClick();
+                Thread.Sleep(3000);
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " ext-info " + "PrEaGSA-EVOM";
+            }
+            if (comotnboardmode.Text.Contains("EVOG-GE【8ge-32】"))
+            {
+                mode = "GPN7600-V2-EOSC-8GE";
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " type " + mode;
+                butguzhangsend.PerformClick();
+                Thread.Sleep(3000);
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " ext-info " + "PrEaGSA-EVOG";
+            }
+
+            if (comotnboardmode.Text.Contains("EVOG-FE【otn-8ge】"))
+            {
+                mode = "GPN7600-V2-OTN-8GE";
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " type " + mode;
+                butguzhangsend.PerformClick();
+                Thread.Sleep(3000);
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " ext-info " + "PrEaGSA-EVOM";
+            }
+            if (comotnboardmode.Text.Contains("EVOG-GE【otn-8ge】"))
+            {
+                mode = "GPN7600-V2-OTN-8GE";
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " type " + mode;
+                butguzhangsend.PerformClick();
+                Thread.Sleep(3000);
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " ext-info " + "PrEaGSA-EVOG";
+            }
+
+
+            if (comotnboardmode.Text.Contains("AOOE"))
+            {
+                mode = "10";
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " type " + "GPN7600-V2-OTN-8AT2";
+                butguzhangsend.PerformClick();
+                Thread.Sleep(3000);
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " ext-info2 mode=" + mode;
+            }
+            if (comotnboardmode.Text.Contains("IVDS"))
+            {
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " type " + "GSA-IVDS";
+            }
+            if (comotnboardmode.Text.Contains("SOOE"))
+            {
+                mode = "11";
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " type " + "GPN7600-V2-OTN-8AT2";
+                butguzhangsend.PerformClick();
+                Thread.Sleep(3000);
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " ext-info2 mode=" + mode;
+            }
+            if (comotnboardmode.Text.Contains("AOQX"))
+            {
+                mode = "12";
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " type " + "GPN7600-V2-OTN-8AT2";
+                butguzhangsend.PerformClick();
+                Thread.Sleep(3000);
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " ext-info2 mode=" + mode;
+            }
+            if (comotnboardmode.Text.Contains("EOOG"))
+            {
+                mode = "15";
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " type " + "GPN7600-V2-OTN-8AT2";
+                butguzhangsend.PerformClick();
+                Thread.Sleep(3000);
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " ext-info2 mode=" + mode;
+            }
+            if (comotnboardmode.Text.Contains("EODX"))
+            {
+                mode = "16";
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " type " + "GPN7600-V2-OTN-8AT2";
+                butguzhangsend.PerformClick();
+                Thread.Sleep(3000);
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " ext-info2 mode=" + mode;
+            }
+            if (comotnboardmode.Text.Contains("OOOG-I"))
+            {
+                mode = "23";
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " type " + "GPN7600-V2-OTN-8AT2";
+                butguzhangsend.PerformClick();
+                Thread.Sleep(3000);
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " ext-info2 mode=" + mode;
+            }
+            if (comotnboardmode.Text.Contains("OOOE-I"))
+            {
+                mode = "22";
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " type " + "GPN7600-V2-OTN-8AT2";
+                butguzhangsend.PerformClick();
+                Thread.Sleep(3000);
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " ext-info2 mode=" + mode;
+            }
+            if (comotnboardmode.Text.Contains("UXDX-I"))
+            {
+                mode = "20";
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " type " + "GPN7600-V2-OTN-8AT2";
+                butguzhangsend.PerformClick();
+                Thread.Sleep(3000);
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " ext-info2 mode=" + mode;
+            }
+            if (comotnboardmode.Text.Contains("UCQX"))
+            {
+                mode = "GPN7600-UXC_SW";
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " type " + mode;
+                butguzhangsend.PerformClick();
+                Thread.Sleep(3000);
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " ext-info " + "PrEaGSA-UCQX";
+            }
+            if (comotnboardmode.Text.Contains("SDQE"))
+            {
+                mode = "GSA-SDQE";
+                textguzhangmingling.Text = "exit";
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "config msap";
+                butguzhangsend.PerformClick();
+                if (comotnslot.Text == "5")
+                {
+                    textguzhangmingling.Text = "mm 0xf940000f 0x5a";
+                    butguzhangsend.PerformClick();
+                }
+                if (comotnslot.Text == "6")
+                {
+                    textguzhangmingling.Text = "mm 0xf950000f 0x5a";
+                    butguzhangsend.PerformClick();
+                }
+                textguzhangmingling.Text = "exit";
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "grosadvdebug";
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " type " + mode;
+                //butguzhangsend.PerformClick();
+
+                //textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " version V1.0B1";
+                //butguzhangsend.PerformClick();
+                //textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " date 2021-08-20";
+                //butguzhangsend.PerformClick();
+                //textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " sn " + textcyclemingling.Text;
+                //butguzhangsend.PerformClick();
+                //textguzhangmingling.Text = "show board-eeprom 5";
+
+            }
+            if (comotnboardmode.Text.Contains("UXQE-I"))
+            {
+                mode = "18";
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " type " + "GPN7600-V2-OTN-8AT2";
+                butguzhangsend.PerformClick();
+                Thread.Sleep(3000);
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " ext-info2 mode=" + mode;
+            }
+            if (comotnboardmode.Text.Contains("UCHX"))
+            {
+                mode = "24";
+                textguzhangmingling.Text = "exit";
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "config msap";
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "mm 0xf940000f 0x5a";
+                butguzhangsend.PerformClick();
+
+                textguzhangmingling.Text = "exit";
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "grosadvdebug";
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "board-eeprom 5 type GSA-SDQE";
+                butguzhangsend.PerformClick();
+                Thread.Sleep(3000);
+                textguzhangmingling.Text = "board-eeprom 5 ext-info PrEaGSA-UCHX";
+                butguzhangsend.PerformClick();
+                Thread.Sleep(3000);
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " ext-info2 mode=" + mode;
+            }
+            if (comotnboardmode.Text.Contains("UCOE"))
+            {
+                mode = "25";
+                textguzhangmingling.Text = "exit";
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "config msap";
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "mm 0xf940000f 0x5a";
+                butguzhangsend.PerformClick();
+
+                textguzhangmingling.Text = "exit";
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "grosadvdebug";
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "board-eeprom 5 type GSA-SDQE";
+                butguzhangsend.PerformClick();
+                Thread.Sleep(3000);
+                textguzhangmingling.Text = "board-eeprom 5 ext-info PrEaGSA-UCOE";
+                butguzhangsend.PerformClick();
+                Thread.Sleep(3000);
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " ext-info2 mode=" + mode;
+            }
+            if (comotnboardmode.Text.Contains("76-III机框类型-2562"))
+            {
+                textguzhangmingling.Text = "chassis-type 2562";
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "exit";
+                butguzhangsend.PerformClick();
+                Thread.Sleep(3000);
+                butguzhangsend.PerformClick();
+                textcurrent.AppendText("\r\n" + "///////////////////////////改制结束/////////////////////////////////////////////" + "\r\n");
+                MessageBox.Show("重启后生效");
+
+
+                return;
+            }
+            if (comotnboardmode.Text.Contains("76-III风扇"))
+            {
+                textguzhangmingling.Text = "board-eeprom 21 type GSA-FAN-III";
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "exit";
+                butguzhangsend.PerformClick();
+                Thread.Sleep(3000);
+                butguzhangsend.PerformClick();
+
+                textcurrent.AppendText("\r\n" + "///////////////////////////改制结束/////////////////////////////////////////////" + "\r\n");
+                MessageBox.Show("重启后生效");
+
+
+
+                return;
+            }
+            if (comotnboardmode.Text.Contains("76机框类型-2563"))
+            {
+                textguzhangmingling.Text = "chassis-type 2563";
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "exit";
+                butguzhangsend.PerformClick();
+                Thread.Sleep(3000);
+                butguzhangsend.PerformClick();
+                textcurrent.AppendText("\r\n" + "///////////////////////////改制结束/////////////////////////////////////////////" + "\r\n");
+                MessageBox.Show("重启后生效");
+
+
+                return;
+            }
+
+
             butguzhangsend.PerformClick();
             Thread.Sleep(8000);
             butguzhangsend.PerformClick();
@@ -8782,12 +7162,23 @@ namespace MyGpnSoftware
             textguzhangmingling.Text = "enable show boardname by e2-extinfo";
             butguzhangsend.PerformClick();
             Thread.Sleep(XHTime);
-            textguzhangmingling.Text = "reboot " + comotnslot.Text;
-            butguzhangsend.PerformClick();
-            textguzhangmingling.Text = "Y";
-            butguzhangsend.PerformClick();
+            //textguzhangmingling.Text = "reboot " + comotnslot.Text;
+            //butguzhangsend.PerformClick();
+            //textguzhangmingling.Text = "Y";
+            //butguzhangsend.PerformClick();
+            textcurrent.AppendText("\r\n" + "改制已结束，复位板卡后可生效，参考(config)#reboot 槽位号" + "\r\n");
             textcurrent.AppendText("\r\n" + "///////////////////////////改制结束/////////////////////////////////////////////" + "\r\n");
-            MessageBox.Show("GPN800需要重启清空设备后生效，GPN7600上载后可自动识别，show 不准确");
+            butguzhangsend.PerformClick();
+            // MessageBox.Show("");
+        }
+        private void butgaizhi_Click(object sender, EventArgs e)
+        {
+            CycleThread = new Thread(ExchangeBoard)
+            {
+                IsBackground = true
+            };
+            CycleThread.Start();
+
         }
         #endregion
         #region 卸载GPN7600EMS模块
@@ -8973,7 +7364,7 @@ namespace MyGpnSoftware
                 }
                 //textDOS.AppendText("从网管服务器获取GPN76模块链接成功==========================OK" + "\r\n");
             }
-            catch (Exception ex)
+            catch 
             {
                 //   textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "GPN模块获取失败，请链接格林威尔VPN后，再次尝试！" + "\r\n");
 
@@ -8990,6 +7381,16 @@ namespace MyGpnSoftware
             {
                 lSize = new FileInfo(sFullName).Length;
                 labapp.Text = lSize.ToString();
+            }
+        }
+        private void comapp2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            long lSize = 0;
+            string sFullName = @tbxFtpRoot.Text.Trim() + comapp2.Text.Trim();
+            if (File.Exists(sFullName))
+            {
+                lSize = new FileInfo(sFullName).Length;
+                labapp2.Text = lSize.ToString();
             }
         }
         private void comflash_SelectedIndexChanged(object sender, EventArgs e)
@@ -9010,6 +7411,46 @@ namespace MyGpnSoftware
             {
                 lSize = new FileInfo(sFullName).Length;
                 labcode.Text = lSize.ToString();
+            }
+        }
+        private void comcode2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            long lSize = 0;
+            string sFullName = @tbxFtpRoot.Text.Trim() + comcode2.Text.Trim();
+            if (File.Exists(sFullName))
+            {
+                lSize = new FileInfo(sFullName).Length;
+                labcode2.Text = lSize.ToString();
+            }
+        }
+        private void comcode3_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            long lSize = 0;
+            string sFullName = @tbxFtpRoot.Text.Trim() + comcode3.Text.Trim();
+            if (File.Exists(sFullName))
+            {
+                lSize = new FileInfo(sFullName).Length;
+                labcode3.Text = lSize.ToString();
+            }
+        }
+        private void comcode4_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            long lSize = 0;
+            string sFullName = @tbxFtpRoot.Text.Trim() + comcode4.Text.Trim();
+            if (File.Exists(sFullName))
+            {
+                lSize = new FileInfo(sFullName).Length;
+                labcode4.Text = lSize.ToString();
+            }
+        }
+        private void comsdn_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            long lSize = 0;
+            string sFullName = @tbxFtpRoot.Text.Trim() + comsdn.Text.Trim();
+            if (File.Exists(sFullName))
+            {
+                lSize = new FileInfo(sFullName).Length;
+                labsdn.Text = lSize.ToString();
             }
         }
         private void comnms_SelectedIndexChanged(object sender, EventArgs e)
@@ -9082,14 +7523,75 @@ namespace MyGpnSoftware
                 lab760e.Text = lSize.ToString();
             }
         }
-        private void com760f_SelectedIndexChanged(object sender, EventArgs e)
+        private void comuxc_SelectedIndexChanged(object sender, EventArgs e)
         {
             long lSize = 0;
-            string sFullName = @tbxFtpRoot.Text.Trim() + com760f.Text.Trim();
+            string sFullName = @tbxFtpRoot.Text.Trim() + comuxc.Text.Trim();
             if (File.Exists(sFullName))
             {
                 lSize = new FileInfo(sFullName).Length;
-                lab760f.Text = lSize.ToString();
+                labuxc.Text = lSize.ToString();
+            }
+        }
+        private void com7610_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            long lSize = 0;
+            string sFullName = @tbxFtpRoot.Text.Trim() + com7610.Text.Trim();
+            if (File.Exists(sFullName))
+            {
+                lSize = new FileInfo(sFullName).Length;
+                lab7610.Text = lSize.ToString();
+            }
+        }
+        private void com7611_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            long lSize = 0;
+            string sFullName = @tbxFtpRoot.Text.Trim() + com7611.Text.Trim();
+            if (File.Exists(sFullName))
+            {
+                lSize = new FileInfo(sFullName).Length;
+                lab7611.Text = lSize.ToString();
+            }
+        }
+        private void com7612_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            long lSize = 0;
+            string sFullName = @tbxFtpRoot.Text.Trim() + com7612.Text.Trim();
+            if (File.Exists(sFullName))
+            {
+                lSize = new FileInfo(sFullName).Length;
+                lab7612.Text = lSize.ToString();
+            }
+        }
+        private void com7613_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            long lSize = 0;
+            string sFullName = @tbxFtpRoot.Text.Trim() + com7613.Text.Trim();
+            if (File.Exists(sFullName))
+            {
+                lSize = new FileInfo(sFullName).Length;
+                lab7613.Text = lSize.ToString();
+            }
+        }
+
+        private void com7614_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            long lSize = 0;
+            string sFullName = @tbxFtpRoot.Text.Trim() + com7614.Text.Trim();
+            if (File.Exists(sFullName))
+            {
+                lSize = new FileInfo(sFullName).Length;
+                lab7614.Text = lSize.ToString();
+            }
+        }
+        private void com7616_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            long lSize = 0;
+            string sFullName = @tbxFtpRoot.Text.Trim() + com7616.Text.Trim();
+            if (File.Exists(sFullName))
+            {
+                lSize = new FileInfo(sFullName).Length;
+                lab7616.Text = lSize.ToString();
             }
         }
         private void comsysfile_SelectedIndexChanged(object sender, EventArgs e)
@@ -9100,6 +7602,36 @@ namespace MyGpnSoftware
             {
                 lSize = new FileInfo(sFullName).Length;
                 labsysfile.Text = lSize.ToString();
+            }
+        }
+        private void comvoss_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            long lSize = 0;
+            string sFullName = @tbxFtpRoot.Text.Trim() + comvoss.Text.Trim();
+            if (File.Exists(sFullName))
+            {
+                lSize = new FileInfo(sFullName).Length;
+                labvoss.Text = lSize.ToString();
+            }
+        }
+        private void comrebootos_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            long lSize = 0;
+            string sFullName = @tbxFtpRoot.Text.Trim() + comrebootos.Text.Trim();
+            if (File.Exists(sFullName))
+            {
+                lSize = new FileInfo(sFullName).Length;
+                labrebootos.Text = lSize.ToString();
+            }
+        }
+        private void comcplde_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            long lSize = 0;
+            string sFullName = @tbxFtpRoot.Text.Trim() + comcpld.Text.Trim();
+            if (File.Exists(sFullName))
+            {
+                lSize = new FileInfo(sFullName).Length;
+                labcpld.Text = lSize.ToString();
             }
         }
         private void comyaffs_SelectedIndexChanged(object sender, EventArgs e)
@@ -10392,17 +8924,17 @@ namespace MyGpnSoftware
             }
             else
             {
-                if (Appsize == lab760f.Text)
+                if (Appsize == labuxc.Text)
                 {
                     textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "检查760f.fpga文件比对===============================OK" + toolStripStatusLabeltime.Text + "\r\n");
                     textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "设备：760f.fpga文件大小为： " + Appsize + " 字节" + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "电脑：760f.fpga文件大小为： " + lab760f.Text + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "电脑：760f.fpga文件大小为： " + labuxc.Text + " 字节" + "\r\n");
                 }
                 else
                 {
                     textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "检查760f.fpga文件比对==============================NOK" + toolStripStatusLabeltime.Text + "\r\n");
                     textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "设备：760f.fpga文件大小为： " + Appsize + " 字节" + "\r\n");
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "电脑：760f.fpga文件大小为： " + lab760f.Text + " 字节" + "\r\n");
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "电脑：760f.fpga文件大小为： " + labuxc.Text + " 字节" + "\r\n");
                 }
             }
             mysocket.SendData("exit");
@@ -10517,166 +9049,10 @@ namespace MyGpnSoftware
             // MessageBox.Show(Appsize);
         }
         #endregion      
-        private void butslectfile_Click(object sender, EventArgs e)
-        {
-            if (checkapp.Checked == false &&
-                checkcode.Checked == false &&
-                checknms.Checked == false &&
-                checksw.Checked == false &&
-                check760s.Checked == false &&
-                check760b.Checked == false &&
-                check760c.Checked == false &&
-                check760d.Checked == false &&
-                check760e.Checked == false &&
-                check760f.Checked == false &&
-                checksysfile.Checked == false &&
-                checkconfig.Checked == false &&
-                checkdb.Checked == false &&
-                checkslotconfig.Checked == false)
-            {
-                MessageBox.Show("请勾选文件后进行比较！");
-                return;
-            }
-            Thread checkfile = new Thread(CheckFile);
-            checkfile.Start();
-
-        }
-        private void CheckFile()
-        {
-
-            try
-            {
-                if (devtype == "98" || devtype == "2859" || devtype == "2860" || devtype == "2861" || devtype == "2862" || devtype == "2863" || devtype == "2864" || devtype == "2865")
-                {
-
-                    textDOS.AppendText("\r\n");
-                    if (checkconfig.Checked == true)
-                    {
-                        ConfigSize();
-                    }
-                    if (checkslotconfig.Checked == true)
-                    {
-                        SlotconfigSize();
-                    }
-                    if (checkdb.Checked == true)
-                    {
-                        DbSize();
-                    }
-                    if (checkapp.Checked == true)
-                    {
-                        AppSize();
-                    }
-                    if (checkcode.Checked == true)
-                    {
-                        CodeSize();
-                    }
-                    if (checknms.Checked == true)
-                    {
-                        NmsSize();
-                    }
-                    if (checksw.Checked == true)
-                    {
-                        SwSize();
-                    }
-                    if (check760s.Checked == true)
-                    {
-                        Fpga760sSize();
-                    }
-                    if (check760b.Checked == true)
-                    {
-                        Fpga760bSize();
-                    }
-                    if (check760c.Checked == true)
-                    {
-                        Fpga760cSize();
-                    }
-                    if (check760d.Checked == true)
-                    {
-                        Fpga760dSIze();
-                    }
-                    if (check760e.Checked == true)
-                    {
-                        Fpga760eSize();
-                    }
-                    if (check760f.Checked == true)
-                    {
-                        Fpga760fSize();
-                    }
-                    if (checksysfile.Checked == true)
-                    {
-                        SysfileSize();
-                    }
-
-
-                }
-                else
-                {
-                    textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "该设备不支持检查flash文件大小进行比对！");
-                    return;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            finally
-            {
-                // butsend.PerformClick();
-                toolStripStatusLabelzt.Text = "已完成";
-            }
-        }
         bool UpLoadFile_Stop = true;
         bool UpLoadFile_On_Off = false;
         ManualResetEvent UpLoadFilePause;
         Thread UpLoadFileThread;
-        private void butupload_Click(object sender, EventArgs e)
-        {
-            if (butupload.Text == "上传备份")
-            {
-
-                if (FtpPortEnable = false || FtpStatusEnable == false)
-                {
-                    MessageBox.Show("请先③启动FTP服务器,进行后续操作！");
-                    return;
-
-                }
-                if (checkapp.Checked == false &&
-checkcode.Checked == false &&
-checknms.Checked == false &&
-checksw.Checked == false &&
-check760s.Checked == false &&
-check760b.Checked == false &&
-check760c.Checked == false &&
-check760d.Checked == false &&
-check760f.Checked == false &&
-checksysfile.Checked == false &&
-checkflash.Checked == false &&
-checkyaffs.Checked == false &&
-checkconfig.Checked == false &&
-checkdb.Checked == false &&
-checkslotconfig.Checked == false &&
-check760e.Checked == false)
-                {
-                    MessageBox.Show("请勾选文件后继续！");
-                    return;
-                }
-
-                UpLoadFile_Stop = false;
-                UpLoadFileThread = new Thread(UpLoadFile)
-                {
-                    IsBackground = true
-                };
-                UpLoadFileThread.Start();
-                butupload.Text = "停止备份";
-                //textcurrent.AppendText("\r\n开始运行！");
-
-            }
-            else
-            {
-                UpLoadFile_Stop = true;
-                butupload.Text = "上传备份";
-            }
-        }
         private void UpLoadFile()
         {
             //立即开始计时，时间间隔1000毫秒
@@ -10736,7 +9112,7 @@ check760e.Checked == false)
                     {
                         a++;
                     }
-                    if (check760f.Checked == true)
+                    if (checkuxc.Checked == true)
                     {
                         a++;
                     }
@@ -11509,7 +9885,7 @@ check760e.Checked == false)
                             }
                         }
                     }
-                    if (check760f.Checked == true)
+                    if (checkuxc.Checked == true)
                     {
                         Fpga760fSize();
                         Upload760f();
@@ -11763,7 +10139,6 @@ check760e.Checked == false)
                     textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "备份结束" + "================================================OK" + toolStripStatusLabeltime.Text + "\r\n");
                     butsend.PerformClick();
                     UpLoadFile_Stop = true;
-                    butupload.Text = "上传备份";
                     Mytimer.Change(Timeout.Infinite, 1000);
                 }
                 else
@@ -12216,7 +10591,7 @@ check760e.Checked == false)
         private void Upload760f()
         {
             toolStripStatusLabelzt.Text = "正在备份760F文件";             //上传状态栏显示
-            string strname = lab760fname.Text;                            //上传文件类型
+            string strname = lab760uxcname.Text;                            //上传文件类型
             int xunhuantime = 10;                                           //循环时间
             int xunhuancishu = 10000;                                        //循环次数           
             string uploadfilename = " file /yaffs/sys/760f.fpga ";      //上传文件名
@@ -12621,7 +10996,8 @@ check760e.Checked == false)
                     textlog.AppendText(textcurrent.Text);
                     textcurrent.Text = "";
                 }
-                else {
+                else
+                {
                     if (comSNC.Text == "没有配置保护" || comSNC.Text == "OCH")
                     {
                         string s = (int.Parse(comSslot.Text) - 1).ToString("x");
@@ -12801,34 +11177,30 @@ check760e.Checked == false)
                 }
 
 
-                if (comSslot.Text == comDslot.Text) {
+                if (comSslot.Text == comDslot.Text)
+                {
 
-                        textguzhangmingling.Text = "ioctl " + comoduk.Text + " dxc get " + comSslot.Text + " otu " + comSport.Text + "/" + comSts.Text;
-                        butguzhangsend.PerformClick();
+                    textguzhangmingling.Text = "ioctl " + comoduk.Text + " dxc get " + comSslot.Text + " otu " + comSport.Text + "/" + comSts.Text;
+                    butguzhangsend.PerformClick();
 
-                        dxc = FindDevType.StringToArray(textcurrent.Text);
+                    dxc = FindDevType.StringToArray(textcurrent.Text);
 
-                        if (dxc[4, 1] != null && dxc[4, 2] != null && dxc[4, 3] != null)
+                    if (dxc[4, 1] != null && dxc[4, 2] != null && dxc[4, 3] != null)
+                    {
+                        string fpgatss = dxc[4, 1] + "/" + dxc[4, 2] + "/" + dxc[4, 3];
+                        string fpgatsd = dxc[4, 4] + "/" + dxc[4, 5] + "/" + dxc[4, 6];
+
+
+                        if (fpgatss.Equals("OTU" + "/" + comSport.Text + "/" + comSts.Text, StringComparison.OrdinalIgnoreCase))
                         {
-                            string fpgatss = dxc[4, 1] + "/" + dxc[4, 2] + "/" + dxc[4, 3];
-                            string fpgatsd = dxc[4, 4] + "/" + dxc[4, 5] + "/" + dxc[4, 6];
 
-
-                            if (fpgatss.Equals("OTU" + "/" + comSport.Text + "/" + comSts.Text, StringComparison.OrdinalIgnoreCase))
+                            if (fpgatsd.Equals(comDtype.Text + "/" + comDport.Text + "/" + comDts.Text, StringComparison.OrdinalIgnoreCase))
                             {
 
-                                if (fpgatsd.Equals(comDtype.Text + "/" + comDport.Text + "/" + comDts.Text, StringComparison.OrdinalIgnoreCase))
-                                {
+                                richTextEnd.AppendText(SATS + "源驱动交叉：" + "\r\n");
+                                richTextEnd.AppendText("主用源时隙：" + fpgatsd + "\r\n");
+                                richTextEnd.AppendText("主用宿时隙：" + fpgatss + "\r\n");
 
-                                    richTextEnd.AppendText(SATS+"源驱动交叉：" + "\r\n");
-                                    richTextEnd.AppendText("主用源时隙：" + fpgatsd + "\r\n");
-                                    richTextEnd.AppendText("主用宿时隙：" + fpgatss + "\r\n");
-
-                                }
-                                else
-                                {
-                                    richTextEnd.AppendText(SATS + "源驱动交叉：不存在或错误 NOK" + "\r\n");
-                                }
                             }
                             else
                             {
@@ -12839,8 +11211,13 @@ check760e.Checked == false)
                         {
                             richTextEnd.AppendText(SATS + "源驱动交叉：不存在或错误 NOK" + "\r\n");
                         }
-                        textlog.AppendText(textcurrent.Text);
-                        textcurrent.Text = "";
+                    }
+                    else
+                    {
+                        richTextEnd.AppendText(SATS + "源驱动交叉：不存在或错误 NOK" + "\r\n");
+                    }
+                    textlog.AppendText(textcurrent.Text);
+                    textcurrent.Text = "";
 
 
                     if (comSNC.Text == "没有配置保护")
@@ -12859,7 +11236,7 @@ check760e.Checked == false)
                             {
                                 if (fpgatsd.Equals("OTU" + "/" + comSport.Text + "/" + comSts.Text, StringComparison.OrdinalIgnoreCase))
                                 {
-                                    richTextEnd.AppendText(SDTS+"宿驱动交叉：" + "\r\n");
+                                    richTextEnd.AppendText(SDTS + "宿驱动交叉：" + "\r\n");
                                     richTextEnd.AppendText("业务源时隙：" + fpgatsd + "\r\n");
                                     richTextEnd.AppendText("业务宿时隙：" + fpgatss + "\r\n");
 
@@ -12885,7 +11262,8 @@ check760e.Checked == false)
                         textlog.AppendText(textcurrent.Text);
                         textcurrent.Text = "";
                     }
-                    else {
+                    else
+                    {
 
                         string fpgainnerd = "";
 
@@ -12904,7 +11282,7 @@ check760e.Checked == false)
                             {
 
 
-                                richTextEnd.AppendText(SDTS+"宿驱动inner交叉：" + "\r\n");
+                                richTextEnd.AppendText(SDTS + "宿驱动inner交叉：" + "\r\n");
                                 richTextEnd.AppendText("业务inner时隙：" + fpgainnerd + "\r\n");
                                 richTextEnd.AppendText("业务源时隙：" + fpgatss + "\r\n");
 
@@ -12912,7 +11290,7 @@ check760e.Checked == false)
                         }
                         else
                         {
-                            richTextEnd.AppendText(SDTS+"宿驱动inner交叉：不存在或错误 NOK" + "\r\n");
+                            richTextEnd.AppendText(SDTS + "宿驱动inner交叉：不存在或错误 NOK" + "\r\n");
                         }
                         textlog.AppendText(textcurrent.Text);
                         textcurrent.Text = "";
@@ -12931,7 +11309,7 @@ check760e.Checked == false)
                             {
 
 
-                                richTextEnd.AppendText(SBTS+"备驱动交叉：" + "\r\n");
+                                richTextEnd.AppendText(SBTS + "备驱动交叉：" + "\r\n");
                                 richTextEnd.AppendText("保护inner时隙：" + fpgainners + "\r\n");
                                 richTextEnd.AppendText("保护宿时隙：" + fpgatss + "\r\n");
 
@@ -12939,7 +11317,7 @@ check760e.Checked == false)
                         }
                         else
                         {
-                            richTextEnd.AppendText(SBTS+"备驱动交叉：不存在或错误 NOK" + "\r\n");
+                            richTextEnd.AppendText(SBTS + "备驱动交叉：不存在或错误 NOK" + "\r\n");
                         }
                         textlog.AppendText(textcurrent.Text);
                         textcurrent.Text = "";
@@ -12954,7 +11332,7 @@ check760e.Checked == false)
                             string fpgatss = dxc[4, 4] + "/" + dxc[4, 5] + "/" + dxc[4, 6];
                             if (fpgainners != dxc[4, 2] + "/" + dxc[4, 3])
                             {
-                                richTextEnd.AppendText(SBTS+"备驱动inner交叉：不一致 NOK" + "\r\n");
+                                richTextEnd.AppendText(SBTS + "备驱动inner交叉：不一致 NOK" + "\r\n");
                             }
 
 
@@ -12962,7 +11340,7 @@ check760e.Checked == false)
                             {
 
 
-                                richTextEnd.AppendText(SBTS+"备驱动inner交叉：" + "\r\n");
+                                richTextEnd.AppendText(SBTS + "备驱动inner交叉：" + "\r\n");
                                 richTextEnd.AppendText("保护inner时隙：" + fpgainners + "\r\n");
                                 richTextEnd.AppendText("保护源时隙：" + fpgatss + "\r\n");
 
@@ -12970,7 +11348,7 @@ check760e.Checked == false)
                         }
                         else
                         {
-                            richTextEnd.AppendText(SBTS+"备驱动inner交叉：不存在或错误 NOK" + "\r\n");
+                            richTextEnd.AppendText(SBTS + "备驱动inner交叉：不存在或错误 NOK" + "\r\n");
                         }
                         textlog.AppendText(textcurrent.Text);
                         textcurrent.Text = "";
@@ -12988,22 +11366,22 @@ check760e.Checked == false)
                     if (dxc[4, 1] != null && dxc[4, 2] != null && dxc[4, 3] != null)
                     {
                         string fpgatss = dxc[4, 1] + "/" + dxc[4, 2] + "/" + dxc[4, 3];
-                        fpgainners =  dxc[4, 5] + "/" + dxc[4, 6];
+                        fpgainners = dxc[4, 5] + "/" + dxc[4, 6];
 
 
                         if (fpgatss.Equals("OTU" + "/" + comSport.Text + "/" + comSts.Text, StringComparison.OrdinalIgnoreCase))
                         {
 
 
-                                richTextEnd.AppendText(SATS+"源驱动交叉：" + "\r\n");
-                                richTextEnd.AppendText("inner时隙：" + fpgainners + "\r\n");
-                                richTextEnd.AppendText("宿时隙：" + fpgatss + "\r\n");
+                            richTextEnd.AppendText(SATS + "源驱动交叉：" + "\r\n");
+                            richTextEnd.AppendText("inner时隙：" + fpgainners + "\r\n");
+                            richTextEnd.AppendText("宿时隙：" + fpgatss + "\r\n");
 
                         }
                     }
                     else
                     {
-                        richTextEnd.AppendText(SATS+"源驱动交叉：不存在或错误 NOK" + "\r\n");
+                        richTextEnd.AppendText(SATS + "源驱动交叉：不存在或错误 NOK" + "\r\n");
                     }
                     textlog.AppendText(textcurrent.Text);
                     textcurrent.Text = "";
@@ -13014,10 +11392,11 @@ check760e.Checked == false)
 
                     if (dxc[4, 1] != null && dxc[4, 2] != null && dxc[4, 3] != null)
                     {
-                        
+
                         string fpgatss = dxc[4, 4] + "/" + dxc[4, 5] + "/" + dxc[4, 6];
-                        if (fpgainners != dxc[4, 2] + "/" + dxc[4, 3]) {
-                            richTextEnd.AppendText(SATS+"源驱动inner交叉：不一致 NOK" + "\r\n");
+                        if (fpgainners != dxc[4, 2] + "/" + dxc[4, 3])
+                        {
+                            richTextEnd.AppendText(SATS + "源驱动inner交叉：不一致 NOK" + "\r\n");
                         }
 
 
@@ -13025,7 +11404,7 @@ check760e.Checked == false)
                         {
 
 
-                            richTextEnd.AppendText(SATS+"源驱动inner交叉：" + "\r\n");
+                            richTextEnd.AppendText(SATS + "源驱动inner交叉：" + "\r\n");
                             richTextEnd.AppendText("inner时隙：" + fpgainners + "\r\n");
                             richTextEnd.AppendText("源时隙：" + fpgatss + "\r\n");
 
@@ -13033,13 +11412,13 @@ check760e.Checked == false)
                     }
                     else
                     {
-                        richTextEnd.AppendText(SATS+"源驱动inner交叉：不存在或错误 NOK" + "\r\n");
+                        richTextEnd.AppendText(SATS + "源驱动inner交叉：不存在或错误 NOK" + "\r\n");
                     }
                     textlog.AppendText(textcurrent.Text);
                     textcurrent.Text = "";
 
                     string fpgainnerd = "";
-                    textguzhangmingling.Text = "ioctl " + comoduk.Text + " dxc get " + comDslot.Text + " "+comDtype.Text+" " + comDport.Text + "/" + comDts.Text;
+                    textguzhangmingling.Text = "ioctl " + comoduk.Text + " dxc get " + comDslot.Text + " " + comDtype.Text + " " + comDport.Text + "/" + comDts.Text;
                     butguzhangsend.PerformClick();
 
                     dxc = FindDevType.StringToArray(textcurrent.Text);
@@ -13053,7 +11432,7 @@ check760e.Checked == false)
                         {
 
 
-                            richTextEnd.AppendText(SDTS+"宿驱动交叉：" + "\r\n");
+                            richTextEnd.AppendText(SDTS + "宿驱动交叉：" + "\r\n");
                             richTextEnd.AppendText("inner时隙：" + fpgainnerd + "\r\n");
                             richTextEnd.AppendText("宿时隙：" + fpgatss + "\r\n");
 
@@ -13061,7 +11440,7 @@ check760e.Checked == false)
                     }
                     else
                     {
-                        richTextEnd.AppendText(SDTS+"宿驱动交叉：不存在或错误 NOK" + "\r\n");
+                        richTextEnd.AppendText(SDTS + "宿驱动交叉：不存在或错误 NOK" + "\r\n");
                     }
 
                     textlog.AppendText(textcurrent.Text);
@@ -13077,18 +11456,18 @@ check760e.Checked == false)
                         string fpgatss = dxc[4, 4] + "/" + dxc[4, 5] + "/" + dxc[4, 6];
                         if (fpgainnerd != dxc[4, 2] + "/" + dxc[4, 3])
                         {
-                            richTextEnd.AppendText(SDTS+"宿驱动inner交叉：不一致 NOK" + "\r\n");
+                            richTextEnd.AppendText(SDTS + "宿驱动inner交叉：不一致 NOK" + "\r\n");
                         }
                         if (fpgainnerd != fpgainners)
                         {
-                            richTextEnd.AppendText(SDTS+"宿驱动inner交叉：不一致 NOK" + "\r\n");
+                            richTextEnd.AppendText(SDTS + "宿驱动inner交叉：不一致 NOK" + "\r\n");
                         }
 
                         if (fpgatss.Equals(comDtype.Text + "/" + comDport.Text + "/" + comDts.Text, StringComparison.OrdinalIgnoreCase))
                         {
 
 
-                            richTextEnd.AppendText(SDTS+"宿驱动inner交叉：" + "\r\n");
+                            richTextEnd.AppendText(SDTS + "宿驱动inner交叉：" + "\r\n");
                             richTextEnd.AppendText("inner时隙：" + fpgainnerd + "\r\n");
                             richTextEnd.AppendText("源时隙：" + fpgatss + "\r\n");
 
@@ -13096,11 +11475,11 @@ check760e.Checked == false)
                     }
                     else
                     {
-                        richTextEnd.AppendText(SDTS+"宿驱动inner交叉：不存在或错误 NOK" + "\r\n");
+                        richTextEnd.AppendText(SDTS + "宿驱动inner交叉：不存在或错误 NOK" + "\r\n");
                     }
                     textlog.AppendText(textcurrent.Text);
                     textcurrent.Text = "";
-                    
+
                 }
 
 
@@ -13213,8 +11592,9 @@ check760e.Checked == false)
                                     {
                                         butguzhangsend.PerformClick();
                                     }
-                                    else {
-                                        
+                                    else
+                                    {
+
                                         break;
                                     }
                                 }
@@ -13321,7 +11701,7 @@ check760e.Checked == false)
                             {
                                 textlog.AppendText("\r\n" + "///////////////////////////备用OTU接口告警查询/////////////////////////////////////////////" + "\r\n");
                                 richTextEnd.AppendText("备用线路OTU接口告警查询：" + "\r\n");
-                                textguzhangmingling.Text = "ioctl otu show " + Protect;                           
+                                textguzhangmingling.Text = "ioctl otu show " + Protect;
                                 butguzhangsend.PerformClick();
                                 for (int h = 0; h <= 1000; h++)
                                 {
@@ -13331,7 +11711,7 @@ check760e.Checked == false)
                                     }
                                     else
                                     {
-                                        
+
                                         break;
                                     }
                                 }
@@ -13747,10 +12127,11 @@ check760e.Checked == false)
                     Thread.Sleep(XHTime);
                 }
                 Thread.Sleep(XHTime);
-                if (comSNC.Text == "SNC-S") {
+                if (comSNC.Text == "SNC-S")
+                {
                     Thread.Sleep(XHTime);
                     textlog.AppendText("\r\n" + "///////////////////////////主用TCM时隙告警查询/////////////////////////////////////////////" + "\r\n");
-                    textguzhangmingling.Text = "ioctl tcm show " + comoduk.Text  + " otu " + comSslot.Text + "/" + comSport.Text + "/" + comSts.Text + "/" + comtcm.Text;
+                    textguzhangmingling.Text = "ioctl tcm show " + comoduk.Text + " otu " + comSslot.Text + "/" + comSport.Text + "/" + comSts.Text + "/" + comtcm.Text;
                     richTextEnd.AppendText("主用线路TCM时隙告警查询：" + "\r\n");
                     butguzhangsend.PerformClick();
                     for (int h = 0; h <= 1000; h++)
@@ -13779,7 +12160,7 @@ check760e.Checked == false)
                         {
                             Regex alarm = new Regex(@"TCM\s*Status:\s*([\w\d\|\.]+)\s*( )*", RegexOptions.IgnoreCase | RegexOptions.Multiline);
                             string AlarmStatus = alarm.Match(textcurrent.Text).Groups[1].Value;
-                            if (AlarmStatus.Contains("OCI") || AlarmStatus.Contains("AIS") || AlarmStatus.Contains("LCK")  || AlarmStatus.Contains("LTC"))
+                            if (AlarmStatus.Contains("OCI") || AlarmStatus.Contains("AIS") || AlarmStatus.Contains("LCK") || AlarmStatus.Contains("LTC"))
                             {
                                 richTextEnd.AppendText(comSslot.Text + "/" + comSport.Text + "/" + comSts.Text + "/" + comtcm.Text + "告警：" + AlarmStatus + "  NOK" + "\r\n");
                             }
@@ -14072,7 +12453,7 @@ check760e.Checked == false)
                     Thread.Sleep(XHTime);
                 }
                 Thread.Sleep(XHTime);
-                if (comSNC.Text == "SNC-I"|| comSNC.Text == "SNC-N" || comSNC.Text == "SNC-S")
+                if (comSNC.Text == "SNC-I" || comSNC.Text == "SNC-N" || comSNC.Text == "SNC-S")
                 {
                     textlog.AppendText("\r\n" + "///////////////////////////保护组" + comSslot.Text + "/" + comSport.Text + "/" + comSts.Text + "状态查询/////////////////////////////////////////////" + "\r\n");
                     richTextEnd.AppendText("保护组状态查询：" + "\r\n");
@@ -14153,7 +12534,8 @@ check760e.Checked == false)
                         Thread.Sleep(XHTime);
                     }
                 }
-                if (comSNC.Text == "OCH") {
+                if (comSNC.Text == "OCH")
+                {
                     textlog.AppendText("\r\n" + "///////////////////////////保护组" + comSslot.Text + "/" + comSport.Text + "状态查询/////////////////////////////////////////////" + "\r\n");
                     richTextEnd.AppendText("保护组状态查询：" + "\r\n");
                     textguzhangmingling.Text = "show lpg";
@@ -14548,7 +12930,7 @@ check760e.Checked == false)
                     + "\r\n" + com760c.Text + ":  " + check760c.Checked
                     + "\r\n" + com760d.Text + ":  " + check760d.Checked
                     + "\r\n" + com760e.Text + ":  " + check760e.Checked
-                    + "\r\n" + com760f.Text + ":  " + check760f.Checked
+                    + "\r\n" + comuxc.Text + ":  " + checkuxc.Checked
                     + "\r\n" + comsysfile.Text + ":  " + checksysfile.Checked
                     + "\r\n" + comflash.Text + ":  " + checkflash.Checked
                     + "\r\n" + comyaffs.Text + ":  " + checkyaffs.Checked
@@ -14578,34 +12960,7 @@ check760e.Checked == false)
         {
             if (metroComreadoid.Text == "GET")
             {
-                //string host = metroTextgpnip.Text;
-                //string community = metroTextReadCommunity.Text;
-                //SimpleSnmp snmp = new SimpleSnmp(host, community);
-                //if (!snmp.Valid)
-                //{
-                //    MessageBox.Show("SNMP主机IP地址错误或者读写团体错误");
-                //    return;
-                //}
-                //Dictionary<Oid, AsnType> result = snmp.Get(SnmpVersion.Ver2, new string[] { metroTextoid.Text });
-                //if (result == null)
-                //{
-                //    MessageBox.Show("请求后未收到回复");
-                //    return;
-                //}
-                //foreach (KeyValuePair<Oid, AsnType> kvp in result)
-                //{
 
-                //    ListViewItem item = lv2.Items.Add((lv2.Items.Count + 1) + "");
-                //    item.SubItems.Add(host);
-                //    item.SubItems.Add(kvp.Key.ToString());
-                //    item.SubItems.Add(SnmpConstants.GetTypeName(kvp.Value.Type));
-                //    item.SubItems.Add(kvp.Value.ToString());
-                //    item.EnsureVisible();
-
-
-
-
-                //}
                 // SNMP团体名称 
                 OctetString community = new OctetString(metroTextReadCommunity.Text);
                 //定义代理参数类 
@@ -14663,7 +13018,7 @@ check760e.Checked == false)
                         item.SubItems.Add(result.Pdu.VbList.Count.ToString());
                         item.SubItems.Add(result.Pdu.VbList[0].Oid.ToString());
                         item.SubItems.Add(SnmpConstants.GetTypeName(result.Pdu.VbList[0].Value.Type));
-                        item.SubItems.Add(result.Pdu.VbList[0].Value.ToString());
+                        item.SubItems.Add(String.Join("", Regex.Split(result.Pdu.VbList[0].Value.ToString(), "\\s+", RegexOptions.IgnoreCase)));
                         string[] hex = Regex.Split(result.Pdu.VbList[0].Value.ToString(), "\\s+", RegexOptions.IgnoreCase);
                         if ((hex.Length >= 8) && (hex[0] == "07") || (hex[0] == "08"))
                         {
@@ -14688,135 +13043,174 @@ check760e.Checked == false)
                     }
 
                 }
+
+                //这是调用Snmp类的方法
+                //string R = Snmp.Get(metroTextgpnip.Text, metroTextReadCommunity.Text, 2000, 2, metroTextoid.Text);
+                //ListViewItem item = lv2.Items.Add((lv2.Items.Count + 1) + "");
+                //item.SubItems.Add(metroTextgpnip.Text);
+                //item.SubItems.Add(metroTextReadCommunity.Text);
+                //item.SubItems.Add("1");
+                //item.SubItems.Add(metroTextoid.Text);
+                //item.SubItems.Add("未查询");
+                //item.SubItems.Add(R);
+                //string[] hex = Regex.Split(R, "\\s+", RegexOptions.IgnoreCase);
+                //if ((hex.Length >= 8) && (hex[0] == "07") || (hex[0] == "08"))
+                //{
+                //    string a = hex[0];
+                //    string b = hex[1];
+                //    string year = int.Parse(a + b, NumberStyles.HexNumber).ToString();
+                //    string month = int.Parse(hex[2], NumberStyles.HexNumber).ToString();
+                //    string day = int.Parse(hex[3], NumberStyles.HexNumber).ToString();
+                //    string hour = int.Parse(hex[4], NumberStyles.HexNumber).ToString();
+                //    string min = int.Parse(hex[5], NumberStyles.HexNumber).ToString();
+                //    string sed = int.Parse(hex[6], NumberStyles.HexNumber).ToString();
+                //    string mil = int.Parse(hex[7], NumberStyles.HexNumber).ToString();
+                //    item.SubItems.Add(year + "-" + month + "-" + day + "," + hour + ":" + min + ":" + sed + ":" + mil);
+
+                //}
+                //item.EnsureVisible();
             }
             if (metroComreadoid.Text == "WALK")
             {
-                this.lv2.Items.Clear();  //只移除所有的项。
-                // SNMP community name
-                OctetString community = new OctetString(metroTextReadCommunity.Text);
-                // Define agent parameters class
-                AgentParameters param = new AgentParameters(SnmpVersion.Ver2, community, true);
-                // Set SNMP version to 2 (GET-BULK only works with SNMP ver 2 and 3)
-                // Construct the agent address object
-                // IpAddress class is easy to use here because
-                //  it will try to resolve constructor parameter if it doesn't
-                //  parse to an IP address
-                IpAddress agent = new IpAddress(metroTextgpnip.Text);
-                // Construct target
-                UdpTarget target = new UdpTarget((IPAddress)agent, 161, 2000, 1);
-                // Define Oid that is the root of the MIB
-                //  tree you wish to retrieve
-                Oid rootOid = new Oid(metroTextoid.Text); // ifDescr
-                                                          // This Oid represents last Oid returned by
-                                                          //  the SNMP agent
-                Oid lastOid = (Oid)rootOid.Clone();
-                // Pdu class used for all requests
-                Pdu pdu = new Pdu(PduType.GetBulk);
-                // In this example, set NonRepeaters value to 0
-                pdu.NonRepeaters = 0;
-                // MaxRepetitions tells the agent how many Oid/Value pairs to return
-                // in the response.
-                pdu.MaxRepetitions = 5;
-                // Loop through results
-                while (lastOid != null)
+
+                this.lv2.Items.Clear();
+                List<string[]> array = Snmp.Arry(metroTextgpnip.Text, metroTextReadCommunity.Text, 2000, 2, metroTextoid.Text);
+                lv2.BeginUpdate();
+                foreach (var row in array)
                 {
-                    // When Pdu class is first constructed, RequestId is set to 0
-                    // and during encoding id will be set to the random value
-                    // for subsequent requests, id will be set to a value that
-                    // needs to be incremented to have unique request ids for each
-                    // packet
-                    if (pdu.RequestId != 0)
-                    {
-                        pdu.RequestId += 1;
-                    }
-                    // Clear Oids from the Pdu class.
-                    pdu.VbList.Clear();
-                    // Initialize request PDU with the last retrieved Oid
-                    pdu.VbList.Add(lastOid);
-                    // Make SNMP request
-                    SnmpPacket result = null;
-                    try
-                    {
-                        result = target.Request(pdu, param);
-                    }
-                    catch (SnmpException ex)
-                    {
-                        MessageBox.Show(ex.Message);
-                        return;
-                    }
-                    // You should catch exceptions in the Request if using in real application.
-                    // If result is null then agent didn't reply or we couldn't parse the reply.
-                    if (result != null)
-                    {
-                        // ErrorStatus other then 0 is an error returned by
-                        // the Agent - see SnmpConstants for error definitions
-                        if (result.Pdu.ErrorStatus != 0)
-                        {
-                            // agent reported an error with the request
-                            MessageBox.Show(String.Format("SNMP回复错误！错误代码：{0}，错误索引：第 {1} 行 \r\n",
-                                FindDevType.FindErrorCode(result.Pdu.ErrorStatus),
-                                result.Pdu.ErrorIndex));
-                            lastOid = null;
-                            break;
-                        }
-                        else
-                        {
-                            // Walk through returned variable bindings
-                            foreach (Vb v in result.Pdu.VbList)
-                            {
-                                // Check that retrieved Oid is "child" of the root OID
-                                if (rootOid.IsRootOf(v.Oid))
-                                {
-                                    //Console.WriteLine("{0} ({1}): {2}",
-                                    //    v.Oid.ToString(),
-                                    //    SnmpConstants.GetTypeName(v.Value.Type),
-                                    //    v.Value.ToString());
-
-                                    ListViewItem item = lv2.Items.Add((lv2.Items.Count + 1) + "");
-                                    item.SubItems.Add(metroTextgpnip.Text);
-                                    item.SubItems.Add(metroTextReadCommunity.Text);
-                                    item.SubItems.Add(result.Pdu.VbList.Count.ToString());
-                                    item.SubItems.Add(v.Oid.ToString());
-                                    item.SubItems.Add(SnmpConstants.GetTypeName(v.Value.Type));
-                                    item.SubItems.Add(v.Value.ToString());
-                                    string[] hex = Regex.Split(result.Pdu.VbList[0].Value.ToString(), "\\s+", RegexOptions.IgnoreCase);
-                                    if ((hex.Length >= 8) && (hex[0] == "07") || (hex[0] == "08"))
-                                    {
-                                        string a = hex[0];
-                                        string b = hex[1];
-                                        string year = int.Parse(a + b, NumberStyles.HexNumber).ToString();
-                                        string month = int.Parse(hex[2], NumberStyles.HexNumber).ToString();
-                                        string day = int.Parse(hex[3], NumberStyles.HexNumber).ToString();
-                                        string hour = int.Parse(hex[4], NumberStyles.HexNumber).ToString();
-                                        string min = int.Parse(hex[5], NumberStyles.HexNumber).ToString();
-                                        string sed = int.Parse(hex[6], NumberStyles.HexNumber).ToString();
-                                        string mil = int.Parse(hex[7], NumberStyles.HexNumber).ToString();
-                                        item.SubItems.Add(year + "-" + month + "-" + day + "," + hour + ":" + min + ":" + sed + ":" + mil);
-
-                                    }
-                                    item.EnsureVisible();
-
-
-                                    if (v.Value.Type == SnmpConstants.SMI_ENDOFMIBVIEW)
-                                        lastOid = null;
-                                    else
-                                        lastOid = v.Oid;
-                                }
-                                else
-                                {
-                                    // we have reached the end of the requested
-                                    // MIB tree. Set lastOid to null and exit loop
-                                    lastOid = null;
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        MessageBox.Show("No response received from SNMP agent.");
-                    }
+                    ListViewItem item = new ListViewItem((lv2.Items.Count + 1).ToString());
+                    item.SubItems.AddRange(row);
+                    lv2.Items.Add(item);
                 }
-                target.Close();
+                lv2.EndUpdate();
+
+
+                //    this.lv2.Items.Clear();  //只移除所有的项。
+                //    // SNMP community name
+                //    OctetString community = new OctetString(metroTextReadCommunity.Text);
+                //    // Define agent parameters class
+                //    AgentParameters param = new AgentParameters(SnmpVersion.Ver2, community, true);
+                //    // Set SNMP version to 2 (GET-BULK only works with SNMP ver 2 and 3)
+                //    // Construct the agent address object
+                //    // IpAddress class is easy to use here because
+                //    //  it will try to resolve constructor parameter if it doesn't
+                //    //  parse to an IP address
+                //    IpAddress agent = new IpAddress(metroTextgpnip.Text);
+                //    // Construct target
+                //    UdpTarget target = new UdpTarget((IPAddress)agent, 161, 2000, 1);
+                //    // Define Oid that is the root of the MIB
+                //    //  tree you wish to retrieve
+                //    Oid rootOid = new Oid(metroTextoid.Text); // ifDescr
+                //                                              // This Oid represents last Oid returned by
+                //                                              //  the SNMP agent
+                //    Oid lastOid = (Oid)rootOid.Clone();
+                //    // Pdu class used for all requests
+                //    Pdu pdu = new Pdu(PduType.GetBulk);
+                //    // In this example, set NonRepeaters value to 0
+                //    pdu.NonRepeaters = 0;
+                //    // MaxRepetitions tells the agent how many Oid/Value pairs to return
+                //    // in the response.
+                //    pdu.MaxRepetitions = 5;
+                //    // Loop through results
+                //    while (lastOid != null)
+                //    {
+                //        // When Pdu class is first constructed, RequestId is set to 0
+                //        // and during encoding id will be set to the random value
+                //        // for subsequent requests, id will be set to a value that
+                //        // needs to be incremented to have unique request ids for each
+                //        // packet
+                //        if (pdu.RequestId != 0)
+                //        {
+                //            pdu.RequestId += 1;
+                //        }
+                //        // Clear Oids from the Pdu class.
+                //        pdu.VbList.Clear();
+                //        // Initialize request PDU with the last retrieved Oid
+                //        pdu.VbList.Add(lastOid);
+                //        // Make SNMP request
+                //        SnmpPacket result = null;
+                //        try
+                //        {
+                //            result = target.Request(pdu, param);
+                //        }
+                //        catch (SnmpException ex)
+                //        {
+                //            MessageBox.Show(ex.Message);
+                //            return;
+                //        }
+                //        // You should catch exceptions in the Request if using in real application.
+                //        // If result is null then agent didn't reply or we couldn't parse the reply.
+                //        if (result != null)
+                //        {
+                //            // ErrorStatus other then 0 is an error returned by
+                //            // the Agent - see SnmpConstants for error definitions
+                //            if (result.Pdu.ErrorStatus != 0)
+                //            {
+                //                // agent reported an error with the request
+                //                MessageBox.Show(String.Format("SNMP回复错误！错误代码：{0}，错误索引：第 {1} 行 \r\n",
+                //                    FindDevType.FindErrorCode(result.Pdu.ErrorStatus),
+                //                    result.Pdu.ErrorIndex));
+                //                lastOid = null;
+                //                break;
+                //            }
+                //            else
+                //            {
+                //                // Walk through returned variable bindings
+                //                foreach (Vb v in result.Pdu.VbList)
+                //                {
+                //                    // Check that retrieved Oid is "child" of the root OID
+                //                    if (rootOid.IsRootOf(v.Oid))
+                //                    {
+                //                        //Console.WriteLine("{0} ({1}): {2}",
+                //                        //    v.Oid.ToString(),
+                //                        //    SnmpConstants.GetTypeName(v.Value.Type),
+                //                        //    v.Value.ToString());
+
+                //                        ListViewItem item = lv2.Items.Add((lv2.Items.Count + 1) + "");
+                //                        item.SubItems.Add(metroTextgpnip.Text);
+                //                        item.SubItems.Add(metroTextReadCommunity.Text);
+                //                        item.SubItems.Add(result.Pdu.VbList.Count.ToString());
+                //                        item.SubItems.Add(v.Oid.ToString());
+                //                        item.SubItems.Add(SnmpConstants.GetTypeName(v.Value.Type));
+                //                        item.SubItems.Add(v.Value.ToString());
+                //                        string[] hex = Regex.Split(result.Pdu.VbList[0].Value.ToString(), "\\s+", RegexOptions.IgnoreCase);
+                //                        if ((hex.Length >= 8) && (hex[0] == "07") || (hex[0] == "08"))
+                //                        {
+                //                            string a = hex[0];
+                //                            string b = hex[1];
+                //                            string year = int.Parse(a + b, NumberStyles.HexNumber).ToString();
+                //                            string month = int.Parse(hex[2], NumberStyles.HexNumber).ToString();
+                //                            string day = int.Parse(hex[3], NumberStyles.HexNumber).ToString();
+                //                            string hour = int.Parse(hex[4], NumberStyles.HexNumber).ToString();
+                //                            string min = int.Parse(hex[5], NumberStyles.HexNumber).ToString();
+                //                            string sed = int.Parse(hex[6], NumberStyles.HexNumber).ToString();
+                //                            string mil = int.Parse(hex[7], NumberStyles.HexNumber).ToString();
+                //                            item.SubItems.Add(year + "-" + month + "-" + day + "," + hour + ":" + min + ":" + sed + ":" + mil);
+
+                //                        }
+                //                        item.EnsureVisible();
+
+
+                //                        if (v.Value.Type == SnmpConstants.SMI_ENDOFMIBVIEW)
+                //                            lastOid = null;
+                //                        else
+                //                            lastOid = v.Oid;
+                //                    }
+                //                    else
+                //                    {
+                //                        // we have reached the end of the requested
+                //                        // MIB tree. Set lastOid to null and exit loop
+                //                        lastOid = null;
+                //                    }
+                //                }
+                //            }
+                //        }
+                //        else
+                //        {
+                //            MessageBox.Show("No response received from SNMP agent.");
+                //        }
+                //    }
+                //    target.Close();
             }
 
 
@@ -14954,7 +13348,7 @@ check760e.Checked == false)
                     result = target.Request(pdu, param);
 
                 }
-                catch (SnmpException ex)
+                catch 
                 {
                     timer1.Stop();
 
@@ -15014,7 +13408,8 @@ check760e.Checked == false)
                                 toolStripStatusLabeltem.ForeColor = Color.Red;
                             }
                         }
-                        catch (Exception ex) {
+                        catch (Exception ex)
+                        {
                             timer1.Stop();
 
                             textDOS.AppendText(ex.Message);
@@ -15071,7 +13466,7 @@ check760e.Checked == false)
             {
                 result = target.Request(pdu, param);
             }
-            catch (SnmpException ex)
+            catch 
             {
                 // MessageBox.Show(ex.Message);
             }
@@ -15083,7 +13478,6 @@ check760e.Checked == false)
                 //代理-见SnmpConstants为错误定义
                 if (result.Pdu.ErrorStatus != 0)
                 {
-                    string b = "";
                     //代理报告与所述请求的错误 
                     MessageBox.Show(String.Format("SNMP回复错误！错误代码：{0}，错误索引：第{1}行\r\n",
                             FindDevType.FindErrorCode(result.Pdu.ErrorStatus),
@@ -15126,6 +13520,7 @@ check760e.Checked == false)
             target = new UdpTarget((IPAddress)new IpAddress(metroTextgpnip.Text));
             // Create a SET PDU
             pdu = new Pdu(PduType.Set);
+
             // Set sysLocation.0 to a new string
             if (WriteType == "OctetString")
             {
@@ -15162,7 +13557,7 @@ check760e.Checked == false)
                 // Send request and wait for response
                 response = target.Request(pdu, aparam) as SnmpV2Packet;
             }
-            catch (Exception ex)
+            catch 
             {
                 // If exception happens, it will be returned here
                 MessageBox.Show("请求后未收到回复");
@@ -15257,7 +13652,7 @@ check760e.Checked == false)
                 {
                     socket.Bind(ipep);
                 }
-                catch (Exception ex)
+                catch 
                 {
 
                 }
@@ -15275,7 +13670,7 @@ check760e.Checked == false)
                 {
                     inlen = socket.ReceiveFrom(indata, ref inep);
                 }
-                catch (Exception ex)
+                catch 
                 {
                     // MessageBox.Show("Exception {0}", ex.Message);
                     inlen = -1;
@@ -15409,7 +13804,7 @@ check760e.Checked == false)
 
         private void metroButConSql_Click(object sender, EventArgs e)
         {
-            String connetStr = "server=hunan128.com;port=3306;user=root;password=Hunan7420716.; database=mib;charset=utf8;";
+            String connetStr = "server=dx.hunan128.com;port=3306;user=mib;password=Hunan7420716.; database=mib;charset=utf8;";
             // server=127.0.0.1/localhost 代表本机，端口号port默认是3306可以不写
             MySqlConnection conn = new MySqlConnection(connetStr);
             try
@@ -15445,7 +13840,7 @@ check760e.Checked == false)
 
         private void metroComTableClass_SelectedIndexChanged(object sender, EventArgs e)
         {
-            String connetStr = "server=hunan128.com;port=3306;user=root;password=Hunan7420716.; database=mib;charset=utf8;";
+            String connetStr = "server=dx.hunan128.com;port=3306;user=mib;password=Hunan7420716.; database=mib;charset=utf8;";
             // server=127.0.0.1/localhost 代表本机，端口号port默认是3306可以不写
             MySqlConnection conn = new MySqlConnection(connetStr);
             try
@@ -15482,7 +13877,7 @@ check760e.Checked == false)
 
         private void metroComTableName_SelectedIndexChanged(object sender, EventArgs e)
         {
-            String connetStr = "server=hunan128.com;port=3306;user=root;password=Hunan7420716.; database=mib;charset=utf8;";
+            String connetStr = "server=dx.hunan128.com;port=3306;user=mib;password=Hunan7420716.; database=mib;charset=utf8;";
             // server=127.0.0.1/localhost 代表本机，端口号port默认是3306可以不写
             MySqlConnection conn = new MySqlConnection(connetStr);
             try
@@ -15519,7 +13914,7 @@ check760e.Checked == false)
 
         private void metroComOidName_SelectedIndexChanged(object sender, EventArgs e)
         {
-            String connetStr = "server=hunan128.com;port=3306;user=root;password=Hunan7420716.; database=mib;charset=utf8;";
+            String connetStr = "server=dx.hunan128.com;port=3306;user=mib;password=Hunan7420716.; database=mib;charset=utf8;";
             // server=127.0.0.1/localhost 代表本机，端口号port默认是3306可以不写
             MySqlConnection conn = new MySqlConnection(connetStr);
             try
@@ -15585,6 +13980,7 @@ check760e.Checked == false)
         }
         private void datagridviewcreat()
         {
+
             if (checkapp.Checked == true)
             {
                 if (DGVSTATUS.Columns["APP"] == null)
@@ -15597,6 +13993,23 @@ check760e.Checked == false)
                     this.DGVSTATUS.Columns.Remove("APP");
                     this.DGVSTATUS.Columns.Add("APP", "APP");
                 }
+                this.DGVSTATUS.Columns["APP"].FillWeight = 50;
+                DGVSTATUS.Columns["APP"].SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
+            if (checkapp2.Checked == true)
+            {
+                if (DGVSTATUS.Columns["APP2"] == null)
+                {
+
+                    this.DGVSTATUS.Columns.Add("APP2", "APP2");
+                }
+                else
+                {
+                    this.DGVSTATUS.Columns.Remove("APP2");
+                    this.DGVSTATUS.Columns.Add("APP2", "APP2");
+                }
+                this.DGVSTATUS.Columns["APP2"].FillWeight = 50;
+                DGVSTATUS.Columns["APP2"].SortMode = DataGridViewColumnSortMode.NotSortable;
             }
             if (checkcode.Checked == true)
             {
@@ -15610,6 +14023,68 @@ check760e.Checked == false)
                     this.DGVSTATUS.Columns.Remove("CODE");
                     this.DGVSTATUS.Columns.Add("CODE", "CODE");
                 }
+                this.DGVSTATUS.Columns["CODE"].FillWeight = 50;
+                DGVSTATUS.Columns["CODE"].SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
+            if (checkcode2.Checked == true)
+            {
+                if (DGVSTATUS.Columns["CODE2"] == null)
+                {
+
+                    this.DGVSTATUS.Columns.Add("CODE2", "CODE2");
+                }
+                else
+                {
+                    this.DGVSTATUS.Columns.Remove("CODE2");
+                    this.DGVSTATUS.Columns.Add("CODE2", "CODE2");
+                }
+                this.DGVSTATUS.Columns["CODE2"].FillWeight = 50;
+                DGVSTATUS.Columns["CODE2"].SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
+            if (checkcode3.Checked == true)
+            {
+                if (DGVSTATUS.Columns["CODE3"] == null)
+                {
+
+                    this.DGVSTATUS.Columns.Add("CODE3", "CODE3");
+                }
+                else
+                {
+                    this.DGVSTATUS.Columns.Remove("CODE3");
+                    this.DGVSTATUS.Columns.Add("CODE3", "CODE3");
+                }
+                this.DGVSTATUS.Columns["CODE3"].FillWeight = 50;
+                DGVSTATUS.Columns["CODE3"].SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
+            if (checkcode4.Checked == true)
+            {
+                if (DGVSTATUS.Columns["CODE4"] == null)
+                {
+
+                    this.DGVSTATUS.Columns.Add("CODE4", "CODE4");
+                }
+                else
+                {
+                    this.DGVSTATUS.Columns.Remove("CODE4");
+                    this.DGVSTATUS.Columns.Add("CODE4", "CODE4");
+                }
+                this.DGVSTATUS.Columns["CODE4"].FillWeight = 50;
+                DGVSTATUS.Columns["CODE4"].SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
+            if (checksdn.Checked == true)
+            {
+                if (DGVSTATUS.Columns["SDN"] == null)
+                {
+
+                    this.DGVSTATUS.Columns.Add("SDN", "SDN");
+                }
+                else
+                {
+                    this.DGVSTATUS.Columns.Remove("SDN");
+                    this.DGVSTATUS.Columns.Add("SDN", "SDN");
+                }
+                this.DGVSTATUS.Columns["SDN"].FillWeight = 50;
+                DGVSTATUS.Columns["SDN"].SortMode = DataGridViewColumnSortMode.NotSortable;
             }
             if (checknms.Checked == true)
             {
@@ -15623,6 +14098,8 @@ check760e.Checked == false)
                     this.DGVSTATUS.Columns.Remove("NMS");
                     this.DGVSTATUS.Columns.Add("NMS", "NMS");
                 }
+                this.DGVSTATUS.Columns["NMS"].FillWeight = 50;
+                DGVSTATUS.Columns["NMS"].SortMode = DataGridViewColumnSortMode.NotSortable;
             }
             if (checksw.Checked == true)
             {
@@ -15636,6 +14113,8 @@ check760e.Checked == false)
                     this.DGVSTATUS.Columns.Remove("SW");
                     this.DGVSTATUS.Columns.Add("SW", "SW");
                 }
+                this.DGVSTATUS.Columns["SW"].FillWeight = 50;
+                DGVSTATUS.Columns["SW"].SortMode = DataGridViewColumnSortMode.NotSortable;
             }
             if (check760s.Checked == true)
             {
@@ -15649,6 +14128,8 @@ check760e.Checked == false)
                     this.DGVSTATUS.Columns.Remove("760S");
                     this.DGVSTATUS.Columns.Add("760S", "760S");
                 }
+                this.DGVSTATUS.Columns["760S"].FillWeight = 50;
+                DGVSTATUS.Columns["760S"].SortMode = DataGridViewColumnSortMode.NotSortable;
             }
             if (check760b.Checked == true)
             {
@@ -15662,6 +14143,8 @@ check760e.Checked == false)
                     this.DGVSTATUS.Columns.Remove("760B");
                     this.DGVSTATUS.Columns.Add("760B", "760B");
                 }
+                this.DGVSTATUS.Columns["760B"].FillWeight = 50;
+                DGVSTATUS.Columns["760B"].SortMode = DataGridViewColumnSortMode.NotSortable;
             }
             if (check760c.Checked == true)
             {
@@ -15675,6 +14158,8 @@ check760e.Checked == false)
                     this.DGVSTATUS.Columns.Remove("760C");
                     this.DGVSTATUS.Columns.Add("760C", "760C");
                 }
+                this.DGVSTATUS.Columns["760C"].FillWeight = 50;
+                DGVSTATUS.Columns["760C"].SortMode = DataGridViewColumnSortMode.NotSortable;
             }
             if (check760d.Checked == true)
             {
@@ -15688,6 +14173,8 @@ check760e.Checked == false)
                     this.DGVSTATUS.Columns.Remove("760D");
                     this.DGVSTATUS.Columns.Add("760D", "760D");
                 }
+                this.DGVSTATUS.Columns["760D"].FillWeight = 50;
+                DGVSTATUS.Columns["760D"].SortMode = DataGridViewColumnSortMode.NotSortable;
             }
             if (check760e.Checked == true)
             {
@@ -15701,19 +14188,113 @@ check760e.Checked == false)
                     this.DGVSTATUS.Columns.Remove("760E");
                     this.DGVSTATUS.Columns.Add("760E", "760E");
                 }
+                this.DGVSTATUS.Columns["760E"].FillWeight = 50;
+                DGVSTATUS.Columns["760E"].SortMode = DataGridViewColumnSortMode.NotSortable;
             }
-            if (check760f.Checked == true)
+            if (checkuxc.Checked == true)
             {
-                if (DGVSTATUS.Columns["760F"] == null)
+                if (DGVSTATUS.Columns["UXC"] == null)
                 {
 
-                    this.DGVSTATUS.Columns.Add("760F", "760F");
+                    this.DGVSTATUS.Columns.Add("UXC", "UXC");
                 }
                 else
                 {
-                    this.DGVSTATUS.Columns.Remove("760F");
-                    this.DGVSTATUS.Columns.Add("760F", "760F");
+                    this.DGVSTATUS.Columns.Remove("UXC");
+                    this.DGVSTATUS.Columns.Add("UXC", "UXC");
                 }
+                this.DGVSTATUS.Columns["UXC"].FillWeight = 50;
+                DGVSTATUS.Columns["UXC"].SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
+            if (check7610.Checked == true)
+            {
+                if (DGVSTATUS.Columns["7610"] == null)
+                {
+
+                    this.DGVSTATUS.Columns.Add("7610", "7610");
+                }
+                else
+                {
+                    this.DGVSTATUS.Columns.Remove("7610");
+                    this.DGVSTATUS.Columns.Add("7610", "7610");
+                }
+                this.DGVSTATUS.Columns["7610"].FillWeight = 50;
+                DGVSTATUS.Columns["7610"].SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
+            if (check7611.Checked == true)
+            {
+                if (DGVSTATUS.Columns["7611"] == null)
+                {
+
+                    this.DGVSTATUS.Columns.Add("7611", "7611");
+                }
+                else
+                {
+                    this.DGVSTATUS.Columns.Remove("7611");
+                    this.DGVSTATUS.Columns.Add("7611", "7611");
+                }
+                this.DGVSTATUS.Columns["7611"].FillWeight = 50;
+                DGVSTATUS.Columns["7611"].SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
+            if (check7612.Checked == true)
+            {
+                if (DGVSTATUS.Columns["7612"] == null)
+                {
+
+                    this.DGVSTATUS.Columns.Add("7612", "7612");
+                }
+                else
+                {
+                    this.DGVSTATUS.Columns.Remove("7612");
+                    this.DGVSTATUS.Columns.Add("7612", "7612");
+                }
+                this.DGVSTATUS.Columns["7612"].FillWeight = 50;
+                DGVSTATUS.Columns["7612"].SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
+            if (check7613.Checked == true)
+            {
+                if (DGVSTATUS.Columns["7613"] == null)
+                {
+
+                    this.DGVSTATUS.Columns.Add("7613", "7613");
+                }
+                else
+                {
+                    this.DGVSTATUS.Columns.Remove("7613");
+                    this.DGVSTATUS.Columns.Add("7613", "7613");
+                }
+                this.DGVSTATUS.Columns["7613"].FillWeight = 50;
+                DGVSTATUS.Columns["7613"].SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
+            if (check7614.Checked == true)
+            {
+                if (DGVSTATUS.Columns["7614"] == null)
+                {
+
+                    this.DGVSTATUS.Columns.Add("7614", "7614");
+                }
+                else
+                {
+                    this.DGVSTATUS.Columns.Remove("7614");
+                    this.DGVSTATUS.Columns.Add("7614", "7614");
+                }
+                this.DGVSTATUS.Columns["7614"].FillWeight = 50;
+                DGVSTATUS.Columns["7614"].SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
+            if (check7616.Checked == true)
+            {
+                if (DGVSTATUS.Columns["7616"] == null)
+                {
+
+                    this.DGVSTATUS.Columns.Add("7616", "7616");
+                }
+                else
+                {
+                    this.DGVSTATUS.Columns.Remove("7616");
+                    this.DGVSTATUS.Columns.Add("7616", "7616");
+                }
+                this.DGVSTATUS.Columns["7616"].FillWeight = 50;
+                DGVSTATUS.Columns["7616"].SortMode = DataGridViewColumnSortMode.NotSortable;
             }
             if (checksysfile.Checked == true)
             {
@@ -15727,6 +14308,53 @@ check760e.Checked == false)
                     this.DGVSTATUS.Columns.Remove("SysFile");
                     this.DGVSTATUS.Columns.Add("SysFile", "SysFile");
                 }
+                this.DGVSTATUS.Columns["SysFile"].FillWeight = 50;
+                DGVSTATUS.Columns["SysFile"].SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
+            if (checkvoss.Checked == true)
+            {
+                if (DGVSTATUS.Columns["VOSS"] == null)
+                {
+
+                    this.DGVSTATUS.Columns.Add("VOSS", "VOSS");
+                }
+                else
+                {
+                    this.DGVSTATUS.Columns.Remove("VOSS");
+                    this.DGVSTATUS.Columns.Add("VOSS", "VOSS");
+                }
+                this.DGVSTATUS.Columns["VOSS"].FillWeight = 50;
+                DGVSTATUS.Columns["VOSS"].SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
+            if (checkrebootos.Checked == true)
+            {
+                if (DGVSTATUS.Columns["REBOOTOS"] == null)
+                {
+
+                    this.DGVSTATUS.Columns.Add("REBOOTOS", "REBOOTOS");
+                }
+                else
+                {
+                    this.DGVSTATUS.Columns.Remove("REBOOTOS");
+                    this.DGVSTATUS.Columns.Add("REBOOTOS", "REBOOTOS");
+                }
+                this.DGVSTATUS.Columns["REBOOTOS"].FillWeight = 50;
+                DGVSTATUS.Columns["REBOOTOS"].SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
+            if (checkcpld.Checked == true)
+            {
+                if (DGVSTATUS.Columns["CPLD"] == null)
+                {
+
+                    this.DGVSTATUS.Columns.Add("CPLD", "CPLD");
+                }
+                else
+                {
+                    this.DGVSTATUS.Columns.Remove("CPLD");
+                    this.DGVSTATUS.Columns.Add("CPLD", "CPLD");
+                }
+                this.DGVSTATUS.Columns["CPLD"].FillWeight = 50;
+                DGVSTATUS.Columns["CPLD"].SortMode = DataGridViewColumnSortMode.NotSortable;
             }
             if (checkflash.Checked == true)
             {
@@ -15740,6 +14368,8 @@ check760e.Checked == false)
                     this.DGVSTATUS.Columns.Remove("FLASH");
                     this.DGVSTATUS.Columns.Add("FLASH", "FLASH");
                 }
+                this.DGVSTATUS.Columns["FLASH"].FillWeight = 50;
+                DGVSTATUS.Columns["FLASH"].SortMode = DataGridViewColumnSortMode.NotSortable;
             }
             if (checkyaffs.Checked == true)
             {
@@ -15753,6 +14383,8 @@ check760e.Checked == false)
                     this.DGVSTATUS.Columns.Remove("YAFFS");
                     this.DGVSTATUS.Columns.Add("YAFFS", "YAFFS");
                 }
+                this.DGVSTATUS.Columns["YAFFS"].FillWeight = 50;
+                DGVSTATUS.Columns["YAFFS"].SortMode = DataGridViewColumnSortMode.NotSortable;
             }
             if (checkconfig.Checked == true)
             {
@@ -15766,6 +14398,8 @@ check760e.Checked == false)
                     this.DGVSTATUS.Columns.Remove("Config");
                     this.DGVSTATUS.Columns.Add("Config", "Config");
                 }
+                this.DGVSTATUS.Columns["Config"].FillWeight = 50;
+                DGVSTATUS.Columns["Config"].SortMode = DataGridViewColumnSortMode.NotSortable;
             }
             if (checkdb.Checked == true)
             {
@@ -15779,6 +14413,8 @@ check760e.Checked == false)
                     this.DGVSTATUS.Columns.Remove("Db");
                     this.DGVSTATUS.Columns.Add("Db", "Db");
                 }
+                this.DGVSTATUS.Columns["Db"].FillWeight = 50;
+                DGVSTATUS.Columns["Db"].SortMode = DataGridViewColumnSortMode.NotSortable;
             }
             if (checkslotconfig.Checked == true)
             {
@@ -15792,54 +14428,14 @@ check760e.Checked == false)
                     this.DGVSTATUS.Columns.Remove("SlotConfig");
                     this.DGVSTATUS.Columns.Add("SlotConfig", "SlotConfig");
                 }
+                this.DGVSTATUS.Columns["SlotConfig"].FillWeight = 50;
+                DGVSTATUS.Columns["SlotConfig"].SortMode = DataGridViewColumnSortMode.NotSortable;
             }
 
 
 
         }
-        private void DataGridViewCreeatGuding()
-        {
 
-            if (DGVSTATUS.Columns["升级优先级"] == null)
-            {
-
-                this.DGVSTATUS.Columns.Add("升级优先级", "升级优先级");
-            }
-            else
-            {
-                this.DGVSTATUS.Columns.Remove("升级优先级");
-                this.DGVSTATUS.Columns.Add("升级优先级", "升级优先级");
-            }
-            if (DGVSTATUS.Columns["ip地址"] == null)
-            {
-
-                this.DGVSTATUS.Columns.Add("ip地址", "ip地址");
-            }
-            else
-            {
-                this.DGVSTATUS.Columns.Remove("ip地址");
-                this.DGVSTATUS.Columns.Add("ip地址", "ip地址");
-            }
-            if (DGVSTATUS.Columns["FTP操作命令"] == null)
-            {
-
-                this.DGVSTATUS.Columns.Add("FTP操作命令", "FTP操作命令");
-            }
-            else
-            {
-                this.DGVSTATUS.Columns.Remove("FTP操作命令");
-                this.DGVSTATUS.Columns.Add("FTP操作命令", "FTP操作命令");
-            }
-            if (DGVSTATUS.Columns["重启设备"] == null)
-            {
-                DataGridViewCheckBoxColumn newColumn = new DataGridViewCheckBoxColumn
-                {
-                    Name = "重启设备",
-                    HeaderText = "重启设备"
-                };
-                DGVSTATUS.Columns.Add(newColumn);
-            }
-        }
         private void buttbatchdownload_Click(object sender, EventArgs e)
         {
             LoadCountsum = 0;
@@ -15873,15 +14469,24 @@ check760e.Checked == false)
                 DialogResult dr = MessageBox.Show("是否确认 升级如下设备？\r\n" + shengjiip + "\r\n一共：" + LoadCountsum.ToString() + "台设备", "提示", MessageBoxButtons.YesNo);
                 if (dr == DialogResult.Yes)
                 {
+                    DialogResult dr1 = MessageBox.Show("是否确认保存数据config/slot/db？", "提示", MessageBoxButtons.YesNo);
+                    if (dr1 == DialogResult.Yes)
+                    {
+                        save = true;
+                    }
+                    if (dr1 == DialogResult.No)
+                    {
+                        save = false;
+                    }
                     // DGVSTATUS.DataSource = null;
                     //DGVSTATUS.Rows.Clear();
                     ftpCtrlFlagID = "2";
                     int i = DGVSTATUS.ColumnCount;
                     //MessageBox.Show(i.ToString());
-                    for (int a = 10; a < i; a++)
+                    for (int a = 9; a < i; a++)
                     {
                         // MessageBox.Show(a.ToString());
-                        DGVSTATUS.Columns.RemoveAt(10);
+                        DGVSTATUS.Columns.RemoveAt(9);
 
 
                     }
@@ -15893,6 +14498,7 @@ check760e.Checked == false)
                     ParameterizedThreadStart p = new ParameterizedThreadStart(Xianchengchi);
                     Thread t = new Thread(p);
                     t.Start(task);
+
                     buttbatchdownload.Text = "批量重启";
                 }
                 if (dr == DialogResult.No)
@@ -15908,7 +14514,7 @@ check760e.Checked == false)
 
                 for (int i = 0; i < DGVSTATUS.Rows.Count; i++)
                 {
-                    if ((bool)DGVSTATUS.Rows[i].Cells["重启选择"].EditedFormattedValue == true)
+                    if ((bool)DGVSTATUS.Rows[i].Cells["重启"].EditedFormattedValue == true)
                     {
                         string asd = DGVSTATUS.Rows[i].Cells["ip地址"].Value.ToString();
                         chognqiip = chognqiip + asd + "\r\n";     //设备IP地址
@@ -15926,8 +14532,8 @@ check760e.Checked == false)
                         DGVSTATUS.Rows[i].Cells["优先级"].Value = a;
 
                     }
-                    DGVSTATUS.Sort(DGVSTATUS.Columns[2], ListSortDirection.Ascending);
-                    //对重启选择优先级进行排序
+                    DGVSTATUS.Sort(DGVSTATUS.Columns["优先级"], ListSortDirection.Ascending);
+                    //对重启优先级进行排序
                     if (DGVSTATUS.Columns["重启设备"] == null)
                     {
 
@@ -15963,9 +14569,13 @@ check760e.Checked == false)
                 {
                     ThreadPool.QueueUserWorkItem(new WaitCallback(MibFtpTransentFile), i.ToString());
                 }
-                if (obj.ToString() == "reboot" && (bool)DGVSTATUS.Rows[i].Cells["重启选择"].EditedFormattedValue == true)
+                if (obj.ToString() == "reboot" && (bool)DGVSTATUS.Rows[i].Cells["重启"].EditedFormattedValue == true)
                 {
                     ThreadPool.QueueUserWorkItem(new WaitCallback(MibReboot), i.ToString());
+                }
+                if (obj.ToString() == "checkfile" && (bool)DGVSTATUS.Rows[i].Cells["执行"].EditedFormattedValue == true)
+                {
+                    ThreadPool.QueueUserWorkItem(new WaitCallback(Checkfile), i.ToString());
                 }
             }
         }
@@ -15988,8 +14598,8 @@ check760e.Checked == false)
                 if (pingReply.Status == IPStatus.Success)
                 {
                     link = true;
-                    DGVSTATUS.Rows[i].Cells["ping测试"].Value = "OK";
-                    DGVSTATUS.Rows[i].Cells["ping测试"].Style.BackColor = Color.GreenYellow;
+                    DGVSTATUS.Rows[i].Cells["ping"].Value = "OK";
+                    DGVSTATUS.Rows[i].Cells["ping"].Style.BackColor = Color.GreenYellow;
 
                     break;
                 }
@@ -15997,9 +14607,9 @@ check760e.Checked == false)
             }
             if (link == false)
             {
-                DGVSTATUS.Rows[i].Cells["ping测试"].Value = "NOK";
-                DGVSTATUS.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString("HH:mm:ss");
-                DGVSTATUS.Rows[i].Cells["ping测试"].Style.BackColor = Color.Yellow;
+                DGVSTATUS.Rows[i].Cells["ping"].Value = "NOK";
+                
+                DGVSTATUS.Rows[i].Cells["ping"].Style.BackColor = Color.Yellow;
                 return;
             }
 
@@ -16031,22 +14641,23 @@ check760e.Checked == false)
         private void MibFtpTransentFile(object obj)
         {
 
-
+            MySocket mysocketftp = new MySocket();
 
             int i = int.Parse(obj.ToString());
             string ftpServerIP = comftpip.Text;     //FTP服务器IP
             string ftpUserName = textftpusr.Text;   //FTP用户名
             string ftpPassWord = textftppsd.Text;   //FTP密码
             string ftpFileName = comcode.Text;                //FTP服务器文件名称
-            string ftpLoadStatus = "";              //执行操作状态
+           // string ftpLoadStatus = "";              //执行操作状态
             string ftpLoadFile = "";                //文件类型
             string ftpDeviceFileName = "";          //自定义文件名称
             string gpnip = DGVSTATUS.Rows[i].Cells["ip地址"].Value.ToString();       //设备IP地址
             string readcommunity = textReadCommunity.Text;      //读团体
             string writecommunity = textWriteCommunity.Text;    //写团体
-            int pingcunt = 5;
-            string dcnautooid = "1.3.6.1.4.1.10072.6.2.6.8.0";
+            int pingcunt = 10;
+           // string dcnautooid = "1.3.6.1.4.1.10072.6.2.6.8.0";
             string saveoid = "1.3.6.1.4.1.10072.6.62.1.1.3.0";
+            //string snmpip = "1.3.6.1.4.1.10072.6.2.6.8.0";
             string ftpipoid = "1.3.6.1.4.1.10072.2.12.2.1.0";
             string ftpiusernameoid = "1.3.6.1.4.1.10072.2.12.2.2.0";
             string ftppassdwordoid = "1.3.6.1.4.1.10072.2.12.2.3.0";
@@ -16062,26 +14673,36 @@ check760e.Checked == false)
             //  pdu.VbList.Add("1.3.6.1.4.1.10072.6.2.2.1.1.6.1.17");   //17槽位主备状态
             //  pdu.VbList.Add("1.3.6.1.4.1.10072.6.2.2.1.1.6.1.18");   //18槽位主备状态
             string slot11oid = "1.3.6.1.4.1.10072.6.2.2.1.1.8.1.11";
+            string slot11type = "1.3.6.1.4.1.10072.6.2.2.1.1.4.1.11";
+            string slot12type = "1.3.6.1.4.1.10072.6.2.2.1.1.4.1.12";
+            string slot17type = "1.3.6.1.4.1.10072.6.2.2.1.1.4.1.17";
+            string slot18type = "1.3.6.1.4.1.10072.6.2.2.1.1.4.1.18";
             string slot12oid = "1.3.6.1.4.1.10072.6.2.2.1.1.8.1.12";
             string slot17oid = "1.3.6.1.4.1.10072.6.2.2.1.1.8.1.17";
             string slot18oid = "1.3.6.1.4.1.10072.6.2.2.1.1.8.1.18";
-            string runningcountstr = "";
-            int runningcount = 0;
-            DGVSTATUS.Rows[i].Cells["开始时间"].Value = DateTime.Now.ToString("HH:mm:ss");
-
+            string devtype = "1.3.6.1.4.1.10072.6.2.1.1.1.2.1"; //设备型号
+            string RuningUxcSwStr = "";
+            string RuningNmsStr = "";
+            string UxcSwNmsTypeStr = "";
+            int RuningUxcSwStrCount = 0;
+            int RuningNmsStrCount = 0;
+            int UxcTypeStrCount = 0;
+            int SwTypeStrCount = 0;
+            int NmsTypeStrCount = 0;
+            
             Ping ping = new Ping();
-            PingReply pingReply = ping.Send(gpnip, 120);
+            PingReply pingReply = ping.Send(gpnip, 2000);
             bool link = false;
             //判断请求是否超时
             for (int but = 0; but < pingcunt; but++)
             {
 
-                pingReply = ping.Send(gpnip, 120);
+                pingReply = ping.Send(gpnip, 2000);
                 if (pingReply.Status == IPStatus.Success)
                 {
                     link = true;
-                    DGVSTATUS.Rows[i].Cells["ping测试"].Value = "OK";
-                    DGVSTATUS.Rows[i].Cells["ping测试"].Style.BackColor = Color.GreenYellow;
+                    DGVSTATUS.Rows[i].Cells["ping"].Value = "OK";
+                    DGVSTATUS.Rows[i].Cells["ping"].Style.BackColor = Color.GreenYellow;
 
                     break;
                 }
@@ -16089,9 +14710,9 @@ check760e.Checked == false)
             }
             if (link == false)
             {
-                DGVSTATUS.Rows[i].Cells["ping测试"].Value = "NOK";
-                DGVSTATUS.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString("HH:mm:ss");
-                DGVSTATUS.Rows[i].Cells["ping测试"].Style.BackColor = Color.Yellow;
+                DGVSTATUS.Rows[i].Cells["ping"].Value = "NOK";
+                
+                DGVSTATUS.Rows[i].Cells["ping"].Style.BackColor = Color.Yellow;
                 lock (PiLiangShengJi)
                 {
                     LoadCountany++;
@@ -16101,188 +14722,299 @@ check760e.Checked == false)
                 return;
             }
 
-
-
-            // Prepare target
-            UdpTarget target = new UdpTarget((IPAddress)new IpAddress(gpnip), 161, 4000, 2);
-            // Create a SET PDU
             Pdu pdu = new Pdu(PduType.Set);
-            // Set sysLocation.0 to a new string
-            pdu.VbList.Add(new Oid(saveoid), new Integer32(2));
             AgentParameters aparam = new AgentParameters(SnmpVersion.Ver2, new OctetString(writecommunity), true);
             SnmpV2Packet response = null;
+            UdpTarget target = new UdpTarget((IPAddress)new IpAddress(gpnip), 161, 10000, 1);
 
-            try
+            if (save == true)
             {
-                // Send request and wait for response
-                response = target.Request(pdu, aparam) as SnmpV2Packet;
-            }
-            catch
-            {
-                // If exception happens, it will be returned here
-                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " save " + "请求后未收到回复" + "\r\n");
-                lock (PiLiangShengJi)
+                // Prepare target                // Create a SET PDU
+
+                // Set sysLocation.0 to a new string
+                pdu.VbList.Add(new Oid(saveoid), new Integer32(2));
+
+
+                try
                 {
-                    LoadCountany++;
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 累计完成设备数量：" + LoadCountany.ToString() + "\r\n");
-
+                    // Send request and wait for response
+                    response = target.Request(pdu, aparam) as SnmpV2Packet;
                 }
-                DGVSTATUS.Rows[i].Cells["保存"].Value = "没有应答";
-                DGVSTATUS.Rows[i].Cells["保存"].Style.BackColor = Color.Yellow;
-                DGVSTATUS.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString("HH:mm:ss");
-                return;
-
-            }
-            // Make sure we received a response
-            if (response == null)
-            {
-                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " save " + "发送错误的SNMP请求" + "\r\n");
-                lock (PiLiangShengJi)
+                catch
                 {
-                    LoadCountany++;
-                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 累计完成设备数量：" + LoadCountany.ToString() + "\r\n");
-
-                }
-                DGVSTATUS.Rows[i].Cells["保存"].Value = "应答空值";
-                DGVSTATUS.Rows[i].Cells["保存"].Style.BackColor = Color.Yellow;
-                DGVSTATUS.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString("HH:mm:ss");
-                return;
-
-            }
-            else
-            {
-                // Check if we received an SNMP error from the agent
-                if (response.Pdu.ErrorStatus != 0)
-                {
-                    textDOS.AppendText(String.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " save " + "SNMP回复错误！错误码 {0} 错误索引：第 {1} 行\r\n",
-                    FindDevType.FindErrorCode(response.Pdu.ErrorStatus), response.Pdu.ErrorIndex));
-
+                    // If exception happens, it will be returned here
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " save " + "请求后未收到回复" + "\r\n");
                     lock (PiLiangShengJi)
                     {
                         LoadCountany++;
                         textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 累计完成设备数量：" + LoadCountany.ToString() + "\r\n");
 
                     }
-                    DGVSTATUS.Rows[i].Cells["保存"].Value = FindDevType.FindErrorCode(response.Pdu.ErrorStatus);
+                    DGVSTATUS.Rows[i].Cells["保存"].Value = "请求超时";
                     DGVSTATUS.Rows[i].Cells["保存"].Style.BackColor = Color.Yellow;
-                    DGVSTATUS.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString("HH:mm:ss");
+                    
                     return;
+
+                }
+                // Make sure we received a response
+                if (response == null)
+                {
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " save " + "发送错误的SNMP请求" + "\r\n");
+                    lock (PiLiangShengJi)
+                    {
+                        LoadCountany++;
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 累计完成设备数量：" + LoadCountany.ToString() + "\r\n");
+
+                    }
+                    DGVSTATUS.Rows[i].Cells["保存"].Value = "返回null";
+                    DGVSTATUS.Rows[i].Cells["保存"].Style.BackColor = Color.Yellow;
+                    
+                    return;
+
                 }
                 else
                 {
-                    for (int a = 0; a <= XHCount; a++)
+                    // Check if we received an SNMP error from the agent
+                    if (response.Pdu.ErrorStatus != 0)
                     {
-                        pdu.Reset();
-                        pdu = new Pdu(PduType.Get);
-                        pdu.VbList.Add(saveoid);
-                        pdu.VbList.Add(appversionoid);
-                        pdu.VbList.Add(fpgaoid);
-                        pdu.VbList.Add(slot11oid);
-                        pdu.VbList.Add(slot12oid);
-                        pdu.VbList.Add(slot17oid);
-                        pdu.VbList.Add(slot18oid);
-                        aparam = new AgentParameters(SnmpVersion.Ver2, new OctetString(readcommunity), true);
-                        SnmpPacket result = null;
-                        try
+                        textDOS.AppendText(String.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " save " + "SNMP回复错误！错误码 {0} 错误索引：第 {1} 行\r\n",
+                        FindDevType.FindErrorCode(response.Pdu.ErrorStatus), response.Pdu.ErrorIndex));
+
+                        lock (PiLiangShengJi)
                         {
-                            result = target.Request(pdu, aparam);
-                        }
-                        catch (SnmpException ex)
-                        {
-                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " save " + ex.Message + "\r\n");
-                            DGVSTATUS.Rows[i].Cells["保存"].Value = "没有应答";
-                            DGVSTATUS.Rows[i].Cells["保存"].Style.BackColor = Color.Yellow;
-                            DGVSTATUS.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString("HH:mm:ss");
-                            break;
+                            LoadCountany++;
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 累计完成设备数量：" + LoadCountany.ToString() + "\r\n");
 
                         }
-                        if (result != null)
+                        DGVSTATUS.Rows[i].Cells["保存"].Value = FindDevType.FindErrorCode(response.Pdu.ErrorStatus);
+                        DGVSTATUS.Rows[i].Cells["保存"].Style.BackColor = Color.Yellow;
+                        
+                        return;
+                    }
+                    else
+                    {
+                        for (int a = 0; a <= XHCount; a++)
                         {
-                            if (result.Pdu.ErrorStatus != 0)
+                            pdu.Reset();
+                            pdu = new Pdu(PduType.Get);
+                            pdu.VbList.Add(saveoid);
+                            pdu.VbList.Add(appversionoid);
+                            pdu.VbList.Add(fpgaoid);
+                            pdu.VbList.Add(slot11oid);
+                            pdu.VbList.Add(slot12oid);
+                            pdu.VbList.Add(slot17oid);
+                            pdu.VbList.Add(slot18oid);
+                            pdu.VbList.Add(slot11type);
+                            pdu.VbList.Add(slot12type);
+                            pdu.VbList.Add(slot17type);
+                            pdu.VbList.Add(slot18type);
+                            pdu.VbList.Add(devtype);
+                            aparam = new AgentParameters(SnmpVersion.Ver2, new OctetString(readcommunity), true);
+                            SnmpPacket result = null;
+                            try
                             {
-                                textDOS.AppendText(String.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " save " + "SNMP回复错误！错误代码：{0} 错误索引：第 {1} 行\r\n", FindDevType.FindErrorCode(result.Pdu.ErrorStatus), result.Pdu.ErrorIndex));
-                                DGVSTATUS.Rows[i].Cells["保存"].Value = FindDevType.FindErrorCode(result.Pdu.ErrorStatus);
-                                DGVSTATUS.Rows[i].Cells["保存"].Style.BackColor = Color.Yellow;
-                                DGVSTATUS.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString("HH:mm:ss");
-                                break;
+                                result = target.Request(pdu, aparam);
                             }
-                            else
+                            catch (SnmpException ex)
                             {
-                                if (result.Pdu.VbList[0].Value.ToString() == "1")
+                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " save " + ex.Message + "\r\n");
+                                DGVSTATUS.Rows[i].Cells["保存"].Value = "请求超时";
+                                DGVSTATUS.Rows[i].Cells["保存"].Style.BackColor = Color.Yellow;
+                                
+                                break;
+
+                            }
+                            if (result != null)
+                            {
+                                if (result.Pdu.ErrorStatus != 0)
                                 {
-
-                                    DGVSTATUS.Rows[i].Cells["保存"].Value = "成功";
-                                    DGVSTATUS.Rows[i].Cells["保存"].Style.BackColor = Color.GreenYellow;
-                                    DGVSTATUS.Rows[i].Cells["当前版本"].Value = "APP:" + result.Pdu.VbList[1].Value.ToString() + " FPGA:" + result.Pdu.VbList[2].Value.ToString();
-                                    runningcountstr = result.Pdu.VbList[3].Value.ToString() + result.Pdu.VbList[4].Value.ToString() + result.Pdu.VbList[5].Value.ToString() + result.Pdu.VbList[6].Value.ToString();
-                                    textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 板卡运行状态11/12/17/18槽位 4-running 1-null ：" + runningcountstr + "\r\n"));
-                                    runningcount = runningcountstr.Split(new char[] { '4' }).Length - 1;
-
-
+                                    textDOS.AppendText(String.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " save " + "SNMP回复错误！错误代码：{0} 错误索引：第 {1} 行\r\n", FindDevType.FindErrorCode(result.Pdu.ErrorStatus), result.Pdu.ErrorIndex));
+                                    DGVSTATUS.Rows[i].Cells["保存"].Value = FindDevType.FindErrorCode(result.Pdu.ErrorStatus);
+                                    DGVSTATUS.Rows[i].Cells["保存"].Style.BackColor = Color.Yellow;
+                                    
                                     break;
                                 }
-                                if (result.Pdu.VbList[0].Value.ToString() == "3")
+                                else
                                 {
-                                    DGVSTATUS.Rows[i].Cells["保存"].Value = "清空";
-                                }
-                                if (result.Pdu.VbList[0].Value.ToString() == "4")
-                                {
-                                    DGVSTATUS.Rows[i].Cells["保存"].Value = "执行中";
-                                }
-                                if (result.Pdu.VbList[0].Value.ToString() == "5")
-                                {
-                                    DGVSTATUS.Rows[i].Cells["保存"].Value = "禁止";
-                                    DGVSTATUS.Rows[i].Cells["保存"].Style.BackColor = Color.Yellow;
-                                }
-                                if (result.Pdu.VbList[0].Value.ToString() == "6")
-                                {
-                                    DGVSTATUS.Rows[i].Cells["保存"].Value = "失败";
-                                    DGVSTATUS.Rows[i].Cells["保存"].Style.BackColor = Color.Yellow;
+                                    if (result.Pdu.VbList[0].Value.ToString() == "1")
+                                    {
+
+                                        DGVSTATUS.Rows[i].Cells["保存"].Value = "成功";
+                                        DGVSTATUS.Rows[i].Cells["保存"].Style.BackColor = Color.GreenYellow;
+                                        DGVSTATUS.Rows[i].Cells["当前版本"].Value = "" + result.Pdu.VbList[1].Value.ToString() + "/" + result.Pdu.VbList[2].Value.ToString();
+                                        DGVSTATUS.Rows[i].Cells["设备类型"].Value = FindDevType.Finddevtype(result.Pdu.VbList[11].Value.ToString());
+                                        RuningUxcSwStr = result.Pdu.VbList[3].Value.ToString() + "/" + result.Pdu.VbList[4].Value.ToString();
+                                        RuningNmsStr = result.Pdu.VbList[5].Value.ToString() + "/" + result.Pdu.VbList[6].Value.ToString();
+                                        UxcSwNmsTypeStr = result.Pdu.VbList[7].Value.ToString() + "/" + result.Pdu.VbList[8].Value.ToString() + "/" + result.Pdu.VbList[9].Value.ToString() + "/" + result.Pdu.VbList[10].Value.ToString();
+                                        textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 板卡运行状态11/12槽位 4-running 1-null ：" + RuningUxcSwStr + "\r\n"));
+                                        textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 板卡运行状态17/18槽位 4-running 1-null ：" + RuningNmsStr + "\r\n"));
+                                        textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 板卡运行型号11/12/17/18槽位 257-uxc 1-null 168-nms ：" + UxcSwNmsTypeStr + "\r\n"));
+                                        RuningUxcSwStrCount = RuningUxcSwStr.Split(new char[] { '4' }).Length - 1;
+                                        RuningNmsStrCount = RuningNmsStr.Split(new char[] { '4' }).Length - 1;
+                                        UxcTypeStrCount = UxcSwNmsTypeStr.Split(new string[] { "257" }, StringSplitOptions.None).Length - 1;
+                                        SwTypeStrCount = UxcSwNmsTypeStr.Split(new string[] { "47" }, StringSplitOptions.None).Length - 1;
+                                        SwTypeStrCount = UxcSwNmsTypeStr.Split(new string[] { "93" }, StringSplitOptions.None).Length - 1;
+                                        SwTypeStrCount = UxcSwNmsTypeStr.Split(new string[] { "196" }, StringSplitOptions.None).Length - 1;
+                                        SwTypeStrCount = UxcSwNmsTypeStr.Split(new string[] { "207" }, StringSplitOptions.None).Length - 1;
+                                        NmsTypeStrCount = UxcSwNmsTypeStr.Split(new string[] { "168" }, StringSplitOptions.None).Length - 1;
+                                        Thread.Sleep(3 * XHTime);
+
+                                        break;
+                                    }
+                                    if (result.Pdu.VbList[0].Value.ToString() == "3")
+                                    {
+                                        DGVSTATUS.Rows[i].Cells["保存"].Value = "清空";
+                                    }
+                                    if (result.Pdu.VbList[0].Value.ToString() == "4")
+                                    {
+                                        DGVSTATUS.Rows[i].Cells["保存"].Value = "执行中";
+                                    }
+                                    if (result.Pdu.VbList[0].Value.ToString() == "5")
+                                    {
+                                        DGVSTATUS.Rows[i].Cells["保存"].Value = "禁止";
+                                        DGVSTATUS.Rows[i].Cells["保存"].Style.BackColor = Color.Yellow;
+                                    }
+                                    if (result.Pdu.VbList[0].Value.ToString() == "6")
+                                    {
+                                        DGVSTATUS.Rows[i].Cells["保存"].Value = "失败";
+                                        DGVSTATUS.Rows[i].Cells["保存"].Style.BackColor = Color.Yellow;
+
+                                    }
 
                                 }
-
                             }
+                            Thread.Sleep(3 * XHTime);
                         }
-                        Thread.Sleep(3 * XHTime);
                     }
                 }
             }
+            if (save == false)
+            {
+                DGVSTATUS.Rows[i].Cells["保存"].Value = "不执行";
+                DGVSTATUS.Rows[i].Cells["保存"].Style.BackColor = Color.GreenYellow;
+                // Prepare target
+                // Create a SET PDU
+
+
+                pdu.Reset();
+                pdu = new Pdu(PduType.Get);
+                pdu.VbList.Add(saveoid);
+                pdu.VbList.Add(appversionoid);
+                pdu.VbList.Add(fpgaoid);
+                pdu.VbList.Add(slot11oid);
+                pdu.VbList.Add(slot12oid);
+                pdu.VbList.Add(slot17oid);
+                pdu.VbList.Add(slot18oid);
+                pdu.VbList.Add(slot11type);
+                pdu.VbList.Add(slot12type);
+                pdu.VbList.Add(slot17type);
+                pdu.VbList.Add(slot18type);
+                pdu.VbList.Add(devtype);
+                aparam = new AgentParameters(SnmpVersion.Ver2, new OctetString(readcommunity), true);
+                SnmpPacket result = null;
+                try
+                {
+                    result = target.Request(pdu, aparam);
+                }
+                catch (SnmpException ex)
+                {
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " save " + ex.Message + "\r\n");
+                    DGVSTATUS.Rows[i].Cells["当前版本"].Value = "请求超时";
+                    DGVSTATUS.Rows[i].Cells["当前版本"].Style.BackColor = Color.Yellow;
+                    
+
+                }
+                if (result != null)
+                {
+                    if (result.Pdu.ErrorStatus != 0)
+                    {
+                        textDOS.AppendText(String.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " save " + "SNMP回复错误！错误代码：{0} 错误索引：第 {1} 行\r\n", FindDevType.FindErrorCode(result.Pdu.ErrorStatus), result.Pdu.ErrorIndex));
+                        DGVSTATUS.Rows[i].Cells["当前版本"].Value = FindDevType.FindErrorCode(result.Pdu.ErrorStatus);
+                        DGVSTATUS.Rows[i].Cells["当前版本"].Style.BackColor = Color.Yellow;
+                        
+                    }
+                    else
+                    {
+
+
+
+                        DGVSTATUS.Rows[i].Cells["当前版本"].Value = "" + result.Pdu.VbList[1].Value.ToString() + "/" + result.Pdu.VbList[2].Value.ToString();
+                        RuningUxcSwStr = result.Pdu.VbList[3].Value.ToString() + "/" + result.Pdu.VbList[4].Value.ToString();
+                        RuningNmsStr = result.Pdu.VbList[5].Value.ToString() + "/" + result.Pdu.VbList[6].Value.ToString();
+                        DGVSTATUS.Rows[i].Cells["设备类型"].Value = FindDevType.Finddevtype(result.Pdu.VbList[11].Value.ToString());
+                        UxcSwNmsTypeStr = result.Pdu.VbList[7].Value.ToString() + "/" + result.Pdu.VbList[8].Value.ToString() + "/" + result.Pdu.VbList[9].Value.ToString() + "/" + result.Pdu.VbList[10].Value.ToString();
+                        textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 板卡运行状态11/12槽位 4-running 1-null ：" + RuningUxcSwStr + "\r\n"));
+                        textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 板卡运行状态17/18槽位 4-running 1-null ：" + RuningNmsStr + "\r\n"));
+                        textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 板卡运行型号11/12/17/18槽位 257-uxc 1-null 168-nms ：" + UxcSwNmsTypeStr + "\r\n"));
+                        RuningUxcSwStrCount = RuningUxcSwStr.Split(new char[] { '4' }).Length - 1;
+                        RuningNmsStrCount = RuningNmsStr.Split(new char[] { '4' }).Length - 1;
+                        UxcTypeStrCount = UxcSwNmsTypeStr.Split(new string[] { "257" }, StringSplitOptions.None).Length - 1;
+                        SwTypeStrCount = UxcSwNmsTypeStr.Split(new string[] { "47" }, StringSplitOptions.None).Length - 1;
+                        SwTypeStrCount = UxcSwNmsTypeStr.Split(new string[] { "93" }, StringSplitOptions.None).Length - 1;
+                        SwTypeStrCount = UxcSwNmsTypeStr.Split(new string[] { "196" }, StringSplitOptions.None).Length - 1;
+                        SwTypeStrCount = UxcSwNmsTypeStr.Split(new string[] { "207" }, StringSplitOptions.None).Length - 1;
+                        NmsTypeStrCount = UxcSwNmsTypeStr.Split(new string[] { "168" }, StringSplitOptions.None).Length - 1;
+                        Thread.Sleep(3 * XHTime);
+
+                    }
+                }
+
+
+            }
+
+
 
 
             int colunms = DGVSTATUS.ColumnCount;
             string[,] array = new string[,] {
-                { "APP","2",comapp.Text,""},
-                { "CODE","7",comcode.Text,""},
-                { "NMS","6",comnms.Text,""},
-                { "SW","5",comsw.Text,""},
-                { "Config","11",comconfig.Text,""},
-                { "Db","12",comdb.Text,""},
-                { "SlotConfig","18",comslotconfig.Text,""},
-                { "FLASH","15",comflash.Text,""},
-                { "SysFile","13",comsysfile.Text,""},
-               // { "OTNPACK","20",com760f.Text,""},
-                { "YAFFS","",comyaffs.Text,""},
-                { "760S","14",com760s.Text,"/yaffs/sys/760s.fpga"},
-                { "760B","14",com760b.Text,"/yaffs/sys/760b.fpga"},
-                { "760C","14",com760c.Text,"/yaffs/sys/760c.fpga"},
-                { "760D","14",com760d.Text,"/yaffs/sys/760d.fpga"},
-                { "760E","14",com760e.Text,"/yaffs/sys/760e.fpga"},
-                { "760F","14",com760f.Text,"/yaffs/sys/760f.fpga"},
+                { "APP",        "2",comapp.Text,        ""                              },
+                { "CODE",       "7",comcode.Text,       ""                              },
+                { "CODE2",      "14",comcode2.Text,     "/flash/sys/fpga_code2.bin"     },
+                { "CODE3",      "14",comcode3.Text,     "/flash/sys/fpga_code3.bin"     },
+                { "CODE4",      "14",comcode4.Text,     "/flash/sys/fpga_code4.bin"     },
+                { "SDN",        "21",comsdn.Text,       ""                              },
+                { "NMS",        "6",comnms.Text,        ""                              },
+                { "SW",         "5",comsw.Text,         ""                              },
+                { "Config" ,    "11",comconfig.Text,    ""                              },
+                { "Db",         "12",comdb.Text,        ""                              },
+                { "SlotConfig", "18",comslotconfig.Text,""                              },
+                { "FLASH",      "15",comflash.Text,     ""                              },
+                { "SysFile",    "13",comsysfile.Text,   ""                              },
+              //{ "OTNPACK",    "20",com760f.Text,      ""                              },
+                { "YAFFS",      "",comyaffs.Text,       ""                              },
+                { "760S",       "14",com760s.Text,      "/yaffs/sys/760s.fpga"          },
+                { "760B",       "14",com760b.Text,      "/yaffs/sys/760b.fpga"          },
+                { "760C",       "14",com760c.Text,      "/yaffs/sys/760c.fpga"          },
+                { "760D",       "14",com760d.Text,      "/yaffs/sys/760d.fpga"          },
+                { "760E",       "14",com760e.Text,      "/yaffs/sys/760e.fpga"          },
+                { "UXC",        "14",comuxc.Text,       "/yaffs/sys/uxc_a.fpga"         },
+                { "7610",       "14",com7610.Text,      "/yaffs/sys/7610.fpga"          },
+                { "7611",       "14",com7611.Text,      "/yaffs/sys/7611.fpga"          },
+                { "7612",       "14",com7612.Text,      "/yaffs/sys/7612.fpga"          },
+                { "7613",       "14",com7613.Text,      "/yaffs/sys/7613.fpga"          },
+                { "7614",       "14",com7614.Text,      "/yaffs/sys/7614.fpga"          },
+                { "7616",       "14",com7616.Text,      "/yaffs/sys/7616.fpga"          },
+                { "APP2",       "14",comapp2.Text,      "/flash/sys/app_code_backup2.bin"},
+                { "VOSS",       "14",comvoss.Text,      "/flash/sys/voss.sh"            },
+                { "REBOOTOS",   "14",comrebootos.Text,  "/flash/sys/rebootos.sh"        },
+                { "CPLD",       "14",comcpld.Text,      "/flash/sys/nms.cpld"           },
             };
             int row = array.GetLength(0);
-            for (int c = 8; c < colunms; c++)
+            for (int c = 9; c < colunms; c++)
             {
                 string header = DGVSTATUS.Columns[c].HeaderText;
 
                 for (int d = 0; d < row; d++)
                 {
+
                     if (array[d, 0].ToString() == header)
                     {
 
                         if (ftpCtrlFlagID == "2")
                         {
+
                             ftpFileName = array[d, 2].ToString();
-                            textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 开始下载 文件类型：{0} 文件加载码：{1} 文件名称：{2}\r\n", array[d, 0].ToString(), array[d, 1].ToString(), array[d, 2].ToString()));
+                            textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 开始下载 文件类型：{0} 文件加载码：{1} 文件名称：{2} 下载路径：{3}\r\n", array[d, 0].ToString(), array[d, 1].ToString(), array[d, 2].ToString(), array[d, 3].ToString()));
 
 
                         }
@@ -16290,11 +15022,15 @@ check760e.Checked == false)
                         {
 
                             ftpFileName = gpnip + "_" + DateTime.Now.ToString("yyyy-MM-dd") + "_" + header + ".bin";
-                            textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 开始上传 文件类型：{0} 文件加载码：{1} 文件名称：{2}\r\n", array[d, 0].ToString(), array[d, 1].ToString(), ftpFileName));
+                            textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 开始上传 文件类型：{0} 文件加载码：{1} 文件名称：{2} 上传路径：{3}\r\n", array[d, 0].ToString(), array[d, 1].ToString(), ftpFileName, array[d, 3].ToString()));
 
                         }
+
                         ftpLoadFile = array[d, 1].ToString();
                         ftpDeviceFileName = array[d, 3].ToString();
+
+
+
 
                         pdu.Reset();
                         pdu = new Pdu(PduType.Set);
@@ -16317,9 +15053,9 @@ check760e.Checked == false)
                         {
                             // If exception happens, it will be returned here
                             textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " " + header + " 请求后未收到回复" + "\r\n");
-                            DGVSTATUS.Rows[i].Cells[header].Value = "没有应答";
+                            DGVSTATUS.Rows[i].Cells[header].Value = "请求超时";
                             DGVSTATUS.Rows[i].Cells[header].Style.BackColor = Color.Yellow;
-                            DGVSTATUS.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString("HH:mm:ss");
+                            
                             break;
                         }
 
@@ -16327,9 +15063,9 @@ check760e.Checked == false)
                         if (response == null)
                         {
                             textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " " + header + " 发送错误的SNMP请求" + "\r\n");
-                            DGVSTATUS.Rows[i].Cells[header].Value = "应答空值";
+                            DGVSTATUS.Rows[i].Cells[header].Value = "返回null";
                             DGVSTATUS.Rows[i].Cells[header].Style.BackColor = Color.Yellow;
-                            DGVSTATUS.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString("HH:mm:ss");
+                            
                             break;
                         }
                         else
@@ -16340,7 +15076,7 @@ check760e.Checked == false)
                                 textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " " + header + String.Format(" SNMP回复错误！错误代码{0} 错误索引：第{1}行\r\n", FindDevType.FindErrorCode(response.Pdu.ErrorStatus), response.Pdu.ErrorIndex));
                                 DGVSTATUS.Rows[i].Cells[header].Value = FindDevType.FindErrorCode(response.Pdu.ErrorStatus);
                                 DGVSTATUS.Rows[i].Cells[header].Style.BackColor = Color.Yellow;
-                                DGVSTATUS.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString("HH:mm:ss");
+                                
                                 break;
                             }
                             else
@@ -16357,17 +15093,17 @@ check760e.Checked == false)
                                 catch
                                 {
                                     textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " " + header + " 请求后未收到回复" + "\r\n");
-                                    DGVSTATUS.Rows[i].Cells[header].Value = "没有应答";
+                                    DGVSTATUS.Rows[i].Cells[header].Value = "请求超时";
                                     DGVSTATUS.Rows[i].Cells[header].Style.BackColor = Color.Yellow;
-                                    DGVSTATUS.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString("HH:mm:ss");
+                                    
                                     break;
                                 }
                                 if (response == null)
                                 {
                                     textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " " + header + " 发送错误的SNMP请求" + "\r\n");
-                                    DGVSTATUS.Rows[i].Cells[header].Value = "应答空值";
+                                    DGVSTATUS.Rows[i].Cells[header].Value = "返回null";
                                     DGVSTATUS.Rows[i].Cells[header].Style.BackColor = Color.Yellow;
-                                    DGVSTATUS.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString("HH:mm:ss");
+                                    
                                     break;
 
                                 }
@@ -16379,22 +15115,22 @@ check760e.Checked == false)
                                         textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " " + header + String.Format(" SNMP回复错误！错误码 {0} 错误索引：第 {1} 行\r\n", FindDevType.FindErrorCode(response.Pdu.ErrorStatus), response.Pdu.ErrorIndex));
                                         DGVSTATUS.Rows[i].Cells[header].Value = FindDevType.FindErrorCode(response.Pdu.ErrorStatus);
                                         DGVSTATUS.Rows[i].Cells[header].Style.BackColor = Color.Yellow;
-                                        DGVSTATUS.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString("HH:mm:ss");
+                                        
                                         break;
                                     }
                                     else
                                     {
                                         if (ftpCtrlFlagID == "2")
                                         {
-                                            DGVSTATUS.Rows[i].Cells["操作命令"].Value = "下载";
+                                            DGVSTATUS.Rows[i].Cells["操作"].Value = "下载";
                                         }
                                         if (ftpCtrlFlagID == "3")
                                         {
-                                            DGVSTATUS.Rows[i].Cells["操作命令"].Value = "上传";
+                                            DGVSTATUS.Rows[i].Cells["操作"].Value = "上载";
                                         }
                                         if (ftpCtrlFlagID == "1")
                                         {
-                                            DGVSTATUS.Rows[i].Cells["操作命令"].Value = "未操作";
+                                            DGVSTATUS.Rows[i].Cells["操作"].Value = "未操作";
                                         }
                                     }
                                 }
@@ -16402,6 +15138,8 @@ check760e.Checked == false)
                             }
                         }
                         Thread.Sleep(3 * XHTime);
+                        int ex = 0;
+                        int DownUpCount = 0;
                         for (int a = 0; a <= XHCount; a++)
                         {
 
@@ -16410,17 +15148,47 @@ check760e.Checked == false)
                             pdu.VbList.Add(ftploadstatusoid);
                             aparam = new AgentParameters(SnmpVersion.Ver2, new OctetString(readcommunity), true);
                             SnmpPacket result = null;
-                            try
-                            {
-                                result = target.Request(pdu, aparam);
-                            }
-                            catch
-                            {
-                                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " " + header + " 请求后未收到回复" + "\r\n");
-                                DGVSTATUS.Rows[i].Cells[header].Value = "应答空值";
-                                DGVSTATUS.Rows[i].Cells[header].Style.BackColor = Color.Yellow;
-                                break;
+                            //try
+                            //{
+                            //    result = target.Request(pdu, aparam);
+                            //}
+                            //catch
+                            //{
+                            //    ex++;
+                            //    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " " + header + " 请求后未收到回复第"+ ex + "次"+ "\r\n");
+                            //    DGVSTATUS.Rows[i].Cells[header].Value = "请求超时"+ex+"次";
 
+                            //    if (ex == 30) {
+                            //        DGVSTATUS.Rows[i].Cells[header].Style.BackColor = Color.Yellow;
+                            //        break;
+                            //    }
+                            //}
+
+
+                            for (int t = 0; t <= 30; t++)
+                            {
+                                try
+                                {
+                                    result = target.Request(pdu, aparam);
+                                    if (result != null)
+                                    {
+                                        break;
+                                    }
+
+                                }
+                                catch
+                                {
+                                    ex++;
+                                    DGVSTATUS.Rows[i].Cells[header].Value = "请求超时" + ex + "次";
+                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " " + header + " 请求后未收到回复第" + ex + "次" + "\r\n");
+                                    Thread.Sleep(5 * XHTime);
+                                }
+
+
+                            }
+                            if (ex == 40)
+                            {
+                                break;
                             }
                             if (result != null)
                             {
@@ -16429,7 +15197,7 @@ check760e.Checked == false)
                                     textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " " + header + String.Format(" SNMP回复错误！错误码 {0} 错误索引：第 {1} 行\r\n", FindDevType.FindErrorCode(result.Pdu.ErrorStatus), result.Pdu.ErrorIndex));
                                     DGVSTATUS.Rows[i].Cells[header].Value = FindDevType.FindErrorCode(response.Pdu.ErrorStatus);
                                     DGVSTATUS.Rows[i].Cells[header].Style.BackColor = Color.Yellow;
-                                    DGVSTATUS.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString("HH:mm:ss");
+                                    
 
                                     break;
                                 }
@@ -16439,89 +15207,120 @@ check760e.Checked == false)
                                     {
 
 
-
-
-                                        if (header == "APP" && runningcount == 2 && ftpCtrlFlagID == "2")
+                                        if (header.Contains("APP") && NmsTypeStrCount == 2 && ftpCtrlFlagID == "2" && SwTypeStrCount == 0)
                                         {
-                                            DGVSTATUS.Rows[i].Cells[header].Value = "同步中";
+                                            DGVSTATUS.Rows[i].Cells[header].Value = "同步中240";
 
                                             if (DGVSTATUS.ColumnCount > 10)
                                             {
-                                                textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 主要影响APP同步升级的板卡有：" + runningcount.ToString() + "块" +
+                                                textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 主要影响APP同步升级的板卡有：" + NmsTypeStrCount.ToString() + "块" +
 "需要等待4分钟后继续执行其他操作\r\n"));
                                                 Thread.Sleep(240 * XHTime);
                                             }
                                         }
-                                        if (header == "APP" && runningcount >= 3 && ftpCtrlFlagID == "2")
+                                        if (header.Contains("APP") && NmsTypeStrCount == 2 && ftpCtrlFlagID == "2" && SwTypeStrCount > 0)
                                         {
-                                            DGVSTATUS.Rows[i].Cells[header].Value = "同步中";
+                                            DGVSTATUS.Rows[i].Cells[header].Value = "同步中480";
 
                                             if (DGVSTATUS.ColumnCount > 10)
                                             {
-                                                textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 主要影响APP同步升级的板卡有：" + runningcount.ToString() + "块" +
+                                                textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 主要影响APP同步升级的板卡有：" + (NmsTypeStrCount+SwTypeStrCount).ToString() + "块" +
 "需要等待8分钟后继续执行其他操作\r\n"));
                                                 Thread.Sleep(480 * XHTime);
                                             }
                                         }
-                                        if (header == "CODE" && runningcount >= 2 && ftpCtrlFlagID == "2")
+                                        if (header == "CODE" && NmsTypeStrCount == 2 && ftpCtrlFlagID == "2" )
                                         {
-                                            DGVSTATUS.Rows[i].Cells[header].Value = "同步中";
+                                            DGVSTATUS.Rows[i].Cells[header].Value = "同步中60";
                                             if (DGVSTATUS.ColumnCount > 10)
                                             {
-                                                textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 主要影响CODE同步升级的板卡有：" + runningcount.ToString() + "块" +
+                                                textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 主要影响CODE同步升级的板卡有：" + NmsTypeStrCount.ToString() + "块" +
 "需要等待1分钟后继续执行其他操作\r\n"));
                                                 Thread.Sleep(60 * XHTime);
                                             }
                                         }
-                                        if (header == "NMS" && runningcount >= 2 && ftpCtrlFlagID == "2")
+                                        if (header == "NMS" && NmsTypeStrCount == 2 && ftpCtrlFlagID == "2")
                                         {
-                                            DGVSTATUS.Rows[i].Cells[header].Value = "同步中";
+                                            DGVSTATUS.Rows[i].Cells[header].Value = "同步中40";
                                             if (DGVSTATUS.ColumnCount > 10)
                                             {
-                                                textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 主要影响NMS同步升级的板卡有：" + runningcount.ToString() + "块" +
+                                                textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 主要影响NMS同步升级的板卡有：" + NmsTypeStrCount.ToString() + "块" +
 "需要等待40秒后继续执行其他操作\r\n"));
                                                 Thread.Sleep(40 * XHTime);
                                             }
                                         }
-
-                                        if (header == "SW" && runningcount >= 2 && ftpCtrlFlagID == "2")
+                                        if (header.Contains("760") && NmsTypeStrCount == 2 && ftpCtrlFlagID == "2")
                                         {
-                                            DGVSTATUS.Rows[i].Cells[header].Value = "同步中";
+                                            DGVSTATUS.Rows[i].Cells[header].Value = "同步中20";
                                             if (DGVSTATUS.ColumnCount > 10)
                                             {
-                                                textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 主要影响SW同步升级的板卡有：" + runningcount.ToString() + "块" +
+                                                textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 主要影响OTN同步升级的板卡有：" + NmsTypeStrCount.ToString() + "块" +
 "需要等待20秒后继续执行其他操作\r\n"));
                                                 Thread.Sleep(20 * XHTime);
                                             }
                                         }
-                                        if (header == "SysFile" && runningcount >= 2 && ftpCtrlFlagID == "2")
+                                        if (header.Contains("761") && NmsTypeStrCount == 2 && ftpCtrlFlagID == "2")
                                         {
-                                            DGVSTATUS.Rows[i].Cells[header].Value = "同步中";
-
+                                            DGVSTATUS.Rows[i].Cells[header].Value = "同步中20";
                                             if (DGVSTATUS.ColumnCount > 10)
                                             {
-                                                textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 主要影响Sysfile同步升级的板卡有：" + runningcount.ToString() + "块" +
+                                                textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 主要影响OTN同步升级的板卡有：" + NmsTypeStrCount.ToString() + "块" +
+"需要等待20秒后继续执行其他操作\r\n"));
+                                                Thread.Sleep(20 * XHTime);
+                                            }
+                                        }
+                                        if (header.Contains("UXC") && NmsTypeStrCount == 2 && ftpCtrlFlagID == "2")
+                                        {
+                                            DGVSTATUS.Rows[i].Cells[header].Value = "同步中20";
+                                            if (DGVSTATUS.ColumnCount > 10)
+                                            {
+                                                textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 主要影响OTN同步升级的板卡有：" + NmsTypeStrCount.ToString() + "块" +
 "需要等待20秒后继续执行其他操作\r\n"));
                                                 Thread.Sleep(20 * XHTime);
                                             }
                                         }
 
-                                        DGVSTATUS.Rows[i].Cells[header].Value = "成功";
+                                        if (header == "SW" && NmsTypeStrCount == 2 && ftpCtrlFlagID == "2")
+                                        {
+                                            DGVSTATUS.Rows[i].Cells[header].Value = "同步中20";
+                                            if (DGVSTATUS.ColumnCount > 10)
+                                            {
+                                                textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 主要影响SW同步升级的板卡有：" + NmsTypeStrCount.ToString() + "块" +
+"需要等待20秒后继续执行其他操作\r\n"));
+                                                Thread.Sleep(20 * XHTime);
+                                            }
+                                        }
+                                        if (header == "SysFile" && NmsTypeStrCount == 2 && ftpCtrlFlagID == "2")
+                                        {
+                                            DGVSTATUS.Rows[i].Cells[header].Value = "同步中20";
+
+                                            if (DGVSTATUS.ColumnCount > 10)
+                                            {
+                                                textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 主要影响Sysfile同步升级的板卡有：" + NmsTypeStrCount.ToString() + "块" +
+"需要等待20秒后继续执行其他操作\r\n"));
+                                                Thread.Sleep(20 * XHTime);
+                                            }
+                                        }
+
+                                        DGVSTATUS.Rows[i].Cells[header].Value = "成功" + DownUpCount +"秒";
                                         DGVSTATUS.Rows[i].Cells[header].Style.BackColor = Color.GreenYellow;
-                                        DGVSTATUS.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString("HH:mm:ss");
+                                        
                                         break;
                                     }
                                     if (result.Pdu.VbList[0].Value.ToString() == "2")
                                     {
-                                        DGVSTATUS.Rows[i].Cells[header].Value = "下载中";
+                                        DownUpCount = DownUpCount +3;
+                                
+                                        DGVSTATUS.Rows[i].Cells[header].Value = "下载中" + DownUpCount + "秒";
                                     }
                                     if (result.Pdu.VbList[0].Value.ToString() == "3")
                                     {
-                                        DGVSTATUS.Rows[i].Cells[header].Value = "上传中";
+                                        DownUpCount = DownUpCount + 3;
+                                        DGVSTATUS.Rows[i].Cells[header].Value = "上载中" + DownUpCount + "秒";
                                     }
                                     if (result.Pdu.VbList[0].Value.ToString() == "4")
                                     {
-                                        DGVSTATUS.Rows[i].Cells[header].Value = "FTP错误";
+                                        DGVSTATUS.Rows[i].Cells[header].Value = "FTP服务器错误";
                                         DGVSTATUS.Rows[i].Cells[header].Style.BackColor = Color.Yellow;
                                         break;
                                     }
@@ -16555,27 +15354,27 @@ check760e.Checked == false)
 
             for (int C = 10; C < DGVSTATUS.ColumnCount; C++)
             {
-                if (DGVSTATUS.Rows[i].Cells[C].Value.ToString() == "成功")
+                if (DGVSTATUS.Rows[i].Cells[C].Value.ToString().Contains("成功"))
                 {
                     DGVSTATUS.Rows[i].Cells["ip地址"].Style.BackColor = Color.GreenYellow;
-                    DGVSTATUS.Rows[i].Cells["操作命令"].Style.BackColor = Color.GreenYellow;
+                    DGVSTATUS.Rows[i].Cells["操作"].Style.BackColor = Color.GreenYellow;
 
                     if (ftpCtrlFlagID == "2")
                     {
-                        DGVSTATUS.Rows[i].Cells["重启选择"].Value = true;
-                        DGVSTATUS.Rows[i].Cells["重启选择"].Style.BackColor = Color.GreenYellow;
+                        DGVSTATUS.Rows[i].Cells["重启"].Value = true;
+                        DGVSTATUS.Rows[i].Cells["重启"].Style.BackColor = Color.GreenYellow;
 
                     }
 
                 }
-                else
+                else if (DGVSTATUS.Rows[i].Cells["操作"].Value != null)
                 {
                     DGVSTATUS.Rows[i].Cells["ip地址"].Style.BackColor = Color.Yellow;
-                    DGVSTATUS.Rows[i].Cells["操作命令"].Style.BackColor = Color.Yellow;
+                    DGVSTATUS.Rows[i].Cells["操作"].Style.BackColor = Color.Yellow;
                     if (ftpCtrlFlagID == "2")
                     {
-                        DGVSTATUS.Rows[i].Cells["重启选择"].Value = true;
-                        DGVSTATUS.Rows[i].Cells["重启选择"].Style.BackColor = Color.Yellow;
+                        DGVSTATUS.Rows[i].Cells["重启"].Value = false;
+                        DGVSTATUS.Rows[i].Cells["重启"].Style.BackColor = Color.Yellow;
 
                     }
                 }
@@ -16626,7 +15425,7 @@ check760e.Checked == false)
             LoadCountany = 0;
             string shengjiip = "";
 
-            for (int i = 0; i < DGVSTATUS.Rows.Count - 1; i++)
+            for (int i = 0; i < DGVSTATUS.Rows.Count; i++)
             {
                 if ((bool)DGVSTATUS.Rows[i].Cells["执行"].EditedFormattedValue == true)
                 {
@@ -16641,15 +15440,24 @@ check760e.Checked == false)
             DialogResult dr = MessageBox.Show("是否确认 上载如下设备？\r\n" + shengjiip + "\r\n一共：" + LoadCountsum.ToString() + "台设备", "提示", MessageBoxButtons.YesNo);
             if (dr == DialogResult.Yes)
             {
+                DialogResult dr1 = MessageBox.Show("是否确认保存数据config/slot/db？", "提示", MessageBoxButtons.YesNo);
+                if (dr1 == DialogResult.Yes)
+                {
+                    save = true;
+                }
+                if (dr1 == DialogResult.No)
+                {
+                    save = false;
+                }
                 // DGVSTATUS.DataSource = null;
                 //DGVSTATUS.Rows.Clear();
                 ftpCtrlFlagID = "3";
                 int i = DGVSTATUS.ColumnCount;
                 //MessageBox.Show(i.ToString());
-                for (int a = 10; a < i; a++)
+                for (int a = 9; a < i; a++)
                 {
                     // MessageBox.Show(a.ToString());
-                    DGVSTATUS.Columns.RemoveAt(10);
+                    DGVSTATUS.Columns.RemoveAt(9);
 
 
                 }
@@ -16791,7 +15599,7 @@ check760e.Checked == false)
             int aa = 0;
             for (int i = 0; i < DGVSTATUS.Rows.Count - 1; i++, aa++)
             {
-                array[i] = int.Parse(DGVSTATUS.Rows[aa].Cells[2].Value.ToString());
+                array[i] = int.Parse(DGVSTATUS.Rows[aa].Cells["优先级"].Value.ToString());
 
             }
             int temp = 0;
@@ -16942,7 +15750,8 @@ check760e.Checked == false)
                 start.Start();
                 metroButStartVnc.Text = "停止桌面共享";
             }
-            else {
+            else
+            {
                 Textsharp.AppendText("\r\n");
                 Thread stop = new Thread(StopVnc);
                 stop.Start();
@@ -16965,7 +15774,7 @@ check760e.Checked == false)
                 WritePrivateProfileString(strSec, "server_addr", TextServerAddr.Text.Trim(), frpcPath);
                 WritePrivateProfileString(strSec, "server_port", TextServerPort.Text.Trim(), frpcPath);
                 WritePrivateProfileString(strSec, "token", TextToken.Text.Trim(), frpcPath);
-                strSec = TextVNCUser.Text+"RDP";
+                strSec = TextVNCUser.Text + "RDP";
                 WritePrivateProfileString(strSec, "type", ComRDPType.Text.Trim(), frpcPath);
                 WritePrivateProfileString(strSec, "local_ip", "127.0.0.1", frpcPath);
                 WritePrivateProfileString(strSec, "local_port", TextRDPLocalPort.Text.Trim(), frpcPath);
@@ -16990,7 +15799,8 @@ check760e.Checked == false)
         }
 
 
-        private void StopVnc() {
+        private void StopVnc()
+        {
             string strZipPath = @"C:\gpn\" + "frpc_stop.bat";
             if (File.Exists(strZipPath))//读取时先要判读INI文件是否存在
             {
@@ -17002,7 +15812,7 @@ check760e.Checked == false)
             }
             FileStream stream;
             //string gpnname = comgpn76list.Text;
-            string url = "http://hunan128.com/wp-content/uploads/2020/07/frpc_stop.bat";
+            string url = "http://dx.hunan128.com:92/ftp/vnc/frpc_stop.bat";
             //string strZipPath = @"C:\gpn\" + "frpc_start.exe";
             //   string strUnZipPath = @"C:\gpn\";
             int percent = 0;
@@ -17050,7 +15860,8 @@ check760e.Checked == false)
             // MessageBox.Show("GPN7600 EMS模块已安装成功！");
         }
 
-        private void StartVnc() {
+        private void StartVnc()
+        {
             string strtvnsPath = @"C:\gpn\" + "tvnserver.exe";
             string strfrpcPath = @"C:\gpn\" + "frpc.exe";
             string strfrpcstartPath = @"C:\gpn\" + "frpc_start.bat";
@@ -17067,17 +15878,18 @@ check760e.Checked == false)
             }
             FileStream stream;
             //string gpnname = comgpn76list.Text;
-            string tvnserverurl = "http://hunan128.com/wp-content/uploads/2020/07/tvnserver.exe";
-            string frpcurl = "http://hunan128.com/wp-content/uploads/2020/07/frpc.exe";
-            string frpcstarturl = "http://hunan128.com/wp-content/uploads/2020/07/frpc_start.bat";
-            string vncsurl = "http://hunan128.com/wp-content/uploads/2020/07/vncs.reg";
+            string tvnserverurl = "http://dx.hunan128.com:92/ftp/vnc/tvnserver.exe";
+            string frpcurl = "http://dx.hunan128.com:92/ftp/vnc/frpc.exe";
+            string frpcstarturl = "http://dx.hunan128.com:92/ftp/vnc/frpc_start.bat";
+            string vncsurl = "http://dx.hunan128.com:92/ftp/vnc/vncs.reg";
             string strZipPath = "";
             string url = "";
-            for (int i = 0; i < 4; i ++)
+            for (int i = 0; i < 4; i++)
             {
                 //string strZipPath = @"C:\gpn\" + "frpc_start.exe";
                 //   string strUnZipPath = @"C:\gpn\";
-                if (i == 0) {
+                if (i == 0)
+                {
                     url = tvnserverurl;
                     strZipPath = strtvnsPath;
                 }
@@ -17134,7 +15946,7 @@ check760e.Checked == false)
                     //flag = false;       //返回false下载失败
                 }
             }
-          
+
 
             Process.Start(strfrpcstartPath);
             Textsharp.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "请打开（Windows/Mac/iPhone/iPad/Android） VNC Viewer  远程桌面软件输入：" + TextServerAddr.Text + ":" + TextVNCRemotePort.Text + " 进行VNC连接" + "\r\n");
@@ -17151,8 +15963,9 @@ check760e.Checked == false)
             Thread view = new Thread(ViewVnc);
             view.Start();
         }
-        private void ViewVnc() {
-            string strZipPath = @"C:\gpn\" + "vncviewer.exe";
+        private void ViewVnc()
+        {
+            string strZipPath = @"C:\gpn\" + "VNC.exe";
             if (File.Exists(strZipPath))//读取时先要判读INI文件是否存在
             {
                 System.Diagnostics.Process.Start(strZipPath);
@@ -17161,7 +15974,7 @@ check760e.Checked == false)
             }
             FileStream stream;
             //string gpnname = comgpn76list.Text;
-            string url = "http://hunan128.com/wp-content/uploads/2020/08/vncviewer.exe";
+            string url = "http://dx.hunan128.com:92/ftp/vnc/VNC.exe";
             //string strZipPath = @"C:\gpn\" + "frpc_start.exe";
             //   string strUnZipPath = @"C:\gpn\";
             int percent = 0;
@@ -17207,43 +16020,3289 @@ check760e.Checked == false)
             // MessageBox.Show("GPN7600 EMS模块已安装成功！");
         }
 
+        public static int PingCount = 0;
+        public static int YanshiCont = 0;
+        public static int PingjunYanshi = 0;
+        public static double PacketLossRate = 0;
+        public static int PacketLossCount = 0;
 
 
-        private void timerYanshi_Tick(object sender, EventArgs e)
+        private void TimerYanshi_Tick(object sender, EventArgs e)
         {
             Ping ping = new Ping();
-            if (TextServerAddr.Text == "") {
+            PingOptions options = new PingOptions();
+            if (comDontFragment.Text == "是")
+            {
+                options.DontFragment = true;
+            }
+            else
+            {
+                options.DontFragment = false;
+            }
+
+            if (TextServerAddr.Text == "")
+            {
                 return;
             }
-            PingReply pingReply = ping.Send(TextServerAddr.Text, 1000);
-
-            if (pingReply.Status == IPStatus.Success)
-            {
-                textYanshi.Text = pingReply.RoundtripTime.ToString();
-            }
+            int PacketSize = int.Parse(compacket.Text);
+            string PacketSizebyte = new string('A', PacketSize);
+            byte[] buffer = Encoding.ASCII.GetBytes(PacketSizebyte);
+            PingReply pingReply = ping.Send(TextServerAddr.Text, int.Parse(comtimeout.Text), buffer, options);
+            textYanshi.Text = pingReply.RoundtripTime.ToString();
+            YanshiCont = YanshiCont + int.Parse(pingReply.RoundtripTime.ToString());
             if (pingReply.Status != IPStatus.Success)
             {
-                textYanshi.Text = pingReply.Status.ToString();
+
+                PacketLossCount++;
+                textLossCount.Text = PacketLossCount.ToString();
+
             }
-            if (tabControlDOS.SelectedTab != tabPageRemote) {
+
+            if (tabControlDOS.SelectedTab != tabPageRemote)
+            {
                 timerYanshi.Stop();
                 metroButYanshi.Text = "开始延时测试";
                 textYanshi.Text = "停止测试";
+                PingCount = 0;
+                YanshiCont = 0;
+                PingjunYanshi = 0;
+                PacketLossRate = 0;
+                PacketLossCount = 0;
+                textPacketLossRate.Text = "0%";
+                textLossCount.Text = "0";
 
+
+            }
+            PingCount++;
+            textPingOkCount.Text = (PingCount - PacketLossCount).ToString();
+            textPingCount.Text = PingCount.ToString();
+            PingjunYanshi = YanshiCont / PingCount;
+            PacketLossRate = Math.Round((double)PacketLossCount / PingCount, 4) * 100;
+            textPingjunShiYan.Text = PingjunYanshi.ToString();
+            textPacketLossRate.Text = PacketLossRate.ToString() + "%";
+
+        }
+
+        private void MetroButYanshi_Click(object sender, EventArgs e)
+        {
+            if (metroButYanshi.Text == "开始延时测试")
+            {
+                timerYanshi.Interval = int.Parse(comjiangeshijian.Text);
+                timerYanshi.Start();
+                metroButYanshi.Text = "停止延时测试";
+                textPacketLossRate.Text = "0%";
+                textLossCount.Text = "0";
+            }
+            else
+            {
+                timerYanshi.Stop();
+                metroButYanshi.Text = "开始延时测试";
+                textYanshi.Text = "停止测试";
+                PingCount = 0;
+                YanshiCont = 0;
+                PingjunYanshi = 0;
+                PacketLossRate = 0;
+                PacketLossCount = 0;
             }
         }
 
-        private void metroButYanshi_Click(object sender, EventArgs e)
+        private void butrefresh_Click(object sender, EventArgs e)
         {
-            if (metroButYanshi.Text == "开始延时测试") {
-                timerYanshi.Start();
-                metroButYanshi.Text = "停止延时测试";
+            comconfig.Items.Clear();
+            comslotconfig.Items.Clear();
+            comdb.Items.Clear();
+            comapp.Items.Clear();
+            comapp2.Items.Clear();
+            comnms.Items.Clear();
+            comcode.Items.Clear();
+            comcode2.Items.Clear();
+            comcode3.Items.Clear();
+            comsdn.Items.Clear();
+            comsw.Items.Clear();
+            com760s.Items.Clear();
+            com760b.Items.Clear();
+            com760c.Items.Clear();
+            com760d.Items.Clear();
+            com760e.Items.Clear();
+            comuxc.Items.Clear();
+            comsysfile.Items.Clear();
+            comflash.Items.Clear();
+            comyaffs.Items.Clear();
+            com7610.Items.Clear();
+            com7611.Items.Clear();
+            com7612.Items.Clear();
+            com7613.Items.Clear();
+            com7614.Items.Clear();
+            com7616.Items.Clear();
+
+
+
+
+            Readfile(tbxFtpRoot.Text);
+
+
+
+
+
+
+            if (File.Exists(strFilePath))//读取时先要判读INI文件是否存在
+            {
+                strSec = "Config";
+
+                if (comapp.Items.Contains(ContentValue(strSec, "APP")))
+                {
+                    comapp.Text = ContentValue(strSec, "APP");
+                }
+                if (comapp2.Items.Contains(ContentValue(strSec, "APP2")))
+                {
+                    comapp2.Text = ContentValue(strSec, "APP2");
+                }
+                if (comcode.Items.Contains(ContentValue(strSec, "FPFA_CODE")))
+                {
+                    comcode.Text = ContentValue(strSec, "FPFA_CODE");
+                }
+                if (comcode2.Items.Contains(ContentValue(strSec, "FPFA_CODE2")))
+                {
+                    comcode2.Text = ContentValue(strSec, "FPFA_CODE2");
+                }
+                if (comcode3.Items.Contains(ContentValue(strSec, "FPFA_CODE3")))
+                {
+                    comcode3.Text = ContentValue(strSec, "FPFA_CODE3");
+                }
+                if (comsdn.Items.Contains(ContentValue(strSec, "SDN")))
+                {
+                    comsdn.Text = ContentValue(strSec, "SDN");
+                }
+                if (comnms.Items.Contains(ContentValue(strSec, "NMS")))
+                {
+                    comnms.Text = ContentValue(strSec, "NMS");
+                }
+                if (comsw.Items.Contains(ContentValue(strSec, "SW")))
+                {
+                    comsw.Text = ContentValue(strSec, "SW");
+                }
+                if (com760s.Items.Contains(ContentValue(strSec, "760S")))
+                {
+                    com760s.Text = ContentValue(strSec, "760S");
+                }
+                if (com760b.Items.Contains(ContentValue(strSec, "760B")))
+                {
+                    com760b.Text = ContentValue(strSec, "760B");
+                }
+                if (com760c.Items.Contains(ContentValue(strSec, "760C")))
+                {
+                    com760c.Text = ContentValue(strSec, "760C");
+                }
+                if (com760d.Items.Contains(ContentValue(strSec, "760D")))
+                {
+                    com760d.Text = ContentValue(strSec, "760D");
+                }
+                if (com760e.Items.Contains(ContentValue(strSec, "760E")))
+                {
+                    com760e.Text = ContentValue(strSec, "760E");
+                }
+                if (comuxc.Items.Contains(ContentValue(strSec, "UXC")))
+                {
+                    comuxc.Text = ContentValue(strSec, "UXC");
+                }
+                if (com7610.Items.Contains(ContentValue(strSec, "7610")))
+                {
+                    com7610.Text = ContentValue(strSec, "7610");
+                }
+                if (com7611.Items.Contains(ContentValue(strSec, "7611")))
+                {
+                    com7611.Text = ContentValue(strSec, "7611");
+                }
+                if (com7612.Items.Contains(ContentValue(strSec, "7612")))
+                {
+                    com7612.Text = ContentValue(strSec, "7612");
+                }
+                if (com7613.Items.Contains(ContentValue(strSec, "7613")))
+                {
+                    com7613.Text = ContentValue(strSec, "7613");
+                }
+                if (com7614.Items.Contains(ContentValue(strSec, "7614")))
+                {
+                    com7614.Text = ContentValue(strSec, "7614");
+                }
+                if (com7616.Items.Contains(ContentValue(strSec, "7616")))
+                {
+                    com7616.Text = ContentValue(strSec, "7616");
+                }
+                if (comsysfile.Items.Contains(ContentValue(strSec, "sysfile")))
+                {
+                    comsysfile.Text = ContentValue(strSec, "sysfile");
+                }
+                if (comflash.Items.Contains(ContentValue(strSec, "FLASH")))
+                {
+                    comflash.Text = ContentValue(strSec, "FLASH");
+                }
+                if (comyaffs.Items.Contains(ContentValue(strSec, "YAFFS")))
+                {
+                    comyaffs.Text = ContentValue(strSec, "YAFFS");
+                }
+                comgpn76list.Text = ContentValue(strSec, "GPN7600EMS");
+            }
+
+        }
+
+        private void MetroButDXC_Click(object sender, EventArgs e)
+        {
+            if (metroComSslot.Text == "")
+            {
+                MessageBox.Show("请填写合法的端口和时隙，再次尝试");
+                return;
+            }
+
+            // tsDxcEntry
+            string tsDxcTsNextIndexOid                      = "1.3.6.1.4.1.10072.6.11.1.0";
+            string tsDxcTsNextIndexOidValue = Snmp.Get(metroTextgpnip.Text, metroTextReadCommunity.Text, 2000, 2, tsDxcTsNextIndexOid);
+            string tsDxcTsIndexOid                          = "1.3.6.1.4.1.10072.6.11.2.1.1." + tsDxcTsNextIndexOidValue;   //索引ID
+            string tsDxcSourceHpChannelIfIndexOid           = "1.3.6.1.4.1.10072.6.11.2.1.2." + tsDxcTsNextIndexOidValue;   //源高阶
+            string tsDxcSourceLpChannelIdOid                = "1.3.6.1.4.1.10072.6.11.2.1.3." + tsDxcTsNextIndexOidValue;   //源低阶
+            string tsDxcDestinationHpChannelIfIndexOid      = "1.3.6.1.4.1.10072.6.11.2.1.4." + tsDxcTsNextIndexOidValue;   //宿高阶 索引ifindex
+            string tsDxcDestinationLpChannelIdOid           = "1.3.6.1.4.1.10072.6.11.2.1.5." + tsDxcTsNextIndexOidValue;   //宿低阶 1-63 VC12  1-3 VC3
+            string tsDxcTsLevelOid                          = "1.3.6.1.4.1.10072.6.11.2.1.6." + tsDxcTsNextIndexOidValue;   //交叉颗粒 0Port、1VC4、2VC3、3VC2、4VC12、5VC11
+            string tsDxcdirectAttrOid                       = "1.3.6.1.4.1.10072.6.11.2.1.7." + tsDxcTsNextIndexOidValue;   //单双向 3是双向 2是单向
+            string tsDxcStatusOid                           = "1.3.6.1.4.1.10072.6.11.2.1.11." + tsDxcTsNextIndexOidValue;  //1是激活 6是删除  5是创建
+            //string tsDxcCfgProtectTypeOid                   = "1.3.6.1.4.1.10072.6.11.2.1.12." + tsDxcTsNextIndexOidValue;  //保护状态 0 无保护、1是工作、2是备用
+            string tsDxcFpmMonOid                           = "1.3.6.1.4.1.10072.6.11.2.1.13." + tsDxcTsNextIndexOidValue;  //告警监视 1是使能 2是禁止
+            string tsDxcLoopControlOid                      = "1.3.6.1.4.1.10072.6.11.2.1.14." + tsDxcTsNextIndexOidValue;  //环回控制 0是不环回 1是手动环回 2是自动环回
+            string tsDxcUnLoopTimeDelayOid                  = "1.3.6.1.4.1.10072.6.11.2.1.15." + tsDxcTsNextIndexOidValue;  //环回延时时间 分钟
+
+            uint srcSlot = uint.Parse(metroComSslot.Text);
+            uint srcPort = uint.Parse(metroComSport.Text);
+            uint srcHp = uint.Parse(metroComShp.Text);
+            uint srcLp = uint.Parse(metroComSlp.Text);
+
+            uint dstSlot = uint.Parse(metroComDslot.Text);
+            uint dstPort = uint.Parse(metroComDport.Text);
+            uint dstHp = uint.Parse(metroComDhp.Text);
+            uint dstLp = uint.Parse(metroComDlp.Text);
+            // string tsDxcLevle = metroComLevel.Text;
+            uint ifType = 23;
+            uint subType = 4;
+
+            string tsDxcTsIndexValue = tsDxcTsNextIndexOidValue;
+            string tsDxcSourceHpChannelIfIndexValue = Dxc.TsCreate(ifType, subType, srcSlot, srcPort, srcHp, 0).ToString();
+            string tsDxcSourceLpChannelIdValue = metroComSlp.Text;
+            string tsDxcDestinationHpChannelIfIndexValue = Dxc.TsCreate(ifType, subType, dstSlot, dstPort, dstHp, 0).ToString();
+            string tsDxcDestinationLpChannelIdValue = metroComDlp.Text;
+            string tsDxcTsLevelValue = string.Empty;
+            if (metroComLevel.Text.Contains("VC12")) { tsDxcTsLevelValue = "4"; }
+            if (metroComLevel.Text.Contains("VC3")) { tsDxcTsLevelValue = "2"; }
+            if (metroComLevel.Text.Contains("VC4")) { tsDxcTsLevelValue = "1"; }
+            string tsDxcdirectAttrValue = "3";
+            string tsDxcStatusValue = "5";
+            // string tsDxcCfgProtectTypeValue              = "0";
+            string tsDxcFpmMonValue = "1";
+            string tsDxcLoopControlValue = "0";
+            string tsDxcUnLoopTimeDelayValue = "0";
+
+
+            metroTextResultDXC.AppendText("tsDxcTsIndexOid:" + Snmp.Set(TextDxcIp.Text, textReadCommunity.Text, textWriteCommunity.Text, 2000, 2, tsDxcTsIndexOid, tsDxcTsIndexValue, "Integer32") + "\r\n");
+            metroTextResultDXC.AppendText("tsDxcSourceHpChannelIfIndexOid:" + Snmp.Set(TextDxcIp.Text, textReadCommunity.Text, textWriteCommunity.Text, 2000, 2, tsDxcSourceHpChannelIfIndexOid, tsDxcSourceHpChannelIfIndexValue, "Integer32") + "\r\n");
+            metroTextResultDXC.AppendText("tsDxcSourceLpChannelIdOid:" + Snmp.Set(TextDxcIp.Text, textReadCommunity.Text, textWriteCommunity.Text, 2000, 2, tsDxcSourceLpChannelIdOid, tsDxcSourceLpChannelIdValue, "Integer32") + "\r\n");
+            metroTextResultDXC.AppendText("tsDxcDestinationHpChannelIfIndexOid:" + Snmp.Set(TextDxcIp.Text, textReadCommunity.Text, textWriteCommunity.Text, 2000, 2, tsDxcDestinationHpChannelIfIndexOid, tsDxcDestinationHpChannelIfIndexValue, "Integer32") + "\r\n");
+            metroTextResultDXC.AppendText("tsDxcDestinationLpChannelIdOid:" + Snmp.Set(TextDxcIp.Text, textReadCommunity.Text, textWriteCommunity.Text, 2000, 2, tsDxcDestinationLpChannelIdOid, tsDxcDestinationLpChannelIdValue, "Integer32") + "\r\n");
+            metroTextResultDXC.AppendText("tsDxcTsLevelOid:" + Snmp.Set(TextDxcIp.Text, textReadCommunity.Text, textWriteCommunity.Text, 2000, 2, tsDxcTsLevelOid, tsDxcTsLevelValue, "Integer32") + "\r\n");
+            metroTextResultDXC.AppendText("tsDxcdirectAttrOid:" + Snmp.Set(TextDxcIp.Text, textReadCommunity.Text, textWriteCommunity.Text, 2000, 2, tsDxcdirectAttrOid, tsDxcdirectAttrValue, "Integer32") + "\r\n");
+            metroTextResultDXC.AppendText("tsDxcStatusOid:" + Snmp.Set(TextDxcIp.Text, textReadCommunity.Text, textWriteCommunity.Text, 2000, 2, tsDxcStatusOid, tsDxcStatusValue, "Integer32") + "\r\n");
+            metroTextResultDXC.AppendText("tsDxcFpmMonOid:" + Snmp.Set(TextDxcIp.Text, textReadCommunity.Text, textWriteCommunity.Text, 2000, 2, tsDxcFpmMonOid, tsDxcFpmMonValue, "Integer32") + "\r\n");
+            metroTextResultDXC.AppendText("tsDxcLoopControlOid:" + Snmp.Set(TextDxcIp.Text, textReadCommunity.Text, textWriteCommunity.Text, 2000, 2, tsDxcLoopControlOid, tsDxcLoopControlValue, "Integer32") + "\r\n");
+            metroTextResultDXC.AppendText("tsDxcUnLoopTimeDelayOid:" + Snmp.Set(TextDxcIp.Text, textReadCommunity.Text, textWriteCommunity.Text, 2000, 2, tsDxcUnLoopTimeDelayOid, tsDxcUnLoopTimeDelayValue, "Integer32") + "\r\n");
+
+
+        }
+
+        private void metroButDXCR_Click(object sender, EventArgs e)
+        {
+            var (ifType, subType, srcSlot, srcPort, srcHp, srcLp) = Dxc.TsRestore(metroTextdxc.Text);
+
+
+            //uint ifType = CreateHpIfIndex >> 26 ;
+            //uint subType =(CreateHpIfIndex & 0x3800000 )>> 23 ;
+            //uint srcSlot = (CreateHpIfIndex & 0x7C0000 )>> 18;
+            //uint srcPort = (CreateHpIfIndex & 0x3F800 )>> 11 ;
+            //uint srcHp = (CreateHpIfIndex & 0x7C0 ) >> 6;
+            //uint srcLp = CreateHpIfIndex & 0x3f;
+            try
+            {
+                metroTextResultDXC.AppendText("时隙索引二进制             ：" + System.Convert.ToString(uint.Parse(metroTextdxc.Text), 2).PadLeft(32, '0') + "\r\n");
+                metroTextResultDXC.AppendText("时隙索引十进制             ：" + uint.Parse(metroTextdxc.Text) + "\r\n");
+                metroTextResultDXC.AppendText("时隙索引十六进制           ：0x" + System.Convert.ToString(uint.Parse(metroTextdxc.Text), 16) + "\r\n");
+                metroTextResultDXC.AppendText("ifType二进制               ：" + System.Convert.ToString(ifType, 2).PadLeft(6, '0') + "\r\n");
+                metroTextResultDXC.AppendText("ifType十进制               ：" + ifType.ToString() + "\r\n");
+                metroTextResultDXC.AppendText("ifType十六进制             ：0x" + System.Convert.ToString(ifType, 16) + "\r\n");
+                metroTextResultDXC.AppendText("subType二进制              ：" + System.Convert.ToString(subType, 2).PadLeft(3, '0') + "\r\n");
+                metroTextResultDXC.AppendText("subType十进制              ：" + subType.ToString() + "\r\n");
+                metroTextResultDXC.AppendText("subType十六进制            ：0x" + System.Convert.ToString(subType, 16) + "\r\n");
+                metroTextResultDXC.AppendText("槽位                       ：" + srcSlot.ToString() + "\r\n");
+                metroTextResultDXC.AppendText("端口                       ：" + srcPort.ToString() + "\r\n");
+                metroTextResultDXC.AppendText("高阶                       ：" + srcHp.ToString() + "\r\n");
+                metroTextResultDXC.AppendText("低阶                       ：" + srcLp.ToString() + "\r\n");
+            }
+            catch {
+                MessageBox.Show("请输入小于32bit的数字");
+            }
+
+
+            //metroTextResultDXC.AppendText(CreateHpIfIndex.ToString() + "\r\n");
+
+
+
+        }
+
+
+        private void metroButifindex_Click(object sender, EventArgs e)
+        {
+            uint srcSlot = uint.Parse(metroComSslot.Text);
+            uint srcPort = uint.Parse(metroComSport.Text);
+            uint srcHp = uint.Parse(metroComShp.Text);
+            uint srcLp = uint.Parse(metroComSlp.Text);
+
+            uint dstSlot = uint.Parse(metroComDslot.Text);
+            uint dstPort = uint.Parse(metroComDport.Text);
+            uint dstHp = uint.Parse(metroComDhp.Text);
+            uint dstLp = uint.Parse(metroComDlp.Text);
+            String tsDxcLevle = metroComLevel.Text;
+            uint ifType = 23;
+            uint subType = 4;
+            if (metroComLevel.Text.Contains("VC12")) { ifType = 22; }
+            if (metroComLevel.Text.Contains("VC3")) { ifType = 31; }
+            if (metroComLevel.Text.Contains("VC4")) { ifType = 23; }
+
+            uint srcCreateHpIfIndex = Dxc.TsCreate(ifType, subType, srcSlot, srcPort, srcHp, srcLp);
+            uint dstCreateHpIfIndex = Dxc.TsCreate(ifType, subType, dstSlot, dstPort, dstHp, dstLp);
+            string ddd = System.Convert.ToString(srcCreateHpIfIndex, 2).PadLeft(32, '0');
+            //CreateHpIfIndex = (ifType << 26 )+ (subType << 23) + (srcSlot << 18) + (srcPort << 11) + (srcHp << 6) + srcLp;
+            metroTextResultDXC.AppendText("源时隙索引二进制       ：" + System.Convert.ToString(srcCreateHpIfIndex, 2).PadLeft(32, '0') + "\r\n");
+            metroTextResultDXC.AppendText("源时隙索引十进制       ：" + srcCreateHpIfIndex.ToString() + "\r\n");
+            metroTextResultDXC.AppendText("源时隙索引十六进制     ：0x" + System.Convert.ToString(srcCreateHpIfIndex, 16) + "\r\n");
+
+            metroTextResultDXC.AppendText("源时隙索引二进制       ：" + System.Convert.ToString(dstCreateHpIfIndex, 2).PadLeft(32, '0') + "\r\n");
+            metroTextResultDXC.AppendText("宿时隙索引十进制       ：" + dstCreateHpIfIndex.ToString() + "\r\n");
+            metroTextResultDXC.AppendText("源时隙索引十六进制     ：0x" + System.Convert.ToString(dstCreateHpIfIndex, 16) + "\r\n");
+
+        }
+
+        private void BtnDxcLoop_Click(object sender, EventArgs e)
+        {
+            if (TextDxcPathId.Text == "")
+            {
+                MessageBox.Show("请填写合法的交叉ID号，再次尝试");
+                return;
+            }
+            string tsDxcFpmMonOid = "1.3.6.1.4.1.10072.6.11.2.1.13." + TextDxcPathId.Text;
+            string tsDxcloopControlOid = "1.3.6.1.4.1.10072.6.11.2.1.14." + TextDxcPathId.Text;
+            string tsDxcUnLoopTimeDelayOid = "1.3.6.1.4.1.10072.6.11.2.1.15." + TextDxcPathId.Text;
+
+            string tsDxcFpmMonValue = "1";
+            string tsDxcloopControlValue = "1";
+            string tsDxcUnLoopTimeDelayValue = ComTextLoopTime.Text;
+            if (ComTextLoopControl.Text.Contains("自动解除"))
+            {
+                tsDxcloopControlValue = "2";
+            }
+            if (ComTextLoopControl.Text.Contains("手动解除"))
+            {
+                tsDxcloopControlValue = "1";
+            }
+            if (ComTextLoopControl.Text.Contains("取消环回"))
+            {
+                tsDxcloopControlValue = "0";
+            }
+            metroTextResultDXC.AppendText("tsDxcFpmMonValue(告警监视1：使能、2：禁止):" + Snmp.Set(TextDxcIp.Text, textReadCommunity.Text, textWriteCommunity.Text, 2000, 2, tsDxcFpmMonOid, tsDxcFpmMonValue, "Integer32") + "\r\n");
+            metroTextResultDXC.AppendText("tsDxcloopControlValue（0：不环回、1：手动环回、1：自动环回）:" + Snmp.Set(TextDxcIp.Text, textReadCommunity.Text, textWriteCommunity.Text, 2000, 2, tsDxcloopControlOid, tsDxcloopControlValue, "Integer32") + "\r\n");
+            metroTextResultDXC.AppendText("tsDxcUnLoopTimeDelayValue（环回解除延时分钟）:" + Snmp.Set(TextDxcIp.Text, textReadCommunity.Text, textWriteCommunity.Text, 2000, 2, tsDxcUnLoopTimeDelayOid, tsDxcUnLoopTimeDelayValue, "Integer32") + "\r\n");
+
+        }
+
+        private void ComTextLoopControl_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (ComTextLoopControl.Text.Contains("自动解除"))
+            {
+                ComTextLoopTime.Text = "5";
+            }
+            if (ComTextLoopControl.Text.Contains("手动解除"))
+            {
+                ComTextLoopTime.Text = "0";
+            }
+        }
+
+        private void BtnDxcDelete_Click(object sender, EventArgs e)
+        {
+            string PathId = TextDxcPathId.Text;
+            string tsDxcTsIndexOid = "1.3.6.1.4.1.10072.6.11.2.1.1." + PathId;   //索引ID
+            string tsDxcStatusOid = "1.3.6.1.4.1.10072.6.11.2.1.11." + PathId;  //1是激活 6是删除 5是创建
+            string tsDxcStatusValue = "6";
+            metroTextResultDXC.AppendText("tsDxcTsIndexOid:" + Snmp.Set(TextDxcIp.Text, textReadCommunity.Text, textWriteCommunity.Text, 2000, 2, tsDxcTsIndexOid, PathId, "Integer32") + "\r\n");
+            metroTextResultDXC.AppendText("tsDxcStatusOid:" + Snmp.Set(TextDxcIp.Text, textReadCommunity.Text, textWriteCommunity.Text, 2000, 2, tsDxcStatusOid, tsDxcStatusValue, "Integer32") + "\r\n");
+
+
+
+        }
+
+        private void BtnVcgIndex_Click(object sender, EventArgs e)
+        {
+           
+            var (ifType, subType, srcSlot, srcPort, srcHp, srcLp) = Dxc.TsVcg(metroTextdxc.Text);
+
+
+            //uint ifType = CreateHpIfIndex >> 26 ;
+            //uint subType =(CreateHpIfIndex & 0x3800000 )>> 23 ;
+            //uint srcSlot = (CreateHpIfIndex & 0x7C0000 )>> 18;
+            //uint srcPort = (CreateHpIfIndex & 0x3F800 )>> 11 ;
+            //uint srcHp = (CreateHpIfIndex & 0x7C0 ) >> 6;
+            //uint srcLp = CreateHpIfIndex & 0x3f;
+            try
+            {
+                metroTextResultDXC.AppendText("时隙索引二进制             ：" + System.Convert.ToString(uint.Parse(metroTextdxc.Text), 2).PadLeft(32, '0') + "\r\n");
+                metroTextResultDXC.AppendText("时隙索引十进制             ：" + uint.Parse(metroTextdxc.Text).ToString() + "\r\n");
+                metroTextResultDXC.AppendText("时隙索引十六进制           ：0x" + System.Convert.ToString(uint.Parse(metroTextdxc.Text), 16) + "\r\n");
+                metroTextResultDXC.AppendText("ifType二进制               ：" + System.Convert.ToString(ifType, 2).PadLeft(6, '0') + "\r\n");
+                metroTextResultDXC.AppendText("ifType十进制               ：" + ifType.ToString() + "\r\n");
+                metroTextResultDXC.AppendText("ifType十六进制             ：0x" + System.Convert.ToString(ifType, 16) + "\r\n");
+                metroTextResultDXC.AppendText("subType二进制              ：" + System.Convert.ToString(subType, 2).PadLeft(3, '0') + "\r\n");
+                metroTextResultDXC.AppendText("subType十进制              ：" + subType.ToString() + "\r\n");
+                metroTextResultDXC.AppendText("subType十六进制            ：0x" + System.Convert.ToString(subType, 16) + "\r\n");
+                metroTextResultDXC.AppendText("槽位                       ：" + srcSlot.ToString() + "\r\n");
+                metroTextResultDXC.AppendText("端口                       ：" + srcPort.ToString() + "\r\n");
+                metroTextResultDXC.AppendText("高阶                       ：" + srcHp.ToString() + "\r\n");
+                metroTextResultDXC.AppendText("低阶                       ：" + srcLp.ToString() + "\r\n");
+            }
+            catch {
+                MessageBox.Show("请输入小于32bit的数字");
+            }
+
+        }
+
+        private void BtnOtnIndex_Click(object sender, EventArgs e)
+        {
+            uint CreateHpIfIndex =0;
+            string tsstrotndxc = String.Join("", Regex.Split(metroTextdxc.Text, "\\s+", RegexOptions.IgnoreCase));
+            try
+            {
+
+                    try
+                    {
+                       // CreateHpIfIndex = System.Convert.ToUInt32(metroTextdxc.Text, 2);
+                        CreateHpIfIndex = (uint)int.Parse(metroTextdxc.Text);
+                      //  CreateHpIfIndex = System.Convert.ToUInt32(metroTextdxc.Text, 16);
+
+                    }
+                    catch
+                    {
+                        MessageBox.Show("请输入小于32bit的十六进制字符");
+
+                    }
+
+
+                //srcCreateHpIfIndex = System.Convert.ToUInt32(metroTextdxc.Text,16);
+            }
+            catch {
+                MessageBox.Show("请输入小于32bit的十六进制字符");
+                return;
+            }
+            var (ifType, subType, srcSlot, srcPort, srcHp, srcLp) = Dxc.TsOtnDxc(metroTextdxc.Text);
+
+
+
+            //uint ifType = CreateHpIfIndex >> 26 ;
+            //uint subType =(CreateHpIfIndex & 0x3800000 )>> 23 ;
+            //uint srcSlot = (CreateHpIfIndex & 0x7C0000 )>> 18;
+            //uint srcPort = (CreateHpIfIndex & 0x3F800 )>> 11 ;
+            //uint srcHp = (CreateHpIfIndex & 0x7C0 ) >> 6;
+            //uint srcLp = CreateHpIfIndex & 0x3f;
+            metroTextResultDXC.AppendText("时隙索引二进制             ：" + System.Convert.ToString(CreateHpIfIndex, 2).PadLeft(32, '0') + "\r\n");
+            metroTextResultDXC.AppendText("时隙索引十进制             ：" + CreateHpIfIndex.ToString() + "\r\n");
+            metroTextResultDXC.AppendText("时隙索引十六进制           ：0x" + System.Convert.ToString(CreateHpIfIndex, 16) + "\r\n");
+            metroTextResultDXC.AppendText("ifType二进制               ：" + System.Convert.ToString(ifType, 2).PadLeft(6, '0') + "\r\n");
+            metroTextResultDXC.AppendText("ifType十进制               ：" + ifType.ToString() + "\r\n");
+            metroTextResultDXC.AppendText("ifType十六进制             ：0x" + System.Convert.ToString(ifType, 16) + "\r\n");
+            metroTextResultDXC.AppendText("subType二进制              ：" + System.Convert.ToString(subType, 2).PadLeft(3, '0') + "\r\n");
+            metroTextResultDXC.AppendText("subType十进制              ：" + subType.ToString() + "\r\n");
+            metroTextResultDXC.AppendText("subType十六进制            ：0x" + System.Convert.ToString(subType, 16) + "\r\n");
+            metroTextResultDXC.AppendText("槽位                       ：" + srcSlot.ToString() + "\r\n");
+            metroTextResultDXC.AppendText("端口                       ：" + srcPort.ToString() + "\r\n");
+            metroTextResultDXC.AppendText("dir                       ：" + srcHp.ToString() + "\r\n");
+            metroTextResultDXC.AppendText("odui                       ：" + srcLp.ToString() + "\r\n");
+        }
+
+        private void metroComSslot_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = !Char.IsDigit(e.KeyChar);
+        }
+
+        private void metroComDslot_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = !Char.IsDigit(e.KeyChar);
+        }
+
+        private void ComTextLoopTime_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = !Char.IsDigit(e.KeyChar);
+        }
+
+        private void TextDxcPathId_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = !Char.IsDigit(e.KeyChar);
+        }
+
+        private void BtnDxcSearch_Click(object sender, EventArgs e)
+        {
+            uint srcSlot = uint.Parse(metroComSslot.Text);
+            uint srcPort = uint.Parse(metroComSport.Text);
+            uint srcHp = uint.Parse(metroComShp.Text);
+            uint srcLp = uint.Parse(metroComSlp.Text);
+
+            uint dstSlot = uint.Parse(metroComDslot.Text);
+            uint dstPort = uint.Parse(metroComDport.Text);
+            uint dstHp = uint.Parse(metroComDhp.Text);
+            uint dstLp = uint.Parse(metroComDlp.Text);
+            string tsDxcLevle = metroComLevel.Text;
+            string tslp = Dxc.TsDxcSearch(srcSlot, srcPort, srcHp, srcLp, tsDxcLevle).ToString();
+
+
+           
+            string path =null;
+            path = Dxc.TsPathIdSearch(TextDxcIp.Text, textReadCommunity.Text, tslp,"1");
+            //List<string[]> array = Snmp.Arry(TextDxcIp.Text, textReadCommunity.Text, 2000, 2, srcLpOid);
+            //foreach (var row in array)
+            //{
+            //    //metroTextResultDXC.AppendText(row[5] + "没找到\r\n");
+
+            //    if (row[5].Contains(tslp)) {
+            //        string[] hex = Regex.Split(row[3], @"[.]", RegexOptions.IgnoreCase);
+            //        path = hex[12];
+            //        metroTextResultDXC.AppendText(row[5] + "时隙PathID是："+path+" 找到了\r\n");
+            //        TextDxcPathId.Text = path;
+            //    }
+            //}
+            if (path == "0")
+            {
+                metroTextResultDXC.AppendText(tslp + "时隙PathID没找到\r\n");
             }
             else {
-                timerYanshi.Stop();
-                metroButYanshi.Text = "开始延时测试";
-                textYanshi.Text = "停止测试";
+                metroTextResultDXC.AppendText(tslp + "时隙PathID是：" + path + " 找到了\r\n");
             }
+        }
+
+        private void metroComLevel_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if(metroComLevel.Text == "VC4")
+            {
+                metroComSlp.Text = "0";
+                metroComSlp.Enabled = false;
+                metroComDlp.Text = "0";
+                metroComDlp.Enabled = false;
+            }
+            if (metroComLevel.Text == "VC3")
+            {
+                metroComSlp.Text = "0";
+                metroComSlp.Enabled = true;
+                metroComDlp.Text = "0";
+                metroComDlp.Enabled = true;
+            }
+            if (metroComLevel.Text == "VC12")
+            {
+                metroComSlp.Text = "0";
+                metroComSlp.Enabled = true;
+                metroComDlp.Text = "0";
+                metroComDlp.Enabled = true;
+            }
+
+        }
+
+        private void BtnEthindex_Click(object sender, EventArgs e)
+        {
+            var (ifType, subType, srcSlot, srcPort, srcHp, srcLp) = Dxc.TsEth(metroTextdxc.Text);
+
+
+            //uint ifType = CreateHpIfIndex >> 26 ;
+            //uint subType =(CreateHpIfIndex & 0x3800000 )>> 23 ;
+            //uint srcSlot = (CreateHpIfIndex & 0x7C0000 )>> 18;
+            //uint srcPort = (CreateHpIfIndex & 0x3F800 )>> 11 ;
+            //uint srcHp = (CreateHpIfIndex & 0x7C0 ) >> 6;
+            //uint srcLp = CreateHpIfIndex & 0x3f;
+            try
+            {
+                metroTextResultDXC.AppendText("时隙索引二进制             ：" + System.Convert.ToString(uint.Parse(metroTextdxc.Text), 2).PadLeft(32, '0') + "\r\n");
+                metroTextResultDXC.AppendText("时隙索引十进制             ：" + uint.Parse(metroTextdxc.Text).ToString() + "\r\n");
+                metroTextResultDXC.AppendText("时隙索引十六进制           ：0x" + System.Convert.ToString(uint.Parse(metroTextdxc.Text), 16) + "\r\n");
+                metroTextResultDXC.AppendText("ifType二进制               ：" + System.Convert.ToString(ifType, 2).PadLeft(6, '0') + "\r\n");
+                metroTextResultDXC.AppendText("ifType十进制               ：" + ifType.ToString() + "\r\n");
+                metroTextResultDXC.AppendText("ifType十六进制             ：0x" + System.Convert.ToString(ifType, 16) + "\r\n");
+                metroTextResultDXC.AppendText("subType二进制              ：" + System.Convert.ToString(subType, 2).PadLeft(3, '0') + "\r\n");
+                metroTextResultDXC.AppendText("subType十进制              ：" + subType.ToString() + "\r\n");
+                metroTextResultDXC.AppendText("subType十六进制            ：0x" + System.Convert.ToString(subType, 16) + "\r\n");
+                metroTextResultDXC.AppendText("槽位                       ：" + srcSlot.ToString() + "\r\n");
+                metroTextResultDXC.AppendText("端口                       ：" + srcPort.ToString() + "\r\n");
+                metroTextResultDXC.AppendText("高阶                       ：" + srcHp.ToString() + "\r\n");
+                metroTextResultDXC.AppendText("低阶                       ：" + srcLp.ToString() + "\r\n");
+            }
+            catch
+            {
+                MessageBox.Show("请输入小于32bit的数字");
+            }
+        }
+        private void CreatDVeos() {
+            GridOtn.Rows.Clear();
+            if (GridOtn.Columns["宿接口"] == null)
+            {
+
+                this.GridOtn.Columns.Add("宿接口", "宿接口");
+            }
+            else
+            {
+                this.GridOtn.Columns.Remove("宿接口");
+                this.GridOtn.Columns.Add("宿接口", "宿接口");
+            }
+            if (GridOtn.Columns["宿接口值"] == null)
+            {
+
+                this.GridOtn.Columns.Add("宿接口值", "宿接口值");
+            }
+            else
+            {
+                this.GridOtn.Columns.Remove("宿接口值");
+                this.GridOtn.Columns.Add("宿接口值", "宿接口值");
+            }
+            if (GridOtn.Columns["VCG接口"] == null)
+            {
+
+                this.GridOtn.Columns.Add("VCG接口", "VCG接口");
+            }
+            else
+            {
+                this.GridOtn.Columns.Remove("VCG接口");
+                this.GridOtn.Columns.Add("VCG接口", "VCG接口");
+            }
+            if (GridOtn.Columns["VCG接口值"] == null)
+            {
+
+                this.GridOtn.Columns.Add("VCG接口值", "VCG接口值");
+            }
+            else
+            {
+                this.GridOtn.Columns.Remove("VCG接口值");
+                this.GridOtn.Columns.Add("VCG接口值", "VCG接口值");
+            }
+            if (GridOtn.Columns["宿时隙"] == null)
+            {
+
+                this.GridOtn.Columns.Add("宿时隙", "宿时隙");
+            }
+            else
+            {
+                this.GridOtn.Columns.Remove("宿时隙");
+                this.GridOtn.Columns.Add("宿时隙", "宿时隙");
+            }
+            if (GridOtn.Columns["宿告警"] == null)
+            {
+
+                this.GridOtn.Columns.Add("宿告警", "宿告警");
+            }
+            else
+            {
+                this.GridOtn.Columns.Remove("宿告警");
+                this.GridOtn.Columns.Add("宿告警", "宿告警");
+            }
+            if (GridOtn.Columns["宿Tx开销"] == null)
+            {
+
+                this.GridOtn.Columns.Add("宿Tx开销", "宿Tx开销");
+            }
+            else
+            {
+                this.GridOtn.Columns.Remove("宿Tx开销");
+                this.GridOtn.Columns.Add("宿Tx开销", "宿Tx开销");
+            }
+            if (GridOtn.Columns["宿Rx开销"] == null)
+            {
+
+                this.GridOtn.Columns.Add("宿Rx开销", "宿Rx开销");
+            }
+            else
+            {
+                this.GridOtn.Columns.Remove("宿Rx开销");
+                this.GridOtn.Columns.Add("宿Rx开销", "宿Rx开销");
+                this.GridOtn.Columns["宿Rx开销"].Width = 70;
+            }
+            if (GridOtn.Columns["SDH交叉ID"] == null)
+            {
+
+                this.GridOtn.Columns.Add("SDH交叉ID", "SDH交叉ID");
+            }
+            else
+            {
+                this.GridOtn.Columns.Remove("SDH交叉ID");
+                this.GridOtn.Columns.Add("SDH交叉ID", "SDH交叉ID");
+            }
+
+
+            if (GridOtn.Columns["源时隙"] == null)
+            {
+
+                this.GridOtn.Columns.Add("源时隙", "源时隙");
+            }
+            else
+            {
+                this.GridOtn.Columns.Remove("源时隙");
+                this.GridOtn.Columns.Add("源时隙", "源时隙");
+            }
+            if (GridOtn.Columns["源告警"] == null)
+            {
+
+                this.GridOtn.Columns.Add("源告警", "源告警");
+            }
+            else
+            {
+                this.GridOtn.Columns.Remove("源告警");
+                this.GridOtn.Columns.Add("源告警", "源告警");
+            }
+            if (GridOtn.Columns["源Tx开销"] == null)
+            {
+
+                this.GridOtn.Columns.Add("源Tx开销", "源Tx开销");
+            }
+            else
+            {
+                this.GridOtn.Columns.Remove("源Tx开销");
+                this.GridOtn.Columns.Add("源Tx开销", "源Tx开销");
+            }
+            if (GridOtn.Columns["源Rx开销"] == null)
+            {
+
+                this.GridOtn.Columns.Add("源Rx开销", "源Rx开销");
+            }
+            else
+            {
+                this.GridOtn.Columns.Remove("源Rx开销");
+                this.GridOtn.Columns.Add("源Rx开销", "源Rx开销");
+            }
+            if (GridOtn.Columns["源SDH接口"] == null)
+            {
+
+                this.GridOtn.Columns.Add("源SDH接口", "源SDH接口");
+            }
+            else
+            {
+                this.GridOtn.Columns.Remove("源SDH接口");
+                this.GridOtn.Columns.Add("源SDH接口", "源SDH接口");
+            }
+            if (GridOtn.Columns["源SDH接口值"] == null)
+            {
+
+                this.GridOtn.Columns.Add("源SDH接口值", "源SDH接口值");
+            }
+            else
+            {
+                this.GridOtn.Columns.Remove("源SDH接口值");
+                this.GridOtn.Columns.Add("源SDH接口值", "源SDH接口值");
+            }
+        }
+        private void CreatDVEoo()
+        {
+            GridOtn.Rows.Clear();
+            if (GridOtn.Columns["检查项"] == null)
+            {
+
+                this.GridOtn.Columns.Add("检查项", "检查项");
+            }
+            else
+            {
+                this.GridOtn.Columns.Remove("检查项");
+                this.GridOtn.Columns.Add("检查项", "检查项");
+            }
+            if (GridOtn.Columns["宿主接口"] == null)
+            {
+
+                this.GridOtn.Columns.Add("宿主接口", "宿主接口");
+            }
+            else
+            {
+                this.GridOtn.Columns.Remove("宿主接口");
+                this.GridOtn.Columns.Add("宿主接口", "宿主接口");
+            }
+            if (GridOtn.Columns["宿备接口"] == null)
+            {
+
+                this.GridOtn.Columns.Add("宿备接口", "宿备接口");
+            }
+            else
+            {
+                this.GridOtn.Columns.Remove("宿备接口");
+                this.GridOtn.Columns.Add("宿备接口", "宿备接口");
+            }
+            if (GridOtn.Columns["虚拟主接口"] == null)
+            {
+
+                this.GridOtn.Columns.Add("虚拟主接口", "虚拟主接口");
+            }
+            else
+            {
+                this.GridOtn.Columns.Remove("虚拟主接口");
+                this.GridOtn.Columns.Add("虚拟主接口", "虚拟主接口");
+            }
+            if (GridOtn.Columns["虚拟备接口"] == null)
+            {
+
+                this.GridOtn.Columns.Add("虚拟备接口", "虚拟备接口");
+            }
+            else
+            {
+                this.GridOtn.Columns.Remove("虚拟备接口");
+                this.GridOtn.Columns.Add("虚拟备接口", "虚拟备接口");
+            }
+            if (GridOtn.Columns["宿主时隙"] == null)
+            {
+
+                this.GridOtn.Columns.Add("宿主时隙", "宿主时隙");
+            }
+            else
+            {
+                this.GridOtn.Columns.Remove("宿主时隙");
+                this.GridOtn.Columns.Add("宿主时隙", "宿主时隙");
+            }
+            if (GridOtn.Columns["宿备时隙"] == null)
+            {
+
+                this.GridOtn.Columns.Add("宿备时隙", "宿备时隙");
+            }
+            else
+            {
+                this.GridOtn.Columns.Remove("宿备时隙");
+                this.GridOtn.Columns.Add("宿备时隙", "宿备时隙");
+            }
+            if (GridOtn.Columns["交叉ID"] == null)
+            {
+
+                this.GridOtn.Columns.Add("交叉ID", "交叉ID");
+            }
+            else
+            {
+                this.GridOtn.Columns.Remove("交叉ID");
+                this.GridOtn.Columns.Add("交叉ID", "交叉ID");
+            }
+
+
+            if (GridOtn.Columns["源主时隙"] == null)
+            {
+                this.GridOtn.Columns.Add("源主时隙", "源主时隙");
+            }
+            else
+            {
+                this.GridOtn.Columns.Remove("源主时隙");
+                this.GridOtn.Columns.Add("源主时隙", "源主时隙");
+            }
+            if (GridOtn.Columns["源备时隙"] == null)
+            {
+                this.GridOtn.Columns.Add("源备时隙", "源备时隙");
+            }
+            else
+            {
+                this.GridOtn.Columns.Remove("源备时隙");
+                this.GridOtn.Columns.Add("源备时隙", "源备时隙");
+            }
+            if (GridOtn.Columns["源主接口"] == null)
+            {
+
+                this.GridOtn.Columns.Add("源主接口", "源主接口");
+            }
+            else
+            {
+                this.GridOtn.Columns.Remove("源主接口");
+                this.GridOtn.Columns.Add("源主接口", "源主接口");
+            }
+            if (GridOtn.Columns["源备接口"] == null)
+            {
+
+                this.GridOtn.Columns.Add("源备接口", "源备接口");
+            }
+            else
+            {
+                this.GridOtn.Columns.Remove("源备接口");
+                this.GridOtn.Columns.Add("源备接口", "源备接口");
+            }
+        }
+        private void BtnPtoP_Click(object sender, EventArgs e)
+        {
+            GridOtn.DataSource = null;
+            GridOtn.Columns.Clear();
+            if (ComCusType.Text.Contains("EOS分组SDH业务")) {
+                CreatDVeos();
+                GridOtn.Rows.Add(63);
+                for (int i = 0; i < this.GridOtn.Columns.Count; i++)
+                {
+                    this.GridOtn.Columns[i].SortMode = DataGridViewColumnSortMode.NotSortable;
+                }
+                Thread PtoP = new Thread(new ParameterizedThreadStart(PtoPGuZhangDingWei));
+                PtoP.Start(TextDxcIp.Text);
+            }
+            if (ComCusType.Text.Contains("GE/10GE分组OTN业务")|| ComCusType.Text.Contains("GE/10GE透传OTN业务") || ComCusType.Text.Contains("STM-1/4/16/64透传OTN业务"))
+            {
+                CreatDVEoo();
+                GridOtn.Rows.Add(20);
+                for (int i = 0; i < this.GridOtn.Columns.Count; i++)
+                {
+                    this.GridOtn.Columns[i].SortMode = DataGridViewColumnSortMode.NotSortable;
+                }
+                Thread PtoP = new Thread(new ParameterizedThreadStart(PtoPOtnPakGuZhangDingWei));
+                PtoP.Start(TextDxcIp.Text);
+            }
+
+        }
+        private void PtoPOtnPakGuZhangDingWei(object str) {
+            try
+            {
+                BtnPtoP.Enabled = false;
+                LabcusTx.ForeColor = Color.LightGreen;
+                LabcusRx.ForeColor = Color.LightGreen;
+                LabDport.ForeColor = Color.LightGreen;
+                LabDportRx.ForeColor = Color.LightGreen;
+                LabDportTx.ForeColor = Color.LightGreen;
+                LabDts.ForeColor = Color.LightGreen;
+                LabTsLoop.ForeColor = Color.LightGreen;
+                LabSts.ForeColor = Color.LightGreen;
+                LabStsLab.ForeColor = Color.LightGreen;
+                LabSPort.ForeColor = Color.LightGreen;
+                LabSportLoop.ForeColor = Color.LightGreen;
+                string ip = str.ToString();
+                string readcommunity = TextReadMu.Text;
+                string writecommunity = TextWriteMu.Text;
+                if (ComDslotP.Text == "" || ComDportP.Text == "" || ComVcgSlotD.Text == "" || ComVcgPortD.Text == "" || ComCusType.Text == "")
+                {
+                    MessageBox.Show("请输入接口等信息在此尝试");
+                    BtnPtoP.Enabled = true;
+                    return;
+                }
+                int timeout = 2000;
+                int retry = 2;
+                string Dport = ComDslotP.Text + "." + ComDportP.Text;
+                string VpPort = ComVcgSlotD.Text + "." + ComVcgPortD.Text;
+                GridOtn.Rows[0].Cells["检查项"].Value = "索引";
+                GridOtn.Rows[1].Cells["检查项"].Value = "业务配置";
+                GridOtn.Rows[2].Cells["检查项"].Value = "业务类型";
+                GridOtn.Rows[3].Cells["检查项"].Value = "当前告警";
+                GridOtn.Rows[4].Cells["检查项"].Value = "OPU告警";
+                GridOtn.Rows[5].Cells["检查项"].Value = "光模块速率";
+                GridOtn.Rows[6].Cells["检查项"].Value = "收光功率";
+                GridOtn.Rows[7].Cells["检查项"].Value = "发送PT";
+                GridOtn.Rows[8].Cells["检查项"].Value = "期望PT";
+                GridOtn.Rows[9].Cells["检查项"].Value = "接收PT";
+                GridOtn.Rows[10].Cells["检查项"].Value = "发送MSI";
+                GridOtn.Rows[11].Cells["检查项"].Value = "期望MSI";
+                GridOtn.Rows[12].Cells["检查项"].Value = "接收MSI";
+                GridOtn.Rows[13].Cells["检查项"].Value = "Tx带宽";
+                GridOtn.Rows[14].Cells["检查项"].Value = "Rx带宽";
+                GridOtn.Rows[15].Cells["检查项"].Value = "TPID";
+                GridOtn.Rows[16].Cells["检查项"].Value = "驱动当前告警";
+
+                GridOtn.Rows[0].Cells["宿主接口"].Value = "初始化";
+                GridOtn.Rows[0].Cells["宿备接口"].Value = "初始化";
+                GridOtn.Rows[0].Cells["虚拟主接口"].Value = "初始化";
+                GridOtn.Rows[0].Cells["虚拟备接口"].Value = "初始化";
+                GridOtn.Rows[0].Cells["宿主时隙"].Value = "初始化";
+                GridOtn.Rows[0].Cells["宿备时隙"].Value = "初始化";
+                GridOtn.Rows[0].Cells["交叉ID"].Value = "初始化";
+                GridOtn.Rows[0].Cells["源主时隙"].Value = "初始化";
+                GridOtn.Rows[0].Cells["源备时隙"].Value = "初始化";
+                GridOtn.Rows[0].Cells["源主接口"].Value = "初始化";
+                GridOtn.Rows[0].Cells["源备接口"].Value = "初始化";
+
+
+                string Dportifindex = "";
+                Dportifindex = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.EthIfIndex + Dport);
+                GridOtn.Rows[0].Cells["宿主接口"].Value = Dportifindex;
+                GridOtn.Rows[1].Cells["宿主接口"].Value = ComDslotP.Text + "-" + ComDportP.Text;
+                string DAvport = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.anyPhyServIfIndex + VpPort);
+                GridOtn.Rows[0].Cells["虚拟主接口"].Value = DAvport;
+                GridOtn.Rows[1].Cells["虚拟主接口"].Value = ComVcgSlotD.Text + "-" + ComVcgPortD.Text;
+                string DodukIDFu = "";
+                string DodukIDZheng = "";
+                string DodukID16 = "";
+                string dxcid = "";
+                string dxcloop = "";
+                string oduDxcSinkIfList = "";
+                string oduDxcSrcWorkIfList = "";
+                string oduDxcExtraIfList = "";
+                string oduDxcSrcProtIfList = "";
+                string strslot = "";
+                string strport = "";
+                string strslotb = "";
+                string strportb = "";
+                string sportifindex = "";
+                string sbportifindex = "";
+                string sporttype = "";
+                string sportodukifindex = "";
+                string sbportodukifindex = "";
+
+                DodukIDFu = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnClntODUkIfIndex + DAvport + "." + ComOdukID.Text + "." + Dxc.OdukIfType(ComOdukType.Text));
+                DodukIDZheng = Dxc.ZhuanYou10to10(DodukIDFu);
+                DodukID16 = Dxc.ZhuanYou10to16(DodukIDFu);
+
+
+                dxcid = Dxc.OtnTsPathIdSearch(ip, readcommunity, DodukID16);
+                if (dxcid == "0")
+                {
+                    MessageBox.Show("时隙交叉未找到! 请检查输入接口与oduK是否正确？接口是否配置业务？");
+                    BtnPtoP.Enabled = true;
+
+                    return;
+                }
+                dxcloop = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.oduDxcLoopControl + dxcid);
+                if (LabTsLoop.Checked == true && dxcloop =="1") {
+                    Snmp.Set(ip, readcommunity, writecommunity, timeout, retry, Dxc.oduDxcLoopControl + dxcid, "4", "Integer32");
+                    dxcloop = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.oduDxcLoopControl + dxcid);
+
+                }
+                if (LabTsLoop.Checked == false )
+                {
+                    Snmp.Set(ip, readcommunity, writecommunity, timeout, retry, Dxc.oduDxcLoopControl + dxcid, "1", "Integer32");
+                    dxcloop = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.oduDxcLoopControl + dxcid);
+
+                }
+                oduDxcSinkIfList = System.Convert.ToUInt32(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.oduDxcSinkIfList + dxcid), 16).ToString();
+                oduDxcExtraIfList = System.Convert.ToUInt32(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.oduDxcExtraIfList + dxcid), 16).ToString();
+                GridOtn.Rows[0].Cells["宿主时隙"].Value = oduDxcSinkIfList;
+                GridOtn.Rows[0].Cells["宿备时隙"].Value = oduDxcExtraIfList;
+                GridOtn.Rows[0].Cells["交叉ID"].Value = dxcid;
+                oduDxcSrcWorkIfList = System.Convert.ToUInt32(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.oduDxcSrcWorkIfList + dxcid), 16).ToString();
+                GridOtn.Rows[0].Cells["源主时隙"].Value = oduDxcSrcWorkIfList;
+                oduDxcSrcProtIfList = System.Convert.ToUInt32(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.oduDxcSrcProtIfList + dxcid), 16).ToString();
+                GridOtn.Rows[0].Cells["源备时隙"].Value = oduDxcSrcProtIfList;
+                if (DodukIDZheng == oduDxcSinkIfList)
+                {
+                    var (ifType, subType, srcSlot, srcPort, srcHp, srcLp) = Dxc.TsOtnDxc(oduDxcSrcWorkIfList);
+                    strslot = srcSlot.ToString();
+                    strport = srcPort.ToString();
+                    var (ifType1, subType1, srcSlot1, srcPort1, srcHp1, srcLp1) = Dxc.TsOtnDxc(oduDxcSrcProtIfList);
+                    strslotb = srcSlot1.ToString();
+                    strportb = srcPort1.ToString();
+                    sporttype = Dxc.OdukindexSearch(ip, readcommunity, oduDxcSrcWorkIfList);
+                    if (sporttype == "OTN")
+                    {
+                        sportifindex = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnPhyOtuIfIndex + strslot + "." + strport);
+                        sportodukifindex = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnPhyOduIfIndex + strslot + "." + strport);
+                        sbportifindex = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnPhyOtuIfIndex + strslotb + "." + strportb);
+                        sbportodukifindex = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnPhyOduIfIndex + strslotb + "." + strportb);
+                    }
+                    if (sporttype == "ANY")
+                    {
+                        sportifindex = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.anyPhyServIfIndex + strslot + "." + strport);
+                    }
+                }
+                if (DodukIDZheng == oduDxcSrcWorkIfList)
+                {
+                    var (ifType, subType, srcSlot, srcPort, srcHp, srcLp) = Dxc.TsOtnDxc(oduDxcSinkIfList);
+                    strslot = srcSlot.ToString();
+                    strport = srcPort.ToString();
+                    var (ifType1, subType1, srcSlot1, srcPort1, srcHp1, srcLp1) = Dxc.TsOtnDxc(oduDxcSrcProtIfList);
+                    strslotb = srcSlot1.ToString();
+                    strportb = srcPort1.ToString();
+                    sporttype = Dxc.OdukindexSearch(ip, readcommunity, oduDxcSinkIfList);
+                    if (sporttype == "OTN")
+                    {
+                        sportifindex = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnPhyOtuIfIndex + strslot + "." + strport);
+                        sportodukifindex = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnPhyOduIfIndex + strslot + "." + strport);
+                        sbportifindex = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnPhyOtuIfIndex + strslotb + "." + strportb);
+                        sbportodukifindex = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnPhyOduIfIndex + strslotb + "." + strportb);
+                    }
+                    if (sporttype == "ANY")
+                    {
+                        sportifindex = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.anyPhyServIfIndex + strslot + "." + strport);
+                    }
+                }
+
+
+                //sportifindex = Dxc.OdukindexSearch(ip, readcommunity, oduDxcSinkIfList);
+                GridOtn.Rows[0].Cells["源主接口"].Value = sportifindex;
+                GridOtn.Rows[0].Cells["源备接口"].Value = sbportifindex;
+
+
+                GridOtn.Rows[1].Cells["宿主时隙"].Value = Dxc.TsOtnDxcindex(oduDxcSinkIfList);
+                GridOtn.Rows[1].Cells["宿备时隙"].Value = Dxc.TsOtnDxcindex(oduDxcExtraIfList);
+                GridOtn.Rows[1].Cells["交叉ID"].Value = Dxc.OduDxcLoopControl(dxcloop);
+                GridOtn.Rows[1].Cells["源主时隙"].Value = Dxc.TsOtnDxcindex(oduDxcSrcWorkIfList);
+                GridOtn.Rows[1].Cells["源备时隙"].Value = Dxc.TsOtnDxcindex(oduDxcSrcProtIfList);
+                GridOtn.Rows[1].Cells["源主接口"].Value = strslot + "-" + strport;
+                GridOtn.Rows[1].Cells["源备接口"].Value = strslotb + "-" + strportb;
+                string loopctl = "0";
+                if (sporttype == "OTN" && LabSportLoop.Checked == true) {
+
+                    loopctl = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnPhyPortLoopState + strslot + "." + strport);
+                    GridOtn.Rows[1].Cells["源主接口"].Value = strslot + "-" + strport + "（"+ loopctl + "）";
+                    if (loopctl == "2")
+                    {
+                        GridOtn.Rows[1].Cells["源主接口"].Value = strslot + "-" + strport + "（OTN已系统环回）";
+                    }
+                    if (loopctl == "0")
+                    {
+                        Snmp.Set(ip, readcommunity, writecommunity, timeout, retry, Dxc.otnPhyPortLoopState + strslot + "." + strport, "2", "Integer32");
+                        GridOtn.Rows[1].Cells["源主接口"].Value = strslot + "-" + strport + "（OTN系统环回）";
+                    }
+
+                }
+                if (sporttype == "OTN" && LabSportLoop.Checked == false)
+                {
+                    loopctl = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnPhyPortLoopState + strslot + "." + strport);
+                    if(loopctl == "0"){
+                        GridOtn.Rows[1].Cells["源主接口"].Value = strslot + "-" + strport + "（OTN不环回）";
+                    }
+                    if (loopctl == "1" || loopctl == "2")
+                    {
+                        Snmp.Set(ip, readcommunity, writecommunity, timeout, retry, Dxc.otnPhyPortLoopState + strslot + "." + strport, "0", "Integer32");
+                        GridOtn.Rows[1].Cells["源主接口"].Value = strslot + "-" + strport + "（OTN取消环回）";
+                    }
+
+
+                }
+                if (sporttype == "ANY" && LabSportLoop.Checked == true)
+                {
+                    loopctl = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.anyPhyPortLoopState + strslot + "." + strport);
+                    GridOtn.Rows[1].Cells["源主接口"].Value = strslot + "-" + strport + "（" + loopctl + "）";
+                    if (loopctl == "2")
+                    {
+                        GridOtn.Rows[1].Cells["源主接口"].Value = strslot + "-" + strport + "（ANY已系统环回）";
+                    }
+                    if (loopctl == "0" )
+                    {
+                        Snmp.Set(ip, readcommunity, writecommunity, timeout, retry, Dxc.anyPhyPortLoopState + strslot + "." + strport, "2", "Integer32");
+                        GridOtn.Rows[1].Cells["源主接口"].Value = strslot + "-" + strport + "（ANY系统环回）";
+                    }
+
+
+
+                }
+                if (sporttype == "ANY" && LabSportLoop.Checked == false)
+                {
+                    loopctl = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.anyPhyPortLoopState + strslot + "." + strport);
+                    if (loopctl == "0")
+                    {
+                        GridOtn.Rows[1].Cells["源主接口"].Value = strslot + "-" + strport + "（ANY不环回）";
+                    }
+                    if (loopctl == "1" || loopctl == "2")
+                    {
+                        Snmp.Set(ip, readcommunity, writecommunity, timeout, retry, Dxc.anyPhyPortLoopState + strslot + "." + strport, "0", "Integer32");
+                        GridOtn.Rows[1].Cells["源主接口"].Value = strslot + "-" + strport + "（ANY取消环回）";
+                    }
+
+
+
+
+                }
+
+
+                ////业务类型
+
+                string ethIfmediatype = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.ethIfMediaType + Dportifindex);
+                if (ethIfmediatype == "1") { ethIfmediatype = "自动"; }
+                if (ethIfmediatype == "2") { ethIfmediatype = "光口"; }
+                if (ethIfmediatype == "3") { ethIfmediatype = "电口"; }
+                GridOtn.Rows[2].Cells["宿主接口"].Value = ethIfmediatype;
+                GridOtn.Rows[2].Cells["宿备接口"].Value = "";
+                GridOtn.Rows[2].Cells["虚拟主接口"].Value = Dxc.AnyPhyServIfTypeValue(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.anyPhyServIfType + VpPort));
+                GridOtn.Rows[2].Cells["虚拟备接口"].Value = "";
+                GridOtn.Rows[2].Cells["宿主时隙"].Value = Dxc.OduDxcEncMode(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.oduDxcEncMode + dxcid));
+                GridOtn.Rows[2].Cells["宿备时隙"].Value = "";
+                GridOtn.Rows[2].Cells["交叉ID"].Value = Dxc.OduDxcODUkIfType(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.oduDxcODUkIfType + dxcid));
+                GridOtn.Rows[2].Cells["源主时隙"].Value = Dxc.OduDxcServiceType(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.oduDxcServiceType + dxcid));
+                GridOtn.Rows[2].Cells["源备时隙"].Value = "";
+                if (sporttype == "OTN")
+                {
+                    GridOtn.Rows[2].Cells["源主接口"].Value = Dxc.AnyPhyServIfTypeValue(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnPhyServIfType + strslot + "." + strport));
+                    GridOtn.Rows[2].Cells["源备接口"].Value = Dxc.AnyPhyServIfTypeValue(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnPhyServIfType + strslotb + "." + strportb));
+                }
+                if (sporttype == "ANY")
+                {
+                    GridOtn.Rows[2].Cells["源主接口"].Value = Dxc.AnyPhyServIfTypeValue(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.anyPhyServIfType + strslot + "." + strport));
+                    GridOtn.Rows[2].Cells["源备接口"].Value = Dxc.AnyPhyServIfTypeValue(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.anyPhyServIfType + strslotb + "." + strportb));
+                }
+                ///当前告警
+                ///
+                string DportAlarm = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.ethIfOperStatus + Dportifindex);
+                GridOtn.Rows[3].Cells["宿主接口"].Value = DportAlarm;
+                if (DportAlarm == "1") { GridOtn.Rows[3].Cells["宿主接口"].Value = "up"; }
+                if (DportAlarm == "2") { GridOtn.Rows[3].Cells["宿主接口"].Value = "down"; }
+                if (DportAlarm == "1")
+                {
+                    GridOtn.Rows[3].Cells["宿主接口"].Style.BackColor = Color.GreenYellow;
+                }
+                else
+                {
+                    GridOtn.Rows[3].Cells["宿主接口"].Style.BackColor = Color.OrangeRed;
+                    LabDport.ForeColor = Color.Red;
+                }
+                GridOtn.Rows[3].Cells["宿备接口"].Value = "";
+                //Snmp.Set(ip, readcommunity, writecommunity, timeout, retry, Dxc.otnIfOTUkAlmMask + DAvport, "ffffffff", "OctetString");
+                //Snmp.Set(ip, readcommunity, writecommunity, timeout, retry, Dxc.otnIfODUkAlmMask + oduDxcSinkIfList, "ffffffff", "OctetString");
+                //Snmp.Set(ip, readcommunity, writecommunity, timeout, retry, Dxc.otnIfODUkAlmMask + oduDxcExtraIfList, "ffffffff", "OctetString");
+                //Snmp.Set(ip, readcommunity, writecommunity, timeout, retry, Dxc.otnIfODUkAlmMask + oduDxcSrcWorkIfList, "ffffffff", "OctetString");
+                //Snmp.Set(ip, readcommunity, writecommunity, timeout, retry, Dxc.otnIfODUkAlmMask + oduDxcSrcProtIfList, "ffffffff", "OctetString");
+                //Snmp.Set(ip, readcommunity, writecommunity, timeout, retry, Dxc.otnIfOTUkAlmMask + sportifindex, "ffffffff", "OctetString");
+                //Snmp.Set(ip, readcommunity, writecommunity, timeout, retry, Dxc.otnIfOTUkAlmMask + sbportifindex, "ffffffff", "OctetString");
+                string otnIfOTUkAlmStateVpEth = Alarm.OtuAlarm(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOTUkAlmState + DAvport));
+                if (otnIfOTUkAlmStateVpEth.Contains("OK"))
+                {
+                    GridOtn.Rows[3].Cells["虚拟主接口"].Value = otnIfOTUkAlmStateVpEth;
+                    GridOtn.Rows[3].Cells["虚拟主接口"].Style.BackColor = Color.GreenYellow;
+                }
+                else
+                {
+                    GridOtn.Rows[3].Cells["虚拟主接口"].Value = otnIfOTUkAlmStateVpEth;
+                    GridOtn.Rows[3].Cells["虚拟主接口"].Style.BackColor = Color.OrangeRed;
+                    LabDportRx.ForeColor = Color.Red;
+                }
+                GridOtn.Rows[3].Cells["虚拟备接口"].Value = "";
+                string oduDxcSinkIfListAlarm = Alarm.OdukAlarm(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfODUkAlmState + oduDxcSinkIfList));
+                if (oduDxcSinkIfListAlarm.Contains("OK"))
+                {
+                    GridOtn.Rows[3].Cells["宿主时隙"].Value = oduDxcSinkIfListAlarm;
+                    GridOtn.Rows[3].Cells["宿主时隙"].Style.BackColor = Color.GreenYellow;
+
+                }
+                else
+                {
+                    GridOtn.Rows[3].Cells["宿主时隙"].Value = oduDxcSinkIfListAlarm;
+                    GridOtn.Rows[3].Cells["宿主时隙"].Style.BackColor = Color.OrangeRed;
+                    LabDts.ForeColor = Color.Red;
+                    LabTsLoop.ForeColor = Color.Red;
+                }
+
+                string oduDxcExtraIfListAlarm = Alarm.OdukAlarm(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfODUkAlmState + oduDxcExtraIfList));
+                if (oduDxcExtraIfListAlarm.Contains("OK"))
+                {
+                    GridOtn.Rows[3].Cells["宿备时隙"].Value = oduDxcExtraIfListAlarm;
+                    GridOtn.Rows[3].Cells["宿备时隙"].Style.BackColor = Color.GreenYellow;
+
+                }
+                else
+                {
+                    GridOtn.Rows[3].Cells["宿备时隙"].Value = oduDxcExtraIfListAlarm;
+                    GridOtn.Rows[3].Cells["宿备时隙"].Style.BackColor = Color.OrangeRed;
+                    LabDts.ForeColor = Color.Red;
+                    LabTsLoop.ForeColor = Color.Red;
+                }
+                string oduDxcSrcWorkIfListAlarm = Alarm.OdukAlarm(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfODUkAlmState + oduDxcSrcWorkIfList));
+                if (oduDxcSrcWorkIfListAlarm.Contains("OK"))
+                {
+                    GridOtn.Rows[3].Cells["源主时隙"].Value = oduDxcSrcWorkIfListAlarm;
+                    GridOtn.Rows[3].Cells["源主时隙"].Style.BackColor = Color.GreenYellow;
+
+                }
+                else
+                {
+                    GridOtn.Rows[3].Cells["源主时隙"].Value = oduDxcSrcWorkIfListAlarm;
+                    GridOtn.Rows[3].Cells["源主时隙"].Style.BackColor = Color.OrangeRed;
+                    LabSts.ForeColor = Color.Red;
+                    LabStsLab.ForeColor = Color.Red;
+                }
+                string oduDxcSrcProtIfListAlarm = Alarm.OdukAlarm(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfODUkAlmState + oduDxcSrcProtIfList));
+                if (oduDxcSrcProtIfListAlarm.Contains("OK"))
+                {
+                    GridOtn.Rows[3].Cells["源备时隙"].Value = oduDxcSrcProtIfListAlarm;
+                    GridOtn.Rows[3].Cells["源备时隙"].Style.BackColor = Color.GreenYellow;
+
+                }
+                else
+                {
+                    GridOtn.Rows[3].Cells["源备时隙"].Value = oduDxcSrcProtIfListAlarm;
+                    GridOtn.Rows[3].Cells["源备时隙"].Style.BackColor = Color.OrangeRed;
+                    LabSts.ForeColor = Color.Red;
+                    LabStsLab.ForeColor = Color.Red;
+                }
+                string SAotualarm = Alarm.OtuAlarm(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOTUkAlmState + sportifindex));
+                if (SAotualarm.Contains("OK"))
+                {
+                    GridOtn.Rows[3].Cells["源主接口"].Value = SAotualarm;
+                    GridOtn.Rows[3].Cells["源主接口"].Style.BackColor = Color.GreenYellow;
+
+                }
+                else
+                {
+                    GridOtn.Rows[3].Cells["源主接口"].Value = SAotualarm;
+                    GridOtn.Rows[3].Cells["源主接口"].Style.BackColor = Color.OrangeRed;
+                    LabSPort.ForeColor = Color.Red;
+                    LabSportLoop.ForeColor = Color.Red;
+                }
+                string SBotualarm = Alarm.OtuAlarm(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOTUkAlmState + sbportifindex));
+                if (SBotualarm.Contains("OK"))
+                {
+                    GridOtn.Rows[3].Cells["源备接口"].Value = SBotualarm;
+                    GridOtn.Rows[3].Cells["源备接口"].Style.BackColor = Color.GreenYellow;
+                    // LabSPort.ForeColor = Color.LightGreen;
+                    // LabSportLoop.ForeColor = Color.LightGreen;
+                }
+                else
+                {
+                    GridOtn.Rows[3].Cells["源备接口"].Value = SBotualarm;
+                    GridOtn.Rows[3].Cells["源备接口"].Style.BackColor = Color.OrangeRed;
+                    LabSPort.ForeColor = Color.Red;
+                    LabSportLoop.ForeColor = Color.Red;
+                }
+
+
+                ///OPU告警 
+                if (ComCusType.Text.Contains("GE/10GE分组OTN业务")|| ComCusType.Text.Contains("GE/10GE透传OTN业务")) {
+                    string otnIfOPUkDAportAlmState = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.ethIfMtu + Dportifindex);
+                    if (otnIfOPUkDAportAlmState.Contains("9600"))
+                    {
+                        GridOtn.Rows[4].Cells["宿主接口"].Value = "MTU:" + otnIfOPUkDAportAlmState;
+                        GridOtn.Rows[4].Cells["宿主接口"].Style.BackColor = Color.GreenYellow;
+
+                    }
+                    else
+                    {
+                        GridOtn.Rows[4].Cells["宿主接口"].Value = "MTU:" + otnIfOPUkDAportAlmState;
+                        GridOtn.Rows[4].Cells["宿主接口"].Style.BackColor = Color.Yellow;
+
+                    }
+                    GridOtn.Rows[4].Cells["宿备接口"].Value = "";
+                }
+
+                string otnIfOPUkVPETHAlmState = Alarm.OpukAlarm(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkAlmState + DAvport));
+                if (otnIfOPUkVPETHAlmState.Contains("OK"))
+                {
+                    GridOtn.Rows[4].Cells["虚拟主接口"].Value = otnIfOPUkVPETHAlmState;
+                    GridOtn.Rows[4].Cells["虚拟主接口"].Style.BackColor = Color.GreenYellow;
+
+                }
+                else
+                {
+                    GridOtn.Rows[4].Cells["虚拟主接口"].Value = otnIfOPUkVPETHAlmState;
+                    GridOtn.Rows[4].Cells["虚拟主接口"].Style.BackColor = Color.Yellow;
+
+                }
+                GridOtn.Rows[4].Cells["虚拟备接口"].Value = "";
+                string oduDxcSinkIfListOpuAlarm = Alarm.OpukAlarm(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkAlmState + oduDxcSinkIfList));
+                if (oduDxcSinkIfListOpuAlarm.Contains("OK"))
+                {
+                    GridOtn.Rows[4].Cells["宿主时隙"].Value = oduDxcSinkIfListOpuAlarm;
+                    GridOtn.Rows[4].Cells["宿主时隙"].Style.BackColor = Color.GreenYellow;
+
+                }
+                else
+                {
+                    GridOtn.Rows[4].Cells["宿主时隙"].Value = oduDxcSinkIfListOpuAlarm;
+                    GridOtn.Rows[4].Cells["宿主时隙"].Style.BackColor = Color.Yellow;
+
+                }
+                string oduDxcExtraIfListOpuAlarm = Alarm.OpukAlarm(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkAlmState + oduDxcExtraIfList));
+                if (otnIfOPUkVPETHAlmState.Contains("OK"))
+                {
+                    GridOtn.Rows[4].Cells["宿备时隙"].Value = oduDxcExtraIfListOpuAlarm;
+                    GridOtn.Rows[4].Cells["宿备时隙"].Style.BackColor = Color.GreenYellow;
+
+                }
+                else
+                {
+                    GridOtn.Rows[4].Cells["宿备时隙"].Value = oduDxcExtraIfListOpuAlarm;
+                    GridOtn.Rows[4].Cells["宿备时隙"].Style.BackColor = Color.Yellow;
+
+                }
+                string oduDxcSrcWorkIfListOpuAlarm = Alarm.OpukAlarm(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkAlmState + oduDxcSrcWorkIfList));
+                if (oduDxcSrcWorkIfListOpuAlarm.Contains("OK"))
+                {
+                    GridOtn.Rows[4].Cells["源主时隙"].Value = oduDxcSrcWorkIfListOpuAlarm;
+                    GridOtn.Rows[4].Cells["源主时隙"].Style.BackColor = Color.GreenYellow;
+
+                }
+                else
+                {
+                    GridOtn.Rows[4].Cells["源主时隙"].Value = oduDxcSrcWorkIfListOpuAlarm;
+                    GridOtn.Rows[4].Cells["源主时隙"].Style.BackColor = Color.Yellow;
+
+                }
+                string oduDxcSrcProtIfListOpuAlarm = Alarm.OpukAlarm(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkAlmState + oduDxcSrcProtIfList));
+                if (oduDxcSrcWorkIfListOpuAlarm.Contains("OK"))
+                {
+                    GridOtn.Rows[4].Cells["源备时隙"].Value = oduDxcSrcProtIfListOpuAlarm;
+                    GridOtn.Rows[4].Cells["源备时隙"].Style.BackColor = Color.GreenYellow;
+
+                }
+                else
+                {
+                    GridOtn.Rows[4].Cells["源备时隙"].Value = oduDxcSrcProtIfListOpuAlarm;
+                    GridOtn.Rows[4].Cells["源备时隙"].Style.BackColor = Color.Yellow;
+
+                }
+
+                string SAopualarm = Alarm.OpukAlarm(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkAlmState + sportifindex));
+                if (SAopualarm.Contains("OK"))
+                {
+                    GridOtn.Rows[4].Cells["源主接口"].Value = SAopualarm;
+                    GridOtn.Rows[4].Cells["源主接口"].Style.BackColor = Color.GreenYellow;
+
+                }
+                else
+                {
+                    GridOtn.Rows[4].Cells["源主接口"].Value = SAopualarm;
+                    GridOtn.Rows[4].Cells["源主接口"].Style.BackColor = Color.Yellow;
+
+                }
+                string SBopualarm = Alarm.OpukAlarm(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkAlmState + sbportifindex));
+                if (SBopualarm.Contains("OK"))
+                {
+                    GridOtn.Rows[4].Cells["源备接口"].Value = SBopualarm;
+                    GridOtn.Rows[4].Cells["源备接口"].Style.BackColor = Color.GreenYellow;
+
+                }
+                else
+                {
+                    GridOtn.Rows[4].Cells["源备接口"].Value = SBopualarm;
+                    GridOtn.Rows[4].Cells["源备接口"].Style.BackColor = Color.Yellow;
+
+                }
+                ///光模块速率
+                ///
+                GridOtn.Rows[5].Cells["宿主接口"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.optModBitRate + DAvport) + "Mbps";
+                GridOtn.Rows[5].Cells["宿备接口"].Value = "";
+                GridOtn.Rows[5].Cells["虚拟主接口"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.optModBitRate + DAvport) + "Mbps";
+                GridOtn.Rows[5].Cells["虚拟备接口"].Value = "";
+                GridOtn.Rows[5].Cells["源主接口"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.optModBitRate + sportifindex) + "Mbps";
+                GridOtn.Rows[5].Cells["源备接口"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.optModBitRate + sbportifindex) + "Mbps";
+                ///收光
+                GridOtn.Rows[6].Cells["宿主接口"].Value = float.Parse(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.optModRxPower + DAvport)) / 100;
+                if (GridOtn.Rows[6].Cells["宿主接口"].Value.ToString() == "-100") { GridOtn.Rows[3].Cells["宿主接口"].Value = "LOS"; LabDport.ForeColor = Color.Red; }
+                if (GridOtn.Rows[6].Cells["宿主接口"].Value.ToString() == "-100") { GridOtn.Rows[3].Cells["宿主接口"].Style.BackColor = Color.OrangeRed; }
+
+                GridOtn.Rows[6].Cells["宿备接口"].Value = "";
+                GridOtn.Rows[6].Cells["虚拟主接口"].Value = float.Parse(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.optModRxPower + DAvport)) / 100;
+                GridOtn.Rows[6].Cells["虚拟备接口"].Value = "";
+                GridOtn.Rows[6].Cells["源主接口"].Value = float.Parse(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.optModRxPower + sportifindex)) / 100;
+                GridOtn.Rows[6].Cells["源备接口"].Value = float.Parse(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.optModRxPower + sbportifindex)) / 100;
+                //发送PT
+                GridOtn.Rows[7].Cells["虚拟主接口"].Value = Alarm.OtnIfOPUkPt(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkPtTx + DodukIDZheng));
+                GridOtn.Rows[7].Cells["虚拟备接口"].Value = "";
+                GridOtn.Rows[7].Cells["宿主时隙"].Value = Alarm.OtnIfOPUkPt(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkPtTx + oduDxcSinkIfList));
+                GridOtn.Rows[7].Cells["宿备时隙"].Value = Alarm.OtnIfOPUkPt(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkPtTx + oduDxcExtraIfList));
+                GridOtn.Rows[7].Cells["源主时隙"].Value = Alarm.OtnIfOPUkPt(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkPtTx + oduDxcSrcWorkIfList));
+                GridOtn.Rows[7].Cells["源备时隙"].Value = Alarm.OtnIfOPUkPt(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkPtTx + oduDxcSrcProtIfList));
+                GridOtn.Rows[7].Cells["源主接口"].Value = Alarm.OtnIfOPUkPt(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkPtTx + sportifindex));
+                GridOtn.Rows[7].Cells["源备接口"].Value = Alarm.OtnIfOPUkPt(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkPtTx + sbportifindex));
+                //期望PT
+                GridOtn.Rows[8].Cells["虚拟主接口"].Value = Alarm.OtnIfOPUkPt(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkPtExp + DodukIDZheng));
+                GridOtn.Rows[8].Cells["虚拟备接口"].Value = "";
+                GridOtn.Rows[8].Cells["宿主时隙"].Value = Alarm.OtnIfOPUkPt(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkPtExp + oduDxcSinkIfList));
+                GridOtn.Rows[8].Cells["宿备时隙"].Value = Alarm.OtnIfOPUkPt(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkPtExp + oduDxcExtraIfList));
+                GridOtn.Rows[8].Cells["源主时隙"].Value = Alarm.OtnIfOPUkPt(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkPtExp + oduDxcSrcWorkIfList));
+                GridOtn.Rows[8].Cells["源备时隙"].Value = Alarm.OtnIfOPUkPt(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkPtExp + oduDxcSrcProtIfList));
+                GridOtn.Rows[8].Cells["源主接口"].Value = Alarm.OtnIfOPUkPt(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkPtExp + sportifindex));
+                GridOtn.Rows[8].Cells["源备接口"].Value = Alarm.OtnIfOPUkPt(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkPtExp + sbportifindex));
+                //接收PT
+                GridOtn.Rows[9].Cells["虚拟主接口"].Value = Alarm.OtnIfOPUkPt(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkPtRx + DodukIDZheng));
+                GridOtn.Rows[9].Cells["虚拟备接口"].Value = "";
+                GridOtn.Rows[9].Cells["宿主时隙"].Value = Alarm.OtnIfOPUkPt(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkPtRx + oduDxcSinkIfList));
+                GridOtn.Rows[9].Cells["宿备时隙"].Value = Alarm.OtnIfOPUkPt(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkPtRx + oduDxcExtraIfList));
+                GridOtn.Rows[9].Cells["源主时隙"].Value = Alarm.OtnIfOPUkPt(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkPtRx + oduDxcSrcWorkIfList));
+                GridOtn.Rows[9].Cells["源备时隙"].Value = Alarm.OtnIfOPUkPt(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkPtRx + oduDxcSrcProtIfList));
+                GridOtn.Rows[9].Cells["源主接口"].Value = Alarm.OtnIfOPUkPt(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkPtRx + sportifindex));
+                GridOtn.Rows[9].Cells["源备接口"].Value = Alarm.OtnIfOPUkPt(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkPtRx + sbportifindex));
+                //发送MSI
+                GridOtn.Rows[10].Cells["虚拟主接口"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkMsiTx + DodukIDZheng);
+                GridOtn.Rows[10].Cells["虚拟备接口"].Value = "";
+                GridOtn.Rows[10].Cells["宿主时隙"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkMsiTx + oduDxcSinkIfList);
+                GridOtn.Rows[10].Cells["宿备时隙"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkMsiTx + oduDxcExtraIfList);
+                GridOtn.Rows[10].Cells["源主时隙"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkMsiTx + oduDxcSrcWorkIfList);
+                GridOtn.Rows[10].Cells["源备时隙"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkMsiTx + oduDxcSrcProtIfList);
+                GridOtn.Rows[10].Cells["源主接口"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkMsiTx + sportifindex);
+                GridOtn.Rows[10].Cells["源备接口"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkMsiTx + sbportifindex);
+                //期望MSI
+                GridOtn.Rows[11].Cells["虚拟主接口"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkMsiExp + DodukIDZheng);
+                GridOtn.Rows[11].Cells["虚拟备接口"].Value = "";
+                GridOtn.Rows[11].Cells["宿主时隙"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkMsiExp + oduDxcSinkIfList);
+                GridOtn.Rows[11].Cells["宿备时隙"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkMsiExp + oduDxcExtraIfList);
+                GridOtn.Rows[11].Cells["源主时隙"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkMsiExp + oduDxcSrcWorkIfList);
+                GridOtn.Rows[11].Cells["源备时隙"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkMsiExp + oduDxcSrcProtIfList);
+                GridOtn.Rows[11].Cells["源主接口"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkMsiExp + sportifindex);
+                GridOtn.Rows[11].Cells["源备接口"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkMsiExp + sbportifindex);
+                //期望MSI     
+                GridOtn.Rows[12].Cells["虚拟主接口"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkMsiRx + DodukIDZheng);
+                GridOtn.Rows[12].Cells["虚拟备接口"].Value = "";
+                GridOtn.Rows[12].Cells["宿主时隙"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkMsiRx + oduDxcSinkIfList);
+                GridOtn.Rows[12].Cells["宿备时隙"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkMsiRx + oduDxcExtraIfList);
+                GridOtn.Rows[12].Cells["源主时隙"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkMsiRx + oduDxcSrcWorkIfList);
+                GridOtn.Rows[12].Cells["源备时隙"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkMsiRx + oduDxcSrcProtIfList);
+                GridOtn.Rows[12].Cells["源主接口"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkMsiRx + sportodukifindex);
+                GridOtn.Rows[12].Cells["源备接口"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.otnIfOPUkMsiRx + sbportodukifindex);
+                //带宽
+                if (ComCusType.Text.Contains("GE/10GE分组OTN业务"))
+                {
+                    try
+                    {
+                        float ethTxBand = float.Parse(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.rtDownBandWidth + Dport)) / 1000;
+                        GridOtn.Rows[13].Cells["宿主接口"].Value = ethTxBand + "Mbps";
+                        if (ethTxBand == 0)
+                        {
+                            LabcusRx.ForeColor = Color.Red;
+                            GridOtn.Rows[13].Cells["宿主接口"].Style.BackColor = Color.OrangeRed;
+
+                        }
+                        else
+                        {
+                            LabcusRx.ForeColor = Color.GreenYellow;
+                            GridOtn.Rows[13].Cells["宿主接口"].Style.BackColor = Color.GreenYellow;
+                        }
+                        float ethRxBand = float.Parse(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.rtUpBandWidth + Dport)) / 1000;
+
+                        GridOtn.Rows[14].Cells["宿主接口"].Value = ethRxBand + "Mbps";
+                        if (ethRxBand == 0)
+                        {
+                            LabcusTx.ForeColor = Color.Red;
+                            GridOtn.Rows[14].Cells["宿主接口"].Style.BackColor = Color.OrangeRed;
+
+                        }
+                        else
+                        {
+                            LabcusTx.ForeColor = Color.GreenYellow;
+                            GridOtn.Rows[14].Cells["宿主接口"].Style.BackColor = Color.GreenYellow;
+                        }
+
+                    }
+                    catch
+                    {
+                        GridOtn.Rows[13].Cells["宿主接口"].Value = "请求失败";
+                        GridOtn.Rows[13].Cells["宿主接口"].Style.BackColor = Color.OrangeRed;
+                        GridOtn.Rows[14].Cells["宿主接口"].Value = "请求失败";
+                        GridOtn.Rows[14].Cells["宿主接口"].Style.BackColor = Color.OrangeRed;
+
+                    }
+
+                }
+                if (ComCusType.Text.Contains("GE/10GE分组OTN业务")) {
+                    string TPID = "";
+                    TPID = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.ethIfVlanTpId + Dportifindex);
+                    GridOtn.Rows[15].Cells["宿主接口"].Value = TPID;
+                    if (TPID == "1") { GridOtn.Rows[15].Cells["宿主接口"].Value = "0x8100"; }
+                    if (TPID == "2") { GridOtn.Rows[15].Cells["宿主接口"].Value = "0x88a8"; }
+                    if (TPID == "3") { GridOtn.Rows[15].Cells["宿主接口"].Value = "0x9100"; }
+                    if (TPID == "4") { GridOtn.Rows[15].Cells["宿主接口"].Value = "any0x8100"; }
+                    if (TPID == "5") { GridOtn.Rows[15].Cells["宿主接口"].Value = "any0x88a8"; }
+                    if (TPID == "6") { GridOtn.Rows[15].Cells["宿主接口"].Value = "any0x9100"; }
+                }
+
+
+                if (GridOtn.Rows[0].Cells["宿备时隙"].Value.ToString() == "0" || GridOtn.Rows[0].Cells["宿备时隙"].Value.ToString() == "初始化" || GridOtn.Rows[0].Cells["宿备时隙"].Value.ToString() == "")
+                {
+                    GridOtn.Columns.Remove("宿备时隙");
+                }
+                if (GridOtn.Rows[0].Cells["源备时隙"].Value.ToString() == "0" || GridOtn.Rows[0].Cells["源备时隙"].Value.ToString() == "初始化" || GridOtn.Rows[0].Cells["源备时隙"].Value.ToString() == "")
+                {
+                    GridOtn.Columns.Remove("源备时隙");
+                }
+                if (GridOtn.Rows[0].Cells["宿备接口"].Value.ToString() == "0" || GridOtn.Rows[0].Cells["宿备接口"].Value.ToString() == "初始化" || GridOtn.Rows[0].Cells["宿备接口"].Value.ToString() == "")
+                {
+                    GridOtn.Columns.Remove("宿备接口");
+                }
+                if (GridOtn.Rows[0].Cells["虚拟备接口"].Value.ToString() == "0" || GridOtn.Rows[0].Cells["虚拟备接口"].Value.ToString() == "初始化" || GridOtn.Rows[0].Cells["虚拟备接口"].Value.ToString() == "")
+                {
+                    GridOtn.Columns.Remove("虚拟备接口");
+                }
+                if (GridOtn.Rows[0].Cells["源备接口"].Value.ToString() == "0" || GridOtn.Rows[0].Cells["源备接口"].Value.ToString() == "初始化" || GridOtn.Rows[0].Cells["源备接口"].Value.ToString() == "")
+                {
+                    GridOtn.Columns.Remove("源备接口");
+                }
+                MessageBox.Show("排查完成");
+                BtnPtoP.Enabled = true;
+            }
+            catch {
+                MessageBox.Show("查询异常，请检查接口是否配置正确后再此尝试");
+                BtnPtoP.Enabled = true;
+
+            }
+
+        }
+        private void PtoPGuZhangDingWei(object str) {
+            try
+            {
+
+                BtnPtoP.Enabled = false;
+                LabcusTx.ForeColor = Color.LightGreen;
+                LabcusRx.ForeColor = Color.LightGreen;
+                LabDport.ForeColor = Color.LightGreen;
+                LabDportRx.ForeColor = Color.LightGreen;
+                LabDportTx.ForeColor = Color.LightGreen;
+                LabDportRx.ForeColor = Color.LightGreen;
+                LabDts.ForeColor = Color.LightGreen;
+                LabTsLoop.ForeColor = Color.LightGreen;
+                LabSts.ForeColor = Color.LightGreen;
+                LabStsLab.ForeColor = Color.LightGreen;
+                LabSPort.ForeColor = Color.LightGreen;
+                LabSportLoop.ForeColor = Color.LightGreen;
+                string ip = str.ToString();
+                string readcommunity = TextReadMu.Text;
+                string writecommunity = TextWriteMu.Text;
+
+                int timeout = 2000;
+                int retry = 2;
+                if (ComDslotP.Text == "" || ComDportP.Text == "" || ComVcgSlotD.Text == "" || ComVcgPortD.Text == "" || ComCusType.Text == "")
+                {
+                    MessageBox.Show("请输入接口等信息在此尝试");
+                    BtnPtoP.Enabled = true;
+                    return;
+                }
+                string Dport = ComDslotP.Text + "." + ComDportP.Text;
+                string Vcgport = ComVcgSlotD.Text + "." + ComVcgPortD.Text;
+                GridOtn.Rows[0].Cells["宿接口"].Value = "APP版本";
+                GridOtn.Rows[0].Cells["宿接口值"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.appVer);
+                if (GridOtn.Rows[0].Cells["宿接口值"].Value.ToString().Contains("Request has reached maximum retries"))
+                {
+                    GridOtn.Rows[0].Cells["宿接口值"].Value = "连接失败";
+                    GridOtn.Rows[0].Cells["宿接口值"].Style.BackColor = Color.OrangeRed;
+                    BtnPtoP.Enabled = true;
+                    return;
+                }
+
+                GridOtn.Rows[1].Cells["宿接口"].Value = "FPGA版本";
+                GridOtn.Rows[1].Cells["宿接口值"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.fpgaVer);
+
+                GridOtn.Rows[2].Cells["宿接口"].Value = "端口号";
+                GridOtn.Rows[2].Cells["宿接口值"].Value = ComDslotP.Text + "/" + ComDportP.Text;
+
+                GridOtn.Rows[3].Cells["宿接口"].Value = "接口索引";
+                GridOtn.Rows[3].Cells["宿接口值"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.EthIfIndex + Dport);
+                string Dportifindex = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.EthIfIndex + Dport);
+                if (Dportifindex.Contains("S"))
+                {
+                    GridOtn.Rows[3].Cells["宿接口值"].Value = "获取失败";
+                    BtnPtoP.Enabled = true;
+                    return;
+                }
+                GridOtn.Rows[4].Cells["宿接口"].Value = "接口类型";
+                string ethIfmediatype = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.ethIfMediaType + Dportifindex);
+                if (ethIfmediatype == "1") { ethIfmediatype = "自动"; }
+                if (ethIfmediatype == "2") { ethIfmediatype = "光口"; }
+                if (ethIfmediatype == "3") { ethIfmediatype = "电口"; }
+                GridOtn.Rows[4].Cells["宿接口值"].Value = ethIfmediatype;
+
+                if (ethIfmediatype.Contains("S"))
+                {
+                    BtnPtoP.Enabled = true;
+                    return;
+                }
+
+
+                GridOtn.Rows[5].Cells["宿接口"].Value = "工作状态";
+                GridOtn.Rows[5].Cells["宿接口值"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.ethIfOperStatus + Dportifindex);
+                if (GridOtn.Rows[5].Cells["宿接口值"].Value.ToString() == "1") { GridOtn.Rows[5].Cells["宿接口值"].Value = "up"; }
+                if (GridOtn.Rows[5].Cells["宿接口值"].Value.ToString() == "2") { GridOtn.Rows[5].Cells["宿接口值"].Value = "down"; }
+                if (GridOtn.Rows[5].Cells["宿接口值"].Value.ToString() == "up")
+                {
+                    GridOtn.Rows[5].Cells["宿接口值"].Style.BackColor = Color.GreenYellow;
+                    LabDport.ForeColor = Color.LightGreen;
+
+                }
+                else
+                {
+                    GridOtn.Rows[5].Cells["宿接口值"].Style.BackColor = Color.OrangeRed;
+                    LabDport.ForeColor = Color.Red;
+                }
+
+                GridOtn.Rows[6].Cells["宿接口"].Value = "自协商";
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.ethIfAutoNegAdminStatus + Dportifindex) == "1") { GridOtn.Rows[6].Cells["宿接口值"].Value = "使能"; }
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.ethIfAutoNegAdminStatus + Dportifindex) == "2") { GridOtn.Rows[6].Cells["宿接口值"].Value = "禁止"; }
+
+                GridOtn.Rows[7].Cells["宿接口"].Value = "双工模式";
+                GridOtn.Rows[7].Cells["宿接口值"].Value = Dxc.MAUMib(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.ethIfMauType + Dportifindex));
+
+                GridOtn.Rows[8].Cells["宿接口"].Value = "VLAN";
+                GridOtn.Rows[8].Cells["宿接口值"].Value = "获取起来很麻烦";
+
+                GridOtn.Rows[9].Cells["宿接口"].Value = "TPID";
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.ethIfVlanTpId + Dportifindex) == "1") { GridOtn.Rows[9].Cells["宿接口值"].Value = "0x8100"; }
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.ethIfVlanTpId + Dportifindex) == "2") { GridOtn.Rows[9].Cells["宿接口值"].Value = "0x88a8"; }
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.ethIfVlanTpId + Dportifindex) == "3") { GridOtn.Rows[9].Cells["宿接口值"].Value = "0x9100"; }
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.ethIfVlanTpId + Dportifindex) == "4") { GridOtn.Rows[9].Cells["宿接口值"].Value = "any0x8100"; }
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.ethIfVlanTpId + Dportifindex) == "5") { GridOtn.Rows[9].Cells["宿接口值"].Value = "any0x88a8"; }
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.ethIfVlanTpId + Dportifindex) == "6") { GridOtn.Rows[9].Cells["宿接口值"].Value = "any0x9100"; }
+
+
+
+                GridOtn.Rows[10].Cells["宿接口"].Value = "MTU";
+                GridOtn.Rows[10].Cells["宿接口值"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.ethIfMtu + Dportifindex);
+
+                GridOtn.Rows[11].Cells["宿接口"].Value = "光模块在位";
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.optSfpPresent + Dportifindex) == "1") { GridOtn.Rows[11].Cells["宿接口值"].Value = "在位"; }
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.optSfpPresent + Dportifindex) == "2") { GridOtn.Rows[11].Cells["宿接口值"].Value = "不在位"; }
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.optSfpPresent + Dportifindex) == "3") { GridOtn.Rows[11].Cells["宿接口值"].Value = "不支持"; }
+
+                GridOtn.Rows[12].Cells["宿接口"].Value = "速率(Mbps)";
+                GridOtn.Rows[12].Cells["宿接口值"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.optBitRate + Dportifindex);
+
+                GridOtn.Rows[13].Cells["宿接口"].Value = "光电类型";
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.optFiberOrCopperType + Dportifindex) == "1") { GridOtn.Rows[13].Cells["宿接口值"].Value = "光模块"; }
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.optFiberOrCopperType + Dportifindex) == "2") { GridOtn.Rows[13].Cells["宿接口值"].Value = "电模块"; }
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.optFiberOrCopperType + Dportifindex) == "3") { GridOtn.Rows[13].Cells["宿接口值"].Value = "Unkown"; }
+
+
+                GridOtn.Rows[14].Cells["宿接口"].Value = "激光状态";
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.optLaserStatus + Dportifindex) == "1") { GridOtn.Rows[14].Cells["宿接口值"].Value = "已关闭"; }
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.optLaserStatus + Dportifindex) == "2") { GridOtn.Rows[14].Cells["宿接口值"].Value = "已打开"; }
+
+
+                GridOtn.Rows[15].Cells["宿接口"].Value = "单双纤";
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.optSingleDouble + Dportifindex) == "1") { GridOtn.Rows[15].Cells["宿接口值"].Value = "单纤"; }
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.optSingleDouble + Dportifindex) == "2") { GridOtn.Rows[15].Cells["宿接口值"].Value = "双纤"; }
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.optSingleDouble + Dportifindex) == "3") { GridOtn.Rows[15].Cells["宿接口值"].Value = "Unkown"; }
+
+
+                GridOtn.Rows[16].Cells["宿接口"].Value = "距离(Km)";
+                GridOtn.Rows[16].Cells["宿接口值"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.optDistance + Dportifindex);
+
+                GridOtn.Rows[17].Cells["宿接口"].Value = "波长";
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.optWaveLength + Dportifindex) == "1") { GridOtn.Rows[17].Cells["宿接口值"].Value = "1310nm"; }
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.optWaveLength + Dportifindex) == "2") { GridOtn.Rows[17].Cells["宿接口值"].Value = "1550nm"; }
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.optWaveLength + Dportifindex) == "3") { GridOtn.Rows[17].Cells["宿接口值"].Value = "Unkown"; }
+
+
+
+                GridOtn.Rows[18].Cells["宿接口"].Value = "发光功率";
+                GridOtn.Rows[18].Cells["宿接口值"].Value = float.Parse(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.optTxPower + Dportifindex)) / 100;
+
+                GridOtn.Rows[19].Cells["宿接口"].Value = "收光功率";
+                GridOtn.Rows[19].Cells["宿接口值"].Value = float.Parse(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.optRxPower + Dportifindex)) / 100;
+
+                GridOtn.Rows[20].Cells["宿接口"].Value = "TX带宽";
+                float ethTxBand = float.Parse(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.rtDownBandWidth + Dport)) / 1000;
+                GridOtn.Rows[20].Cells["宿接口值"].Value = ethTxBand + "Mbps";
+                if (ethTxBand == 0)
+                {
+                    LabcusRx.ForeColor = Color.Red;
+                    GridOtn.Rows[20].Cells["宿接口值"].Style.BackColor = Color.OrangeRed;
+
+                }
+                else
+                {
+                    LabcusRx.ForeColor = Color.GreenYellow;
+                    GridOtn.Rows[20].Cells["宿接口值"].Style.BackColor = Color.GreenYellow;
+                }
+                GridOtn.Rows[21].Cells["宿接口"].Value = "RX带宽";
+                float ethRxBand = float.Parse(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.rtUpBandWidth + Dport)) / 1000;
+
+                GridOtn.Rows[21].Cells["宿接口值"].Value = ethRxBand + "Mbps";
+                if (ethRxBand == 0)
+                {
+                    LabcusTx.ForeColor = Color.Red;
+                    GridOtn.Rows[21].Cells["宿接口值"].Style.BackColor = Color.OrangeRed;
+
+                }
+                else
+                {
+                    LabcusTx.ForeColor = Color.GreenYellow;
+                    GridOtn.Rows[21].Cells["宿接口值"].Style.BackColor = Color.GreenYellow;
+                }
+                GridOtn.Rows[22].Cells["宿接口"].Value = "双模端口模式";
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.eosServiceMatchType + Dport) == "1") { GridOtn.Rows[22].Cells["宿接口值"].Value = "NOOP模式"; }
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.eosServiceMatchType + Dport) == "2") { GridOtn.Rows[22].Cells["宿接口值"].Value = "Port模式"; }
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.eosServiceMatchType + Dport) == "3") { GridOtn.Rows[22].Cells["宿接口值"].Value = "VLAN模式"; }
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.eosServiceMatchType + Dport) == "4") { GridOtn.Rows[22].Cells["宿接口值"].Value = "MPLS模式"; }
+
+
+
+
+
+                GridOtn.Rows[0].Cells["VCG接口"].Value = "接口";
+                GridOtn.Rows[0].Cells["VCG接口值"].Value = ComVcgSlotD.Text + "/" + ComVcgPortD.Text;
+
+                GridOtn.Rows[1].Cells["VCG接口"].Value = "接口索引";
+                GridOtn.Rows[1].Cells["VCG接口值"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.vcgPortIfIndex + Vcgport);
+                string VcgPortIfindex = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.vcgPortIfIndex + Vcgport);
+
+                GridOtn.Rows[2].Cells["VCG接口"].Value = "VC颗粒";
+                string VC = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.vcgPortBandwidthGranularity + VcgPortIfindex);
+                if (VC == "4") { GridOtn.Rows[2].Cells["VCG接口值"].Value = "VC4"; }
+                if (VC == "2") { GridOtn.Rows[2].Cells["VCG接口值"].Value = "VC3"; }
+                if (VC == "1") { GridOtn.Rows[2].Cells["VCG接口值"].Value = "VC12"; }
+
+                GridOtn.Rows[3].Cells["VCG接口"].Value = "传输协议";
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.vcgPortTransmissionProtocol + VcgPortIfindex) == "1") { GridOtn.Rows[3].Cells["VCG接口值"].Value = "EthOverSDH"; }
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.vcgPortTransmissionProtocol + VcgPortIfindex) == "2") { GridOtn.Rows[3].Cells["VCG接口值"].Value = "EthOverPDH"; }
+
+                GridOtn.Rows[4].Cells["VCG接口"].Value = "绑定时隙数量";
+                GridOtn.Rows[4].Cells["VCG接口值"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.vcgPortChannelMemberNum + VcgPortIfindex);
+                int vcgPortChanneMemberNum = int.Parse(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.vcgPortChannelMemberNum + VcgPortIfindex));
+
+                GridOtn.Rows[5].Cells["VCG接口"].Value = "LCAS状态";
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.vcgPortLcasEn + VcgPortIfindex) == "1") { GridOtn.Rows[5].Cells["VCG接口值"].Value = "使能"; }
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.vcgPortLcasEn + VcgPortIfindex) == "2") { GridOtn.Rows[5].Cells["VCG接口值"].Value = "禁止"; }
+
+
+
+                GridOtn.Rows[6].Cells["VCG接口"].Value = "VlanId";
+                GridOtn.Rows[6].Cells["VCG接口值"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.vcgPortVlanId + VcgPortIfindex);
+
+                GridOtn.Rows[7].Cells["VCG接口"].Value = "Vlan模式";
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.vcgPortVlanMode + VcgPortIfindex) == "1") { GridOtn.Rows[7].Cells["VCG接口值"].Value = "untaged"; }
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.vcgPortVlanMode + VcgPortIfindex) == "2") { GridOtn.Rows[7].Cells["VCG接口值"].Value = "taged"; }
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.vcgPortVlanMode + VcgPortIfindex) == "3") { GridOtn.Rows[7].Cells["VCG接口值"].Value = "stack"; }
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.vcgPortVlanMode + VcgPortIfindex) == "7") { GridOtn.Rows[7].Cells["VCG接口值"].Value = "transparent"; }
+
+
+
+                GridOtn.Rows[8].Cells["VCG接口"].Value = "Tx通道数";
+                GridOtn.Rows[8].Cells["VCG接口值"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.vcgPortTxChannelNum + VcgPortIfindex);
+
+                GridOtn.Rows[9].Cells["VCG接口"].Value = "Rx通道数";
+                GridOtn.Rows[9].Cells["VCG接口值"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.vcgPortRxChannelNum + VcgPortIfindex);
+
+
+                if (VC == "1")
+                {
+                    GridOtn.Rows[10].Cells["VCG接口"].Value = "V5字节";
+                    if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.vcgTxV5 + VcgPortIfindex) == "13") { GridOtn.Rows[10].Cells["VCG接口值"].Value = "0x0d使用扩展标签"; } else { GridOtn.Rows[10].Cells["VCG接口值"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.vcgTxV5 + VcgPortIfindex); }
+
+
+                }
+                else
+                {
+                    GridOtn.Rows[10].Cells["VCG接口"].Value = "C2字节";
+                    GridOtn.Rows[10].Cells["VCG接口值"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.vcgTxC2 + VcgPortIfindex);
+                    if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.vcgTxC2 + VcgPortIfindex) == "2") { GridOtn.Rows[10].Cells["VCG接口值"].Value = "TUG结构"; }
+                    if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.vcgTxC2 + VcgPortIfindex) == "15") { GridOtn.Rows[10].Cells["VCG接口值"].Value = "GFP映射"; }
+                    if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.vcgTxC2 + VcgPortIfindex) == "0") { GridOtn.Rows[10].Cells["VCG接口值"].Value = "UNEQ未装载"; }
+                    if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.vcgTxC2 + VcgPortIfindex) == "17") { GridOtn.Rows[10].Cells["VCG接口值"].Value = "VC-AIS"; }
+
+
+                }
+
+                GridOtn.Rows[11].Cells["VCG接口"].Value = "当前告警";
+                Thread.Sleep(1000);
+                GridOtn.Rows[11].Cells["VCG接口值"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.vcgPortAlmStatus + VcgPortIfindex);
+                if (GridOtn.Rows[11].Cells["VCG接口值"].Value.ToString() == "00000000")
+                {
+                    GridOtn.Rows[11].Cells["VCG接口值"].Value = "OK";
+                    GridOtn.Rows[11].Cells["VCG接口值"].Style.BackColor = Color.GreenYellow;
+
+                }
+                else
+                {
+                    GridOtn.Rows[11].Cells["VCG接口值"].Style.BackColor = Color.OrangeRed;
+                    LabDport.ForeColor = Color.Red;
+                    GridOtn.Rows[11].Cells["VCG接口值"].Value = Alarm.VcgAlarm(GridOtn.Rows[11].Cells["VCG接口值"].Value.ToString());
+                }
+
+
+                GridOtn.Rows[12].Cells["VCG接口"].Value = "TxVlan动作";
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.vcgTxChange + VcgPortIfindex) == "1") { GridOtn.Rows[12].Cells["VCG接口值"].Value = "不改变"; }
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.vcgTxChange + VcgPortIfindex) == "2") { GridOtn.Rows[12].Cells["VCG接口值"].Value = "添加"; }
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.vcgTxChange + VcgPortIfindex) == "3") { GridOtn.Rows[12].Cells["VCG接口值"].Value = "修改"; }
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.vcgTxChange + VcgPortIfindex) == "4") { GridOtn.Rows[12].Cells["VCG接口值"].Value = "删除"; }
+
+
+                GridOtn.Rows[13].Cells["VCG接口"].Value = "TxVlanID";
+                GridOtn.Rows[13].Cells["VCG接口值"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.vcgTxVid + VcgPortIfindex);
+
+                GridOtn.Rows[14].Cells["VCG接口"].Value = "RxVlan动作";
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.vcgRxChange + VcgPortIfindex) == "1") { GridOtn.Rows[14].Cells["VCG接口值"].Value = "不改变"; }
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.vcgRxChange + VcgPortIfindex) == "2") { GridOtn.Rows[14].Cells["VCG接口值"].Value = "添加"; }
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.vcgRxChange + VcgPortIfindex) == "3") { GridOtn.Rows[14].Cells["VCG接口值"].Value = "修改"; }
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.vcgRxChange + VcgPortIfindex) == "4") { GridOtn.Rows[14].Cells["VCG接口值"].Value = "删除"; }
+
+                GridOtn.Rows[15].Cells["VCG接口"].Value = "RxVlanID";
+                GridOtn.Rows[15].Cells["VCG接口值"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.vcgRxVid + VcgPortIfindex);
+
+
+                GridOtn.Rows[16].Cells["VCG接口"].Value = "绑定ETH接口";
+                GridOtn.Rows[16].Cells["VCG接口值"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.eosServiceEthPort + VcgPortIfindex);
+
+                GridOtn.Rows[17].Cells["VCG接口"].Value = "绑定VLAN";
+                GridOtn.Rows[17].Cells["VCG接口值"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.eosServiceVlanID + VcgPortIfindex);
+                Thread Vcgband = new Thread(new ParameterizedThreadStart(VCGband));
+                Vcgband.Start(VcgPortIfindex);
+                GridOtn.Rows[18].Cells["VCG接口"].Value = "Tx带宽";
+                GridOtn.Rows[18].Cells["VCG接口值"].Value = "需要5秒钟";
+                GridOtn.Rows[19].Cells["VCG接口"].Value = "Rx带宽";
+                GridOtn.Rows[19].Cells["VCG接口值"].Value = "需要5秒钟";
+
+
+
+                string dts = "";
+                string pathidts = "";
+                string sts = "";
+                string sportsdh = "";
+                string sportsdhifindex = "";
+                string tsloop = "";
+                string tsloops = "";
+
+                LabTsLoop.ForeColor = Color.LightGreen;
+                LabStsLab.ForeColor = Color.LightGreen;
+                LabSportLoop.ForeColor = Color.LightGreen;
+                LabSts.ForeColor = Color.LightGreen;
+                LabSPort.ForeColor = Color.LightGreen;
+                LabDts.ForeColor = Color.LightGreen;
+                for (int i = 0; i < vcgPortChanneMemberNum; i++)
+                {
+                    dts = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.hpIfIndex + VcgPortIfindex + "." + (i + 1).ToString());
+                    pathidts = Dxc.TsPathIdSearch(ip, readcommunity, dts, VC);
+                    tsloops = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.tsDxcloopControlOid + pathidts);
+
+
+                    if (LabTsLoop.Checked == true && tsloops == "0")
+                    {
+                        Snmp.Set(ip, readcommunity, writecommunity, timeout, retry, Dxc.tsDxcFpmMonOid + pathidts, "1", "Integer32");
+                        Snmp.Set(ip, readcommunity, writecommunity, timeout, retry, Dxc.tsDxcloopControlOid + pathidts, "1", "Integer32");
+                        Snmp.Set(ip, readcommunity, writecommunity, timeout, retry, Dxc.tsDxcUnLoopTimeDelayOid + pathidts, "5", "Integer32");
+
+                        tsloop = "双向环回";
+                    }
+                    if (LabTsLoop.Checked == true && tsloops == "1")
+                    {
+                        tsloop = "双向环回";
+
+                    }
+                    if (LabTsLoop.Checked == false && tsloops == "1")
+                    {
+                        Snmp.Set(ip, readcommunity, writecommunity, timeout, retry, Dxc.tsDxcFpmMonOid + pathidts, "1", "Integer32");
+                        Snmp.Set(ip, readcommunity, writecommunity, timeout, retry, Dxc.tsDxcloopControlOid + pathidts, "0", "Integer32");
+                        Snmp.Set(ip, readcommunity, writecommunity, timeout, retry, Dxc.tsDxcUnLoopTimeDelayOid + pathidts, "5", "Integer32");
+                        tsloop = "不环回";
+                    }
+                    if (LabTsLoop.Checked == false && tsloops == "0")
+                    {
+                        tsloop = "不环回";
+                    }
+                }
+                if (LabTsLoop.Checked == true && tsloops == "0")
+                {
+                    Thread PtoP = new Thread(new ParameterizedThreadStart(PtoPGuZhangDingWei));
+                    PtoP.Start(TextDxcIp.Text);
+                    BtnPtoP.Enabled = true;
+                    return;
+                }
+                if (LabTsLoop.Checked == false && tsloops == "1")
+                {
+                    Thread PtoP = new Thread(new ParameterizedThreadStart(PtoPGuZhangDingWei));
+                    PtoP.Start(TextDxcIp.Text);
+                    BtnPtoP.Enabled = true;
+                    return;
+                }
+
+                for (int i = 0; i < vcgPortChanneMemberNum; i++)
+                {
+
+                    dts = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.hpIfIndex + VcgPortIfindex + "." + (i + 1).ToString());
+                    pathidts = Dxc.TsPathIdSearch(ip, readcommunity, dts, VC);
+                    tsloop = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.tsDxcloopControlOid + pathidts);
+
+
+
+                    if (LabTsLoop.Checked == true && tsloop == "0")
+                    {
+                        Snmp.Set(ip, readcommunity, writecommunity, timeout, retry, Dxc.tsDxcFpmMonOid + pathidts, "1", "Integer32");
+                        Snmp.Set(ip, readcommunity, writecommunity, timeout, retry, Dxc.tsDxcloopControlOid + pathidts, "1", "Integer32");
+                        Snmp.Set(ip, readcommunity, writecommunity, timeout, retry, Dxc.tsDxcUnLoopTimeDelayOid + pathidts, "5", "Integer32");
+
+                        tsloop = "双向环回";
+                    }
+                    if (LabTsLoop.Checked == true && tsloop == "1")
+                    {
+                        tsloop = "双向环回";
+
+                    }
+                    if (LabTsLoop.Checked == false && tsloop == "1")
+                    {
+                        Snmp.Set(ip, readcommunity, writecommunity, timeout, retry, Dxc.tsDxcFpmMonOid + pathidts, "1", "Integer32");
+                        Snmp.Set(ip, readcommunity, writecommunity, timeout, retry, Dxc.tsDxcloopControlOid + pathidts, "0", "Integer32");
+                        Snmp.Set(ip, readcommunity, writecommunity, timeout, retry, Dxc.tsDxcUnLoopTimeDelayOid + pathidts, "5", "Integer32");
+                        tsloop = "不环回";
+                    }
+                    if (LabTsLoop.Checked == false && tsloop == "0")
+                    {
+                        tsloop = "不环回";
+                    }
+
+                    var (ifType, subType, srcSlot, srcPort, srcHp, srcLp) = Dxc.TsVcg(dts);
+
+                    if (VC == "4")
+                    {
+                        GridOtn.Rows[i].Cells["宿时隙"].Value = srcSlot + "-" + srcPort + "-" + srcHp;
+
+                        Snmp.Set(ip, readcommunity, writecommunity, timeout, retry, Dxc.highOrderPathVCMonitorEn + dts, "1", "Integer32");
+                        Thread.Sleep(1000);
+                        GridOtn.Rows[i].Cells["宿告警"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.highOrderPathVCAlmStatus + dts);
+                        if (GridOtn.Rows[i].Cells["宿告警"].Value.ToString() == "00000000")
+                        {
+                            GridOtn.Rows[i].Cells["宿告警"].Value = "OK";
+                            GridOtn.Rows[i].Cells["宿告警"].Style.BackColor = Color.GreenYellow;
+                        }
+                        else
+                        {
+                            GridOtn.Rows[i].Cells["宿告警"].Style.BackColor = Color.OrangeRed;
+                            LabTsLoop.ForeColor = Color.Red;
+                            LabDts.ForeColor = Color.Red;
+                            GridOtn.Rows[i].Cells["宿告警"].Value = Alarm.HpAlarm(GridOtn.Rows[i].Cells["宿告警"].Value.ToString());
+
+                        }
+
+                        Snmp.Set(ip, readcommunity, writecommunity, timeout, retry, Dxc.highOrderPathVCMonitorEn + dts, "2", "Integer32");
+                        GridOtn.Rows[i].Cells["宿Tx开销"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.highOrderPathVCOverheadC2Tx + dts);
+                        if (GridOtn.Rows[i].Cells["宿Tx开销"].Value.ToString() == "1") { GridOtn.Rows[i].Cells["宿Tx开销"].Value = "1-UNEQ未装载"; }
+                        if (GridOtn.Rows[i].Cells["宿Tx开销"].Value.ToString() == "2") { GridOtn.Rows[i].Cells["宿Tx开销"].Value = "2-TUG结构"; }
+                        if (GridOtn.Rows[i].Cells["宿Tx开销"].Value.ToString() == "15") { GridOtn.Rows[i].Cells["宿Tx开销"].Value = "15-GFP映射"; }
+                        if (GridOtn.Rows[i].Cells["宿Tx开销"].Value.ToString() == "17") { GridOtn.Rows[i].Cells["宿Tx开销"].Value = "17-VC-AIS"; }
+
+
+
+                        GridOtn.Rows[i].Cells["宿Rx开销"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.highOrderPathVCOverheadC2Rx + dts);
+                        if (GridOtn.Rows[i].Cells["宿Rx开销"].Value.ToString() == "1") { GridOtn.Rows[i].Cells["宿Rx开销"].Value = "1-UNEQ未装载"; }
+                        if (GridOtn.Rows[i].Cells["宿Rx开销"].Value.ToString() == "2") { GridOtn.Rows[i].Cells["宿Rx开销"].Value = "2-TUG结构"; }
+                        if (GridOtn.Rows[i].Cells["宿Rx开销"].Value.ToString() == "15") { GridOtn.Rows[i].Cells["宿Rx开销"].Value = "15-GFP映射"; }
+                        if (GridOtn.Rows[i].Cells["宿Rx开销"].Value.ToString() == "17") { GridOtn.Rows[i].Cells["宿Rx开销"].Value = "17-VC-AIS"; }
+
+                        GridOtn.Rows[i].Cells["SDH交叉ID"].Value = pathidts + tsloop;
+                        if (tsloop == "不环回")
+                        {
+                            sts = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.tsDxcSourceHpChannelIfIndex + pathidts);
+                            (ifType, subType, srcSlot, srcPort, srcHp, srcLp) = Dxc.TsRestore(sts);
+                            sportsdh = srcSlot.ToString() + "." + srcPort.ToString();
+                            GridOtn.Rows[i].Cells["源时隙"].Value = srcSlot + "-" + srcPort + "-" + srcHp;
+                            Snmp.Set(ip, readcommunity, writecommunity, timeout, retry, Dxc.highOrderPathVCMonitorEn + sts, "1", "Integer32");
+                            Thread.Sleep(1000);
+                            GridOtn.Rows[i].Cells["源告警"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.highOrderPathVCAlmStatus + sts);
+                            if (GridOtn.Rows[i].Cells["源告警"].Value.ToString() == "00000000")
+                            {
+                                GridOtn.Rows[i].Cells["源告警"].Value = "OK";
+                                GridOtn.Rows[i].Cells["源告警"].Style.BackColor = Color.GreenYellow;
+                            }
+                            else
+                            {
+                                GridOtn.Rows[i].Cells["源告警"].Style.BackColor = Color.OrangeRed;
+                                LabStsLab.ForeColor = Color.Red;
+                                LabSts.ForeColor = Color.Red;
+                                GridOtn.Rows[i].Cells["源告警"].Value = Alarm.HpAlarm(GridOtn.Rows[i].Cells["源告警"].Value.ToString());
+
+                            }
+                            Snmp.Set(ip, readcommunity, writecommunity, timeout, retry, Dxc.highOrderPathVCMonitorEn + sts, "2", "Integer32");
+                            GridOtn.Rows[i].Cells["源Tx开销"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.highOrderPathVCOverheadC2Tx + sts);
+                            if (GridOtn.Rows[i].Cells["源Tx开销"].Value.ToString() == "0") { GridOtn.Rows[i].Cells["源Tx开销"].Value = "0-UNEQ未装载"; }
+                            if (GridOtn.Rows[i].Cells["源Tx开销"].Value.ToString() == "2") { GridOtn.Rows[i].Cells["源Tx开销"].Value = "2-TUG结构"; }
+                            if (GridOtn.Rows[i].Cells["源Tx开销"].Value.ToString() == "15") { GridOtn.Rows[i].Cells["源Tx开销"].Value = "15-GFP映射"; }
+                            if (GridOtn.Rows[i].Cells["源Tx开销"].Value.ToString() == "17") { GridOtn.Rows[i].Cells["源Tx开销"].Value = "17-VC-AIS"; }
+                            if (GridOtn.Rows[i].Cells["源Tx开销"].Value.ToString() == "255") { GridOtn.Rows[i].Cells["源Tx开销"].Value = "255-VC-AIS"; }
+                            GridOtn.Rows[i].Cells["源Rx开销"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.highOrderPathVCOverheadC2Rx + sts);
+                            if (GridOtn.Rows[i].Cells["源Rx开销"].Value.ToString() == "0") { GridOtn.Rows[i].Cells["源Rx开销"].Value = "0-UNEQ未装载"; }
+                            if (GridOtn.Rows[i].Cells["源Rx开销"].Value.ToString() == "2") { GridOtn.Rows[i].Cells["源Rx开销"].Value = "2-TUG结构"; }
+                            if (GridOtn.Rows[i].Cells["源Rx开销"].Value.ToString() == "15") { GridOtn.Rows[i].Cells["源Rx开销"].Value = "15-GFP映射"; }
+                            if (GridOtn.Rows[i].Cells["源Rx开销"].Value.ToString() == "17") { GridOtn.Rows[i].Cells["源Rx开销"].Value = "17-VC-AIS"; }
+                            if (GridOtn.Rows[i].Cells["源Rx开销"].Value.ToString() == "255") { GridOtn.Rows[i].Cells["源Rx开销"].Value = "255-VC-AIS"; }
+                        }
+
+
+                    }
+                    if (VC == "2")
+                    {
+                        GridOtn.Rows[i].Cells["宿时隙"].Value = srcSlot + "-" + srcPort + "-" + srcHp + "-" + srcLp;
+
+                        Snmp.Set(ip, readcommunity, writecommunity, timeout, retry, Dxc.lowOrderPathVCMonitorEn + dts, "1", "Integer32");
+                        Thread.Sleep(1000);
+                        GridOtn.Rows[i].Cells["宿告警"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.lowOrderPathVCAlmStatus + dts);
+                        if (GridOtn.Rows[i].Cells["宿告警"].Value.ToString() == "00000000")
+                        {
+                            GridOtn.Rows[i].Cells["宿告警"].Value = "OK";
+                            GridOtn.Rows[i].Cells["宿告警"].Style.BackColor = Color.GreenYellow;
+                        }
+                        else
+                        {
+                            GridOtn.Rows[i].Cells["宿告警"].Style.BackColor = Color.OrangeRed;
+                            LabTsLoop.ForeColor = Color.Red;
+                            LabDts.ForeColor = Color.Red;
+                            GridOtn.Rows[i].Cells["宿告警"].Value = Alarm.LpAlarm(GridOtn.Rows[i].Cells["宿告警"].Value.ToString());
+
+
+                        }
+                        Snmp.Set(ip, readcommunity, writecommunity, timeout, retry, Dxc.lowOrderPathVCMonitorEn + dts, "2", "Integer32");
+                        GridOtn.Rows[i].Cells["宿Tx开销"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.lowOrderPathVCOverheadC2Tx + dts);
+                        if (GridOtn.Rows[i].Cells["宿Tx开销"].Value.ToString() == "1") { GridOtn.Rows[i].Cells["宿Tx开销"].Value = "1-UNEQ未装载"; }
+                        if (GridOtn.Rows[i].Cells["宿Tx开销"].Value.ToString() == "2") { GridOtn.Rows[i].Cells["宿Tx开销"].Value = "2-TUG结构"; }
+                        if (GridOtn.Rows[i].Cells["宿Tx开销"].Value.ToString() == "15") { GridOtn.Rows[i].Cells["宿Tx开销"].Value = "15-GFP映射"; }
+                        if (GridOtn.Rows[i].Cells["宿Tx开销"].Value.ToString() == "17") { GridOtn.Rows[i].Cells["宿Tx开销"].Value = "17-VC-AIS"; }
+                        GridOtn.Rows[i].Cells["宿Rx开销"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.lowOrderPathVCOverheadC2Rx + dts);
+                        if (GridOtn.Rows[i].Cells["宿Rx开销"].Value.ToString() == "1") { GridOtn.Rows[i].Cells["宿Rx开销"].Value = "1-UNEQ未装载"; }
+                        if (GridOtn.Rows[i].Cells["宿Rx开销"].Value.ToString() == "2") { GridOtn.Rows[i].Cells["宿Rx开销"].Value = "2-TUG结构"; }
+                        if (GridOtn.Rows[i].Cells["宿Rx开销"].Value.ToString() == "15") { GridOtn.Rows[i].Cells["宿Rx开销"].Value = "15-GFP映射"; }
+                        if (GridOtn.Rows[i].Cells["宿Rx开销"].Value.ToString() == "17") { GridOtn.Rows[i].Cells["宿Rx开销"].Value = "17-VC-AIS"; }
+                        GridOtn.Rows[i].Cells["SDH交叉ID"].Value = pathidts + tsloop;
+
+                        if (tsloop == "不环回")
+                        {
+                            sts = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.tsDxcSourceLpChannelIfIndex + pathidts);
+                            (ifType, subType, srcSlot, srcPort, srcHp, srcLp) = Dxc.TsRestore(sts);
+                            sportsdh = srcSlot.ToString() + "." + srcPort.ToString();
+
+                            GridOtn.Rows[i].Cells["源时隙"].Value = srcSlot + "-" + srcPort + "-" + srcHp + "-" + srcLp;
+                            //Snmp.Set(ip, readcommunity, writecommunity, timeout, retry, Dxc.lowOrderPathVCMonitorEn + sts, "1", "Integer32");
+                            ////Thread.Sleep(1000);
+                            //GridOtn.Rows[i].Cells["源告警"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.lowOrderPathVCAlmStatus + sts);
+                            //Snmp.Set(ip, readcommunity, writecommunity, timeout, retry, Dxc.lowOrderPathVCMonitorEn + sts, "2", "Integer32");
+                            //GridOtn.Rows[i].Cells["源Tx开销"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.lowOrderPathVCOverheadC2Tx + sts);
+                            //GridOtn.Rows[i].Cells["源Rx开销"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.lowOrderPathVCOverheadC2Rx + sts);
+
+                            sts = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.tsDxcSourceHpChannelIfIndex + pathidts);
+                            //GridOtn.Rows[i].Cells["源时隙"].Value = sts;
+                            Snmp.Set(ip, readcommunity, writecommunity, timeout, retry, Dxc.highOrderPathVCMonitorEn + sts, "1", "Integer32");
+                            Thread.Sleep(1000);
+                            GridOtn.Rows[i].Cells["源告警"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.highOrderPathVCAlmStatus + sts);
+                            if (GridOtn.Rows[i].Cells["源告警"].Value.ToString() == "00000000")
+                            {
+                                GridOtn.Rows[i].Cells["源告警"].Value = "OK";
+                                GridOtn.Rows[i].Cells["源告警"].Style.BackColor = Color.GreenYellow;
+                            }
+                            else
+                            {
+                                GridOtn.Rows[i].Cells["源告警"].Style.BackColor = Color.OrangeRed;
+                                LabStsLab.ForeColor = Color.Red;
+                                LabSts.ForeColor = Color.Red;
+                                GridOtn.Rows[i].Cells["源告警"].Value = Alarm.LpAlarm(GridOtn.Rows[i].Cells["源告警"].Value.ToString());
+
+
+                            }
+
+                            Snmp.Set(ip, readcommunity, writecommunity, timeout, retry, Dxc.highOrderPathVCMonitorEn + sts, "2", "Integer32");
+                            GridOtn.Rows[i].Cells["源Tx开销"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.highOrderPathVCOverheadC2Tx + sts);
+                            if (GridOtn.Rows[i].Cells["源Tx开销"].Value.ToString() == "0") { GridOtn.Rows[i].Cells["源Tx开销"].Value = "0-UNEQ未装载"; }
+                            if (GridOtn.Rows[i].Cells["源Tx开销"].Value.ToString() == "2") { GridOtn.Rows[i].Cells["源Tx开销"].Value = "2-TUG结构"; }
+                            if (GridOtn.Rows[i].Cells["源Tx开销"].Value.ToString() == "15") { GridOtn.Rows[i].Cells["源Tx开销"].Value = "15-GFP映射"; }
+                            if (GridOtn.Rows[i].Cells["源Tx开销"].Value.ToString() == "17") { GridOtn.Rows[i].Cells["源Tx开销"].Value = "17-VC-AIS"; }
+                            if (GridOtn.Rows[i].Cells["源Tx开销"].Value.ToString() == "255") { GridOtn.Rows[i].Cells["源Tx开销"].Value = "255-VC-AIS"; }
+                            GridOtn.Rows[i].Cells["源Rx开销"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.highOrderPathVCOverheadC2Rx + sts);
+                            if (GridOtn.Rows[i].Cells["源Rx开销"].Value.ToString() == "0") { GridOtn.Rows[i].Cells["源Rx开销"].Value = "0-UNEQ未装载"; }
+                            if (GridOtn.Rows[i].Cells["源Rx开销"].Value.ToString() == "2") { GridOtn.Rows[i].Cells["源Rx开销"].Value = "2-TUG结构"; }
+                            if (GridOtn.Rows[i].Cells["源Rx开销"].Value.ToString() == "15") { GridOtn.Rows[i].Cells["源Rx开销"].Value = "15-GFP映射"; }
+                            if (GridOtn.Rows[i].Cells["源Rx开销"].Value.ToString() == "17") { GridOtn.Rows[i].Cells["源Rx开销"].Value = "17-VC-AIS"; }
+                            if (GridOtn.Rows[i].Cells["源Rx开销"].Value.ToString() == "255") { GridOtn.Rows[i].Cells["源Rx开销"].Value = "255-VC-AIS"; }
+                        }
+
+
+                    }
+                    if (VC == "1")
+                    {
+                        GridOtn.Rows[i].Cells["宿时隙"].Value = srcSlot + "-" + srcPort + "-" + srcHp + "-" + srcLp;
+
+                        Snmp.Set(ip, readcommunity, writecommunity, timeout, retry, Dxc.lowOrderPathVCMonitorEn + dts, "1", "Integer32");
+                        Thread.Sleep(1000);
+                        GridOtn.Rows[i].Cells["宿告警"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.lowOrderPathVCAlmStatus + dts);
+                        if (GridOtn.Rows[i].Cells["宿告警"].Value.ToString() == "00000000")
+                        {
+                            GridOtn.Rows[i].Cells["宿告警"].Value = "OK";
+                            GridOtn.Rows[i].Cells["宿告警"].Style.BackColor = Color.GreenYellow;
+                        }
+                        else
+                        {
+                            GridOtn.Rows[i].Cells["宿告警"].Style.BackColor = Color.OrangeRed;
+                            LabTsLoop.ForeColor = Color.Red;
+                            LabDts.ForeColor = Color.Red;
+                            GridOtn.Rows[i].Cells["宿告警"].Value = Alarm.LpAlarm(GridOtn.Rows[i].Cells["宿告警"].Value.ToString());
+
+
+                        }
+                        Snmp.Set(ip, readcommunity, writecommunity, timeout, retry, Dxc.lowOrderPathVCMonitorEn + dts, "2", "Integer32");
+                        GridOtn.Rows[i].Cells["宿Tx开销"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.lowOrderPathVCOverheadV5Tx + dts);
+                        if (GridOtn.Rows[i].Cells["宿Tx开销"].Value.ToString() == "5") { GridOtn.Rows[i].Cells["宿Tx开销"].Value = "5-GFP映射"; }
+                        if (GridOtn.Rows[i].Cells["宿Tx开销"].Value.ToString() == "2") { GridOtn.Rows[i].Cells["宿Tx开销"].Value = "2-异步映射"; }
+                        if (GridOtn.Rows[i].Cells["宿Tx开销"].Value.ToString() == "7") { GridOtn.Rows[i].Cells["宿Tx开销"].Value = "7-VC-AIS"; }
+                        GridOtn.Rows[i].Cells["宿Rx开销"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.lowOrderPathVCOverheadV5Rx + dts);
+                        if (GridOtn.Rows[i].Cells["宿Rx开销"].Value.ToString() == "5") { GridOtn.Rows[i].Cells["宿Rx开销"].Value = "5-GFP映射"; }
+                        if (GridOtn.Rows[i].Cells["宿Rx开销"].Value.ToString() == "2") { GridOtn.Rows[i].Cells["宿Rx开销"].Value = "2-异步映射"; }
+                        if (GridOtn.Rows[i].Cells["宿Rx开销"].Value.ToString() == "7") { GridOtn.Rows[i].Cells["宿Rx开销"].Value = "7-VC-AIS"; }
+                        GridOtn.Rows[i].Cells["SDH交叉ID"].Value = pathidts + tsloop;
+                        if (tsloop == "不环回")
+                        {
+
+                            sts = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.tsDxcSourceLpChannelIfIndex + pathidts);
+                            (ifType, subType, srcSlot, srcPort, srcHp, srcLp) = Dxc.TsRestore(sts);
+                            sportsdh = srcSlot.ToString() + "." + srcPort.ToString();
+
+                            GridOtn.Rows[i].Cells["源时隙"].Value = srcSlot + "-" + srcPort + "-" + srcHp + "-" + srcLp;
+
+
+                            sts = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.tsDxcSourceHpChannelIfIndex + pathidts);
+                            Snmp.Set(ip, readcommunity, writecommunity, timeout, retry, Dxc.highOrderPathVCMonitorEn + sts, "1", "Integer32");
+                            Thread.Sleep(1000);
+                            GridOtn.Rows[i].Cells["源告警"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.highOrderPathVCAlmStatus + sts);
+                            if (GridOtn.Rows[i].Cells["源告警"].Value.ToString() == "00000000")
+                            {
+                                GridOtn.Rows[i].Cells["源告警"].Value = "OK";
+                                GridOtn.Rows[i].Cells["源告警"].Style.BackColor = Color.GreenYellow;
+                            }
+                            else
+                            {
+                                GridOtn.Rows[i].Cells["源告警"].Style.BackColor = Color.OrangeRed;
+                                LabStsLab.ForeColor = Color.Red;
+                                LabSts.ForeColor = Color.Red;
+                                GridOtn.Rows[i].Cells["源告警"].Value = Alarm.LpAlarm(GridOtn.Rows[i].Cells["源告警"].Value.ToString());
+
+                            }
+
+                            Snmp.Set(ip, readcommunity, writecommunity, timeout, retry, Dxc.highOrderPathVCMonitorEn + sts, "2", "Integer32");
+                            GridOtn.Rows[i].Cells["源Tx开销"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.highOrderPathVCOverheadC2Tx + sts);
+                            if (GridOtn.Rows[i].Cells["源Tx开销"].Value.ToString() == "0") { GridOtn.Rows[i].Cells["源Tx开销"].Value = "0-UNEQ未装载"; }
+                            if (GridOtn.Rows[i].Cells["源Tx开销"].Value.ToString() == "2") { GridOtn.Rows[i].Cells["源Tx开销"].Value = "2-TUG结构"; }
+                            if (GridOtn.Rows[i].Cells["源Tx开销"].Value.ToString() == "15") { GridOtn.Rows[i].Cells["源Tx开销"].Value = "15-GFP映射"; }
+                            if (GridOtn.Rows[i].Cells["源Tx开销"].Value.ToString() == "17") { GridOtn.Rows[i].Cells["源Tx开销"].Value = "17-VC-AIS"; }
+                            if (GridOtn.Rows[i].Cells["源Tx开销"].Value.ToString() == "255") { GridOtn.Rows[i].Cells["源Tx开销"].Value = "255-VC-AIS"; }
+                            GridOtn.Rows[i].Cells["源Rx开销"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.highOrderPathVCOverheadC2Rx + sts);
+                            if (GridOtn.Rows[i].Cells["源Rx开销"].Value.ToString() == "0") { GridOtn.Rows[i].Cells["源Rx开销"].Value = "0-UNEQ未装载"; }
+                            if (GridOtn.Rows[i].Cells["源Rx开销"].Value.ToString() == "2") { GridOtn.Rows[i].Cells["源Rx开销"].Value = "2-TUG结构"; }
+                            if (GridOtn.Rows[i].Cells["源Rx开销"].Value.ToString() == "15") { GridOtn.Rows[i].Cells["源Rx开销"].Value = "15-GFP映射"; }
+                            if (GridOtn.Rows[i].Cells["源Rx开销"].Value.ToString() == "17") { GridOtn.Rows[i].Cells["源Rx开销"].Value = "17-VC-AIS"; }
+                            if (GridOtn.Rows[i].Cells["源Rx开销"].Value.ToString() == "255") { GridOtn.Rows[i].Cells["源Rx开销"].Value = "255-VC-AIS"; }
+
+
+                        }
+
+                    }
+
+                }
+                if (tsloop == "双向环回")
+                {
+                    BtnPtoP.Enabled = true;
+                    return;
+                }
+
+
+                GridOtn.Rows[0].Cells["源SDH接口"].Value = "接口";
+                GridOtn.Rows[0].Cells["源SDH接口值"].Value = sportsdh;
+
+                GridOtn.Rows[1].Cells["源SDH接口"].Value = "索引";
+                sportsdhifindex = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.sdhPortIfIndex + sportsdh);
+                GridOtn.Rows[1].Cells["源SDH接口值"].Value = sportsdhifindex;
+
+                GridOtn.Rows[2].Cells["源SDH接口"].Value = "速率";
+                GridOtn.Rows[2].Cells["源SDH接口值"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.sdhPortType + sportsdhifindex);
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.sdhPortType + sportsdhifindex) == "1") { GridOtn.Rows[2].Cells["源SDH接口值"].Value = "STM-1"; }
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.sdhPortType + sportsdhifindex) == "2") { GridOtn.Rows[2].Cells["源SDH接口值"].Value = "STM-4"; }
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.sdhPortType + sportsdhifindex) == "3") { GridOtn.Rows[2].Cells["源SDH接口值"].Value = "STM-16"; }
+                GridOtn.Rows[3].Cells["源SDH接口"].Value = "接口告警";
+                Snmp.Set(ip, readcommunity, writecommunity, timeout, retry, Dxc.sdhPortMonitorEn + sportsdhifindex, "1", "Integer32");
+                //Thread.Sleep(1000);
+                GridOtn.Rows[3].Cells["源SDH接口值"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.sdhPortAlmStatus + sportsdhifindex);
+                if (GridOtn.Rows[3].Cells["源SDH接口值"].Value.ToString() == "00000000")
+                {
+                    GridOtn.Rows[3].Cells["源SDH接口值"].Value = "OK";
+                    GridOtn.Rows[3].Cells["源SDH接口值"].Style.BackColor = Color.GreenYellow;
+                }
+                else
+                {
+                    GridOtn.Rows[3].Cells["源SDH接口值"].Style.BackColor = Color.OrangeRed;
+                    LabSportLoop.ForeColor = Color.Red;
+                    LabSPort.ForeColor = Color.Red;
+                    GridOtn.Rows[3].Cells["源SDH接口值"].Value = Alarm.SdhPortAlarm(GridOtn.Rows[3].Cells["源SDH接口值"].Value.ToString());
+
+                }
+                Snmp.Set(ip, readcommunity, writecommunity, timeout, retry, Dxc.sdhPortMonitorEn + sportsdhifindex, "0", "Integer32");
+
+                GridOtn.Rows[4].Cells["源SDH接口"].Value = "再生段告警";
+                Snmp.Set(ip, readcommunity, writecommunity, timeout, retry, Dxc.sdhPortMonitorEn + sportsdhifindex, "1", "Integer32");
+
+                //Thread.Sleep(1000);
+                GridOtn.Rows[4].Cells["源SDH接口值"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.rsAlmStatus + sportsdhifindex);
+                if (GridOtn.Rows[4].Cells["源SDH接口值"].Value.ToString() == "00000000")
+                {
+                    GridOtn.Rows[4].Cells["源SDH接口值"].Value = "OK";
+                    GridOtn.Rows[4].Cells["源SDH接口值"].Style.BackColor = Color.GreenYellow;
+                }
+                else
+                {
+                    GridOtn.Rows[4].Cells["源SDH接口值"].Style.BackColor = Color.OrangeRed;
+                    LabSportLoop.ForeColor = Color.Red;
+                    LabSPort.ForeColor = Color.Red;
+                    GridOtn.Rows[4].Cells["源SDH接口值"].Value = Alarm.RsAlarm(GridOtn.Rows[4].Cells["源SDH接口值"].Value.ToString());
+
+
+                }
+                Snmp.Set(ip, readcommunity, writecommunity, timeout, retry, Dxc.sdhPortMonitorEn + sportsdhifindex, "0", "Integer32");
+
+                GridOtn.Rows[5].Cells["源SDH接口"].Value = "复用段告警";
+                Snmp.Set(ip, readcommunity, writecommunity, timeout, retry, Dxc.sdhPortMonitorEn + sportsdhifindex, "1", "Integer32");
+                //Thread.Sleep(1000);
+                GridOtn.Rows[5].Cells["源SDH接口值"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.msAlmStatus + sportsdhifindex);
+                if (GridOtn.Rows[5].Cells["源SDH接口值"].Value.ToString() == "00000000")
+                {
+                    GridOtn.Rows[5].Cells["源SDH接口值"].Value = "OK";
+                    GridOtn.Rows[5].Cells["源SDH接口值"].Style.BackColor = Color.GreenYellow;
+                }
+                else
+                {
+                    GridOtn.Rows[5].Cells["源SDH接口值"].Style.BackColor = Color.OrangeRed;
+                    LabSportLoop.ForeColor = Color.Red;
+                    LabSPort.ForeColor = Color.Red;
+                    GridOtn.Rows[5].Cells["源SDH接口值"].Value = Alarm.MsAlarm(GridOtn.Rows[5].Cells["源SDH接口值"].Value.ToString());
+
+
+                }
+                Snmp.Set(ip, readcommunity, writecommunity, timeout, retry, Dxc.sdhPortMonitorEn + sportsdhifindex, "0", "Integer32");
+
+                GridOtn.Rows[6].Cells["源SDH接口"].Value = "环回状态";
+                GridOtn.Rows[6].Cells["源SDH接口值"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.sdhPortLoop + sportsdhifindex);
+                if (GridOtn.Rows[6].Cells["源SDH接口值"].Value.ToString() == "0") { GridOtn.Rows[6].Cells["源SDH接口值"].Value = "不环回"; }
+                if (GridOtn.Rows[6].Cells["源SDH接口值"].Value.ToString() == "1") { GridOtn.Rows[6].Cells["源SDH接口值"].Value = "系统内环"; }
+                if (GridOtn.Rows[6].Cells["源SDH接口值"].Value.ToString() == "2") { GridOtn.Rows[6].Cells["源SDH接口值"].Value = "线路外环"; }
+
+                if (LabSportLoop.Checked == true && GridOtn.Rows[6].Cells["源SDH接口值"].Value.ToString() == "不环回")
+                {
+                    Snmp.Set(ip, readcommunity, writecommunity, timeout, retry, Dxc.sdhPortLoop + sportsdhifindex, "1", "Integer32");
+                    GridOtn.Rows[6].Cells["源SDH接口值"].Value = "系统内环";
+                    //GridOtn.Rows.Clear();
+                    Thread PtoP = new Thread(new ParameterizedThreadStart(PtoPGuZhangDingWei));
+                    PtoP.Start(TextDxcIp.Text);
+                    BtnPtoP.Enabled = true;
+                    return;
+
+                }
+                if (LabSportLoop.Checked == false && GridOtn.Rows[6].Cells["源SDH接口值"].Value.ToString() == "系统内环")
+                {
+                    Snmp.Set(ip, readcommunity, writecommunity, timeout, retry, Dxc.sdhPortLoop + sportsdhifindex, "0", "Integer32");
+                    GridOtn.Rows[6].Cells["源SDH接口值"].Value = "不环回";
+                    Thread PtoP = new Thread(new ParameterizedThreadStart(PtoPGuZhangDingWei));
+                    PtoP.Start(TextDxcIp.Text);
+                    BtnPtoP.Enabled = true;
+                    return;
+
+                }
+
+
+
+
+                GridOtn.Rows[11].Cells["源SDH接口"].Value = "光模块在位";
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.optModSfpPresent + sportsdhifindex) == "1") { GridOtn.Rows[11].Cells["源SDH接口值"].Value = "在位"; }
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.optModSfpPresent + sportsdhifindex) == "2") { GridOtn.Rows[11].Cells["源SDH接口值"].Value = "不在位"; }
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.optModSfpPresent + sportsdhifindex) == "3") { GridOtn.Rows[11].Cells["源SDH接口值"].Value = "不支持"; }
+
+                GridOtn.Rows[12].Cells["源SDH接口"].Value = "速率(Mbps)";
+                GridOtn.Rows[12].Cells["源SDH接口值"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.optModBitRate + sportsdhifindex);
+
+                GridOtn.Rows[13].Cells["源SDH接口"].Value = "光电类型";
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.optModFiberOrCopperType + sportsdhifindex) == "1") { GridOtn.Rows[13].Cells["源SDH接口值"].Value = "光模块"; }
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.optModFiberOrCopperType + sportsdhifindex) == "2") { GridOtn.Rows[13].Cells["源SDH接口值"].Value = "电模块"; }
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.optModFiberOrCopperType + sportsdhifindex) == "3") { GridOtn.Rows[13].Cells["源SDH接口值"].Value = "Unkown"; }
+
+
+                GridOtn.Rows[14].Cells["源SDH接口"].Value = "激光状态";
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.optModLaserStatus + sportsdhifindex) == "1") { GridOtn.Rows[14].Cells["源SDH接口值"].Value = "已关闭"; }
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.optModLaserStatus + sportsdhifindex) == "2") { GridOtn.Rows[14].Cells["源SDH接口值"].Value = "已打开"; }
+
+
+                GridOtn.Rows[15].Cells["源SDH接口"].Value = "单双纤";
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.optModSingleDouble + sportsdhifindex) == "1") { GridOtn.Rows[15].Cells["源SDH接口值"].Value = "单纤"; }
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.optModSingleDouble + sportsdhifindex) == "2") { GridOtn.Rows[15].Cells["源SDH接口值"].Value = "双纤"; }
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.optModSingleDouble + sportsdhifindex) == "3") { GridOtn.Rows[15].Cells["源SDH接口值"].Value = "Unkown"; }
+
+
+                GridOtn.Rows[16].Cells["源SDH接口"].Value = "距离(Km)";
+                GridOtn.Rows[16].Cells["源SDH接口值"].Value = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.optModDistance + sportsdhifindex);
+
+                GridOtn.Rows[17].Cells["源SDH接口"].Value = "波长";
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.optModWaveLength + sportsdhifindex) == "1") { GridOtn.Rows[17].Cells["源SDH接口值"].Value = "1310nm"; }
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.optModWaveLength + sportsdhifindex) == "2") { GridOtn.Rows[17].Cells["源SDH接口值"].Value = "1550nm"; }
+                if (Snmp.Get(ip, readcommunity, timeout, retry, Dxc.optModWaveLength + sportsdhifindex) == "3") { GridOtn.Rows[17].Cells["源SDH接口值"].Value = "Undown"; }
+
+
+
+
+                GridOtn.Rows[18].Cells["源SDH接口"].Value = "发光功率";
+                GridOtn.Rows[18].Cells["源SDH接口值"].Value = float.Parse(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.optModTxPower + sportsdhifindex)) / 100;
+
+                GridOtn.Rows[19].Cells["源SDH接口"].Value = "收光功率";
+                GridOtn.Rows[19].Cells["源SDH接口值"].Value = float.Parse(Snmp.Get(ip, readcommunity, timeout, retry, Dxc.optModRxPower + sportsdhifindex)) / 100;
+
+            }
+            catch {
+                MessageBox.Show("查询异常，请检查接口是否配置正确，是否配置交叉");
+                BtnPtoP.Enabled = true;
+            }
+
+        }
+        private void VCGband(Object VcgPortIfindex) {
+            try
+            {
+
+                GridOtn.Rows[18].Cells["VCG接口"].Value = "Tx带宽";
+                uint Txbyte0 = uint.Parse(Snmp.Get(TextDxcIp.Text, textReadCommunity.Text, 2000, 2, Dxc.gfpCurrentTxBytes + VcgPortIfindex));
+                Thread.Sleep(6000);
+                uint Txbyte1 = uint.Parse(Snmp.Get(TextDxcIp.Text, textReadCommunity.Text, 2000, 2, Dxc.gfpCurrentTxBytes + VcgPortIfindex));
+                float TxBand = (Txbyte1 - Txbyte0) * 8 / 6 / 1000 / 1000;
+                if (TxBand == 0)
+                {
+                    LabDportTx.ForeColor = Color.Red;
+                    GridOtn.Rows[18].Cells["VCG接口值"].Style.BackColor = Color.OrangeRed;
+
+                }
+                else
+                {
+                    LabDportTx.ForeColor = Color.GreenYellow;
+                    GridOtn.Rows[18].Cells["VCG接口值"].Style.BackColor = Color.GreenYellow;
+                }
+                GridOtn.Rows[18].Cells["VCG接口值"].Value = TxBand + "Mbps";
+
+                GridOtn.Rows[19].Cells["VCG接口"].Value = "Rx带宽";
+                uint Rxbyte0 = uint.Parse(Snmp.Get(TextDxcIp.Text, textReadCommunity.Text, 2000, 2, Dxc.gfpCurrentRxBytes + VcgPortIfindex));
+                Thread.Sleep(6000);
+                uint Rxbyte1 = uint.Parse(Snmp.Get(TextDxcIp.Text, textReadCommunity.Text, 2000, 2, Dxc.gfpCurrentRxBytes + VcgPortIfindex));
+                float RxBand = (Rxbyte1 - Rxbyte0) * 8 / 6 / 1000 / 1000;
+                if (RxBand == 0)
+                {
+                    LabDportRx.ForeColor = Color.Red;
+                    GridOtn.Rows[19].Cells["VCG接口值"].Style.BackColor = Color.OrangeRed;
+
+                }
+                else
+                {
+                    LabDportRx.ForeColor = Color.GreenYellow;
+                    GridOtn.Rows[19].Cells["VCG接口值"].Style.BackColor = Color.GreenYellow;
+                }
+                GridOtn.Rows[19].Cells["VCG接口值"].Value = RxBand + "Mbps";
+                BtnPtoP.Enabled = true;
+            }
+            catch {
+                MessageBox.Show("获取VCG带宽失败，请检查接口是否配置正确");
+                BtnPtoP.Enabled = true;
+            }
+
+
+
+        }
+        private void TimeTopu_Tick(object sender, EventArgs e)
+        {
+            Thread dport = new Thread(Dport);
+            dport.Start();
+            Thread custx = new Thread(CusTx);
+            custx.Start();
+            Thread cusrx = new Thread(CusRx);
+            cusrx.Start();
+            Thread dportTx = new Thread(DportTx);
+            dportTx.Start();
+            Thread dportRx = new Thread(DportRx);
+            dportRx.Start();
+            Thread dts = new Thread(Dts);
+            dts.Start();
+            Thread tsLoop = new Thread(TsLoop);
+            tsLoop.Start();
+            Thread sts = new Thread(Sts);
+            sts.Start();
+            Thread stsLab = new Thread(StsLab);
+            stsLab.Start();
+            Thread sPort = new Thread(SPort);
+            sPort.Start();
+            Thread sportLoop = new Thread(SportLoop);
+            sportLoop.Start();
+
+        }
+        private void Dport() {
+            if (LabDport.ForeColor == Color.Red) {
+                LabDport.Visible = false;
+                Thread.Sleep(1000);
+                LabDport.Visible = true;
+            }
+        }
+        private void CusTx()
+        {
+            if (LabcusTx.ForeColor == Color.Red)
+            {
+                LabcusTx.Visible = false;
+                Thread.Sleep(1000);
+                LabcusTx.Visible = true;
+            }
+        }
+        private void CusRx()
+        {
+            if (LabcusRx.ForeColor == Color.Red)
+            {
+                LabcusRx.Visible = false;
+                Thread.Sleep(1000);
+                LabcusRx.Visible = true;
+            }
+        }
+        private void DportTx()
+        {
+            if (LabDportTx.ForeColor == Color.Red)
+            {
+                LabDportTx.Visible = false;
+                Thread.Sleep(1000);
+                LabDportTx.Visible = true;
+            }
+        }
+        private void DportRx()
+        {
+            if (LabDportRx.ForeColor == Color.Red)
+            {
+                LabDportRx.Visible = false;
+                Thread.Sleep(1000);
+                LabDportRx.Visible = true;
+            }
+        }
+        private void Dts()
+        {
+            if (LabDts.ForeColor == Color.Red)
+            {
+                LabDts.Visible = false;
+                Thread.Sleep(500);
+                LabDts.Visible = true;
+            }
+        }
+        private void TsLoop()
+        {
+            if (LabTsLoop.ForeColor == Color.Red)
+            {
+                LabTsLoop.Visible = false;
+                Thread.Sleep(500);
+                LabTsLoop.Visible = true;
+            }
+        }
+        private void Sts()
+        {
+            if (LabSts.ForeColor == Color.Red)
+            {
+                LabSts.Visible = false;
+                Thread.Sleep(500);
+                LabSts.Visible = true;
+            }
+        }
+        private void StsLab()
+        {
+            if (LabStsLab.ForeColor == Color.Red)
+            {
+                LabStsLab.Visible = false;
+                Thread.Sleep(500);
+                LabStsLab.Visible = true;
+            }
+        }
+        private void SPort()
+        {
+            if (LabSPort.ForeColor == Color.Red)
+            {
+                LabSPort.Visible = false;
+                Thread.Sleep(500);
+                LabSPort.Visible = true;
+            }
+        }
+        private void SportLoop()
+        {
+            if (LabSportLoop.ForeColor == Color.Red)
+            {
+                LabSportLoop.Visible = false;
+                Thread.Sleep(500);
+                LabSportLoop.Visible = true;
+            }
+
+
+
+
+            //Thread.Sleep(500);
+            //LabcusRx.Visible = false;
+
+        }
+
+        private void metroButton2_Click(object sender, EventArgs e)
+        {
+            uint i = (uint)int.Parse(metroTextdxc.Text);
+            metroTextResultDXC.AppendText("无符号十进制："+i.ToString()+"\r\n");
+            string j = System.Convert.ToString(i, 16);
+            metroTextResultDXC.AppendText("无符号十六进制：" + j.ToString() + "\r\n");
+
+        }
+
+        private void ComDslotP_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ComVcgSlotD.Text = ComDslotP.Text;
+        }
+
+        private void ComDportP_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ComVcgPortD.Text = ComDportP.Text;
+        }
+
+        private void ButCheckFile_Click(object sender, EventArgs e)
+        {
+
+            LoadCountsum = 0;
+            LoadCountany = 0;
+            string shengjiip = "";
+
+            for (int i = 0; i < DGVSTATUS.Rows.Count; i++)
+            {
+                if ((bool)DGVSTATUS.Rows[i].Cells["执行"].EditedFormattedValue == true)
+                {
+                    int c = 1;
+                    LoadCountsum = LoadCountsum + c;
+                    string asd = DGVSTATUS.Rows[i].Cells["ip地址"].Value.ToString();
+                    shengjiip = shengjiip + asd + "\r\n";     //设备IP地址
+                }
+
+
+            }
+            DialogResult dr = MessageBox.Show("是否确认 检查设备文件大小进行对比？\r\n" + shengjiip + "\r\n一共：" + LoadCountsum.ToString() + "台设备", "提示", MessageBoxButtons.YesNo);
+            if (dr == DialogResult.Yes)
+            {
+                // DGVSTATUS.DataSource = null;
+                //DGVSTATUS.Rows.Clear();
+                int i = DGVSTATUS.ColumnCount;
+                //MessageBox.Show(i.ToString());
+                for (int a = 9; a < i; a++)
+                {
+                    // MessageBox.Show(a.ToString());
+                    DGVSTATUS.Columns.RemoveAt(9);
+
+
+                }
+                DGVSTATUS.Refresh();
+                // DGVSTATUS.Columns.Clear();
+                //DataGridViewCreeatGuding();
+                datagridviewcreat();
+                string task = "checkfile";
+                ParameterizedThreadStart p = new ParameterizedThreadStart(Xianchengchi);
+                Thread t = new Thread(p);
+                t.Start(task);
+            }
+            if (dr == DialogResult.No)
+            {
+                //  buttbatchdownload.Text = "批量重启";
+            }
+
+        }
+
+        private void Checkfile(object obj)
+        {
+            ButCheckFile.Enabled = false;
+            MySocket mysocketftp = new MySocket();
+            int i = int.Parse(obj.ToString());
+            string gpnip = DGVSTATUS.Rows[i].Cells["ip地址"].Value.ToString();
+            string devtype = "1.3.6.1.4.1.10072.6.2.1.1.1.2.1";   //设备类型
+            string readcommunity = textReadCommunity.Text;      //读团体
+            string writecommunity = textWriteCommunity.Text;    //写团体
+            string[,] Filesize = null;
+            int pingcunt = 5;
+            Ping ping = new Ping();
+            PingReply pingReply = ping.Send(gpnip, 120);
+            bool link = false;
+            //判断请求是否超时
+            for (int but = 0; but < pingcunt; but++)
+            {
+
+                pingReply = ping.Send(gpnip, 120);
+                if (pingReply.Status == IPStatus.Success)
+                {
+                    link = true;
+                    DGVSTATUS.Rows[i].Cells["ping"].Value = "OK";
+                    DGVSTATUS.Rows[i].Cells["ping"].Style.BackColor = Color.GreenYellow;
+
+                    break;
+                }
+                Thread.Sleep(XHTime / 3);
+            }
+            if (link == false)
+            {
+                DGVSTATUS.Rows[i].Cells["ping"].Value = "NOK";
+                
+                DGVSTATUS.Rows[i].Cells["ping"].Style.BackColor = Color.Yellow;
+                lock (PiLiangShengJi)
+                {
+                    LoadCountany++;
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 累计完成设备数量：" + LoadCountany.ToString() + "\r\n");
+
+                }
+                return;
+            }
+
+            DGVSTATUS.Rows[i].Cells["设备类型"].Value = FindDevType.Finddevtype(Snmp.Get(gpnip, readcommunity, 2000, 2, devtype));
+            if (FindDevType.Finddevtype(Snmp.Get(gpnip, readcommunity, 2000, 2, devtype)).Contains("7600")) {
+                this.DGVSTATUS.Rows[i].Cells["当前版本"].Value = "初始化";
+                bool bo = mysocketftp.Connect(gpnip, "23");
+                if (bo)
+                {
+                    mysocketftp.SendData(textusr.Text);
+                    for (int t = 0; t <= 1000; t++)
+                    {
+                        string login = mysocketftp.ReceiveData(int.Parse(ts));
+                        // MessageBox.Show(login);
+                        if (login.Contains("Password:"))
+                        {
+                            mysocketftp.SendData(textpsd.Text);
+                            break;
+                        }
+                        Thread.Sleep(10);
+                    }
+                    for (int f = 0; f <= 1000; f++)
+                    {
+                        string passd = mysocketftp.ReceiveData(int.Parse(ts));
+                        //MessageBox.Show(passd);
+                        if (passd.Contains("Error") || passd.Contains("failed") || passd.Contains("Kerberos") || passd.Contains("Bad passwords"))
+                        {
+
+                            //textDOS.AppendText("\r\n" + "用户名或密码错误，请重新输入");
+                            this.DGVSTATUS.Rows[i].Cells["当前版本"].Value = "密码错误";
+                            this.DGVSTATUS.Rows[i].DefaultCellStyle.BackColor = Color.Yellow;
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 密码错误！ " + "\r\n");
+
+                        }
+                        if (passd.Contains("Password:"))
+                        {
+                            mysocketftp.SendData(textpsd.Text);
+                        }
+                        if (passd.Contains(">"))
+                        {
+                            //textDOS.AppendText("\r\n" + "用户名密码正确==========================================OK");
+                            mysocketftp.SendData("enable");
+                            for (int b = 0; b <= 1000; b++)
+                            {
+                                string pass = mysocketftp.ReceiveData(int.Parse(ts));
+                                if (pass.Contains("Pas"))
+                                {
+                                    mysocketftp.SendData(textpsden.Text);
+                                    //Thread.Sleep(500);
+                                    for (int u = 0; u <= 1000; u++)
+                                    {
+                                        string locked = mysocketftp.ReceiveData(int.Parse(ts));
+                                        if (locked.Contains("configuration is locked by other user"))
+                                        //configuration is locked by other user
+                                        {
+                                            //textDOS.AppendText("\r\n" + "已经有用户登录，正在重新登录========================OK");
+                                            mysocketftp.SendData("grosadvdebug");
+                                            Thread.Sleep(200);
+                                            mysocketftp.SendData("vty user limit no");
+                                            Thread.Sleep(200);
+                                            mysocketftp.SendData("exit");
+                                            Thread.Sleep(200);
+                                            mysocketftp.SendData("enable");
+                                            Thread.Sleep(200);
+                                            if (mysocketftp.ReceiveData(int.Parse(ts)).Contains("Pas"))
+                                            {
+                                                mysocketftp.SendData(textpsden.Text);
+                                                Thread.Sleep(200);
+                                                if (!mysocketftp.ReceiveData(int.Parse(ts)).Contains("failed"))
+                                                {
+                                                    this.DGVSTATUS.Rows[i].Cells["当前版本"].Value = "密码错误";
+                                                    this.DGVSTATUS.Rows[i].DefaultCellStyle.BackColor = Color.Yellow;
+                                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 密码错误！ " + "\r\n");
+
+                                                }
+
+                                                break;
+                                            }
+                                        }
+                                        if (locked.Contains("#"))
+                                        {
+                                            break;
+                                        }
+                                        Thread.Sleep(1);
+                                    }
+                                    break;
+                                }
+                                if (pass.Contains("#"))
+                                {
+                                    break;
+                                }
+                                if (pass.Contains("configuration is locked by other user"))
+                                //configuration is locked by other user
+                                {
+                                    //textDOS.AppendText("\r\n" + "已经有用户登录，正在重新登录=============================OK");
+                                    mysocketftp.SendData("grosadvdebug");
+                                    Thread.Sleep(200);
+                                    mysocketftp.SendData("vty user limit no");
+                                    Thread.Sleep(200);
+                                    mysocketftp.SendData("exit");
+                                    Thread.Sleep(200);
+                                    mysocketftp.SendData("enable");
+                                    Thread.Sleep(200);
+                                    if (mysocketftp.ReceiveData(int.Parse(ts)).Contains("Pas"))
+                                    {
+                                        mysocketftp.SendData(textpsden.Text);
+                                        Thread.Sleep(200);
+                                        if (!mysocketftp.ReceiveData(int.Parse(ts)).Contains("failed"))
+                                        {
+                                            this.DGVSTATUS.Rows[i].Cells["当前版本"].Value = "密码错误";
+                                            this.DGVSTATUS.Rows[i].DefaultCellStyle.BackColor = Color.Yellow;
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 密码错误！ " + "\r\n");
+
+                                        }
+
+                                        break;
+                                    }
+                                    break;
+                                }
+                                Thread.Sleep(1);
+                            }
+                            break;
+                        }
+                        Thread.Sleep(10);
+                    }
+
+                    this.DGVSTATUS.Rows[i].Cells["当前版本"].Value = "准备开始";
+                    mysocketftp.SendData("screen idle-timeout 0");
+                    Thread.Sleep(2 * XHTime);
+                    mysocketftp.SendData("grosadvdebug");
+                    Thread.Sleep(2 * XHTime);
+                    string command0 = mysocketftp.ReceiveData(int.Parse(ts));
+                    mysocketftp.SendData("show debug-version");
+                    Thread.Sleep(2 * XHTime);
+                    string command = mysocketftp.ReceiveData(int.Parse(ts));
+                    Regex wave = new Regex(@"Version:\s*(.*)", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                    string Wave = wave.Match(command).Groups[1].Value;
+                    //this.DGVSTATUS.Rows[i].Cells["当前版本"].Value = Wave;
+                    command = "";
+                    mysocketftp.SendData("show fpga-version");
+                    Thread.Sleep(2 * XHTime);
+                    command = mysocketftp.ReceiveData(int.Parse(ts));
+                    mysocketftp.SendData("\r\n");
+                    Thread.Sleep(1 * XHTime);
+                    mysocketftp.SendData("\r\n");
+                    Thread.Sleep(1 * XHTime);
+                    mysocketftp.SendData("\r\n");
+                    Thread.Sleep(1 * XHTime);
+                    mysocketftp.SendData("\r\n");
+                    Thread.Sleep(1 * XHTime);
+                    mysocketftp.SendData("\r\n");
+                    Thread.Sleep(1 * XHTime);
+                    mysocketftp.SendData("\r\n");
+                    Thread.Sleep(1 * XHTime);
+                    Regex fpga = new Regex(@"fpga_code.bin:\s*(.*)", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                    string Fpga = fpga.Match(command).Groups[1].Value;
+
+                    
+                    mysocketftp.SendData("show all-files enable");
+                    Thread.Sleep(2 * XHTime);
+                    mysocketftp.SendData("exit");
+                    Thread.Sleep(2 * XHTime);
+                    mysocketftp.SendData("dosfs");
+                    Thread.Sleep(2 * XHTime);
+                    mysocketftp.SendData("cd /flash/sys");
+                    Thread.Sleep(2 * XHTime);
+                    mysocketftp.SendData("rm netid.txt");
+                    Thread.Sleep(2 * XHTime);
+                    mysocketftp.SendData("exit");
+
+                    Thread.Sleep(2 * XHTime);
+                    command = mysocketftp.ReceiveData(int.Parse(ts));
+                    command = "";
+                    mysocketftp.SendData("dosfs");
+                    Thread.Sleep(2 * XHTime);
+                    mysocketftp.SendData("cd /flash/sys");
+                    Thread.Sleep(2 * XHTime);
+                    mysocketftp.SendData("ll");
+                    Thread.Sleep(1 * XHTime);
+                    mysocketftp.SendData("\r\n");
+                    Thread.Sleep(1 * XHTime);
+                    mysocketftp.SendData("\r\n");
+                    Thread.Sleep(1 * XHTime);
+                    mysocketftp.SendData("\r\n");
+                    Thread.Sleep(1 * XHTime);
+                    mysocketftp.SendData("dosfs");
+                    Thread.Sleep(1 * XHTime);
+                    mysocketftp.SendData("cd /yaffs/sys");
+                    Thread.Sleep(1 * XHTime);
+                    mysocketftp.SendData("ll");
+                    Thread.Sleep(1 * XHTime);
+                    mysocketftp.SendData("\r\n");
+                    Thread.Sleep(1 * XHTime);
+                    mysocketftp.SendData("\r\n");
+                    Thread.Sleep(1 * XHTime);
+                    mysocketftp.SendData("\r\n");
+                    mysocketftp.SendData("cd /flash/sdn");
+                    Thread.Sleep(1 * XHTime);
+                    mysocketftp.SendData("ll");
+                    Thread.Sleep(1 * XHTime);
+                    mysocketftp.SendData("\r\n");
+                    Thread.Sleep(1 * XHTime);
+                    mysocketftp.SendData("\r\n");
+                    Thread.Sleep(1 * XHTime);
+                    mysocketftp.SendData("\r\n");
+                    Thread.Sleep(1 * XHTime);
+                    mysocketftp.SendData("exit");
+                    command = mysocketftp.ReceiveData(int.Parse(ts));
+                    this.DGVSTATUS.Rows[i].Cells["当前版本"].Value = Wave + "|" + Fpga;
+                    //this.DGVSTATUS.Rows[i].Cells["ping"].Value = "OK" + "|" + "netid已删除";
+                    DGVSTATUS.Rows[i].Cells["当前版本"].Style.BackColor = Color.GreenYellow;
+                    Filesize = FindDevType.StringToArray(command);
+
+
+                    mysocketftp.Close();
+                }
+                else
+                {
+                    this.DGVSTATUS.Rows[i].Cells["当前版本"].Value = "Telnet失败";
+                    this.DGVSTATUS.Rows[i].DefaultCellStyle.BackColor = Color.Yellow;
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 登录Telnet失败！ " + "\r\n");
+                    lock (PiLiangShengJi)
+                    {
+                        LoadCountany++;
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 累计完成设备数量：" + LoadCountany.ToString() + "\r\n");
+
+                    }
+                    return;
+                }
+                string[,] array = new string[,] {
+                { "APP",        "app_code.bin" ,                labapp.Text },
+                { "CODE",       "fpga_code.bin" ,               labcode.Text            },
+                { "CODE2",      "fpga_code2.bin" ,              labcode2.Text},
+                { "CODE3",      "fpga_code3.bin",               labcode3.Text },
+                { "CODE4",      "fpga_code4.bin",               labcode4.Text },
+                { "SDN",        "wholePack.bin",                labsdn.Text },
+                { "NMS",        "nms.fpga",                     labnms.Text },
+                { "SW",         "sw.fpga",                      labsw.Text },
+                { "Config" ,    "conf_data.txt" ,               labconfig.Text},
+                { "Db",         "db.bin",                       labdb.Text },
+                { "SlotConfig", "slotconfig.bin" ,              labslotconfig.Text},
+                { "FLASH",      "",                             "" },
+                { "SysFile",    "sysfile_ini.bin",              labsysfile.Text },
+                { "YAFFS",      "",                             ""  },
+                { "760S",       "760s.fpga",                    lab760s.Text },
+                { "760B",       "760b.fpga",                    lab760b.Text },
+                { "760C",       "760c.fpga",                    lab760c.Text },
+                { "760D",       "760d.fpga",                    lab760d.Text },
+                { "760E",       "760e.fpga",                    lab760e.Text },
+                { "UXC",        "uxc_a.fpga" ,                  labuxc.Text},
+                { "7610",       "7610.fpga" ,                   lab7610.Text},
+                { "7611",       "7611.fpga",                    lab7611.Text },
+                { "7612",       "7612.fpga",                    lab7612.Text },
+                { "7613",       "7613.fpga",                    lab7613.Text },
+                { "7614",       "7614.fpga",                    lab7614.Text },
+                { "7616",       "7616.fpga",                    lab7616.Text },
+                { "APP2",       "app_code_backup2.bin",         labapp2.Text },
+                { "VOSS",       "voss.sh" ,                     labvoss.Text},
+                { "REBOOTOS",   "rebootos.sh",                  labrebootos.Text },
+                { "CPLD",       "nms.cpld" ,                    labcpld.Text},
+            };
+                int colunms = DGVSTATUS.ColumnCount;
+                int row = array.GetLength(0);
+
+                for (int c = 9; c < colunms; c++)
+                {
+                    string header = DGVSTATUS.Columns[c].HeaderText;
+                    for (int d = 0; d < row; d++)
+                    {
+                        if (array[d, 0].ToString() == header)
+                        {
+
+                            int dxcrow = Filesize.GetLength(0);
+                            int dxccol = Filesize.GetLength(1);
+                            for (int a = 0; a < dxcrow; a++)
+                            {
+
+                                if (Filesize[a, 8] != null)
+                                {
+                                    if (Filesize[a, 8] == array[d, 1])
+                                    {
+                                        if (Filesize[a, 4] == array[d, 2])
+                                        {
+                                            DGVSTATUS.Rows[i].Cells[header].Value = "一样";
+                                            DGVSTATUS.Rows[i].Cells[header].Style.BackColor = Color.GreenYellow;
+                                            
+                                            break;
+                                        }
+                                        else
+                                        {
+                                            DGVSTATUS.Rows[i].Cells[header].Value = "不样" + Filesize[a, 4];
+                                            DGVSTATUS.Rows[i].Cells[header].Style.BackColor = Color.Red;
+                                            
+                                            break;
+                                        }
+
+
+                                    }
+                                    else
+                                    {
+                                        DGVSTATUS.Rows[i].Cells[header].Value = "没有";
+                                        DGVSTATUS.Rows[i].Cells[header].Style.BackColor = Color.Yellow;
+                                        
+                                    }
+
+                                }
+
+                            }
+                        }
+                    }
+                }
+            }
+            if (FindDevType.Finddevtype(Snmp.Get(gpnip, readcommunity, 2000, 2, devtype)).Contains("800"))
+            {
+                this.DGVSTATUS.Rows[i].Cells["当前版本"].Value = "初始化";
+                bool bo = mysocketftp.Connect(gpnip, "23");
+                if (bo)
+                {
+                    mysocketftp.SendData(textusr.Text);
+                    for (int t = 0; t <= 1000; t++)
+                    {
+                        string login = mysocketftp.ReceiveData(int.Parse(ts));
+                        // MessageBox.Show(login);
+                        if (login.Contains("Password:"))
+                        {
+                            mysocketftp.SendData(textpsd.Text);
+                            break;
+                        }
+                        Thread.Sleep(10);
+                    }
+                    for (int f = 0; f <= 1000; f++)
+                    {
+                        string passd = mysocketftp.ReceiveData(int.Parse(ts));
+                        //MessageBox.Show(passd);
+                        if (passd.Contains("Error") || passd.Contains("failed") || passd.Contains("Kerberos") || passd.Contains("Bad passwords"))
+                        {
+
+                            //textDOS.AppendText("\r\n" + "用户名或密码错误，请重新输入");
+                            this.DGVSTATUS.Rows[i].Cells["当前版本"].Value = "密码错误";
+                            this.DGVSTATUS.Rows[i].DefaultCellStyle.BackColor = Color.Yellow;
+                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 密码错误！ " + "\r\n");
+
+                        }
+                        if (passd.Contains("Password:"))
+                        {
+                            mysocketftp.SendData(textpsd.Text);
+                        }
+                        if (passd.Contains(">"))
+                        {
+                            //textDOS.AppendText("\r\n" + "用户名密码正确==========================================OK");
+                            mysocketftp.SendData("enable");
+                            for (int b = 0; b <= 1000; b++)
+                            {
+                                string pass = mysocketftp.ReceiveData(int.Parse(ts));
+                                if (pass.Contains("Pas"))
+                                {
+                                    mysocketftp.SendData(textpsden.Text);
+                                    //Thread.Sleep(500);
+                                    for (int u = 0; u <= 1000; u++)
+                                    {
+                                        string locked = mysocketftp.ReceiveData(int.Parse(ts));
+                                        if (locked.Contains("configuration is locked by other user"))
+                                        //configuration is locked by other user
+                                        {
+                                            //textDOS.AppendText("\r\n" + "已经有用户登录，正在重新登录========================OK");
+                                            mysocketftp.SendData("grosadvdebug");
+                                            Thread.Sleep(200);
+                                            mysocketftp.SendData("vty user limit no");
+                                            Thread.Sleep(200);
+                                            mysocketftp.SendData("exit");
+                                            Thread.Sleep(200);
+                                            mysocketftp.SendData("enable");
+                                            Thread.Sleep(200);
+                                            if (mysocketftp.ReceiveData(int.Parse(ts)).Contains("Pas"))
+                                            {
+                                                mysocketftp.SendData(textpsden.Text);
+                                                Thread.Sleep(200);
+                                                if (!mysocketftp.ReceiveData(int.Parse(ts)).Contains("failed"))
+                                                {
+                                                    this.DGVSTATUS.Rows[i].Cells["当前版本"].Value = "密码错误";
+                                                    this.DGVSTATUS.Rows[i].DefaultCellStyle.BackColor = Color.Yellow;
+                                                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 密码错误！ " + "\r\n");
+
+                                                }
+
+                                                break;
+                                            }
+                                        }
+                                        if (locked.Contains("#"))
+                                        {
+                                            break;
+                                        }
+                                        Thread.Sleep(1);
+                                    }
+                                    break;
+                                }
+                                if (pass.Contains("#"))
+                                {
+                                    break;
+                                }
+                                if (pass.Contains("configuration is locked by other user"))
+                                //configuration is locked by other user
+                                {
+                                    //textDOS.AppendText("\r\n" + "已经有用户登录，正在重新登录=============================OK");
+                                    mysocketftp.SendData("grosadvdebug");
+                                    Thread.Sleep(200);
+                                    mysocketftp.SendData("vty user limit no");
+                                    Thread.Sleep(200);
+                                    mysocketftp.SendData("exit");
+                                    Thread.Sleep(200);
+                                    mysocketftp.SendData("enable");
+                                    Thread.Sleep(200);
+                                    if (mysocketftp.ReceiveData(int.Parse(ts)).Contains("Pas"))
+                                    {
+                                        mysocketftp.SendData(textpsden.Text);
+                                        Thread.Sleep(200);
+                                        if (!mysocketftp.ReceiveData(int.Parse(ts)).Contains("failed"))
+                                        {
+                                            this.DGVSTATUS.Rows[i].Cells["当前版本"].Value = "密码错误";
+                                            this.DGVSTATUS.Rows[i].DefaultCellStyle.BackColor = Color.Yellow;
+                                            textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 密码错误！ " + "\r\n");
+
+                                        }
+
+                                        break;
+                                    }
+                                    break;
+                                }
+                                Thread.Sleep(1);
+                            }
+                            break;
+                        }
+                        Thread.Sleep(10);
+                    }
+
+                    this.DGVSTATUS.Rows[i].Cells["当前版本"].Value = "准备开始";
+                    mysocketftp.SendData("screen idle-timeout 0");
+                    Thread.Sleep(2 * XHTime);
+                    mysocketftp.SendData("grosadvdebug");
+                    Thread.Sleep(2 * XHTime);
+                    string command0 = mysocketftp.ReceiveData(int.Parse(ts));
+                    mysocketftp.SendData("show debug-version");
+                    Thread.Sleep(2 * XHTime);
+                    string command = mysocketftp.ReceiveData(int.Parse(ts));
+                    Regex wave = new Regex(@"Version:\s*(.*)", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                    string Wave = wave.Match(command).Groups[1].Value;
+                    //this.DGVSTATUS.Rows[i].Cells["当前版本"].Value = Wave;
+                    command = "";
+                    mysocketftp.SendData("show fpga-version");
+                    Thread.Sleep(2 * XHTime);
+                    command = mysocketftp.ReceiveData(int.Parse(ts));                
+                    Regex fpga = new Regex(@"FPGA version :\s*(.*)", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                    string Fpga = fpga.Match(command).Groups[1].Value;
+
+                    Thread.Sleep(1 * XHTime);
+                    command = mysocketftp.ReceiveData(int.Parse(ts));
+                    command = "";
+                    mysocketftp.SendData("grosadvdebug");
+                    Thread.Sleep(2 * XHTime);
+                    mysocketftp.SendData("show all-files enable");
+                    Thread.Sleep(2 * XHTime);
+                    mysocketftp.SendData("exit");
+                    Thread.Sleep(2 * XHTime);
+                    mysocketftp.SendData("show flash file");
+                    Thread.Sleep(1 * XHTime);
+                    mysocketftp.SendData("\r\n");
+                    Thread.Sleep(1 * XHTime);
+                    mysocketftp.SendData("\r\n");
+                    Thread.Sleep(1 * XHTime);
+                    mysocketftp.SendData("\r\n");
+                    Thread.Sleep(1 * XHTime);
+                    mysocketftp.SendData("exit");
+                    command = mysocketftp.ReceiveData(int.Parse(ts));
+
+                    Filesize = FindDevType.StringToArray(command);
+
+
+                    this.DGVSTATUS.Rows[i].Cells["当前版本"].Value = Wave + "|" + Fpga;
+                    DGVSTATUS.Rows[i].Cells["当前版本"].Style.BackColor = Color.GreenYellow;
+                    mysocketftp.Close();
+                }
+                else
+                {
+                    this.DGVSTATUS.Rows[i].Cells["当前版本"].Value = "Telnet失败";
+                    this.DGVSTATUS.Rows[i].DefaultCellStyle.BackColor = Color.Yellow;
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 登录Telnet失败！ " + "\r\n");
+                    lock (PiLiangShengJi)
+                    {
+                        LoadCountany++;
+                        textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 累计完成设备数量：" + LoadCountany.ToString() + "\r\n");
+
+                    }
+                    return;
+                }
+                string[,] array = new string[,] {
+                { "APP",        "app_code.bin" ,labapp.Text },
+                { "CODE",       "fpga_code.bin" ,labcode.Text            },
+                { "CODE2",      "fpga_code2.bin" ,labcode2.Text},
+                { "CODE3",      "fpga_code3.bin",labcode3.Text },
+                { "CODE4",      "fpga_code4.bin",labcode4.Text },
+                { "SDN",        "sdn_pac.bin",labsdn.Text },
+                { "NMS",        "nms.fpga",labnms.Text },
+                { "SW",         "sw.fpga",labsw.Text },
+                { "Config" ,    "conf_data.txt" ,labconfig.Text},
+                { "Db",         "db.bin",labdb.Text },
+                { "SlotConfig", "slotconfig.bin" ,labslotconfig.Text},
+                { "FLASH",      "","" },
+                { "SysFile",    "sysfile_ini.bin",labsysfile.Text },
+              //{ "OTNPACK",    "20" },
+                { "YAFFS",      "",""  },
+                { "760S",       "760s.fpga",lab760s.Text },
+                { "760B",       "760b.fpga",lab760b.Text },
+                { "760C",       "760c.fpga",lab760c.Text },
+                { "760D",       "760d.fpga",lab760d.Text },
+                { "760E",       "760e.fpga",lab760e.Text },
+                { "UXC",        "uxc_a.fpga" ,labuxc.Text},
+                { "7610",       "7610.fpga" ,lab7610.Text},
+                { "7611",       "7611.fpga",lab7611.Text },
+                { "7612",       "7612.fpga",lab7612.Text },
+                { "7613",       "7613.fpga",lab7613.Text },
+                { "7614",       "7614.fpga",lab7614.Text },
+                { "7616",       "7616.fpga",lab7616.Text },
+                { "APP2",       "app_code_backup2.bin",labapp2.Text },
+                { "VOSS",       "voss.sh" ,labvoss.Text},
+                { "REBOOTOS",   "rebootos.sh",labrebootos.Text },
+                { "CPLD",       "nms.cpld" ,labcpld.Text},
+            };
+                int colunms = DGVSTATUS.ColumnCount;
+                int row = array.GetLength(0);
+
+                for (int c = 9; c < colunms; c++)
+                {
+                    string header = DGVSTATUS.Columns[c].HeaderText;
+                    for (int d = 0; d < row; d++)
+                    {
+                        if (array[d, 0].ToString() == header)
+                        {
+
+                            int dxcrow = Filesize.GetLength(0);
+                            int dxccol = Filesize.GetLength(1);
+                            for (int a = 0; a < dxcrow; a++)
+                            {
+
+                                if (Filesize[a, 6] != null)
+                                {
+                                    if (Filesize[a, 6] == array[d, 1])
+                                    {
+                                        if (Filesize[a, 2] == array[d, 2])
+                                        {
+                                            DGVSTATUS.Rows[i].Cells[header].Value = "一样";
+                                            DGVSTATUS.Rows[i].Cells[header].Style.BackColor = Color.GreenYellow;
+                                            
+                                            break;
+                                        }
+                                        else
+                                        {
+                                            DGVSTATUS.Rows[i].Cells[header].Value = "不样" + Filesize[a, 2];
+                                            DGVSTATUS.Rows[i].Cells[header].Style.BackColor = Color.Red;
+                                            
+                                            break;
+
+                                        }
+
+
+                                    }
+                                    else {
+                                        DGVSTATUS.Rows[i].Cells[header].Value = "没有";
+                                        DGVSTATUS.Rows[i].Cells[header].Style.BackColor = Color.Yellow;
+                                        
+                                    }
+
+                                }
+
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            lock (PiLiangShengJi)
+            {
+                LoadCountany++;
+                textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 累计完成设备数量：" + LoadCountany.ToString() + "\r\n");
+                if (LoadCountsum == LoadCountany)
+                {
+
+                    textDOS.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "执行完成！一共执行：" + LoadCountany.ToString() + "台设备" + "\r\n");
+                    MessageBox.Show("执行完成！一共执行：" + LoadCountany.ToString() + "台设备");
+                    LoadCountsum = 0;
+                    LoadCountany = 0;
+                    ButCheckFile.Enabled = true;
+
+
+                }
+            }
+
+        }
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

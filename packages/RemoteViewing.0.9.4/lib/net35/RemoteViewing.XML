@@ -1,0 +1,977 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>RemoteViewing</name>
+    </assembly>
+    <members>
+        <member name="T:RemoteViewing.Vnc.Server.FramebufferUpdateRequest">
+            <summary>
+            Stores information about an update request from the client.
+            </summary>
+        </member>
+        <member name="M:RemoteViewing.Vnc.Server.FramebufferUpdateRequest.#ctor(System.Boolean,RemoteViewing.Vnc.VncRectangle)">
+            <summary>
+            Initializes a new instance of the <see cref="T:RemoteViewing.Vnc.Server.FramebufferUpdateRequest"/> class.
+            </summary>
+            <param name="incremental">Whether an incremental update is desired.</param>
+            <param name="region">The region to update.</param>
+        </member>
+        <member name="P:RemoteViewing.Vnc.Server.FramebufferUpdateRequest.Incremental">
+            <summary>
+            Whether an incremental update is desired.
+            </summary>
+        </member>
+        <member name="P:RemoteViewing.Vnc.Server.FramebufferUpdateRequest.Region">
+            <summary>
+            The region to update.
+            </summary>
+        </member>
+        <member name="T:RemoteViewing.Vnc.VncClient">
+            <summary>
+            Connects to a remote VNC server and interacts with it.
+            </summary>
+        </member>
+        <member name="M:RemoteViewing.Vnc.VncClient.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:RemoteViewing.Vnc.VncClient"/> class.
+            </summary>
+        </member>
+        <member name="M:RemoteViewing.Vnc.VncClient.Close">
+            <summary>
+            Closes the connection with the remote server.
+            </summary>
+        </member>
+        <member name="M:RemoteViewing.Vnc.VncClient.Connect(System.String,System.Int32,RemoteViewing.Vnc.VncClientConnectOptions)">
+            <summary>
+            Connects to a VNC server with the specified hostname and port.
+            </summary>
+            <param name="hostname">The name of the host to connect to.</param>
+            <param name="port">The port to connect on. 5900 is the usual for VNC.</param>
+            <param name="options">Connection options, if any. You can specify a password here.</param>
+        </member>
+        <member name="M:RemoteViewing.Vnc.VncClient.Connect(System.IO.Stream,RemoteViewing.Vnc.VncClientConnectOptions)">
+            <summary>
+            Connects to a VNC server.
+            </summary>
+            <param name="stream">The stream containing the connection.</param>
+            <param name="options">Connection options, if any. You can specify a password here.</param>
+        </member>
+        <member name="M:RemoteViewing.Vnc.VncClient.SendLocalClipboardChange(System.String)">
+            <summary>
+            Notifies the server that the local clipboard has changed.
+            If you are implementing clipboard integration, use this to set the remote clipboard.
+            </summary>
+            <param name="data">The contents of the local clipboard.</param>
+        </member>
+        <member name="M:RemoteViewing.Vnc.VncClient.SendKeyEvent(System.Int32,System.Boolean)">
+            <summary>
+            Sends a key event to the VNC server to indicate a key has been pressed or released.
+            </summary>
+            <param name="keysym">The X11 keysym of the key. For many keys this is the ASCII value.</param>
+            <param name="pressed"><c>true</c> for a key press event, or <c>false</c> for a key release event.</param>
+        </member>
+        <member name="M:RemoteViewing.Vnc.VncClient.SendPointerEvent(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Sends a pointer event to the VNC server to indicate mouse motion, a button click, etc.
+            </summary>
+            <param name="x">The X coordinate of the mouse.</param>
+            <param name="y">The Y coordinate of the mouse.</param>
+            <param name="pressedButtons">
+                A bit mask of pressed mouse buttons, in X11 convention: 1 is left, 2 is middle, and 4 is right.
+                Mouse wheel scrolling is treated as a button event: 8 for up and 16 for down.
+            </param>
+        </member>
+        <member name="E:RemoteViewing.Vnc.VncClient.Bell">
+            <summary>
+            Occurs when a bell occurs on the remote server.
+            </summary>
+        </member>
+        <member name="E:RemoteViewing.Vnc.VncClient.Connected">
+            <summary>
+            Occurs when the VNC client has successfully connected to the remote server.
+            </summary>
+        </member>
+        <member name="E:RemoteViewing.Vnc.VncClient.ConnectionFailed">
+            <summary>
+            Occurs when the VNC client has failed to connect to the server.
+            </summary>
+        </member>
+        <member name="E:RemoteViewing.Vnc.VncClient.Closed">
+            <summary>
+            Occurs when the VNC client is disconnected.
+            </summary>
+        </member>
+        <member name="E:RemoteViewing.Vnc.VncClient.FramebufferChanged">
+            <summary>
+            Occurs when the framebuffer changes.
+            </summary>
+        </member>
+        <member name="E:RemoteViewing.Vnc.VncClient.RemoteClipboardChanged">
+            <summary>
+            Occurs when the clipboard changes on the remote server.
+            If you are implementing clipboard integration, use this to set the local clipboard.
+            </summary>
+        </member>
+        <member name="P:RemoteViewing.Vnc.VncClient.Framebuffer">
+            <summary>
+            The framebuffer for the VNC session.
+            </summary>
+        </member>
+        <member name="P:RemoteViewing.Vnc.VncClient.IsConnected">
+            <summary>
+            <c>true</c> if the client is connected to a server.
+            </summary>
+        </member>
+        <member name="P:RemoteViewing.Vnc.VncClient.MaxUpdateRate">
+            <summary>
+            The max rate to request framebuffer updates at, in frames per second.
+            
+            The default is 15.
+            </summary>
+        </member>
+        <member name="P:RemoteViewing.Vnc.VncClient.ServerVersion">
+            <summary>
+            The protocol version of the server.
+            </summary>
+        </member>
+        <member name="P:RemoteViewing.Vnc.VncClient.UserData">
+            <summary>
+            Store anything you want here.
+            </summary>
+        </member>
+        <member name="T:RemoteViewing.Vnc.FramebufferChangedEventArgs">
+            <summary>
+            Provides data for the <see cref="E:RemoteViewing.Vnc.VncClient.FramebufferChanged"/> event.
+            </summary>
+        </member>
+        <member name="M:RemoteViewing.Vnc.FramebufferChangedEventArgs.#ctor(System.Collections.Generic.IEnumerable{RemoteViewing.Vnc.VncRectangle})">
+            <summary>
+            Initializes a new instance of the <see cref="T:RemoteViewing.Vnc.FramebufferChangedEventArgs"/> class.
+            </summary>
+            <param name="rectangles">The bounding rectangles of the changed regions.</param>
+        </member>
+        <member name="M:RemoteViewing.Vnc.FramebufferChangedEventArgs.GetRectangle(System.Int32)">
+            <summary>
+            Gets one of the changed regions.
+            </summary>
+            <param name="index">The index of the changed region. The first region has an index of 0.</param>
+            <returns>A rectangle describing the changed region.</returns>
+        </member>
+        <member name="P:RemoteViewing.Vnc.FramebufferChangedEventArgs.RectangleCount">
+            <summary>
+            The number of changed regions.
+            </summary>
+        </member>
+        <member name="T:RemoteViewing.Vnc.Server.FramebufferUpdatingEventArgs">
+            <summary>
+            Provides data for the <see cref="E:RemoteViewing.Vnc.Server.VncServerSession.FramebufferUpdating"/> event.
+            </summary>
+        </member>
+        <member name="M:RemoteViewing.Vnc.Server.FramebufferUpdatingEventArgs.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:RemoteViewing.Vnc.Server.FramebufferUpdatingEventArgs"/> class.
+            </summary>
+        </member>
+        <member name="P:RemoteViewing.Vnc.Server.FramebufferUpdatingEventArgs.SentChanges">
+            <summary>
+            Set this to <c>true</c> if you send an update in response to this event.
+            </summary>
+        </member>
+        <member name="T:RemoteViewing.Vnc.VncPixelFormat">
+            <summary>
+            Describes the low-level arrangement of a framebuffer pixel.
+            </summary>
+        </member>
+        <member name="M:RemoteViewing.Vnc.VncPixelFormat.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:RemoteViewing.Vnc.VncPixelFormat"/> class,
+            with 8 bits each of red, green, and blue channels.
+            </summary>
+        </member>
+        <member name="M:RemoteViewing.Vnc.VncPixelFormat.#ctor(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean,System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:RemoteViewing.Vnc.VncPixelFormat"/> class.
+            </summary>
+            <param name="bitsPerPixel">The number of bits used to store a pixel. Currently, this must be 8, 16, or 32.</param>
+            <param name="bitDepth">The bit depth of the pixel. Currently, this must be 8, 24, or 32.</param>
+            <param name="redBits">The number of bits used to represent red.</param>
+            <param name="redShift">The number of bits left the red value is shifted.</param>
+            <param name="greenBits">The number of bits used to represent green.</param>
+            <param name="greenShift">The number of bits left the green value is shifted.</param>
+            <param name="blueBits">The number of bits used to represent blue.</param>
+            <param name="blueShift">The number of bits left the blue value is shifted.</param>
+            <param name="isLittleEndian"><c>true</c> if the pixel is little-endian, or <c>false</c> if it is big-endian.</param>
+            <param name="isPalettized"><c>true</c> if the framebuffer stores palette indices, or <c>false</c> if it stores colors.</param>
+        </member>
+        <member name="M:RemoteViewing.Vnc.VncPixelFormat.Equals(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:RemoteViewing.Vnc.VncPixelFormat.GetHashCode">
+            <inheritdoc />
+        </member>
+        <member name="M:RemoteViewing.Vnc.VncPixelFormat.Copy(System.Byte[],System.Int32,RemoteViewing.Vnc.VncPixelFormat,RemoteViewing.Vnc.VncRectangle,System.Byte[],System.Int32,RemoteViewing.Vnc.VncPixelFormat,System.Int32,System.Int32)">
+            <summary>
+            Copies pixels between two byte arrays. A format conversion is performed if necessary.
+            
+            Be sure to lock <see cref="P:RemoteViewing.Vnc.VncFramebuffer.SyncRoot"/> first to avoid tearing,
+            if the connection is active.
+            </summary>
+            <param name="source">A pointer to the upper-left corner of the source.</param>
+            <param name="sourceStride">The offset in the source between one Y coordinate and the next.</param>
+            <param name="sourceFormat">The source pixel format.</param>
+            <param name="sourceRectangle">The rectangle in the source to decode.</param>
+            <param name="target">A pointer to the upper-left corner of the target.</param>
+            <param name="targetStride">The offset in the target between one Y coordinate and the next.</param>
+            <param name="targetFormat">The target pixel format.</param>
+            <param name="targetX">The X coordinate in the target that the leftmost pixel should be placed into.</param>
+            <param name="targetY">The Y coordinate in the target that the topmost pixel should be placed into.</param>
+        </member>
+        <member name="M:RemoteViewing.Vnc.VncPixelFormat.Copy(System.IntPtr,System.Int32,RemoteViewing.Vnc.VncPixelFormat,RemoteViewing.Vnc.VncRectangle,System.IntPtr,System.Int32,RemoteViewing.Vnc.VncPixelFormat,System.Int32,System.Int32)">
+            <summary>
+            Copies pixels. A format conversion is performed if necessary.
+            
+            Be sure to lock <see cref="P:RemoteViewing.Vnc.VncFramebuffer.SyncRoot"/> first to avoid tearing,
+            if the connection is active.
+            </summary>
+            <param name="source">A pointer to the upper-left corner of the source.</param>
+            <param name="sourceStride">The offset in the source between one Y coordinate and the next.</param>
+            <param name="sourceFormat">The source pixel format.</param>
+            <param name="sourceRectangle">The rectangle in the source to decode.</param>
+            <param name="target">A pointer to the upper-left corner of the target.</param>
+            <param name="targetStride">The offset in the target between one Y coordinate and the next.</param>
+            <param name="targetFormat">The target pixel format.</param>
+            <param name="targetX">The X coordinate in the target that the leftmost pixel should be placed into.</param>
+            <param name="targetY">The Y coordinate in the target that the topmost pixel should be placed into.</param>
+        </member>
+        <member name="P:RemoteViewing.Vnc.VncPixelFormat.BitsPerPixel">
+            <summary>
+            The number of bits used to store a pixel.
+            </summary>
+        </member>
+        <member name="P:RemoteViewing.Vnc.VncPixelFormat.BytesPerPixel">
+            <summary>
+            The number of bytes used to store a pixel.
+            </summary>
+        </member>
+        <member name="P:RemoteViewing.Vnc.VncPixelFormat.BitDepth">
+            <summary>
+            The bit depth of the pixel.
+            </summary>
+        </member>
+        <member name="P:RemoteViewing.Vnc.VncPixelFormat.RedBits">
+            <summary>
+            The number of bits used to represent red.
+            </summary>
+        </member>
+        <member name="P:RemoteViewing.Vnc.VncPixelFormat.RedShift">
+            <summary>
+            The number of bits left the red value is shifted.
+            </summary>
+        </member>
+        <member name="P:RemoteViewing.Vnc.VncPixelFormat.GreenBits">
+            <summary>
+            The number of bits used to represent green.
+            </summary>
+        </member>
+        <member name="P:RemoteViewing.Vnc.VncPixelFormat.GreenShift">
+            <summary>
+            The number of bits left the green value is shifted.
+            </summary>
+        </member>
+        <member name="P:RemoteViewing.Vnc.VncPixelFormat.BlueBits">
+            <summary>
+            The number of bits used to represent blue.
+            </summary>
+        </member>
+        <member name="P:RemoteViewing.Vnc.VncPixelFormat.BlueShift">
+            <summary>
+            The number of bits left the blue value is shifted.
+            </summary>
+        </member>
+        <member name="P:RemoteViewing.Vnc.VncPixelFormat.IsLittleEndian">
+            <summary>
+            <c>true</c> if the pixel is little-endian, or <c>false</c> if it is big-endian.
+            </summary>
+        </member>
+        <member name="P:RemoteViewing.Vnc.VncPixelFormat.IsPalettized">
+            <summary>
+            <c>true</c> if the framebuffer stores palette indices, or <c>false</c> if it stores colors.
+            </summary>
+        </member>
+        <member name="T:RemoteViewing.Vnc.PasswordRequiredCallback">
+            <summary>
+            Called when a password is required and <see cref="P:RemoteViewing.Vnc.VncClientConnectOptions.Password"/> is <c>null</c>.
+            </summary>
+            <param name="client">The client needing a password.</param>
+            <returns>The password, or <c>null</c> to not supply one.</returns>
+        </member>
+        <member name="T:RemoteViewing.Vnc.VncClientConnectOptions">
+            <summary>
+            Specifies options for connecting to a VNC server.
+            </summary>
+        </member>
+        <member name="M:RemoteViewing.Vnc.VncClientConnectOptions.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:RemoteViewing.Vnc.VncClientConnectOptions"/> class.
+            </summary>
+        </member>
+        <member name="P:RemoteViewing.Vnc.VncClientConnectOptions.Password">
+            <summary>
+            The password to authenticate with, if the server requires one.
+            
+            If this is <c>null</c> and a password is required, the connection will fail.
+            <c>null</c> is different from a zero-character password.
+            
+            Only the first eight characters of a password are meaningful in
+            traditional VNC authentication.
+            </summary>
+        </member>
+        <member name="P:RemoteViewing.Vnc.VncClientConnectOptions.PasswordRequiredCallback">
+            <summary>
+            Called when a password is required and <see cref="P:RemoteViewing.Vnc.VncClientConnectOptions.Password"/> is <c>null</c>.
+            </summary>
+        </member>
+        <member name="P:RemoteViewing.Vnc.VncClientConnectOptions.ShareDesktop">
+            <summary>
+            <c>true</c> to share the desktop with any currently-connected clients.
+            <c>false</c> to get exclusive access to the desktop.
+            
+            This is set to <c>true</c> by default.
+            </summary>
+        </member>
+        <member name="T:RemoteViewing.Vnc.AuthenticationMethod">
+            <summary>
+            Supported authentication methods.
+            </summary>
+        </member>
+        <member name="F:RemoteViewing.Vnc.AuthenticationMethod.None">
+            <summary>
+            No authentication is performed.
+            </summary>
+        </member>
+        <member name="F:RemoteViewing.Vnc.AuthenticationMethod.Password">
+            <summary>
+            A password is used.
+            </summary>
+        </member>
+        <member name="T:RemoteViewing.Vnc.VncRectangle">
+            <summary>
+            Bounds the changed pixels of a framebuffer.
+            </summary>
+        </member>
+        <member name="M:RemoteViewing.Vnc.VncRectangle.#ctor(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:RemoteViewing.Vnc.VncRectangle"/> structure.
+            </summary>
+            <param name="x">The X coordinate of the leftmost changed pixel.</param>
+            <param name="y">The Y coordinate of the topmost changed pixel.</param>
+            <param name="width">The width of the changed region.</param>
+            <param name="height">The height of the changed region.</param>
+        </member>
+        <member name="M:RemoteViewing.Vnc.VncRectangle.Equals(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:RemoteViewing.Vnc.VncRectangle.Equals(RemoteViewing.Vnc.VncRectangle)">
+            <summary>
+            Compares the rectangle with another rectangle for equality.
+            </summary>
+            <param name="other">The other rectangle.</param>
+            <returns><c>true</c> if the rectangles are equal.</returns>
+        </member>
+        <member name="M:RemoteViewing.Vnc.VncRectangle.GetHashCode">
+            <inheritdoc />
+        </member>
+        <member name="M:RemoteViewing.Vnc.VncRectangle.ToString">
+            <inheritdoc />
+        </member>
+        <member name="M:RemoteViewing.Vnc.VncRectangle.Intersect(RemoteViewing.Vnc.VncRectangle,RemoteViewing.Vnc.VncRectangle)">
+            <summary>
+            Intersects two rectangles.
+            </summary>
+            <param name="rect1">The first rectangle.</param>
+            <param name="rect2">The second rectangle.</param>
+            <returns>The intersection of the two.</returns>
+        </member>
+        <member name="M:RemoteViewing.Vnc.VncRectangle.Union(RemoteViewing.Vnc.VncRectangle,RemoteViewing.Vnc.VncRectangle)">
+            <summary>
+            Finds a region that contains both rectangles.
+            </summary>
+            <param name="rect1">The first rectangle.</param>
+            <param name="rect2">The second rectangle.</param>
+            <returns>The union of the two.</returns>
+        </member>
+        <member name="M:RemoteViewing.Vnc.VncRectangle.op_Equality(RemoteViewing.Vnc.VncRectangle,RemoteViewing.Vnc.VncRectangle)">
+            <summary>
+            Compares two rectangles for equality.
+            </summary>
+            <param name="rect1">The first rectangle.</param>
+            <param name="rect2">The second rectangle.</param>
+            <returns><c>true</c> if the rectangles are equal.</returns>
+        </member>
+        <member name="M:RemoteViewing.Vnc.VncRectangle.op_Inequality(RemoteViewing.Vnc.VncRectangle,RemoteViewing.Vnc.VncRectangle)">
+            <summary>
+            Compares two rectangles for inequality.
+            </summary>
+            <param name="rect1">The first rectangle.</param>
+            <param name="rect2">The second rectangle.</param>
+            <returns><c>true</c> if the rectangles are not equal.</returns>
+        </member>
+        <member name="P:RemoteViewing.Vnc.VncRectangle.Area">
+            <summary>
+            The number of pixels.
+            </summary>
+        </member>
+        <member name="P:RemoteViewing.Vnc.VncRectangle.X">
+            <summary>
+            The X coordinate of the leftmost changed pixel.
+            </summary>
+        </member>
+        <member name="P:RemoteViewing.Vnc.VncRectangle.Y">
+            <summary>
+            The Y coordinate of the topmost changed pixel.
+            </summary>
+        </member>
+        <member name="P:RemoteViewing.Vnc.VncRectangle.Width">
+            <summary>
+            The width of the changed region.
+            </summary>
+        </member>
+        <member name="P:RemoteViewing.Vnc.VncRectangle.Height">
+            <summary>
+            The height of the changed region.
+            </summary>
+        </member>
+        <member name="P:RemoteViewing.Vnc.VncRectangle.IsEmpty">
+            <summary>
+            <c>true</c> if the region contains no pixels.
+            </summary>
+        </member>
+        <member name="T:RemoteViewing.Vnc.Server.CreatingDesktopEventArgs">
+            <summary>
+            Provides data for the <see cref="E:RemoteViewing.Vnc.Server.VncServerSession.CreatingDesktop"/> event.
+            </summary>
+        </member>
+        <member name="M:RemoteViewing.Vnc.Server.CreatingDesktopEventArgs.#ctor(System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:RemoteViewing.Vnc.Server.CreatingDesktopEventArgs"/> class.
+            </summary>
+            <param name="shareDesktop">
+                <c>true</c> if the client will share the desktop with other currently-connected clients.
+                <c>false</c> if the client is asking for exclusive access to the desktop.
+            </param>
+        </member>
+        <member name="P:RemoteViewing.Vnc.Server.CreatingDesktopEventArgs.ShareDesktop">
+            <summary>
+            <c>true</c> if the client will share the desktop with other currently-connected clients.
+            <c>false</c> if the client is asking for exclusive access to the desktop.
+            </summary>
+        </member>
+        <member name="T:RemoteViewing.Vnc.IVncFramebufferSource">
+            <summary>
+            Provides a framebuffer.
+            </summary>
+        </member>
+        <member name="M:RemoteViewing.Vnc.IVncFramebufferSource.Capture">
+            <summary>
+            Called when a framebuffer update is needed.
+            You can use this opportunity to switch framebuffers if desired.
+            </summary>
+            <returns>A framebuffer.</returns>
+        </member>
+        <member name="T:RemoteViewing.Vnc.VncException">
+            <summary>
+            This exception is thrown when there is a problem with the VNC client-server communication.
+            </summary>
+        </member>
+        <member name="M:RemoteViewing.Vnc.VncException.#ctor">
+            <summary>
+            Initializes an instance of the <see cref="T:RemoteViewing.Vnc.VncException"/> class.
+            </summary>
+        </member>
+        <member name="M:RemoteViewing.Vnc.VncException.#ctor(System.String,RemoteViewing.Vnc.VncFailureReason,System.Exception)">
+            <summary>
+            Initializes an instance of the <see cref="T:RemoteViewing.Vnc.VncException"/> class, with a reason specified.
+            </summary>
+            <param name="message">The error message.</param>
+            <param name="reason">The reason the exception was thrown.</param>
+            <param name="innerException">The exception that caused this exception to be thrown, or <c>null</c>.</param>
+        </member>
+        <member name="P:RemoteViewing.Vnc.VncException.Reason">
+            <summary>
+            The reason the exception was thrown.
+            </summary>
+        </member>
+        <member name="T:RemoteViewing.Vnc.VncFailureReason">
+            <summary>
+            Possible reasons a <see cref="T:RemoteViewing.Vnc.VncException"/> is thrown.
+            </summary>
+        </member>
+        <member name="F:RemoteViewing.Vnc.VncFailureReason.Unknown">
+            <summary>
+            Unknown reason.
+            </summary>
+        </member>
+        <member name="F:RemoteViewing.Vnc.VncFailureReason.WrongKindOfServer">
+            <summary>
+            The server isn't a VNC server.
+            </summary>
+        </member>
+        <member name="F:RemoteViewing.Vnc.VncFailureReason.UnsupportedProtocolVersion">
+            <summary>
+            RemoteViewing can't speak the protocol versions this server offers.
+            </summary>
+        </member>
+        <member name="F:RemoteViewing.Vnc.VncFailureReason.ServerOfferedNoAuthenticationMethods">
+            <summary>
+            The server offered no authentication methods. This could mean that VNC is temporarily disabled.
+            </summary>
+        </member>
+        <member name="F:RemoteViewing.Vnc.VncFailureReason.NoSupportedAuthenticationMethods">
+            <summary>
+            The server offered no supported authentication methods.
+            </summary>
+        </member>
+        <member name="F:RemoteViewing.Vnc.VncFailureReason.PasswordRequired">
+            <summary>
+            A password was required to authenticate but wasn't supplied.
+            </summary>
+        </member>
+        <member name="F:RemoteViewing.Vnc.VncFailureReason.AuthenticationFailed">
+            <summary>
+            Authentication failed. This could mean you supplied an incorrect password.
+            </summary>
+        </member>
+        <member name="F:RemoteViewing.Vnc.VncFailureReason.UnsupportedPixelFormat">
+            <summary>
+            The server specified a pixel format RemoteViewing doesn't support.
+            </summary>
+        </member>
+        <member name="F:RemoteViewing.Vnc.VncFailureReason.NetworkError">
+            <summary>
+            A network error occured. The connection may have been lost.
+            </summary>
+        </member>
+        <member name="F:RemoteViewing.Vnc.VncFailureReason.SanityCheckFailed">
+            <summary>
+            The server sent a value that seems unreasonable. This shouldn't happen in normal conditions.
+            </summary>
+        </member>
+        <member name="F:RemoteViewing.Vnc.VncFailureReason.UnrecognizedProtocolElement">
+            <summary>
+            The server sent an unrecognized protocol element. This shouldn't happen in normal conditions.
+            </summary>
+        </member>
+        <member name="T:RemoteViewing.Vnc.RemoteClipboardChangedEventArgs">
+            <summary>
+            Provides data for the <see cref="E:RemoteViewing.Vnc.VncClient.RemoteClipboardChanged"/> event.
+            </summary>
+        </member>
+        <member name="M:RemoteViewing.Vnc.RemoteClipboardChangedEventArgs.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:RemoteViewing.Vnc.RemoteClipboardChangedEventArgs"/> class.
+            </summary>
+            <param name="contents">The contents of the remote clipboard.</param>
+        </member>
+        <member name="P:RemoteViewing.Vnc.RemoteClipboardChangedEventArgs.Contents">
+            <summary>
+            The contents of the remote clipboard.
+            </summary>
+        </member>
+        <member name="T:RemoteViewing.Vnc.KeyChangedEventArgs">
+            <summary>
+            Provides data for the <see cref="E:RemoteViewing.Vnc.Server.VncServerSession.KeyChanged"/> event.
+            </summary>
+        </member>
+        <member name="M:RemoteViewing.Vnc.KeyChangedEventArgs.#ctor(System.Int32,System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:RemoteViewing.Vnc.PointerChangedEventArgs"/> class.
+            </summary>
+            <param name="keysym">The X11 keysym of the key. For many keys this is the ASCII value.</param>
+            <param name="pressed"><c>true</c> for a key press event, or <c>false</c> for a key release event.</param>
+        </member>
+        <member name="P:RemoteViewing.Vnc.KeyChangedEventArgs.Keysym">
+            <summary>
+            The X11 keysym of the key. For many keys this is the ASCII value.
+            </summary>
+        </member>
+        <member name="P:RemoteViewing.Vnc.KeyChangedEventArgs.Pressed">
+            <summary>
+            <c>true</c> for a key press event, or <c>false</c> for a key release event.
+            </summary>
+        </member>
+        <member name="T:RemoteViewing.Utility.PollingSynchronizationContext">
+            <summary>
+            A synchronization context that can be used if you want to handle events by polling.
+            </summary>
+        </member>
+        <member name="M:RemoteViewing.Utility.PollingSynchronizationContext.CheckEvents(System.Int32)">
+            <summary>
+            Dequeues and runs an action, if one is queued.
+            </summary>
+            <param name="timeout">The number of milliseconds to wait for an action to run.</param>
+            <returns><c>true</c> if an action ran.</returns>
+        </member>
+        <member name="M:RemoteViewing.Utility.PollingSynchronizationContext.Post(System.Action)">
+            <summary>
+            Post an action to run when <see cref="M:RemoteViewing.Utility.PollingSynchronizationContext.CheckEvents(System.Int32)"/> is called.
+            This will not block.
+            </summary>
+            <param name="action">The action to run.</param>
+        </member>
+        <member name="M:RemoteViewing.Utility.PollingSynchronizationContext.Post(System.Threading.SendOrPostCallback,System.Object)">
+            <summary>
+            Posts an action to run when <see cref="M:RemoteViewing.Utility.PollingSynchronizationContext.CheckEvents(System.Int32)"/> is called.
+            This will not block.
+            </summary>
+            <param name="d">The callback.</param>
+            <param name="state">State to pass to the callback.</param>
+        </member>
+        <member name="M:RemoteViewing.Utility.PollingSynchronizationContext.Send(System.Threading.SendOrPostCallback,System.Object)">
+            <summary>
+            Sends an action to run when <see cref="M:RemoteViewing.Utility.PollingSynchronizationContext.CheckEvents(System.Int32)"/> is called.
+            This will block until then. This will lock up if you call it from the same thread you use for
+            checking events.
+            </summary>
+            <param name="d">The callback.</param>
+            <param name="state">State to pass to the callback.</param>
+        </member>
+        <member name="T:RemoteViewing.Vnc.Server.VncServerSessionOptions">
+            <summary>
+            Specifies options for interacting with a VNC client.
+            </summary>
+        </member>
+        <member name="P:RemoteViewing.Vnc.Server.VncServerSessionOptions.AuthenticationMethod">
+            <summary>
+            The desired authentication method.
+            </summary>
+        </member>
+        <member name="T:RemoteViewing.Vnc.Server.PasswordProvidedEventArgs">
+            <summary>
+            Provides data for the <see cref="E:RemoteViewing.Vnc.Server.VncServerSession.PasswordProvided"/> event.
+            </summary>
+        </member>
+        <member name="M:RemoteViewing.Vnc.Server.PasswordProvidedEventArgs.#ctor(System.Byte[],System.Byte[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:RemoteViewing.Vnc.Server.PasswordProvidedEventArgs"/> class.
+            </summary>
+            <param name="challenge">The VNC the server sent.</param>
+            <param name="response">The bytes of the response from the client.</param>
+        </member>
+        <member name="M:RemoteViewing.Vnc.Server.PasswordProvidedEventArgs.Accept">
+            <summary>
+            Successfully authenticates the client.
+            </summary>
+            <returns>Always <c>true</c>.</returns>
+        </member>
+        <member name="M:RemoteViewing.Vnc.Server.PasswordProvidedEventArgs.Accept(System.Byte[])">
+            <summary>
+            Authenticates the client, if the password bytes match.
+            </summary>
+            <param name="password">The bytes of the password.</param>
+            <returns><c>true</c> if authentication succeeded.</returns>
+        </member>
+        <member name="M:RemoteViewing.Vnc.Server.PasswordProvidedEventArgs.Accept(System.Char[])">
+            <summary>
+            Authenticates the client, if the password characters match.
+            </summary>
+            <param name="password">The characters of the password.</param>
+            <returns><c>true</c> if authentication succeeded.</returns>
+        </member>
+        <member name="P:RemoteViewing.Vnc.Server.PasswordProvidedEventArgs.IsAuthenticated">
+            <summary>
+            <c>true</c> if the client has successfully authenticated.
+            </summary>
+        </member>
+        <member name="T:RemoteViewing.Vnc.VncFramebuffer">
+            <summary>
+            Stores pixel data for a VNC session.
+            </summary>
+        </member>
+        <member name="M:RemoteViewing.Vnc.VncFramebuffer.#ctor(System.String,System.Int32,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:RemoteViewing.Vnc.VncFramebuffer"/> class.
+            </summary>
+            <param name="name">The framebuffer name. Many VNC clients set their titlebar to this name.</param>
+            <param name="width">The framebuffer width.</param>
+            <param name="height">The framebuffer height.</param>
+        </member>
+        <member name="M:RemoteViewing.Vnc.VncFramebuffer.SetPixel(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Sets the color of a single pixel.
+            </summary>
+            <param name="x">The X coordinate of the pixel.</param>
+            <param name="y">The Y coordinate of the pixel.</param>
+            <param name="color">The RGB color of the pixel.</param>
+        </member>
+        <member name="M:RemoteViewing.Vnc.VncFramebuffer.GetPixels">
+            <summary>
+            Returns the values underlying this framebuffer.
+            </summary>
+            <returns>The framebuffer pixels.</returns>
+        </member>
+        <member name="P:RemoteViewing.Vnc.VncFramebuffer.Name">
+            <summary>
+            The framebuffer name. Many VNC clients set their titlebar to this name.
+            </summary>
+        </member>
+        <member name="P:RemoteViewing.Vnc.VncFramebuffer.SyncRoot">
+            <summary>
+            The framebuffer synchronization object.
+            
+            Lock this before reading the framebuffer to avoid tearing artifacts.
+            </summary>
+        </member>
+        <member name="P:RemoteViewing.Vnc.VncFramebuffer.Width">
+            <summary>
+            The framebuffer width.
+            </summary>
+        </member>
+        <member name="P:RemoteViewing.Vnc.VncFramebuffer.Height">
+            <summary>
+            The framebuffer height.
+            </summary>
+        </member>
+        <member name="T:RemoteViewing.Vnc.PointerChangedEventArgs">
+            <summary>
+            Provides data for the <see cref="E:RemoteViewing.Vnc.Server.VncServerSession.PointerChanged"/> event.
+            </summary>
+        </member>
+        <member name="M:RemoteViewing.Vnc.PointerChangedEventArgs.#ctor(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:RemoteViewing.Vnc.PointerChangedEventArgs"/> class.
+            </summary>
+            <param name="x">The X coordinate of the mouse.</param>
+            <param name="y">The Y coordinate of the mouse.</param>
+            <param name="pressedButtons">
+                A bit mask of pressed mouse buttons, in X11 convention: 1 is left, 2 is middle, and 4 is right.
+                Mouse wheel scrolling is treated as a button event: 8 for up and 16 for down.
+            </param>
+        </member>
+        <member name="P:RemoteViewing.Vnc.PointerChangedEventArgs.X">
+            <summary>
+            The X coordinate of the mouse.
+            </summary>
+        </member>
+        <member name="P:RemoteViewing.Vnc.PointerChangedEventArgs.Y">
+            <summary>
+            The Y coordinate of the mouse.
+            </summary>
+        </member>
+        <member name="P:RemoteViewing.Vnc.PointerChangedEventArgs.PressedButtons">
+            <summary>
+            A bit mask of pressed mouse buttons, in X11 convention: 1 is left, 2 is middle, and 4 is right.
+            Mouse wheel scrolling is treated as a button event: 8 for up and 16 for down.
+            </summary>
+        </member>
+        <member name="T:RemoteViewing.Vnc.Server.VncServerSession">
+            <summary>
+            Serves a VNC client with framebuffer information and receives keyboard and mouse interactions.
+            </summary>
+        </member>
+        <member name="M:RemoteViewing.Vnc.Server.VncServerSession.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:RemoteViewing.Vnc.Server.VncServerSession"/> class.
+            </summary>
+        </member>
+        <member name="M:RemoteViewing.Vnc.Server.VncServerSession.Close">
+            <summary>
+            Closes the connection with the remote client.
+            </summary>
+        </member>
+        <member name="M:RemoteViewing.Vnc.Server.VncServerSession.Connect(System.IO.Stream,RemoteViewing.Vnc.Server.VncServerSessionOptions)">
+            <summary>
+            Starts a session with a VNC client.
+            </summary>
+            <param name="stream">The stream containing the connection.</param>
+            <param name="options">Session options, if any.</param>
+        </member>
+        <member name="M:RemoteViewing.Vnc.Server.VncServerSession.Bell">
+            <summary>
+            Tells the client to play a bell sound.
+            </summary>
+        </member>
+        <member name="M:RemoteViewing.Vnc.Server.VncServerSession.SendLocalClipboardChange(System.String)">
+            <summary>
+            Notifies the client that the local clipboard has changed.
+            If you are implementing clipboard integration, use this to set the remote clipboard.
+            </summary>
+            <param name="data">The contents of the local clipboard.</param>
+        </member>
+        <member name="M:RemoteViewing.Vnc.Server.VncServerSession.SetFramebufferSource(RemoteViewing.Vnc.IVncFramebufferSource)">
+            <summary>
+            Sets the framebuffer source.
+            </summary>
+            <param name="source">The framebuffer source, or <c>null</c> if you intend to handle the framebuffer manually.</param>
+        </member>
+        <member name="M:RemoteViewing.Vnc.Server.VncServerSession.FramebufferChanged">
+            <summary>
+            Notifies the framebuffer update thread to check for recent changes.
+            </summary>
+        </member>
+        <member name="M:RemoteViewing.Vnc.Server.VncServerSession.FramebufferManualBeginUpdate">
+            <summary>
+            Begins a manual framebuffer update.
+            
+            Do not call this method without holding <see cref="P:RemoteViewing.Vnc.Server.VncServerSession.FramebufferUpdateRequestLock"/>.
+            </summary>
+        </member>
+        <member name="M:RemoteViewing.Vnc.Server.VncServerSession.FramebufferManualCopyRegion(RemoteViewing.Vnc.VncRectangle,System.Int32,System.Int32)">
+            <summary>
+            Queues an update corresponding to one region of the framebuffer being copide to another.
+            
+            Do not call this method without holding <see cref="P:RemoteViewing.Vnc.Server.VncServerSession.FramebufferUpdateRequestLock"/>.
+            </summary>
+        </member>
+        <member name="M:RemoteViewing.Vnc.Server.VncServerSession.FramebufferManualInvalidateAll">
+            <summary>
+            Queues an update for the entire framebuffer.
+            
+            Do not call this method without holding <see cref="P:RemoteViewing.Vnc.Server.VncServerSession.FramebufferUpdateRequestLock"/>.
+            </summary>
+        </member>
+        <member name="M:RemoteViewing.Vnc.Server.VncServerSession.FramebufferManualInvalidate(RemoteViewing.Vnc.VncRectangle)">
+            <summary>
+            Queues an update for the specified region.
+            
+            Do not call this method without holding <see cref="P:RemoteViewing.Vnc.Server.VncServerSession.FramebufferUpdateRequestLock"/>.
+            </summary>
+            <param name="region">The region to invalidate.</param>
+        </member>
+        <member name="M:RemoteViewing.Vnc.Server.VncServerSession.FramebufferManualInvalidate(RemoteViewing.Vnc.VncRectangle[])">
+            <summary>
+            Queues an update for each of the specified regions.
+            
+            Do not call this method without holding <see cref="P:RemoteViewing.Vnc.Server.VncServerSession.FramebufferUpdateRequestLock"/>.
+            </summary>
+            <param name="regions">The regions to invalidate.</param>
+        </member>
+        <member name="M:RemoteViewing.Vnc.Server.VncServerSession.FramebufferManualEndUpdate">
+            <summary>
+            Completes a manual framebuffer update.
+            
+            Do not call this method without holding <see cref="P:RemoteViewing.Vnc.Server.VncServerSession.FramebufferUpdateRequestLock"/>.
+            </summary>
+        </member>
+        <member name="E:RemoteViewing.Vnc.Server.VncServerSession.PasswordProvided">
+            <summary>
+            Occurs when the VNC client provides a password.
+            Respond to this event by accepting or rejecting the password.
+            </summary>
+        </member>
+        <member name="E:RemoteViewing.Vnc.Server.VncServerSession.CreatingDesktop">
+            <summary>
+            Occurs when the client requests access to the desktop.
+            It may request exclusive or shared access -- this event will relay that information.
+            </summary>
+        </member>
+        <member name="E:RemoteViewing.Vnc.Server.VncServerSession.Connected">
+            <summary>
+            Occurs when the VNC client has successfully connected to the server.
+            </summary>
+        </member>
+        <member name="E:RemoteViewing.Vnc.Server.VncServerSession.ConnectionFailed">
+            <summary>
+            Occurs when the VNC client has failed to connect to the server.
+            </summary>
+        </member>
+        <member name="E:RemoteViewing.Vnc.Server.VncServerSession.Closed">
+            <summary>
+            Occurs when the VNC client is disconnected.
+            </summary>
+        </member>
+        <member name="E:RemoteViewing.Vnc.Server.VncServerSession.FramebufferCapturing">
+            <summary>
+            Occurs when the framebuffer needs to be captured.
+            If you have not called <see cref="M:RemoteViewing.Vnc.Server.VncServerSession.SetFramebufferSource(RemoteViewing.Vnc.IVncFramebufferSource)"/>, alter the framebuffer
+            in response to this event.
+            
+            <see cref="P:RemoteViewing.Vnc.Server.VncServerSession.FramebufferUpdateRequestLock"/> is held automatically while this event is raised.
+            </summary>
+        </member>
+        <member name="E:RemoteViewing.Vnc.Server.VncServerSession.FramebufferUpdating">
+            <summary>
+            Occurs when the framebuffer needs to be updated.
+            If you do not set <see cref="P:System.ComponentModel.HandledEventArgs.Handled"/> on <see cref="T:RemoteViewing.Vnc.Server.FramebufferUpdatingEventArgs"/>,
+            <see cref="T:RemoteViewing.Vnc.Server.VncServerSession"/> will determine the updated regions itself.
+            
+            <see cref="P:RemoteViewing.Vnc.Server.VncServerSession.FramebufferUpdateRequestLock"/> is held automatically while this event is raised.
+            </summary>
+        </member>
+        <member name="E:RemoteViewing.Vnc.Server.VncServerSession.KeyChanged">
+            <summary>
+            Occurs when a key has been pressed or released.
+            </summary>
+        </member>
+        <member name="E:RemoteViewing.Vnc.Server.VncServerSession.PointerChanged">
+            <summary>
+            Occurs on a mouse movement, button click, etc.
+            </summary>
+        </member>
+        <member name="E:RemoteViewing.Vnc.Server.VncServerSession.RemoteClipboardChanged">
+            <summary>
+            Occurs when the clipboard changes on the remote client.
+            If you are implementing clipboard integration, use this to set the local clipboard.
+            </summary>
+        </member>
+        <member name="P:RemoteViewing.Vnc.Server.VncServerSession.ClientVersion">
+            <summary>
+            The protocol version of the client.
+            </summary>
+        </member>
+        <member name="P:RemoteViewing.Vnc.Server.VncServerSession.Framebuffer">
+            <summary>
+            The framebuffer for the VNC session.
+            </summary>
+        </member>
+        <member name="P:RemoteViewing.Vnc.Server.VncServerSession.FramebufferUpdateRequest">
+            <summary>
+            Information about the client's most recent framebuffer update request.
+            This may be <c>null</c> if the client has no framebuffer request queued.
+            </summary>
+        </member>
+        <member name="P:RemoteViewing.Vnc.Server.VncServerSession.FramebufferUpdateRequestLock">
+            <summary>
+            Lock this before performing any framebuffer updates.
+            </summary>
+        </member>
+        <member name="P:RemoteViewing.Vnc.Server.VncServerSession.IsConnected">
+            <summary>
+            <c>true</c> if the server is connected to a client.
+            </summary>
+        </member>
+        <member name="P:RemoteViewing.Vnc.Server.VncServerSession.MaxUpdateRate">
+            <summary>
+            The max rate to send framebuffer updates at, in frames per second.
+            
+            The default is 15.
+            </summary>
+        </member>
+        <member name="P:RemoteViewing.Vnc.Server.VncServerSession.UserData">
+            <summary>
+            Store anything you want here.
+            </summary>
+        </member>
+        <member name="T:RemoteViewing.Utility.SynchronizedCall">
+            <summary>
+            Marshals a single call from one thread to another.
+            </summary>
+        </member>
+        <member name="M:RemoteViewing.Utility.SynchronizedCall.#ctor(System.Threading.SendOrPostCallback,System.Object)">
+            <summary>
+            Initializes a new instance of the <see cref="T:RemoteViewing.Utility.SynchronizedCall"/> class.
+            </summary>
+            <param name="callback">The call to marshal.</param>
+            <param name="state">The state to provide to the call. <c>null</c> is fine if you don't need to include any state.</param>
+        </member>
+        <member name="M:RemoteViewing.Utility.SynchronizedCall.Run">
+            <summary>
+            Runs the call in the current thread, and marshals the exception back if one occurs.
+            </summary>
+        </member>
+        <member name="M:RemoteViewing.Utility.SynchronizedCall.Wait">
+            <summary>
+            Waits for <see cref="M:RemoteViewing.Utility.SynchronizedCall.Run"/> to complete.
+            </summary>
+        </member>
+    </members>
+</doc>

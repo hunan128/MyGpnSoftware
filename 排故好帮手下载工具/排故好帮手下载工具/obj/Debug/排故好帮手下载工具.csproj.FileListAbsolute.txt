@@ -1,0 +1,16 @@
+D:\VS项目\排故好帮手\排故好帮手下载工具\排故好帮手下载工具\bin\Debug\排故好帮手下载工具.exe
+D:\VS项目\排故好帮手\排故好帮手下载工具\排故好帮手下载工具\bin\Debug\排故好帮手下载工具.pdb
+D:\VS项目\排故好帮手\排故好帮手下载工具\排故好帮手下载工具\obj\Debug\排故好帮手下载工具.csprojAssemblyReference.cache
+D:\VS项目\排故好帮手\排故好帮手下载工具\排故好帮手下载工具\obj\Debug\排故好帮手下载工具.Properties.Resources.resources
+D:\VS项目\排故好帮手\排故好帮手下载工具\排故好帮手下载工具\obj\Debug\排故好帮手下载工具.csproj.GenerateResource.cache
+D:\VS项目\排故好帮手\排故好帮手下载工具\排故好帮手下载工具\obj\Debug\排故好帮手下载工具.csproj.CoreCompileInputs.cache
+D:\VS项目\排故好帮手\排故好帮手下载工具\排故好帮手下载工具\obj\Debug\排故好帮手下载工具.exe
+D:\VS项目\排故好帮手\排故好帮手下载工具\排故好帮手下载工具\obj\Debug\排故好帮手下载工具.pdb
+D:\VS项目\排故好帮手\排故好帮手下载工具\排故好帮手下载工具\obj\Debug\排故好帮手下载工具.GPN.resources
+D:\VS项目\排故好帮手\排故好帮手下载工具\排故好帮手下载工具\bin\Debug\排故好帮手下载工具.exe.config
+D:\VS项目\排故好帮手\排故好帮手下载工具\排故好帮手下载工具\bin\Debug\System.Core.dll
+D:\VS项目\排故好帮手\排故好帮手下载工具\排故好帮手下载工具\bin\Debug\System.Data.DataSetExtensions.dll
+D:\VS项目\排故好帮手\排故好帮手下载工具\排故好帮手下载工具\bin\Debug\System.Xml.Linq.dll
+D:\VS项目\排故好帮手\排故好帮手下载工具\排故好帮手下载工具\bin\Debug\zh-CHS\System.Xml.Linq.resources.dll
+D:\VS项目\排故好帮手\排故好帮手下载工具\排故好帮手下载工具\bin\Debug\zh-CHS\System.Data.DataSetExtensions.resources.dll
+D:\VS项目\排故好帮手\排故好帮手下载工具\排故好帮手下载工具\obj\Debug\排故好帮手下载工具.csproj.CopyComplete

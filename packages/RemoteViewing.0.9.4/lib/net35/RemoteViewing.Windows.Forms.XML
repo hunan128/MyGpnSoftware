@@ -1,0 +1,189 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>RemoteViewing.Windows.Forms</name>
+    </assembly>
+    <members>
+        <member name="T:RemoteViewing.Windows.Forms.Server.VncScreenFramebufferSourceGetBoundsCallback">
+            <summary>
+            Called to determine the screen region to send.
+            </summary>
+            <returns>The screen region.</returns>
+        </member>
+        <member name="T:RemoteViewing.Windows.Forms.Server.VncScreenFramebufferSource">
+            <summary>
+            Provides a framebuffer with pixels copied from the screen.
+            </summary>
+        </member>
+        <member name="M:RemoteViewing.Windows.Forms.Server.VncScreenFramebufferSource.#ctor(System.String,System.Windows.Forms.Screen)">
+            <summary>
+            Initializes a new instance of the <see cref="T:RemoteViewing.Windows.Forms.Server.VncScreenFramebufferSource"/> class.
+            </summary>
+            <param name="name">The framebuffer name. Many VNC clients set their titlebar to this name.</param>
+            <param name="screen">The bounds of the screen region.</param>
+        </member>
+        <member name="M:RemoteViewing.Windows.Forms.Server.VncScreenFramebufferSource.#ctor(System.String,RemoteViewing.Windows.Forms.Server.VncScreenFramebufferSourceGetBoundsCallback)">
+            <summary>
+            Initializes a new instance of the <see cref="T:RemoteViewing.Windows.Forms.Server.VncScreenFramebufferSource"/> class.
+            Screen region bounds are determined by a callback.
+            </summary>
+            <param name="name">The framebuffer name. Many VNC clients set their titlebar to this name.</param>
+            <param name="getBoundsCallback">A callback supplying the bounds of the screen region to copy.</param>
+        </member>
+        <member name="M:RemoteViewing.Windows.Forms.Server.VncScreenFramebufferSource.Capture">
+            <summary>
+            Captures the screen.
+            </summary>
+            <returns>A framebuffer corresponding to the screen.</returns>
+        </member>
+        <member name="T:RemoteViewing.Windows.Forms.VncControl">
+            <summary>
+            Displays the framebuffer sent from a VNC server, and allows input to be sent back.
+            </summary>
+        </member>
+        <member name="F:RemoteViewing.Windows.Forms.VncControl.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:RemoteViewing.Windows.Forms.VncControl.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:RemoteViewing.Windows.Forms.VncControl.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="M:RemoteViewing.Windows.Forms.VncControl.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:RemoteViewing.Windows.Forms.VncControl"/>.
+            </summary>
+        </member>
+        <member name="E:RemoteViewing.Windows.Forms.VncControl.Connected">
+            <summary>
+            Occurs when the VNC client has successfully connected to the remote server.
+            </summary>
+        </member>
+        <member name="E:RemoteViewing.Windows.Forms.VncControl.ConnectionFailed">
+            <summary>
+            Occurs when the VNC client has failed to connect to the remote server.
+            </summary>
+        </member>
+        <member name="E:RemoteViewing.Windows.Forms.VncControl.Closed">
+            <summary>
+            Occurs when the VNC client is disconnected.
+            </summary>
+        </member>
+        <member name="P:RemoteViewing.Windows.Forms.VncControl.Client">
+            <summary>
+            The <see cref="T:RemoteViewing.Vnc.VncClient"/> being interacted with.
+            
+            By default, this is a new instance.
+            Call <see cref="M:RemoteViewing.Vnc.VncClient.Connect(System.String,System.Int32,RemoteViewing.Vnc.VncClientConnectOptions)"/>
+            on it to get things up and running quickly.
+            </summary>
+        </member>
+        <member name="P:RemoteViewing.Windows.Forms.VncControl.AllowInput">
+            <summary>
+            Whether the control should send input to the server, or act only as a viewer.
+            
+            By default, this is <c>true</c>.
+            </summary>
+        </member>
+        <member name="P:RemoteViewing.Windows.Forms.VncControl.AllowRemoteCursor">
+            <summary>
+            Whether the local cursor is allowed to be hidden.
+            
+            By default, this is <c>true</c>.
+            </summary>
+        </member>
+        <member name="P:RemoteViewing.Windows.Forms.VncControl.AllowClipboardSharingFromServer">
+            <summary>
+            If enabled, clipboard changes on the remote VNC server will alter the local clipboard.
+            </summary>
+        </member>
+        <member name="P:RemoteViewing.Windows.Forms.VncControl.AllowClipboardSharingToServer">
+            <summary>
+            If enabled, local clipboard changes will be sent to the remote VNC server.
+            </summary>
+        </member>
+        <member name="P:RemoteViewing.Windows.Forms.VncControl.SizeMode">
+            <summary>
+            Specifies how the screen is positioned and sized.
+            
+            By default, this is <see cref="F:RemoteViewing.Windows.Forms.VncControlSizeMode.AutoSize"/>.
+            </summary>
+        </member>
+        <member name="T:RemoteViewing.Windows.Forms.VncBitmap">
+            <summary>
+            Helps with Windows Forms bitmap conversion.
+            </summary>
+        </member>
+        <member name="M:RemoteViewing.Windows.Forms.VncBitmap.CopyToFramebuffer(System.Drawing.Bitmap,RemoteViewing.Vnc.VncRectangle,RemoteViewing.Vnc.VncFramebuffer,System.Int32,System.Int32)">
+            <summary>
+            Copies a region of a bitmap into the framebuffer.
+            </summary>
+            <param name="source">The bitmap to read.</param>
+            <param name="sourceRectangle">The bitmap region to copy.</param>
+            <param name="target">The framebuffer to copy into.</param>
+            <param name="targetX">The leftmost X coordinate of the framebuffer to draw to.</param>
+            <param name="targetY">The topmost Y coordinate of the framebuffer to draw to.</param>
+        </member>
+        <member name="M:RemoteViewing.Windows.Forms.VncBitmap.CopyFromFramebuffer(RemoteViewing.Vnc.VncFramebuffer,RemoteViewing.Vnc.VncRectangle,System.Drawing.Bitmap,System.Int32,System.Int32)">
+            <summary>
+            Copies a region of the framebuffer into a bitmap.
+            </summary>
+            <param name="source">The framebuffer to read.</param>
+            <param name="sourceRectangle">The framebuffer region to copy.</param>
+            <param name="target">The bitmap to copy into.</param>
+            <param name="targetX">The leftmost X coordinate of the bitmap to draw to.</param>
+            <param name="targetY">The topmost Y coordinate of the bitmap to draw to.</param>
+        </member>
+        <member name="T:RemoteViewing.Windows.Forms.VncKeysym">
+            <summary>
+            Helps with Windows Forms keyboard interaction.
+            </summary>
+        </member>
+        <member name="M:RemoteViewing.Windows.Forms.VncKeysym.FromKeyCode(System.Windows.Forms.Keys)">
+            <summary>
+            Converts Windows Forms <see cref="T:System.Windows.Forms.Keys"/> to X11 keysyms.
+            </summary>
+            <param name="key">The key.</param>
+            <returns>The keysym.</returns>
+        </member>
+        <member name="T:RemoteViewing.Windows.Forms.VncControlSizeMode">
+            <summary>
+            Specifies how the remote screen is positioned and sized in the <see cref="T:RemoteViewing.Windows.Forms.VncControl"/>.
+            </summary>
+        </member>
+        <member name="F:RemoteViewing.Windows.Forms.VncControlSizeMode.Clip">
+            <summary>
+            The <see cref="T:RemoteViewing.Windows.Forms.VncControl"/> will contain the upper-left portion of the screen.
+            </summary>
+        </member>
+        <member name="F:RemoteViewing.Windows.Forms.VncControlSizeMode.Stretch">
+            <summary>
+            The screen is resized to fit the <see cref="T:RemoteViewing.Windows.Forms.VncControl"/>. The aspect ratio is allowed to be incorrect.
+            </summary>
+        </member>
+        <member name="F:RemoteViewing.Windows.Forms.VncControlSizeMode.AutoSize">
+            <summary>
+            The <see cref="T:RemoteViewing.Windows.Forms.VncControl"/> is resized to fit the screen.
+            </summary>
+        </member>
+        <member name="F:RemoteViewing.Windows.Forms.VncControlSizeMode.Center">
+            <summary>
+            The <see cref="T:RemoteViewing.Windows.Forms.VncControl"/> will contain the center portion of the screen.
+            </summary>
+        </member>
+        <member name="F:RemoteViewing.Windows.Forms.VncControlSizeMode.Zoom">
+            <summary>
+            The screen is resized to fit the <see cref="T:RemoteViewing.Windows.Forms.VncControl"/>. Correct aspect ratio is maintained.
+            </summary>
+        </member>
+    </members>
+</doc>

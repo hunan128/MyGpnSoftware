@@ -11,7 +11,7 @@ namespace MyGpnSoftware
     class FindDevType
     {
 
-        public static void finddevtype(string str) {
+        public static string Finddevtype(string str) {
             string[] devtypeall = new string[] {"INVALID(0)","GPN7600(98)",
 "GPN7500(103)",
 "GPN710A(104)",
@@ -160,6 +160,7 @@ namespace MyGpnSoftware
 "MX700-FR7600(4002)",
 "M6000-FR7600(4003)",
 "XCOM600-FR7600(4004)"};
+            string strr = "";
             foreach (string s in devtypeall)
             {
                 if (s.Contains(str))
@@ -168,13 +169,12 @@ namespace MyGpnSoftware
 
                     Regex r = new Regex(strRegex, RegexOptions.IgnoreCase | RegexOptions.Multiline);
                     string  m = r.Match(s).Groups[1].Value;
-                    type = m;
+                    strr = m;
                 }
             }
-
+            return strr;
 
         }
-        public static string type = "";
 
         public static string FindErrorCode(int i)
         {
