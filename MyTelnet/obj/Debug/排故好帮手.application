@@ -5,7 +5,7 @@
   <deployment install="true" co.v1:createDesktopShortcut="true">
     <subscription>
       <update>
-        <expiration maximumAge="0" unit="days" />
+        <beforeApplicationStartup />
       </update>
     </subscription>
     <deploymentProvider codebase="http://hunan128.com/ftp/gpn/%E6%8E%92%E6%95%85%E5%A5%BD%E5%B8%AE%E6%89%8B.application" />
@@ -22,7 +22,7 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>7UT8Ck28MAkyD5KS6RQrcO3Bb68=</dsig:DigestValue>
+        <dsig:DigestValue>JRQhk5VIbx6Ic0eA9HUThpE4eAs=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

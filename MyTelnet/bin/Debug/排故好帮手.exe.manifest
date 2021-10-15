@@ -187,14 +187,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="排故好帮手.exe" size="4929536">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="排故好帮手.exe" size="4933120">
       <assemblyIdentity name="排故好帮手" version="4.1.2.51" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>zv7ZVsVZ9PBvIatvTML1Iqp8fVI=</dsig:DigestValue>
+        <dsig:DigestValue>/KNkxulbyqQsdAF1BGdZkhrMS0Q=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

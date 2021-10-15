@@ -220,7 +220,7 @@ namespace MyGpnSoftware
                     }
                 }
             }
-            catch(Exception ex)
+            catch
             {
             }
 

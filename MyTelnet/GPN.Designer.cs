@@ -29,16 +29,16 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GPN));
             this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.tabPageLog = new System.Windows.Forms.TabPage();
@@ -113,18 +113,142 @@
             this.textcurrent = new System.Windows.Forms.TextBox();
             this.butguzhangsend = new System.Windows.Forms.Button();
             this.tabPageGpn = new System.Windows.Forms.TabPage();
+            this.comgpn76list = new System.Windows.Forms.ComboBox();
+            this.label24 = new System.Windows.Forms.Label();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.labyaffs = new System.Windows.Forms.Label();
+            this.labcpld = new System.Windows.Forms.Label();
+            this.labflash = new System.Windows.Forms.Label();
+            this.comcpld = new System.Windows.Forms.ComboBox();
+            this.checkyaffs = new System.Windows.Forms.CheckBox();
+            this.comyaffs = new System.Windows.Forms.ComboBox();
+            this.checkcpld = new System.Windows.Forms.CheckBox();
+            this.labyaffsname = new System.Windows.Forms.Label();
+            this.labcode4 = new System.Windows.Forms.Label();
+            this.checkflash = new System.Windows.Forms.CheckBox();
+            this.comflash = new System.Windows.Forms.ComboBox();
+            this.label26 = new System.Windows.Forms.Label();
+            this.labflashname = new System.Windows.Forms.Label();
+            this.checkcode4 = new System.Windows.Forms.CheckBox();
+            this.comcode4 = new System.Windows.Forms.ComboBox();
+            this.labconfigname = new System.Windows.Forms.Label();
+            this.labrebootos = new System.Windows.Forms.Label();
+            this.checkrebootos = new System.Windows.Forms.CheckBox();
+            this.labcodename4 = new System.Windows.Forms.Label();
+            this.label23 = new System.Windows.Forms.Label();
+            this.comconfig = new System.Windows.Forms.ComboBox();
+            this.checkconfig = new System.Windows.Forms.CheckBox();
+            this.labconfig = new System.Windows.Forms.Label();
+            this.labvoss = new System.Windows.Forms.Label();
+            this.comvoss = new System.Windows.Forms.ComboBox();
+            this.checkvoss = new System.Windows.Forms.CheckBox();
+            this.labslotname = new System.Windows.Forms.Label();
+            this.label21 = new System.Windows.Forms.Label();
+            this.comslotconfig = new System.Windows.Forms.ComboBox();
+            this.checkslotconfig = new System.Windows.Forms.CheckBox();
+            this.labslotconfig = new System.Windows.Forms.Label();
+            this.lab7616 = new System.Windows.Forms.Label();
+            this.comsysfile = new System.Windows.Forms.ComboBox();
+            this.labsysfile = new System.Windows.Forms.Label();
+            this.labsdn = new System.Windows.Forms.Label();
+            this.checksysfile = new System.Windows.Forms.CheckBox();
+            this.check7616 = new System.Windows.Forms.CheckBox();
+            this.labsysfilename = new System.Windows.Forms.Label();
+            this.checksdn = new System.Windows.Forms.CheckBox();
+            this.com7616 = new System.Windows.Forms.ComboBox();
+            this.lab7616name = new System.Windows.Forms.Label();
+            this.comsdn = new System.Windows.Forms.ComboBox();
+            this.labdbname = new System.Windows.Forms.Label();
+            this.lab7614 = new System.Windows.Forms.Label();
+            this.labsdnname = new System.Windows.Forms.Label();
+            this.check7614 = new System.Windows.Forms.CheckBox();
+            this.comdb = new System.Windows.Forms.ComboBox();
+            this.com7614 = new System.Windows.Forms.ComboBox();
+            this.lab7614name = new System.Windows.Forms.Label();
+            this.checkdb = new System.Windows.Forms.CheckBox();
+            this.labdb = new System.Windows.Forms.Label();
+            this.lab7613 = new System.Windows.Forms.Label();
+            this.labappname = new System.Windows.Forms.Label();
+            this.check7613 = new System.Windows.Forms.CheckBox();
+            this.comapp = new System.Windows.Forms.ComboBox();
+            this.com7613 = new System.Windows.Forms.ComboBox();
+            this.lab7613name = new System.Windows.Forms.Label();
+            this.checkapp = new System.Windows.Forms.CheckBox();
+            this.labapp = new System.Windows.Forms.Label();
+            this.lab7612 = new System.Windows.Forms.Label();
+            this.comnms = new System.Windows.Forms.ComboBox();
+            this.check7612 = new System.Windows.Forms.CheckBox();
+            this.lab7611 = new System.Windows.Forms.Label();
+            this.com7612 = new System.Windows.Forms.ComboBox();
+            this.lab7612name = new System.Windows.Forms.Label();
+            this.comsw = new System.Windows.Forms.ComboBox();
+            this.lab7610 = new System.Windows.Forms.Label();
+            this.check7611 = new System.Windows.Forms.CheckBox();
+            this.labapp2 = new System.Windows.Forms.Label();
+            this.checkapp2 = new System.Windows.Forms.CheckBox();
+            this.comapp2 = new System.Windows.Forms.ComboBox();
+            this.com7611 = new System.Windows.Forms.ComboBox();
+            this.lab7611name = new System.Windows.Forms.Label();
+            this.check7610 = new System.Windows.Forms.CheckBox();
+            this.labapp2name = new System.Windows.Forms.Label();
+            this.labcode3 = new System.Windows.Forms.Label();
+            this.labswname = new System.Windows.Forms.Label();
+            this.checkcode3 = new System.Windows.Forms.CheckBox();
+            this.lab7610name = new System.Windows.Forms.Label();
+            this.com7610 = new System.Windows.Forms.ComboBox();
+            this.labnmsname = new System.Windows.Forms.Label();
+            this.comcode3 = new System.Windows.Forms.ComboBox();
+            this.labcodename = new System.Windows.Forms.Label();
+            this.labuxc = new System.Windows.Forms.Label();
+            this.com760d = new System.Windows.Forms.ComboBox();
+            this.checkuxc = new System.Windows.Forms.CheckBox();
+            this.com760c = new System.Windows.Forms.ComboBox();
+            this.comuxc = new System.Windows.Forms.ComboBox();
+            this.lab760uxcname = new System.Windows.Forms.Label();
+            this.com760b = new System.Windows.Forms.ComboBox();
+            this.com760e = new System.Windows.Forms.ComboBox();
+            this.check760e = new System.Windows.Forms.CheckBox();
+            this.com760s = new System.Windows.Forms.ComboBox();
+            this.lab760dname = new System.Windows.Forms.Label();
+            this.lab760ename = new System.Windows.Forms.Label();
+            this.labcodename3 = new System.Windows.Forms.Label();
+            this.check760d = new System.Windows.Forms.CheckBox();
+            this.lab760e = new System.Windows.Forms.Label();
+            this.lab760cname = new System.Windows.Forms.Label();
+            this.comcode = new System.Windows.Forms.ComboBox();
+            this.lab760bname = new System.Windows.Forms.Label();
+            this.checkcode = new System.Windows.Forms.CheckBox();
+            this.check760c = new System.Windows.Forms.CheckBox();
+            this.labcode = new System.Windows.Forms.Label();
+            this.lab760sname = new System.Windows.Forms.Label();
+            this.lab760d = new System.Windows.Forms.Label();
+            this.labcode2 = new System.Windows.Forms.Label();
+            this.checkcode2 = new System.Windows.Forms.CheckBox();
+            this.check760b = new System.Windows.Forms.CheckBox();
+            this.comcode2 = new System.Windows.Forms.ComboBox();
+            this.labcodename2 = new System.Windows.Forms.Label();
+            this.checknms = new System.Windows.Forms.CheckBox();
+            this.labnms = new System.Windows.Forms.Label();
+            this.check760s = new System.Windows.Forms.CheckBox();
+            this.lab760c = new System.Windows.Forms.Label();
+            this.checksw = new System.Windows.Forms.CheckBox();
+            this.labsw = new System.Windows.Forms.Label();
+            this.lab760s = new System.Windows.Forms.Label();
+            this.lab760b = new System.Windows.Forms.Label();
+            this.lab7615name = new System.Windows.Forms.Label();
+            this.com7615 = new System.Windows.Forms.ComboBox();
+            this.check7615 = new System.Windows.Forms.CheckBox();
+            this.lab7615 = new System.Windows.Forms.Label();
+            this.comrebootos = new System.Windows.Forms.ComboBox();
             this.ButCheckFile = new System.Windows.Forms.Button();
             this.ButLogin = new System.Windows.Forms.Button();
             this.groupBox12 = new System.Windows.Forms.GroupBox();
-            this.label9 = new System.Windows.Forms.Label();
             this.textusr = new System.Windows.Forms.TextBox();
             this.textftpusr = new System.Windows.Forms.TextBox();
             this.textpsd = new System.Windows.Forms.TextBox();
             this.textftppsd = new System.Windows.Forms.TextBox();
             this.label13 = new System.Windows.Forms.Label();
-            this.comftpip = new System.Windows.Forms.ComboBox();
             this.tbxFtpRoot = new System.Windows.Forms.TextBox();
-            this.butapp = new System.Windows.Forms.Button();
             this.label8 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.tbxFtpServerPort = new System.Windows.Forms.ComboBox();
@@ -133,129 +257,6 @@
             this.textReadCommunity = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.textpsden = new System.Windows.Forms.TextBox();
-            this.groupBox7 = new System.Windows.Forms.GroupBox();
-            this.comcode4 = new System.Windows.Forms.ComboBox();
-            this.labcodename4 = new System.Windows.Forms.Label();
-            this.checkcode4 = new System.Windows.Forms.CheckBox();
-            this.labcode4 = new System.Windows.Forms.Label();
-            this.comcpld = new System.Windows.Forms.ComboBox();
-            this.label26 = new System.Windows.Forms.Label();
-            this.labcpld = new System.Windows.Forms.Label();
-            this.checkcpld = new System.Windows.Forms.CheckBox();
-            this.comrebootos = new System.Windows.Forms.ComboBox();
-            this.label23 = new System.Windows.Forms.Label();
-            this.labrebootos = new System.Windows.Forms.Label();
-            this.checkrebootos = new System.Windows.Forms.CheckBox();
-            this.comvoss = new System.Windows.Forms.ComboBox();
-            this.label21 = new System.Windows.Forms.Label();
-            this.labvoss = new System.Windows.Forms.Label();
-            this.checkvoss = new System.Windows.Forms.CheckBox();
-            this.comapp2 = new System.Windows.Forms.ComboBox();
-            this.labapp2name = new System.Windows.Forms.Label();
-            this.checkapp2 = new System.Windows.Forms.CheckBox();
-            this.labapp2 = new System.Windows.Forms.Label();
-            this.comsdn = new System.Windows.Forms.ComboBox();
-            this.labsdnname = new System.Windows.Forms.Label();
-            this.checksdn = new System.Windows.Forms.CheckBox();
-            this.labsdn = new System.Windows.Forms.Label();
-            this.comcode3 = new System.Windows.Forms.ComboBox();
-            this.labcodename3 = new System.Windows.Forms.Label();
-            this.checkcode3 = new System.Windows.Forms.CheckBox();
-            this.labcode3 = new System.Windows.Forms.Label();
-            this.comcode2 = new System.Windows.Forms.ComboBox();
-            this.labcodename2 = new System.Windows.Forms.Label();
-            this.checkcode2 = new System.Windows.Forms.CheckBox();
-            this.labcode2 = new System.Windows.Forms.Label();
-            this.lab7616 = new System.Windows.Forms.Label();
-            this.check7616 = new System.Windows.Forms.CheckBox();
-            this.lab7616name = new System.Windows.Forms.Label();
-            this.com7616 = new System.Windows.Forms.ComboBox();
-            this.lab7614 = new System.Windows.Forms.Label();
-            this.check7614 = new System.Windows.Forms.CheckBox();
-            this.lab7614name = new System.Windows.Forms.Label();
-            this.com7614 = new System.Windows.Forms.ComboBox();
-            this.lab7613 = new System.Windows.Forms.Label();
-            this.check7613 = new System.Windows.Forms.CheckBox();
-            this.comapp = new System.Windows.Forms.ComboBox();
-            this.lab7613name = new System.Windows.Forms.Label();
-            this.comcode = new System.Windows.Forms.ComboBox();
-            this.com7613 = new System.Windows.Forms.ComboBox();
-            this.comnms = new System.Windows.Forms.ComboBox();
-            this.lab7612 = new System.Windows.Forms.Label();
-            this.comsw = new System.Windows.Forms.ComboBox();
-            this.lab7611 = new System.Windows.Forms.Label();
-            this.labappname = new System.Windows.Forms.Label();
-            this.lab7610 = new System.Windows.Forms.Label();
-            this.labcodename = new System.Windows.Forms.Label();
-            this.check7612 = new System.Windows.Forms.CheckBox();
-            this.labnmsname = new System.Windows.Forms.Label();
-            this.check7611 = new System.Windows.Forms.CheckBox();
-            this.labswname = new System.Windows.Forms.Label();
-            this.check7610 = new System.Windows.Forms.CheckBox();
-            this.lab7612name = new System.Windows.Forms.Label();
-            this.com7612 = new System.Windows.Forms.ComboBox();
-            this.lab7611name = new System.Windows.Forms.Label();
-            this.comconfig = new System.Windows.Forms.ComboBox();
-            this.lab7610name = new System.Windows.Forms.Label();
-            this.comdb = new System.Windows.Forms.ComboBox();
-            this.com7611 = new System.Windows.Forms.ComboBox();
-            this.comslotconfig = new System.Windows.Forms.ComboBox();
-            this.com7610 = new System.Windows.Forms.ComboBox();
-            this.labdbname = new System.Windows.Forms.Label();
-            this.labconfigname = new System.Windows.Forms.Label();
-            this.labslotname = new System.Windows.Forms.Label();
-            this.com760s = new System.Windows.Forms.ComboBox();
-            this.com760b = new System.Windows.Forms.ComboBox();
-            this.com760c = new System.Windows.Forms.ComboBox();
-            this.com760d = new System.Windows.Forms.ComboBox();
-            this.lab760sname = new System.Windows.Forms.Label();
-            this.lab760bname = new System.Windows.Forms.Label();
-            this.labuxc = new System.Windows.Forms.Label();
-            this.lab760cname = new System.Windows.Forms.Label();
-            this.checkuxc = new System.Windows.Forms.CheckBox();
-            this.lab760dname = new System.Windows.Forms.Label();
-            this.lab760uxcname = new System.Windows.Forms.Label();
-            this.com760e = new System.Windows.Forms.ComboBox();
-            this.comuxc = new System.Windows.Forms.ComboBox();
-            this.lab760ename = new System.Windows.Forms.Label();
-            this.checkapp = new System.Windows.Forms.CheckBox();
-            this.checkcode = new System.Windows.Forms.CheckBox();
-            this.checknms = new System.Windows.Forms.CheckBox();
-            this.labdb = new System.Windows.Forms.Label();
-            this.checksw = new System.Windows.Forms.CheckBox();
-            this.labslotconfig = new System.Windows.Forms.Label();
-            this.check760s = new System.Windows.Forms.CheckBox();
-            this.labconfig = new System.Windows.Forms.Label();
-            this.check760b = new System.Windows.Forms.CheckBox();
-            this.checkdb = new System.Windows.Forms.CheckBox();
-            this.check760c = new System.Windows.Forms.CheckBox();
-            this.checkslotconfig = new System.Windows.Forms.CheckBox();
-            this.check760d = new System.Windows.Forms.CheckBox();
-            this.checkconfig = new System.Windows.Forms.CheckBox();
-            this.check760e = new System.Windows.Forms.CheckBox();
-            this.labyaffs = new System.Windows.Forms.Label();
-            this.comsysfile = new System.Windows.Forms.ComboBox();
-            this.labflash = new System.Windows.Forms.Label();
-            this.labsysfilename = new System.Windows.Forms.Label();
-            this.labsysfile = new System.Windows.Forms.Label();
-            this.checksysfile = new System.Windows.Forms.CheckBox();
-            this.lab760e = new System.Windows.Forms.Label();
-            this.lab760d = new System.Windows.Forms.Label();
-            this.comgpn76list = new System.Windows.Forms.ComboBox();
-            this.lab760c = new System.Windows.Forms.Label();
-            this.label24 = new System.Windows.Forms.Label();
-            this.lab760b = new System.Windows.Forms.Label();
-            this.comflash = new System.Windows.Forms.ComboBox();
-            this.lab760s = new System.Windows.Forms.Label();
-            this.labflashname = new System.Windows.Forms.Label();
-            this.labsw = new System.Windows.Forms.Label();
-            this.checkflash = new System.Windows.Forms.CheckBox();
-            this.labnms = new System.Windows.Forms.Label();
-            this.comyaffs = new System.Windows.Forms.ComboBox();
-            this.labcode = new System.Windows.Forms.Label();
-            this.labyaffsname = new System.Windows.Forms.Label();
-            this.labapp = new System.Windows.Forms.Label();
-            this.checkyaffs = new System.Windows.Forms.CheckBox();
             this.butbatchip = new System.Windows.Forms.Button();
             this.DGVSTATUS = new System.Windows.Forms.DataGridView();
             this.ip地址 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -277,9 +278,8 @@
             this.textcom = new System.Windows.Forms.TextBox();
             this.buttbatchupload = new System.Windows.Forms.Button();
             this.buttbatchdownload = new System.Windows.Forms.Button();
-            this.butinstall = new System.Windows.Forms.Button();
-            this.butuninstall = new System.Windows.Forms.Button();
-            this.butbatch = new System.Windows.Forms.Button();
+            this.label9 = new System.Windows.Forms.Label();
+            this.comftpip = new System.Windows.Forms.ComboBox();
             this.butrefresh = new System.Windows.Forms.Button();
             this.tabControlDOS = new System.Windows.Forms.TabControl();
             this.tabPageSnmp = new System.Windows.Forms.TabPage();
@@ -401,6 +401,8 @@
             this.ComVcgPortD = new System.Windows.Forms.ComboBox();
             this.GridOtn = new System.Windows.Forms.DataGridView();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
+            this.label27 = new System.Windows.Forms.Label();
+            this.label25 = new System.Windows.Forms.Label();
             this.button3 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
@@ -466,10 +468,8 @@
             this.toolStripStatusLabeltime = new System.Windows.Forms.Label();
             this.toolStripStatusLabelzt = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.label22 = new System.Windows.Forms.Label();
             this.myProgressBarjindu = new MetroFramework.Controls.MetroProgressBar();
-            this.toolStripStatusLabellinkstat = new System.Windows.Forms.Label();
-            this.toolStripStatusLabelreq = new System.Windows.Forms.Label();
+            this.toolStripStatusLabelFTP = new System.Windows.Forms.Label();
             this.toolStripStatusLabeltem = new System.Windows.Forms.Label();
             this.toolStripStatusLabelmem = new System.Windows.Forms.Label();
             this.toolStripStatusLabelcpu = new System.Windows.Forms.Label();
@@ -480,7 +480,7 @@
             this.toolStripStatusLabelnms = new System.Windows.Forms.Label();
             this.toolStripStatusLabelswa12 = new System.Windows.Forms.Label();
             this.toolStripStatusLabelswa11 = new System.Windows.Forms.Label();
-            this.toolStripStatusLabelFTP = new System.Windows.Forms.Label();
+            this.toolStripStatusLabelreq = new System.Windows.Forms.Label();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.文件ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.新建NToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -500,17 +500,20 @@
             this.问题反馈ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.软件下载SToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+            this.卸载GPN模块ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.安装GPN模块ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.其他功能ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.绿色软件下载ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.关于软件OToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.LabFtpLed = new System.Windows.Forms.Label();
             this.btnFtpServerStartStop = new System.Windows.Forms.Button();
-            this.label25 = new System.Windows.Forms.Label();
-            this.label27 = new System.Windows.Forms.Label();
+            this.panel2 = new System.Windows.Forms.Panel();
             this.tabPageLog.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.tabPageGpn.SuspendLayout();
+            this.tableLayoutPanel1.SuspendLayout();
             this.groupBox12.SuspendLayout();
-            this.groupBox7.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DGVSTATUS)).BeginInit();
             this.metroContextMenu.SuspendLayout();
             this.tabControlDOS.SuspendLayout();
@@ -529,6 +532,7 @@
             this.groupBox9.SuspendLayout();
             this.panel1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // timer2
@@ -1723,10 +1727,10 @@
             // tabPageGpn
             // 
             this.tabPageGpn.BackColor = System.Drawing.Color.LightBlue;
+            this.tabPageGpn.Controls.Add(this.tableLayoutPanel1);
             this.tabPageGpn.Controls.Add(this.ButCheckFile);
             this.tabPageGpn.Controls.Add(this.ButLogin);
             this.tabPageGpn.Controls.Add(this.groupBox12);
-            this.tabPageGpn.Controls.Add(this.groupBox7);
             this.tabPageGpn.Controls.Add(this.butbatchip);
             this.tabPageGpn.Controls.Add(this.DGVSTATUS);
             this.tabPageGpn.Controls.Add(this.compingcount);
@@ -1736,15 +1740,1606 @@
             this.tabPageGpn.Controls.Add(this.textcom);
             this.tabPageGpn.Controls.Add(this.buttbatchupload);
             this.tabPageGpn.Controls.Add(this.buttbatchdownload);
-            this.tabPageGpn.Controls.Add(this.butinstall);
-            this.tabPageGpn.Controls.Add(this.butuninstall);
-            this.tabPageGpn.Controls.Add(this.butbatch);
             this.tabPageGpn.Location = new System.Drawing.Point(4, 22);
             this.tabPageGpn.Name = "tabPageGpn";
             this.tabPageGpn.Padding = new System.Windows.Forms.Padding(3);
             this.tabPageGpn.Size = new System.Drawing.Size(1311, 625);
             this.tabPageGpn.TabIndex = 0;
             this.tabPageGpn.Text = "设备升级";
+            // 
+            // comgpn76list
+            // 
+            this.comgpn76list.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.comgpn76list.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.comgpn76list.FormattingEnabled = true;
+            this.comgpn76list.Location = new System.Drawing.Point(3, 3);
+            this.comgpn76list.Name = "comgpn76list";
+            this.comgpn76list.Size = new System.Drawing.Size(311, 20);
+            this.comgpn76list.TabIndex = 198;
+            // 
+            // label24
+            // 
+            this.label24.AutoSize = true;
+            this.label24.BackColor = System.Drawing.Color.Transparent;
+            this.label24.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label24.Location = new System.Drawing.Point(3, 589);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(45, 27);
+            this.label24.TabIndex = 199;
+            this.label24.Text = "76网管";
+            this.label24.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel1.ColumnCount = 4;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 13.88997F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 66.7263F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5.278337F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 14.10539F));
+            this.tableLayoutPanel1.Controls.Add(this.labyaffs, 3, 30);
+            this.tableLayoutPanel1.Controls.Add(this.label24, 0, 31);
+            this.tableLayoutPanel1.Controls.Add(this.labcpld, 3, 28);
+            this.tableLayoutPanel1.Controls.Add(this.labflash, 3, 29);
+            this.tableLayoutPanel1.Controls.Add(this.comcpld, 1, 28);
+            this.tableLayoutPanel1.Controls.Add(this.checkyaffs, 2, 30);
+            this.tableLayoutPanel1.Controls.Add(this.comyaffs, 1, 30);
+            this.tableLayoutPanel1.Controls.Add(this.checkcpld, 2, 28);
+            this.tableLayoutPanel1.Controls.Add(this.labyaffsname, 0, 30);
+            this.tableLayoutPanel1.Controls.Add(this.labcode4, 3, 8);
+            this.tableLayoutPanel1.Controls.Add(this.checkflash, 2, 29);
+            this.tableLayoutPanel1.Controls.Add(this.comflash, 1, 29);
+            this.tableLayoutPanel1.Controls.Add(this.label26, 0, 28);
+            this.tableLayoutPanel1.Controls.Add(this.labflashname, 0, 29);
+            this.tableLayoutPanel1.Controls.Add(this.checkcode4, 2, 8);
+            this.tableLayoutPanel1.Controls.Add(this.comcode4, 1, 8);
+            this.tableLayoutPanel1.Controls.Add(this.labconfigname, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.labrebootos, 3, 27);
+            this.tableLayoutPanel1.Controls.Add(this.checkrebootos, 2, 27);
+            this.tableLayoutPanel1.Controls.Add(this.labcodename4, 0, 8);
+            this.tableLayoutPanel1.Controls.Add(this.label23, 0, 27);
+            this.tableLayoutPanel1.Controls.Add(this.comconfig, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.checkconfig, 2, 0);
+            this.tableLayoutPanel1.Controls.Add(this.labconfig, 3, 0);
+            this.tableLayoutPanel1.Controls.Add(this.labvoss, 3, 26);
+            this.tableLayoutPanel1.Controls.Add(this.comvoss, 1, 26);
+            this.tableLayoutPanel1.Controls.Add(this.checkvoss, 2, 26);
+            this.tableLayoutPanel1.Controls.Add(this.labslotname, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.label21, 0, 26);
+            this.tableLayoutPanel1.Controls.Add(this.comslotconfig, 1, 1);
+            this.tableLayoutPanel1.Controls.Add(this.checkslotconfig, 2, 1);
+            this.tableLayoutPanel1.Controls.Add(this.labslotconfig, 3, 1);
+            this.tableLayoutPanel1.Controls.Add(this.lab7616, 3, 24);
+            this.tableLayoutPanel1.Controls.Add(this.comsysfile, 1, 25);
+            this.tableLayoutPanel1.Controls.Add(this.labsysfile, 3, 25);
+            this.tableLayoutPanel1.Controls.Add(this.labsdn, 3, 9);
+            this.tableLayoutPanel1.Controls.Add(this.checksysfile, 2, 25);
+            this.tableLayoutPanel1.Controls.Add(this.check7616, 2, 24);
+            this.tableLayoutPanel1.Controls.Add(this.labsysfilename, 0, 25);
+            this.tableLayoutPanel1.Controls.Add(this.checksdn, 2, 9);
+            this.tableLayoutPanel1.Controls.Add(this.com7616, 1, 24);
+            this.tableLayoutPanel1.Controls.Add(this.lab7616name, 0, 24);
+            this.tableLayoutPanel1.Controls.Add(this.comsdn, 1, 9);
+            this.tableLayoutPanel1.Controls.Add(this.labdbname, 0, 2);
+            this.tableLayoutPanel1.Controls.Add(this.lab7614, 3, 22);
+            this.tableLayoutPanel1.Controls.Add(this.labsdnname, 0, 9);
+            this.tableLayoutPanel1.Controls.Add(this.check7614, 2, 22);
+            this.tableLayoutPanel1.Controls.Add(this.comdb, 1, 2);
+            this.tableLayoutPanel1.Controls.Add(this.com7614, 1, 22);
+            this.tableLayoutPanel1.Controls.Add(this.lab7614name, 0, 22);
+            this.tableLayoutPanel1.Controls.Add(this.checkdb, 2, 2);
+            this.tableLayoutPanel1.Controls.Add(this.labdb, 3, 2);
+            this.tableLayoutPanel1.Controls.Add(this.lab7613, 3, 21);
+            this.tableLayoutPanel1.Controls.Add(this.labappname, 0, 3);
+            this.tableLayoutPanel1.Controls.Add(this.check7613, 2, 21);
+            this.tableLayoutPanel1.Controls.Add(this.comapp, 1, 3);
+            this.tableLayoutPanel1.Controls.Add(this.com7613, 1, 21);
+            this.tableLayoutPanel1.Controls.Add(this.lab7613name, 0, 21);
+            this.tableLayoutPanel1.Controls.Add(this.checkapp, 2, 3);
+            this.tableLayoutPanel1.Controls.Add(this.labapp, 3, 3);
+            this.tableLayoutPanel1.Controls.Add(this.lab7612, 3, 20);
+            this.tableLayoutPanel1.Controls.Add(this.comnms, 1, 10);
+            this.tableLayoutPanel1.Controls.Add(this.check7612, 2, 20);
+            this.tableLayoutPanel1.Controls.Add(this.lab7611, 3, 19);
+            this.tableLayoutPanel1.Controls.Add(this.com7612, 1, 20);
+            this.tableLayoutPanel1.Controls.Add(this.lab7612name, 0, 20);
+            this.tableLayoutPanel1.Controls.Add(this.comsw, 1, 11);
+            this.tableLayoutPanel1.Controls.Add(this.lab7610, 3, 18);
+            this.tableLayoutPanel1.Controls.Add(this.check7611, 2, 19);
+            this.tableLayoutPanel1.Controls.Add(this.labapp2, 3, 4);
+            this.tableLayoutPanel1.Controls.Add(this.checkapp2, 2, 4);
+            this.tableLayoutPanel1.Controls.Add(this.comapp2, 1, 4);
+            this.tableLayoutPanel1.Controls.Add(this.com7611, 1, 19);
+            this.tableLayoutPanel1.Controls.Add(this.lab7611name, 0, 19);
+            this.tableLayoutPanel1.Controls.Add(this.check7610, 2, 18);
+            this.tableLayoutPanel1.Controls.Add(this.labapp2name, 0, 4);
+            this.tableLayoutPanel1.Controls.Add(this.labcode3, 3, 7);
+            this.tableLayoutPanel1.Controls.Add(this.labswname, 0, 11);
+            this.tableLayoutPanel1.Controls.Add(this.checkcode3, 2, 7);
+            this.tableLayoutPanel1.Controls.Add(this.lab7610name, 0, 18);
+            this.tableLayoutPanel1.Controls.Add(this.com7610, 1, 18);
+            this.tableLayoutPanel1.Controls.Add(this.labnmsname, 0, 10);
+            this.tableLayoutPanel1.Controls.Add(this.comcode3, 1, 7);
+            this.tableLayoutPanel1.Controls.Add(this.labcodename, 0, 5);
+            this.tableLayoutPanel1.Controls.Add(this.labuxc, 3, 17);
+            this.tableLayoutPanel1.Controls.Add(this.com760d, 1, 15);
+            this.tableLayoutPanel1.Controls.Add(this.checkuxc, 2, 17);
+            this.tableLayoutPanel1.Controls.Add(this.com760c, 1, 14);
+            this.tableLayoutPanel1.Controls.Add(this.comuxc, 1, 17);
+            this.tableLayoutPanel1.Controls.Add(this.lab760uxcname, 0, 17);
+            this.tableLayoutPanel1.Controls.Add(this.com760b, 1, 13);
+            this.tableLayoutPanel1.Controls.Add(this.com760e, 1, 16);
+            this.tableLayoutPanel1.Controls.Add(this.check760e, 2, 16);
+            this.tableLayoutPanel1.Controls.Add(this.com760s, 1, 12);
+            this.tableLayoutPanel1.Controls.Add(this.lab760dname, 0, 15);
+            this.tableLayoutPanel1.Controls.Add(this.lab760ename, 0, 16);
+            this.tableLayoutPanel1.Controls.Add(this.labcodename3, 0, 7);
+            this.tableLayoutPanel1.Controls.Add(this.check760d, 2, 15);
+            this.tableLayoutPanel1.Controls.Add(this.lab760e, 3, 16);
+            this.tableLayoutPanel1.Controls.Add(this.lab760cname, 0, 14);
+            this.tableLayoutPanel1.Controls.Add(this.comcode, 1, 5);
+            this.tableLayoutPanel1.Controls.Add(this.lab760bname, 0, 13);
+            this.tableLayoutPanel1.Controls.Add(this.checkcode, 2, 5);
+            this.tableLayoutPanel1.Controls.Add(this.check760c, 2, 14);
+            this.tableLayoutPanel1.Controls.Add(this.labcode, 3, 5);
+            this.tableLayoutPanel1.Controls.Add(this.lab760sname, 0, 12);
+            this.tableLayoutPanel1.Controls.Add(this.lab760d, 3, 15);
+            this.tableLayoutPanel1.Controls.Add(this.labcode2, 3, 6);
+            this.tableLayoutPanel1.Controls.Add(this.checkcode2, 2, 6);
+            this.tableLayoutPanel1.Controls.Add(this.check760b, 2, 13);
+            this.tableLayoutPanel1.Controls.Add(this.comcode2, 1, 6);
+            this.tableLayoutPanel1.Controls.Add(this.labcodename2, 0, 6);
+            this.tableLayoutPanel1.Controls.Add(this.checknms, 2, 10);
+            this.tableLayoutPanel1.Controls.Add(this.labnms, 3, 10);
+            this.tableLayoutPanel1.Controls.Add(this.check760s, 2, 12);
+            this.tableLayoutPanel1.Controls.Add(this.lab760c, 3, 14);
+            this.tableLayoutPanel1.Controls.Add(this.checksw, 2, 11);
+            this.tableLayoutPanel1.Controls.Add(this.labsw, 3, 11);
+            this.tableLayoutPanel1.Controls.Add(this.lab760s, 3, 12);
+            this.tableLayoutPanel1.Controls.Add(this.lab760b, 3, 13);
+            this.tableLayoutPanel1.Controls.Add(this.lab7615name, 0, 23);
+            this.tableLayoutPanel1.Controls.Add(this.com7615, 1, 23);
+            this.tableLayoutPanel1.Controls.Add(this.check7615, 2, 23);
+            this.tableLayoutPanel1.Controls.Add(this.lab7615, 3, 23);
+            this.tableLayoutPanel1.Controls.Add(this.comrebootos, 1, 27);
+            this.tableLayoutPanel1.Controls.Add(this.panel2, 1, 31);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(937, 6);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 32;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3.125F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3.125F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3.125F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3.125F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3.125F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3.125F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3.125F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3.125F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3.125F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3.125F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3.125F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3.125F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3.125F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3.125F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3.125F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3.125F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3.125F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3.125F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3.125F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3.125F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3.125F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3.125F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3.125F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3.125F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3.125F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3.125F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3.125F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3.125F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3.125F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3.125F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3.125F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3.125F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(368, 616);
+            this.tableLayoutPanel1.TabIndex = 274;
+            // 
+            // labyaffs
+            // 
+            this.labyaffs.AutoSize = true;
+            this.labyaffs.BackColor = System.Drawing.Color.Transparent;
+            this.labyaffs.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labyaffs.Location = new System.Drawing.Point(318, 570);
+            this.labyaffs.Name = "labyaffs";
+            this.labyaffs.Size = new System.Drawing.Size(47, 19);
+            this.labyaffs.TabIndex = 220;
+            this.labyaffs.Text = "空";
+            this.labyaffs.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // labcpld
+            // 
+            this.labcpld.AutoSize = true;
+            this.labcpld.BackColor = System.Drawing.Color.Transparent;
+            this.labcpld.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labcpld.Location = new System.Drawing.Point(318, 532);
+            this.labcpld.Name = "labcpld";
+            this.labcpld.Size = new System.Drawing.Size(47, 19);
+            this.labcpld.TabIndex = 306;
+            this.labcpld.Text = "空";
+            this.labcpld.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // labflash
+            // 
+            this.labflash.AutoSize = true;
+            this.labflash.BackColor = System.Drawing.Color.Transparent;
+            this.labflash.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labflash.Location = new System.Drawing.Point(318, 551);
+            this.labflash.Name = "labflash";
+            this.labflash.Size = new System.Drawing.Size(47, 19);
+            this.labflash.TabIndex = 219;
+            this.labflash.Text = "空";
+            this.labflash.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // comcpld
+            // 
+            this.comcpld.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comcpld.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.comcpld.FormattingEnabled = true;
+            this.comcpld.Location = new System.Drawing.Point(54, 535);
+            this.comcpld.Name = "comcpld";
+            this.comcpld.Size = new System.Drawing.Size(239, 20);
+            this.comcpld.TabIndex = 303;
+            this.comcpld.SelectedIndexChanged += new System.EventHandler(this.comcplde_SelectedIndexChanged);
+            // 
+            // checkyaffs
+            // 
+            this.checkyaffs.BackColor = System.Drawing.Color.Transparent;
+            this.checkyaffs.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkyaffs.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.checkyaffs.Location = new System.Drawing.Point(299, 573);
+            this.checkyaffs.Name = "checkyaffs";
+            this.checkyaffs.Size = new System.Drawing.Size(13, 13);
+            this.checkyaffs.TabIndex = 206;
+            this.checkyaffs.UseVisualStyleBackColor = false;
+            // 
+            // comyaffs
+            // 
+            this.comyaffs.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comyaffs.FormattingEnabled = true;
+            this.comyaffs.Location = new System.Drawing.Point(54, 573);
+            this.comyaffs.Name = "comyaffs";
+            this.comyaffs.Size = new System.Drawing.Size(239, 20);
+            this.comyaffs.TabIndex = 204;
+            this.comyaffs.SelectedIndexChanged += new System.EventHandler(this.comyaffs_SelectedIndexChanged);
+            // 
+            // checkcpld
+            // 
+            this.checkcpld.BackColor = System.Drawing.Color.Transparent;
+            this.checkcpld.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkcpld.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.checkcpld.Location = new System.Drawing.Point(299, 535);
+            this.checkcpld.Name = "checkcpld";
+            this.checkcpld.Size = new System.Drawing.Size(13, 13);
+            this.checkcpld.TabIndex = 305;
+            this.checkcpld.UseVisualStyleBackColor = false;
+            // 
+            // labyaffsname
+            // 
+            this.labyaffsname.AutoSize = true;
+            this.labyaffsname.BackColor = System.Drawing.Color.Transparent;
+            this.labyaffsname.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labyaffsname.Location = new System.Drawing.Point(3, 570);
+            this.labyaffsname.Name = "labyaffsname";
+            this.labyaffsname.Size = new System.Drawing.Size(45, 19);
+            this.labyaffsname.TabIndex = 205;
+            this.labyaffsname.Text = "YAFFS";
+            this.labyaffsname.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // labcode4
+            // 
+            this.labcode4.AutoSize = true;
+            this.labcode4.BackColor = System.Drawing.Color.Transparent;
+            this.labcode4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labcode4.Location = new System.Drawing.Point(318, 152);
+            this.labcode4.Name = "labcode4";
+            this.labcode4.Size = new System.Drawing.Size(47, 19);
+            this.labcode4.TabIndex = 310;
+            this.labcode4.Text = "空";
+            this.labcode4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // checkflash
+            // 
+            this.checkflash.BackColor = System.Drawing.Color.Transparent;
+            this.checkflash.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkflash.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.checkflash.Location = new System.Drawing.Point(299, 554);
+            this.checkflash.Name = "checkflash";
+            this.checkflash.Size = new System.Drawing.Size(13, 13);
+            this.checkflash.TabIndex = 203;
+            this.checkflash.UseVisualStyleBackColor = false;
+            // 
+            // comflash
+            // 
+            this.comflash.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comflash.FormattingEnabled = true;
+            this.comflash.Location = new System.Drawing.Point(54, 554);
+            this.comflash.Name = "comflash";
+            this.comflash.Size = new System.Drawing.Size(239, 20);
+            this.comflash.TabIndex = 201;
+            this.comflash.SelectedIndexChanged += new System.EventHandler(this.comflash_SelectedIndexChanged);
+            // 
+            // label26
+            // 
+            this.label26.AutoSize = true;
+            this.label26.BackColor = System.Drawing.Color.Transparent;
+            this.label26.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label26.Location = new System.Drawing.Point(3, 532);
+            this.label26.Name = "label26";
+            this.label26.Size = new System.Drawing.Size(45, 19);
+            this.label26.TabIndex = 304;
+            this.label26.Text = "CPLD";
+            this.label26.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // labflashname
+            // 
+            this.labflashname.AutoSize = true;
+            this.labflashname.BackColor = System.Drawing.Color.Transparent;
+            this.labflashname.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labflashname.Location = new System.Drawing.Point(3, 551);
+            this.labflashname.Name = "labflashname";
+            this.labflashname.Size = new System.Drawing.Size(45, 19);
+            this.labflashname.TabIndex = 202;
+            this.labflashname.Text = "FLASH";
+            this.labflashname.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // checkcode4
+            // 
+            this.checkcode4.BackColor = System.Drawing.Color.Transparent;
+            this.checkcode4.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkcode4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.checkcode4.Location = new System.Drawing.Point(299, 155);
+            this.checkcode4.Name = "checkcode4";
+            this.checkcode4.Size = new System.Drawing.Size(13, 13);
+            this.checkcode4.TabIndex = 309;
+            this.checkcode4.UseVisualStyleBackColor = false;
+            // 
+            // comcode4
+            // 
+            this.comcode4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comcode4.FormattingEnabled = true;
+            this.comcode4.Location = new System.Drawing.Point(54, 155);
+            this.comcode4.Name = "comcode4";
+            this.comcode4.Size = new System.Drawing.Size(239, 20);
+            this.comcode4.TabIndex = 307;
+            this.comcode4.SelectedIndexChanged += new System.EventHandler(this.comcode4_SelectedIndexChanged);
+            // 
+            // labconfigname
+            // 
+            this.labconfigname.AutoSize = true;
+            this.labconfigname.BackColor = System.Drawing.Color.Transparent;
+            this.labconfigname.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labconfigname.Location = new System.Drawing.Point(3, 0);
+            this.labconfigname.Name = "labconfigname";
+            this.labconfigname.Size = new System.Drawing.Size(45, 19);
+            this.labconfigname.TabIndex = 149;
+            this.labconfigname.Text = "Config";
+            this.labconfigname.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // labrebootos
+            // 
+            this.labrebootos.AutoSize = true;
+            this.labrebootos.BackColor = System.Drawing.Color.Transparent;
+            this.labrebootos.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labrebootos.Location = new System.Drawing.Point(318, 513);
+            this.labrebootos.Name = "labrebootos";
+            this.labrebootos.Size = new System.Drawing.Size(47, 19);
+            this.labrebootos.TabIndex = 302;
+            this.labrebootos.Text = "空";
+            this.labrebootos.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // checkrebootos
+            // 
+            this.checkrebootos.BackColor = System.Drawing.Color.Transparent;
+            this.checkrebootos.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkrebootos.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.checkrebootos.Location = new System.Drawing.Point(299, 516);
+            this.checkrebootos.Name = "checkrebootos";
+            this.checkrebootos.Size = new System.Drawing.Size(13, 13);
+            this.checkrebootos.TabIndex = 301;
+            this.checkrebootos.UseVisualStyleBackColor = false;
+            // 
+            // labcodename4
+            // 
+            this.labcodename4.AutoSize = true;
+            this.labcodename4.BackColor = System.Drawing.Color.Transparent;
+            this.labcodename4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labcodename4.Location = new System.Drawing.Point(3, 152);
+            this.labcodename4.Name = "labcodename4";
+            this.labcodename4.Size = new System.Drawing.Size(45, 19);
+            this.labcodename4.TabIndex = 308;
+            this.labcodename4.Text = "CODE4";
+            this.labcodename4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.BackColor = System.Drawing.Color.Transparent;
+            this.label23.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label23.Location = new System.Drawing.Point(3, 513);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(45, 19);
+            this.label23.TabIndex = 300;
+            this.label23.Text = "REBOOTOS";
+            this.label23.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // comconfig
+            // 
+            this.comconfig.BackColor = System.Drawing.SystemColors.Window;
+            this.comconfig.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comconfig.FormattingEnabled = true;
+            this.comconfig.Location = new System.Drawing.Point(54, 3);
+            this.comconfig.Name = "comconfig";
+            this.comconfig.Size = new System.Drawing.Size(239, 20);
+            this.comconfig.TabIndex = 145;
+            this.comconfig.SelectedIndexChanged += new System.EventHandler(this.comconfig_SelectedIndexChanged);
+            // 
+            // checkconfig
+            // 
+            this.checkconfig.BackColor = System.Drawing.Color.Transparent;
+            this.checkconfig.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkconfig.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.checkconfig.Location = new System.Drawing.Point(299, 3);
+            this.checkconfig.Name = "checkconfig";
+            this.checkconfig.Size = new System.Drawing.Size(13, 13);
+            this.checkconfig.TabIndex = 221;
+            this.checkconfig.UseVisualStyleBackColor = true;
+            // 
+            // labconfig
+            // 
+            this.labconfig.AutoSize = true;
+            this.labconfig.BackColor = System.Drawing.Color.Transparent;
+            this.labconfig.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labconfig.Location = new System.Drawing.Point(318, 0);
+            this.labconfig.Name = "labconfig";
+            this.labconfig.Size = new System.Drawing.Size(47, 19);
+            this.labconfig.TabIndex = 224;
+            this.labconfig.Text = "空";
+            this.labconfig.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // labvoss
+            // 
+            this.labvoss.AutoSize = true;
+            this.labvoss.BackColor = System.Drawing.Color.Transparent;
+            this.labvoss.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labvoss.Location = new System.Drawing.Point(318, 494);
+            this.labvoss.Name = "labvoss";
+            this.labvoss.Size = new System.Drawing.Size(47, 19);
+            this.labvoss.TabIndex = 298;
+            this.labvoss.Text = "空";
+            this.labvoss.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // comvoss
+            // 
+            this.comvoss.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comvoss.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.comvoss.FormattingEnabled = true;
+            this.comvoss.Location = new System.Drawing.Point(54, 497);
+            this.comvoss.Name = "comvoss";
+            this.comvoss.Size = new System.Drawing.Size(239, 20);
+            this.comvoss.TabIndex = 295;
+            this.comvoss.SelectedIndexChanged += new System.EventHandler(this.comvoss_SelectedIndexChanged);
+            // 
+            // checkvoss
+            // 
+            this.checkvoss.BackColor = System.Drawing.Color.Transparent;
+            this.checkvoss.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkvoss.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.checkvoss.Location = new System.Drawing.Point(299, 497);
+            this.checkvoss.Name = "checkvoss";
+            this.checkvoss.Size = new System.Drawing.Size(13, 13);
+            this.checkvoss.TabIndex = 297;
+            this.checkvoss.UseVisualStyleBackColor = false;
+            // 
+            // labslotname
+            // 
+            this.labslotname.BackColor = System.Drawing.Color.Transparent;
+            this.labslotname.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labslotname.Location = new System.Drawing.Point(3, 19);
+            this.labslotname.Name = "labslotname";
+            this.labslotname.Size = new System.Drawing.Size(45, 19);
+            this.labslotname.TabIndex = 150;
+            this.labslotname.Text = "Slot";
+            this.labslotname.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.BackColor = System.Drawing.Color.Transparent;
+            this.label21.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label21.Location = new System.Drawing.Point(3, 494);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(45, 19);
+            this.label21.TabIndex = 296;
+            this.label21.Text = "VOSS";
+            this.label21.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // comslotconfig
+            // 
+            this.comslotconfig.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comslotconfig.FormattingEnabled = true;
+            this.comslotconfig.Location = new System.Drawing.Point(54, 22);
+            this.comslotconfig.Name = "comslotconfig";
+            this.comslotconfig.Size = new System.Drawing.Size(239, 20);
+            this.comslotconfig.TabIndex = 147;
+            this.comslotconfig.SelectedIndexChanged += new System.EventHandler(this.comslotconfig_SelectedIndexChanged);
+            // 
+            // checkslotconfig
+            // 
+            this.checkslotconfig.BackColor = System.Drawing.Color.Transparent;
+            this.checkslotconfig.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkslotconfig.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.checkslotconfig.Location = new System.Drawing.Point(299, 22);
+            this.checkslotconfig.Name = "checkslotconfig";
+            this.checkslotconfig.Size = new System.Drawing.Size(13, 13);
+            this.checkslotconfig.TabIndex = 222;
+            this.checkslotconfig.UseVisualStyleBackColor = false;
+            // 
+            // labslotconfig
+            // 
+            this.labslotconfig.AutoSize = true;
+            this.labslotconfig.BackColor = System.Drawing.Color.Transparent;
+            this.labslotconfig.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labslotconfig.Location = new System.Drawing.Point(318, 19);
+            this.labslotconfig.Name = "labslotconfig";
+            this.labslotconfig.Size = new System.Drawing.Size(47, 19);
+            this.labslotconfig.TabIndex = 225;
+            this.labslotconfig.Text = "空";
+            this.labslotconfig.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lab7616
+            // 
+            this.lab7616.AutoSize = true;
+            this.lab7616.BackColor = System.Drawing.Color.Transparent;
+            this.lab7616.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab7616.Location = new System.Drawing.Point(318, 456);
+            this.lab7616.Name = "lab7616";
+            this.lab7616.Size = new System.Drawing.Size(47, 19);
+            this.lab7616.TabIndex = 273;
+            this.lab7616.Text = "空";
+            this.lab7616.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // comsysfile
+            // 
+            this.comsysfile.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comsysfile.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.comsysfile.FormattingEnabled = true;
+            this.comsysfile.Location = new System.Drawing.Point(54, 478);
+            this.comsysfile.Name = "comsysfile";
+            this.comsysfile.Size = new System.Drawing.Size(239, 20);
+            this.comsysfile.TabIndex = 172;
+            this.comsysfile.SelectedIndexChanged += new System.EventHandler(this.comsysfile_SelectedIndexChanged);
+            // 
+            // labsysfile
+            // 
+            this.labsysfile.AutoSize = true;
+            this.labsysfile.BackColor = System.Drawing.Color.Transparent;
+            this.labsysfile.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labsysfile.Location = new System.Drawing.Point(318, 475);
+            this.labsysfile.Name = "labsysfile";
+            this.labsysfile.Size = new System.Drawing.Size(47, 19);
+            this.labsysfile.TabIndex = 218;
+            this.labsysfile.Text = "空";
+            this.labsysfile.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // labsdn
+            // 
+            this.labsdn.AutoSize = true;
+            this.labsdn.BackColor = System.Drawing.Color.Transparent;
+            this.labsdn.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labsdn.Location = new System.Drawing.Point(318, 171);
+            this.labsdn.Name = "labsdn";
+            this.labsdn.Size = new System.Drawing.Size(47, 19);
+            this.labsdn.TabIndex = 286;
+            this.labsdn.Text = "空";
+            this.labsdn.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // checksysfile
+            // 
+            this.checksysfile.BackColor = System.Drawing.Color.Transparent;
+            this.checksysfile.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checksysfile.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.checksysfile.Location = new System.Drawing.Point(299, 478);
+            this.checksysfile.Name = "checksysfile";
+            this.checksysfile.Size = new System.Drawing.Size(13, 13);
+            this.checksysfile.TabIndex = 174;
+            this.checksysfile.UseVisualStyleBackColor = false;
+            // 
+            // check7616
+            // 
+            this.check7616.BackColor = System.Drawing.Color.Transparent;
+            this.check7616.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.check7616.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.check7616.Location = new System.Drawing.Point(299, 459);
+            this.check7616.Name = "check7616";
+            this.check7616.Size = new System.Drawing.Size(13, 13);
+            this.check7616.TabIndex = 272;
+            this.check7616.UseVisualStyleBackColor = false;
+            // 
+            // labsysfilename
+            // 
+            this.labsysfilename.AutoSize = true;
+            this.labsysfilename.BackColor = System.Drawing.Color.Transparent;
+            this.labsysfilename.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labsysfilename.Location = new System.Drawing.Point(3, 475);
+            this.labsysfilename.Name = "labsysfilename";
+            this.labsysfilename.Size = new System.Drawing.Size(45, 19);
+            this.labsysfilename.TabIndex = 173;
+            this.labsysfilename.Text = "SYSFILE";
+            this.labsysfilename.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // checksdn
+            // 
+            this.checksdn.BackColor = System.Drawing.Color.Transparent;
+            this.checksdn.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checksdn.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.checksdn.Location = new System.Drawing.Point(299, 174);
+            this.checksdn.Name = "checksdn";
+            this.checksdn.Size = new System.Drawing.Size(13, 13);
+            this.checksdn.TabIndex = 285;
+            this.checksdn.UseVisualStyleBackColor = false;
+            // 
+            // com7616
+            // 
+            this.com7616.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.com7616.FormattingEnabled = true;
+            this.com7616.Location = new System.Drawing.Point(54, 459);
+            this.com7616.Name = "com7616";
+            this.com7616.Size = new System.Drawing.Size(239, 20);
+            this.com7616.TabIndex = 270;
+            this.com7616.SelectedIndexChanged += new System.EventHandler(this.com7616_SelectedIndexChanged);
+            // 
+            // lab7616name
+            // 
+            this.lab7616name.AutoSize = true;
+            this.lab7616name.BackColor = System.Drawing.Color.Transparent;
+            this.lab7616name.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab7616name.Location = new System.Drawing.Point(3, 456);
+            this.lab7616name.Name = "lab7616name";
+            this.lab7616name.Size = new System.Drawing.Size(45, 19);
+            this.lab7616name.TabIndex = 271;
+            this.lab7616name.Text = "7616";
+            this.lab7616name.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // comsdn
+            // 
+            this.comsdn.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comsdn.FormattingEnabled = true;
+            this.comsdn.Location = new System.Drawing.Point(54, 174);
+            this.comsdn.Name = "comsdn";
+            this.comsdn.Size = new System.Drawing.Size(239, 20);
+            this.comsdn.TabIndex = 283;
+            this.comsdn.SelectedIndexChanged += new System.EventHandler(this.comsdn_SelectedIndexChanged);
+            // 
+            // labdbname
+            // 
+            this.labdbname.AutoSize = true;
+            this.labdbname.BackColor = System.Drawing.Color.Transparent;
+            this.labdbname.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labdbname.Location = new System.Drawing.Point(3, 38);
+            this.labdbname.Name = "labdbname";
+            this.labdbname.Size = new System.Drawing.Size(45, 19);
+            this.labdbname.TabIndex = 148;
+            this.labdbname.Text = "DB";
+            this.labdbname.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // lab7614
+            // 
+            this.lab7614.AutoSize = true;
+            this.lab7614.BackColor = System.Drawing.Color.Transparent;
+            this.lab7614.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab7614.Location = new System.Drawing.Point(318, 418);
+            this.lab7614.Name = "lab7614";
+            this.lab7614.Size = new System.Drawing.Size(47, 19);
+            this.lab7614.TabIndex = 269;
+            this.lab7614.Text = "空";
+            this.lab7614.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // labsdnname
+            // 
+            this.labsdnname.AutoSize = true;
+            this.labsdnname.BackColor = System.Drawing.Color.Transparent;
+            this.labsdnname.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labsdnname.Location = new System.Drawing.Point(3, 171);
+            this.labsdnname.Name = "labsdnname";
+            this.labsdnname.Size = new System.Drawing.Size(45, 19);
+            this.labsdnname.TabIndex = 284;
+            this.labsdnname.Text = "SDN";
+            this.labsdnname.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // check7614
+            // 
+            this.check7614.BackColor = System.Drawing.Color.Transparent;
+            this.check7614.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.check7614.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.check7614.Location = new System.Drawing.Point(299, 421);
+            this.check7614.Name = "check7614";
+            this.check7614.Size = new System.Drawing.Size(13, 13);
+            this.check7614.TabIndex = 268;
+            this.check7614.UseVisualStyleBackColor = false;
+            // 
+            // comdb
+            // 
+            this.comdb.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comdb.FormattingEnabled = true;
+            this.comdb.Location = new System.Drawing.Point(54, 41);
+            this.comdb.Name = "comdb";
+            this.comdb.Size = new System.Drawing.Size(239, 20);
+            this.comdb.TabIndex = 146;
+            this.comdb.SelectedIndexChanged += new System.EventHandler(this.comdb_SelectedIndexChanged);
+            // 
+            // com7614
+            // 
+            this.com7614.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.com7614.FormattingEnabled = true;
+            this.com7614.Location = new System.Drawing.Point(54, 421);
+            this.com7614.Name = "com7614";
+            this.com7614.Size = new System.Drawing.Size(239, 20);
+            this.com7614.TabIndex = 266;
+            this.com7614.SelectedIndexChanged += new System.EventHandler(this.com7614_SelectedIndexChanged);
+            // 
+            // lab7614name
+            // 
+            this.lab7614name.AutoSize = true;
+            this.lab7614name.BackColor = System.Drawing.Color.Transparent;
+            this.lab7614name.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab7614name.Location = new System.Drawing.Point(3, 418);
+            this.lab7614name.Name = "lab7614name";
+            this.lab7614name.Size = new System.Drawing.Size(45, 19);
+            this.lab7614name.TabIndex = 267;
+            this.lab7614name.Text = "7614";
+            this.lab7614name.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // checkdb
+            // 
+            this.checkdb.BackColor = System.Drawing.Color.Transparent;
+            this.checkdb.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkdb.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.checkdb.Location = new System.Drawing.Point(299, 41);
+            this.checkdb.Name = "checkdb";
+            this.checkdb.Size = new System.Drawing.Size(13, 13);
+            this.checkdb.TabIndex = 223;
+            this.checkdb.UseVisualStyleBackColor = false;
+            // 
+            // labdb
+            // 
+            this.labdb.AutoSize = true;
+            this.labdb.BackColor = System.Drawing.Color.Transparent;
+            this.labdb.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labdb.Location = new System.Drawing.Point(318, 38);
+            this.labdb.Name = "labdb";
+            this.labdb.Size = new System.Drawing.Size(47, 19);
+            this.labdb.TabIndex = 226;
+            this.labdb.Text = "空";
+            this.labdb.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lab7613
+            // 
+            this.lab7613.AutoSize = true;
+            this.lab7613.BackColor = System.Drawing.Color.Transparent;
+            this.lab7613.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab7613.Location = new System.Drawing.Point(318, 399);
+            this.lab7613.Name = "lab7613";
+            this.lab7613.Size = new System.Drawing.Size(47, 19);
+            this.lab7613.TabIndex = 265;
+            this.lab7613.Text = "空";
+            this.lab7613.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // labappname
+            // 
+            this.labappname.AutoSize = true;
+            this.labappname.BackColor = System.Drawing.Color.Transparent;
+            this.labappname.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labappname.Location = new System.Drawing.Point(3, 57);
+            this.labappname.Name = "labappname";
+            this.labappname.Size = new System.Drawing.Size(45, 19);
+            this.labappname.TabIndex = 136;
+            this.labappname.Text = "APP";
+            this.labappname.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // check7613
+            // 
+            this.check7613.BackColor = System.Drawing.Color.Transparent;
+            this.check7613.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.check7613.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.check7613.Location = new System.Drawing.Point(299, 402);
+            this.check7613.Name = "check7613";
+            this.check7613.Size = new System.Drawing.Size(13, 13);
+            this.check7613.TabIndex = 264;
+            this.check7613.UseVisualStyleBackColor = false;
+            // 
+            // comapp
+            // 
+            this.comapp.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comapp.FormattingEnabled = true;
+            this.comapp.Location = new System.Drawing.Point(54, 60);
+            this.comapp.Name = "comapp";
+            this.comapp.Size = new System.Drawing.Size(239, 20);
+            this.comapp.TabIndex = 132;
+            this.comapp.SelectedIndexChanged += new System.EventHandler(this.comapp_SelectedIndexChanged);
+            // 
+            // com7613
+            // 
+            this.com7613.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.com7613.FormattingEnabled = true;
+            this.com7613.Location = new System.Drawing.Point(54, 402);
+            this.com7613.Name = "com7613";
+            this.com7613.Size = new System.Drawing.Size(239, 20);
+            this.com7613.TabIndex = 262;
+            this.com7613.SelectedIndexChanged += new System.EventHandler(this.com7613_SelectedIndexChanged);
+            // 
+            // lab7613name
+            // 
+            this.lab7613name.AutoSize = true;
+            this.lab7613name.BackColor = System.Drawing.Color.Transparent;
+            this.lab7613name.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab7613name.Location = new System.Drawing.Point(3, 399);
+            this.lab7613name.Name = "lab7613name";
+            this.lab7613name.Size = new System.Drawing.Size(45, 19);
+            this.lab7613name.TabIndex = 263;
+            this.lab7613name.Text = "7613";
+            this.lab7613name.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // checkapp
+            // 
+            this.checkapp.BackColor = System.Drawing.Color.Transparent;
+            this.checkapp.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkapp.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.checkapp.Location = new System.Drawing.Point(299, 60);
+            this.checkapp.Name = "checkapp";
+            this.checkapp.Size = new System.Drawing.Size(13, 13);
+            this.checkapp.TabIndex = 163;
+            this.checkapp.UseVisualStyleBackColor = true;
+            // 
+            // labapp
+            // 
+            this.labapp.AutoSize = true;
+            this.labapp.BackColor = System.Drawing.Color.Transparent;
+            this.labapp.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labapp.Location = new System.Drawing.Point(318, 57);
+            this.labapp.Name = "labapp";
+            this.labapp.Size = new System.Drawing.Size(47, 19);
+            this.labapp.TabIndex = 208;
+            this.labapp.Text = "空";
+            this.labapp.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lab7612
+            // 
+            this.lab7612.AutoSize = true;
+            this.lab7612.BackColor = System.Drawing.Color.Transparent;
+            this.lab7612.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab7612.Location = new System.Drawing.Point(318, 380);
+            this.lab7612.Name = "lab7612";
+            this.lab7612.Size = new System.Drawing.Size(47, 19);
+            this.lab7612.TabIndex = 261;
+            this.lab7612.Text = "空";
+            this.lab7612.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // comnms
+            // 
+            this.comnms.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comnms.FormattingEnabled = true;
+            this.comnms.Location = new System.Drawing.Point(54, 193);
+            this.comnms.Name = "comnms";
+            this.comnms.Size = new System.Drawing.Size(239, 20);
+            this.comnms.TabIndex = 134;
+            this.comnms.SelectedIndexChanged += new System.EventHandler(this.comnms_SelectedIndexChanged);
+            // 
+            // check7612
+            // 
+            this.check7612.BackColor = System.Drawing.Color.Transparent;
+            this.check7612.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.check7612.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.check7612.Location = new System.Drawing.Point(299, 383);
+            this.check7612.Name = "check7612";
+            this.check7612.Size = new System.Drawing.Size(13, 13);
+            this.check7612.TabIndex = 258;
+            this.check7612.UseVisualStyleBackColor = false;
+            // 
+            // lab7611
+            // 
+            this.lab7611.AutoSize = true;
+            this.lab7611.BackColor = System.Drawing.Color.Transparent;
+            this.lab7611.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab7611.Location = new System.Drawing.Point(318, 361);
+            this.lab7611.Name = "lab7611";
+            this.lab7611.Size = new System.Drawing.Size(47, 19);
+            this.lab7611.TabIndex = 260;
+            this.lab7611.Text = "空";
+            this.lab7611.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // com7612
+            // 
+            this.com7612.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.com7612.FormattingEnabled = true;
+            this.com7612.Location = new System.Drawing.Point(54, 383);
+            this.com7612.Name = "com7612";
+            this.com7612.Size = new System.Drawing.Size(239, 20);
+            this.com7612.TabIndex = 254;
+            this.com7612.SelectedIndexChanged += new System.EventHandler(this.com7612_SelectedIndexChanged);
+            // 
+            // lab7612name
+            // 
+            this.lab7612name.AutoSize = true;
+            this.lab7612name.BackColor = System.Drawing.Color.Transparent;
+            this.lab7612name.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab7612name.Location = new System.Drawing.Point(3, 380);
+            this.lab7612name.Name = "lab7612name";
+            this.lab7612name.Size = new System.Drawing.Size(45, 19);
+            this.lab7612name.TabIndex = 255;
+            this.lab7612name.Text = "7612";
+            this.lab7612name.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // comsw
+            // 
+            this.comsw.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comsw.FormattingEnabled = true;
+            this.comsw.Location = new System.Drawing.Point(54, 212);
+            this.comsw.Name = "comsw";
+            this.comsw.Size = new System.Drawing.Size(239, 20);
+            this.comsw.TabIndex = 135;
+            this.comsw.SelectedIndexChanged += new System.EventHandler(this.comsw_SelectedIndexChanged);
+            // 
+            // lab7610
+            // 
+            this.lab7610.AutoSize = true;
+            this.lab7610.BackColor = System.Drawing.Color.Transparent;
+            this.lab7610.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab7610.Location = new System.Drawing.Point(318, 342);
+            this.lab7610.Name = "lab7610";
+            this.lab7610.Size = new System.Drawing.Size(47, 19);
+            this.lab7610.TabIndex = 259;
+            this.lab7610.Text = "空";
+            this.lab7610.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // check7611
+            // 
+            this.check7611.BackColor = System.Drawing.Color.Transparent;
+            this.check7611.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.check7611.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.check7611.Location = new System.Drawing.Point(299, 364);
+            this.check7611.Name = "check7611";
+            this.check7611.Size = new System.Drawing.Size(13, 13);
+            this.check7611.TabIndex = 257;
+            this.check7611.UseVisualStyleBackColor = false;
+            // 
+            // labapp2
+            // 
+            this.labapp2.AutoSize = true;
+            this.labapp2.BackColor = System.Drawing.Color.Transparent;
+            this.labapp2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labapp2.Location = new System.Drawing.Point(318, 76);
+            this.labapp2.Name = "labapp2";
+            this.labapp2.Size = new System.Drawing.Size(47, 19);
+            this.labapp2.TabIndex = 290;
+            this.labapp2.Text = "空";
+            this.labapp2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // checkapp2
+            // 
+            this.checkapp2.BackColor = System.Drawing.Color.Transparent;
+            this.checkapp2.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkapp2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.checkapp2.Location = new System.Drawing.Point(299, 79);
+            this.checkapp2.Name = "checkapp2";
+            this.checkapp2.Size = new System.Drawing.Size(13, 13);
+            this.checkapp2.TabIndex = 289;
+            this.checkapp2.UseVisualStyleBackColor = true;
+            // 
+            // comapp2
+            // 
+            this.comapp2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comapp2.FormattingEnabled = true;
+            this.comapp2.Location = new System.Drawing.Point(54, 79);
+            this.comapp2.Name = "comapp2";
+            this.comapp2.Size = new System.Drawing.Size(239, 20);
+            this.comapp2.TabIndex = 287;
+            this.comapp2.SelectedIndexChanged += new System.EventHandler(this.comapp2_SelectedIndexChanged);
+            // 
+            // com7611
+            // 
+            this.com7611.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.com7611.FormattingEnabled = true;
+            this.com7611.Location = new System.Drawing.Point(54, 364);
+            this.com7611.Name = "com7611";
+            this.com7611.Size = new System.Drawing.Size(239, 20);
+            this.com7611.TabIndex = 251;
+            this.com7611.SelectedIndexChanged += new System.EventHandler(this.com7611_SelectedIndexChanged);
+            // 
+            // lab7611name
+            // 
+            this.lab7611name.AutoSize = true;
+            this.lab7611name.BackColor = System.Drawing.Color.Transparent;
+            this.lab7611name.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab7611name.Location = new System.Drawing.Point(3, 361);
+            this.lab7611name.Name = "lab7611name";
+            this.lab7611name.Size = new System.Drawing.Size(45, 19);
+            this.lab7611name.TabIndex = 253;
+            this.lab7611name.Text = "7611";
+            this.lab7611name.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // check7610
+            // 
+            this.check7610.BackColor = System.Drawing.Color.Transparent;
+            this.check7610.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.check7610.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.check7610.Location = new System.Drawing.Point(299, 345);
+            this.check7610.Name = "check7610";
+            this.check7610.Size = new System.Drawing.Size(13, 13);
+            this.check7610.TabIndex = 256;
+            this.check7610.UseVisualStyleBackColor = false;
+            // 
+            // labapp2name
+            // 
+            this.labapp2name.AutoSize = true;
+            this.labapp2name.BackColor = System.Drawing.Color.Transparent;
+            this.labapp2name.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labapp2name.Location = new System.Drawing.Point(3, 76);
+            this.labapp2name.Name = "labapp2name";
+            this.labapp2name.Size = new System.Drawing.Size(45, 19);
+            this.labapp2name.TabIndex = 288;
+            this.labapp2name.Text = "APP2";
+            this.labapp2name.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // labcode3
+            // 
+            this.labcode3.AutoSize = true;
+            this.labcode3.BackColor = System.Drawing.Color.Transparent;
+            this.labcode3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labcode3.Location = new System.Drawing.Point(318, 133);
+            this.labcode3.Name = "labcode3";
+            this.labcode3.Size = new System.Drawing.Size(47, 19);
+            this.labcode3.TabIndex = 282;
+            this.labcode3.Text = "空";
+            this.labcode3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // labswname
+            // 
+            this.labswname.AutoSize = true;
+            this.labswname.BackColor = System.Drawing.Color.Transparent;
+            this.labswname.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labswname.Location = new System.Drawing.Point(3, 209);
+            this.labswname.Name = "labswname";
+            this.labswname.Size = new System.Drawing.Size(45, 19);
+            this.labswname.TabIndex = 139;
+            this.labswname.Text = "SW-A/B";
+            this.labswname.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // checkcode3
+            // 
+            this.checkcode3.BackColor = System.Drawing.Color.Transparent;
+            this.checkcode3.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkcode3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.checkcode3.Location = new System.Drawing.Point(299, 136);
+            this.checkcode3.Name = "checkcode3";
+            this.checkcode3.Size = new System.Drawing.Size(13, 13);
+            this.checkcode3.TabIndex = 281;
+            this.checkcode3.UseVisualStyleBackColor = false;
+            // 
+            // lab7610name
+            // 
+            this.lab7610name.AutoSize = true;
+            this.lab7610name.BackColor = System.Drawing.Color.Transparent;
+            this.lab7610name.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab7610name.Location = new System.Drawing.Point(3, 342);
+            this.lab7610name.Name = "lab7610name";
+            this.lab7610name.Size = new System.Drawing.Size(45, 19);
+            this.lab7610name.TabIndex = 252;
+            this.lab7610name.Text = "7610";
+            this.lab7610name.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // com7610
+            // 
+            this.com7610.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.com7610.FormattingEnabled = true;
+            this.com7610.Location = new System.Drawing.Point(54, 345);
+            this.com7610.Name = "com7610";
+            this.com7610.Size = new System.Drawing.Size(239, 20);
+            this.com7610.TabIndex = 250;
+            this.com7610.SelectedIndexChanged += new System.EventHandler(this.com7610_SelectedIndexChanged);
+            // 
+            // labnmsname
+            // 
+            this.labnmsname.AutoSize = true;
+            this.labnmsname.BackColor = System.Drawing.Color.Transparent;
+            this.labnmsname.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labnmsname.Location = new System.Drawing.Point(3, 190);
+            this.labnmsname.Name = "labnmsname";
+            this.labnmsname.Size = new System.Drawing.Size(45, 19);
+            this.labnmsname.TabIndex = 138;
+            this.labnmsname.Text = "NMS";
+            this.labnmsname.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // comcode3
+            // 
+            this.comcode3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comcode3.FormattingEnabled = true;
+            this.comcode3.Location = new System.Drawing.Point(54, 136);
+            this.comcode3.Name = "comcode3";
+            this.comcode3.Size = new System.Drawing.Size(239, 20);
+            this.comcode3.TabIndex = 279;
+            this.comcode3.SelectedIndexChanged += new System.EventHandler(this.comcode3_SelectedIndexChanged);
+            // 
+            // labcodename
+            // 
+            this.labcodename.AutoSize = true;
+            this.labcodename.BackColor = System.Drawing.Color.Transparent;
+            this.labcodename.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labcodename.Location = new System.Drawing.Point(3, 95);
+            this.labcodename.Name = "labcodename";
+            this.labcodename.Size = new System.Drawing.Size(45, 19);
+            this.labcodename.TabIndex = 137;
+            this.labcodename.Text = "CODE";
+            this.labcodename.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // labuxc
+            // 
+            this.labuxc.AutoSize = true;
+            this.labuxc.BackColor = System.Drawing.Color.Transparent;
+            this.labuxc.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labuxc.Location = new System.Drawing.Point(318, 323);
+            this.labuxc.Name = "labuxc";
+            this.labuxc.Size = new System.Drawing.Size(47, 19);
+            this.labuxc.TabIndex = 239;
+            this.labuxc.Text = "空";
+            this.labuxc.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // com760d
+            // 
+            this.com760d.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.com760d.FormattingEnabled = true;
+            this.com760d.Location = new System.Drawing.Point(54, 288);
+            this.com760d.Name = "com760d";
+            this.com760d.Size = new System.Drawing.Size(239, 20);
+            this.com760d.TabIndex = 156;
+            this.com760d.SelectedIndexChanged += new System.EventHandler(this.com760d_SelectedIndexChanged);
+            // 
+            // checkuxc
+            // 
+            this.checkuxc.BackColor = System.Drawing.Color.Transparent;
+            this.checkuxc.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkuxc.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.checkuxc.Location = new System.Drawing.Point(299, 326);
+            this.checkuxc.Name = "checkuxc";
+            this.checkuxc.Size = new System.Drawing.Size(13, 13);
+            this.checkuxc.TabIndex = 238;
+            this.checkuxc.UseVisualStyleBackColor = false;
+            // 
+            // com760c
+            // 
+            this.com760c.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.com760c.FormattingEnabled = true;
+            this.com760c.Location = new System.Drawing.Point(54, 269);
+            this.com760c.Name = "com760c";
+            this.com760c.Size = new System.Drawing.Size(239, 20);
+            this.com760c.TabIndex = 155;
+            this.com760c.SelectedIndexChanged += new System.EventHandler(this.com760c_SelectedIndexChanged);
+            // 
+            // comuxc
+            // 
+            this.comuxc.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comuxc.FormattingEnabled = true;
+            this.comuxc.Location = new System.Drawing.Point(54, 326);
+            this.comuxc.Name = "comuxc";
+            this.comuxc.Size = new System.Drawing.Size(239, 20);
+            this.comuxc.TabIndex = 236;
+            this.comuxc.SelectedIndexChanged += new System.EventHandler(this.comuxc_SelectedIndexChanged);
+            // 
+            // lab760uxcname
+            // 
+            this.lab760uxcname.AutoSize = true;
+            this.lab760uxcname.BackColor = System.Drawing.Color.Transparent;
+            this.lab760uxcname.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab760uxcname.Location = new System.Drawing.Point(3, 323);
+            this.lab760uxcname.Name = "lab760uxcname";
+            this.lab760uxcname.Size = new System.Drawing.Size(45, 19);
+            this.lab760uxcname.TabIndex = 237;
+            this.lab760uxcname.Text = "UXC";
+            this.lab760uxcname.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // com760b
+            // 
+            this.com760b.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.com760b.FormattingEnabled = true;
+            this.com760b.Location = new System.Drawing.Point(54, 250);
+            this.com760b.Name = "com760b";
+            this.com760b.Size = new System.Drawing.Size(239, 20);
+            this.com760b.TabIndex = 154;
+            this.com760b.SelectedIndexChanged += new System.EventHandler(this.com760b_SelectedIndexChanged);
+            // 
+            // com760e
+            // 
+            this.com760e.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.com760e.FormattingEnabled = true;
+            this.com760e.Location = new System.Drawing.Point(54, 307);
+            this.com760e.Name = "com760e";
+            this.com760e.Size = new System.Drawing.Size(239, 20);
+            this.com760e.TabIndex = 161;
+            this.com760e.SelectedIndexChanged += new System.EventHandler(this.com760e_SelectedIndexChanged);
+            // 
+            // check760e
+            // 
+            this.check760e.BackColor = System.Drawing.Color.Transparent;
+            this.check760e.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.check760e.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.check760e.Location = new System.Drawing.Point(299, 307);
+            this.check760e.Name = "check760e";
+            this.check760e.Size = new System.Drawing.Size(13, 13);
+            this.check760e.TabIndex = 171;
+            this.check760e.UseVisualStyleBackColor = false;
+            // 
+            // com760s
+            // 
+            this.com760s.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.com760s.FormattingEnabled = true;
+            this.com760s.Location = new System.Drawing.Point(54, 231);
+            this.com760s.Name = "com760s";
+            this.com760s.Size = new System.Drawing.Size(239, 20);
+            this.com760s.TabIndex = 153;
+            this.com760s.SelectedIndexChanged += new System.EventHandler(this.com760s_SelectedIndexChanged);
+            // 
+            // lab760dname
+            // 
+            this.lab760dname.AutoSize = true;
+            this.lab760dname.BackColor = System.Drawing.Color.Transparent;
+            this.lab760dname.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab760dname.Location = new System.Drawing.Point(3, 285);
+            this.lab760dname.Name = "lab760dname";
+            this.lab760dname.Size = new System.Drawing.Size(45, 19);
+            this.lab760dname.TabIndex = 160;
+            this.lab760dname.Text = "760D";
+            this.lab760dname.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // lab760ename
+            // 
+            this.lab760ename.AutoSize = true;
+            this.lab760ename.BackColor = System.Drawing.Color.Transparent;
+            this.lab760ename.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab760ename.Location = new System.Drawing.Point(3, 304);
+            this.lab760ename.Name = "lab760ename";
+            this.lab760ename.Size = new System.Drawing.Size(45, 19);
+            this.lab760ename.TabIndex = 162;
+            this.lab760ename.Text = "760E";
+            this.lab760ename.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // labcodename3
+            // 
+            this.labcodename3.AutoSize = true;
+            this.labcodename3.BackColor = System.Drawing.Color.Transparent;
+            this.labcodename3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labcodename3.Location = new System.Drawing.Point(3, 133);
+            this.labcodename3.Name = "labcodename3";
+            this.labcodename3.Size = new System.Drawing.Size(45, 19);
+            this.labcodename3.TabIndex = 280;
+            this.labcodename3.Text = "CODE3";
+            this.labcodename3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // check760d
+            // 
+            this.check760d.BackColor = System.Drawing.Color.Transparent;
+            this.check760d.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.check760d.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.check760d.Location = new System.Drawing.Point(299, 288);
+            this.check760d.Name = "check760d";
+            this.check760d.Size = new System.Drawing.Size(13, 13);
+            this.check760d.TabIndex = 170;
+            this.check760d.UseVisualStyleBackColor = false;
+            // 
+            // lab760e
+            // 
+            this.lab760e.AutoSize = true;
+            this.lab760e.BackColor = System.Drawing.Color.Transparent;
+            this.lab760e.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab760e.Location = new System.Drawing.Point(318, 304);
+            this.lab760e.Name = "lab760e";
+            this.lab760e.Size = new System.Drawing.Size(47, 19);
+            this.lab760e.TabIndex = 217;
+            this.lab760e.Text = "空";
+            this.lab760e.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lab760cname
+            // 
+            this.lab760cname.AutoSize = true;
+            this.lab760cname.BackColor = System.Drawing.Color.Transparent;
+            this.lab760cname.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab760cname.Location = new System.Drawing.Point(3, 266);
+            this.lab760cname.Name = "lab760cname";
+            this.lab760cname.Size = new System.Drawing.Size(45, 19);
+            this.lab760cname.TabIndex = 159;
+            this.lab760cname.Text = "760C";
+            this.lab760cname.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // comcode
+            // 
+            this.comcode.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comcode.FormattingEnabled = true;
+            this.comcode.Location = new System.Drawing.Point(54, 98);
+            this.comcode.Name = "comcode";
+            this.comcode.Size = new System.Drawing.Size(239, 20);
+            this.comcode.TabIndex = 133;
+            this.comcode.SelectedIndexChanged += new System.EventHandler(this.comcode_SelectedIndexChanged);
+            // 
+            // lab760bname
+            // 
+            this.lab760bname.AutoSize = true;
+            this.lab760bname.BackColor = System.Drawing.Color.Transparent;
+            this.lab760bname.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab760bname.Location = new System.Drawing.Point(3, 247);
+            this.lab760bname.Name = "lab760bname";
+            this.lab760bname.Size = new System.Drawing.Size(45, 19);
+            this.lab760bname.TabIndex = 158;
+            this.lab760bname.Text = "760B";
+            this.lab760bname.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // checkcode
+            // 
+            this.checkcode.BackColor = System.Drawing.Color.Transparent;
+            this.checkcode.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkcode.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.checkcode.Location = new System.Drawing.Point(299, 98);
+            this.checkcode.Name = "checkcode";
+            this.checkcode.Size = new System.Drawing.Size(13, 13);
+            this.checkcode.TabIndex = 164;
+            this.checkcode.UseVisualStyleBackColor = false;
+            // 
+            // check760c
+            // 
+            this.check760c.BackColor = System.Drawing.Color.Transparent;
+            this.check760c.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.check760c.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.check760c.Location = new System.Drawing.Point(299, 269);
+            this.check760c.Name = "check760c";
+            this.check760c.Size = new System.Drawing.Size(13, 13);
+            this.check760c.TabIndex = 169;
+            this.check760c.UseVisualStyleBackColor = false;
+            // 
+            // labcode
+            // 
+            this.labcode.AutoSize = true;
+            this.labcode.BackColor = System.Drawing.Color.Transparent;
+            this.labcode.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labcode.Location = new System.Drawing.Point(318, 95);
+            this.labcode.Name = "labcode";
+            this.labcode.Size = new System.Drawing.Size(47, 19);
+            this.labcode.TabIndex = 210;
+            this.labcode.Text = "空";
+            this.labcode.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lab760sname
+            // 
+            this.lab760sname.AutoSize = true;
+            this.lab760sname.BackColor = System.Drawing.Color.Transparent;
+            this.lab760sname.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab760sname.Location = new System.Drawing.Point(3, 228);
+            this.lab760sname.Name = "lab760sname";
+            this.lab760sname.Size = new System.Drawing.Size(45, 19);
+            this.lab760sname.TabIndex = 157;
+            this.lab760sname.Text = "760S";
+            this.lab760sname.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // lab760d
+            // 
+            this.lab760d.AutoSize = true;
+            this.lab760d.BackColor = System.Drawing.Color.Transparent;
+            this.lab760d.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab760d.Location = new System.Drawing.Point(318, 285);
+            this.lab760d.Name = "lab760d";
+            this.lab760d.Size = new System.Drawing.Size(47, 19);
+            this.lab760d.TabIndex = 216;
+            this.lab760d.Text = "空";
+            this.lab760d.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // labcode2
+            // 
+            this.labcode2.AutoSize = true;
+            this.labcode2.BackColor = System.Drawing.Color.Transparent;
+            this.labcode2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labcode2.Location = new System.Drawing.Point(318, 114);
+            this.labcode2.Name = "labcode2";
+            this.labcode2.Size = new System.Drawing.Size(47, 19);
+            this.labcode2.TabIndex = 278;
+            this.labcode2.Text = "空";
+            this.labcode2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // checkcode2
+            // 
+            this.checkcode2.BackColor = System.Drawing.Color.Transparent;
+            this.checkcode2.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkcode2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.checkcode2.Location = new System.Drawing.Point(299, 117);
+            this.checkcode2.Name = "checkcode2";
+            this.checkcode2.Size = new System.Drawing.Size(13, 13);
+            this.checkcode2.TabIndex = 277;
+            this.checkcode2.UseVisualStyleBackColor = false;
+            // 
+            // check760b
+            // 
+            this.check760b.BackColor = System.Drawing.Color.Transparent;
+            this.check760b.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.check760b.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.check760b.Location = new System.Drawing.Point(299, 250);
+            this.check760b.Name = "check760b";
+            this.check760b.Size = new System.Drawing.Size(13, 13);
+            this.check760b.TabIndex = 168;
+            this.check760b.UseVisualStyleBackColor = false;
+            // 
+            // comcode2
+            // 
+            this.comcode2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comcode2.FormattingEnabled = true;
+            this.comcode2.Location = new System.Drawing.Point(54, 117);
+            this.comcode2.Name = "comcode2";
+            this.comcode2.Size = new System.Drawing.Size(239, 20);
+            this.comcode2.TabIndex = 275;
+            this.comcode2.SelectedIndexChanged += new System.EventHandler(this.comcode2_SelectedIndexChanged);
+            // 
+            // labcodename2
+            // 
+            this.labcodename2.AutoSize = true;
+            this.labcodename2.BackColor = System.Drawing.Color.Transparent;
+            this.labcodename2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labcodename2.Location = new System.Drawing.Point(3, 114);
+            this.labcodename2.Name = "labcodename2";
+            this.labcodename2.Size = new System.Drawing.Size(45, 19);
+            this.labcodename2.TabIndex = 276;
+            this.labcodename2.Text = "CODE2";
+            this.labcodename2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // checknms
+            // 
+            this.checknms.BackColor = System.Drawing.Color.Transparent;
+            this.checknms.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checknms.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.checknms.Location = new System.Drawing.Point(299, 193);
+            this.checknms.Name = "checknms";
+            this.checknms.Size = new System.Drawing.Size(13, 13);
+            this.checknms.TabIndex = 165;
+            this.checknms.UseVisualStyleBackColor = false;
+            // 
+            // labnms
+            // 
+            this.labnms.AutoSize = true;
+            this.labnms.BackColor = System.Drawing.Color.Transparent;
+            this.labnms.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labnms.Location = new System.Drawing.Point(318, 190);
+            this.labnms.Name = "labnms";
+            this.labnms.Size = new System.Drawing.Size(47, 19);
+            this.labnms.TabIndex = 211;
+            this.labnms.Text = "空";
+            this.labnms.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // check760s
+            // 
+            this.check760s.BackColor = System.Drawing.Color.Transparent;
+            this.check760s.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.check760s.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.check760s.Location = new System.Drawing.Point(299, 231);
+            this.check760s.Name = "check760s";
+            this.check760s.Size = new System.Drawing.Size(13, 13);
+            this.check760s.TabIndex = 167;
+            this.check760s.UseVisualStyleBackColor = false;
+            // 
+            // lab760c
+            // 
+            this.lab760c.AutoSize = true;
+            this.lab760c.BackColor = System.Drawing.Color.Transparent;
+            this.lab760c.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab760c.Location = new System.Drawing.Point(318, 266);
+            this.lab760c.Name = "lab760c";
+            this.lab760c.Size = new System.Drawing.Size(47, 19);
+            this.lab760c.TabIndex = 215;
+            this.lab760c.Text = "空";
+            this.lab760c.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // checksw
+            // 
+            this.checksw.BackColor = System.Drawing.Color.Transparent;
+            this.checksw.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checksw.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.checksw.Location = new System.Drawing.Point(299, 212);
+            this.checksw.Name = "checksw";
+            this.checksw.Size = new System.Drawing.Size(13, 13);
+            this.checksw.TabIndex = 166;
+            this.checksw.UseVisualStyleBackColor = false;
+            // 
+            // labsw
+            // 
+            this.labsw.AutoSize = true;
+            this.labsw.BackColor = System.Drawing.Color.Transparent;
+            this.labsw.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labsw.Location = new System.Drawing.Point(318, 209);
+            this.labsw.Name = "labsw";
+            this.labsw.Size = new System.Drawing.Size(47, 19);
+            this.labsw.TabIndex = 212;
+            this.labsw.Text = "空";
+            this.labsw.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lab760s
+            // 
+            this.lab760s.AutoSize = true;
+            this.lab760s.BackColor = System.Drawing.Color.Transparent;
+            this.lab760s.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab760s.Location = new System.Drawing.Point(318, 228);
+            this.lab760s.Name = "lab760s";
+            this.lab760s.Size = new System.Drawing.Size(47, 19);
+            this.lab760s.TabIndex = 213;
+            this.lab760s.Text = "空";
+            this.lab760s.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lab760b
+            // 
+            this.lab760b.AutoSize = true;
+            this.lab760b.BackColor = System.Drawing.Color.Transparent;
+            this.lab760b.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab760b.Location = new System.Drawing.Point(318, 247);
+            this.lab760b.Name = "lab760b";
+            this.lab760b.Size = new System.Drawing.Size(47, 19);
+            this.lab760b.TabIndex = 214;
+            this.lab760b.Text = "空";
+            this.lab760b.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lab7615name
+            // 
+            this.lab7615name.AutoSize = true;
+            this.lab7615name.BackColor = System.Drawing.Color.Transparent;
+            this.lab7615name.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab7615name.Location = new System.Drawing.Point(3, 437);
+            this.lab7615name.Name = "lab7615name";
+            this.lab7615name.Size = new System.Drawing.Size(45, 19);
+            this.lab7615name.TabIndex = 311;
+            this.lab7615name.Text = "7615";
+            this.lab7615name.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // com7615
+            // 
+            this.com7615.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.com7615.FormattingEnabled = true;
+            this.com7615.Location = new System.Drawing.Point(54, 440);
+            this.com7615.Name = "com7615";
+            this.com7615.Size = new System.Drawing.Size(239, 20);
+            this.com7615.TabIndex = 312;
+            this.com7615.SelectedIndexChanged += new System.EventHandler(this.com7615_SelectedIndexChanged);
+            // 
+            // check7615
+            // 
+            this.check7615.AutoSize = true;
+            this.check7615.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.check7615.Location = new System.Drawing.Point(299, 440);
+            this.check7615.Name = "check7615";
+            this.check7615.Size = new System.Drawing.Size(13, 13);
+            this.check7615.TabIndex = 313;
+            this.check7615.Text = "checkBox1";
+            this.check7615.UseVisualStyleBackColor = true;
+            // 
+            // lab7615
+            // 
+            this.lab7615.AutoSize = true;
+            this.lab7615.BackColor = System.Drawing.Color.Transparent;
+            this.lab7615.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab7615.Location = new System.Drawing.Point(318, 437);
+            this.lab7615.Name = "lab7615";
+            this.lab7615.Size = new System.Drawing.Size(47, 19);
+            this.lab7615.TabIndex = 314;
+            this.lab7615.Text = "空";
+            // 
+            // comrebootos
+            // 
+            this.comrebootos.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comrebootos.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.comrebootos.FormattingEnabled = true;
+            this.comrebootos.Location = new System.Drawing.Point(54, 516);
+            this.comrebootos.Name = "comrebootos";
+            this.comrebootos.Size = new System.Drawing.Size(239, 20);
+            this.comrebootos.TabIndex = 299;
+            this.comrebootos.SelectedIndexChanged += new System.EventHandler(this.comrebootos_SelectedIndexChanged);
             // 
             // ButCheckFile
             // 
@@ -1753,9 +3348,9 @@
             this.ButCheckFile.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ButCheckFile.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.ButCheckFile.ForeColor = System.Drawing.Color.White;
-            this.ButCheckFile.Location = new System.Drawing.Point(663, 588);
+            this.ButCheckFile.Location = new System.Drawing.Point(695, 581);
             this.ButCheckFile.Name = "ButCheckFile";
-            this.ButCheckFile.Size = new System.Drawing.Size(98, 34);
+            this.ButCheckFile.Size = new System.Drawing.Size(122, 34);
             this.ButCheckFile.TabIndex = 273;
             this.ButCheckFile.Text = "检查文件大小";
             this.ButCheckFile.UseVisualStyleBackColor = false;
@@ -1768,7 +3363,7 @@
             this.ButLogin.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ButLogin.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.ButLogin.ForeColor = System.Drawing.Color.White;
-            this.ButLogin.Location = new System.Drawing.Point(763, 520);
+            this.ButLogin.Location = new System.Drawing.Point(581, 547);
             this.ButLogin.Name = "ButLogin";
             this.ButLogin.Size = new System.Drawing.Size(86, 34);
             this.ButLogin.TabIndex = 272;
@@ -1779,15 +3374,12 @@
             // groupBox12
             // 
             this.groupBox12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.groupBox12.Controls.Add(this.label9);
             this.groupBox12.Controls.Add(this.textusr);
             this.groupBox12.Controls.Add(this.textftpusr);
             this.groupBox12.Controls.Add(this.textpsd);
             this.groupBox12.Controls.Add(this.textftppsd);
             this.groupBox12.Controls.Add(this.label13);
-            this.groupBox12.Controls.Add(this.comftpip);
             this.groupBox12.Controls.Add(this.tbxFtpRoot);
-            this.groupBox12.Controls.Add(this.butapp);
             this.groupBox12.Controls.Add(this.label8);
             this.groupBox12.Controls.Add(this.label3);
             this.groupBox12.Controls.Add(this.tbxFtpServerPort);
@@ -1798,24 +3390,14 @@
             this.groupBox12.Controls.Add(this.textpsden);
             this.groupBox12.Location = new System.Drawing.Point(3, 522);
             this.groupBox12.Name = "groupBox12";
-            this.groupBox12.Size = new System.Drawing.Size(378, 95);
+            this.groupBox12.Size = new System.Drawing.Size(266, 95);
             this.groupBox12.TabIndex = 271;
             this.groupBox12.TabStop = false;
             this.groupBox12.Text = "FTP服务器";
             // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.BackColor = System.Drawing.Color.Transparent;
-            this.label9.Location = new System.Drawing.Point(11, 18);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(47, 12);
-            this.label9.TabIndex = 128;
-            this.label9.Text = "FTP地址";
-            // 
             // textusr
             // 
-            this.textusr.Location = new System.Drawing.Point(59, 72);
+            this.textusr.Location = new System.Drawing.Point(51, 72);
             this.textusr.Name = "textusr";
             this.textusr.Size = new System.Drawing.Size(49, 21);
             this.textusr.TabIndex = 125;
@@ -1823,7 +3405,7 @@
             // 
             // textftpusr
             // 
-            this.textftpusr.Location = new System.Drawing.Point(59, 52);
+            this.textftpusr.Location = new System.Drawing.Point(51, 32);
             this.textftpusr.Multiline = true;
             this.textftpusr.Name = "textftpusr";
             this.textftpusr.Size = new System.Drawing.Size(49, 21);
@@ -1832,7 +3414,7 @@
             // 
             // textpsd
             // 
-            this.textpsd.Location = new System.Drawing.Point(107, 72);
+            this.textpsd.Location = new System.Drawing.Point(99, 72);
             this.textpsd.Name = "textpsd";
             this.textpsd.PasswordChar = '*';
             this.textpsd.Size = new System.Drawing.Size(57, 21);
@@ -1841,11 +3423,11 @@
             // 
             // textftppsd
             // 
-            this.textftppsd.Location = new System.Drawing.Point(107, 52);
+            this.textftppsd.Location = new System.Drawing.Point(99, 32);
             this.textftppsd.Multiline = true;
             this.textftppsd.Name = "textftppsd";
             this.textftppsd.PasswordChar = '*';
-            this.textftppsd.Size = new System.Drawing.Size(57, 21);
+            this.textftppsd.Size = new System.Drawing.Size(84, 21);
             this.textftppsd.TabIndex = 130;
             this.textftppsd.Text = "admin";
             // 
@@ -1853,48 +3435,26 @@
             // 
             this.label13.AutoSize = true;
             this.label13.BackColor = System.Drawing.Color.Transparent;
-            this.label13.Location = new System.Drawing.Point(11, 55);
+            this.label13.Location = new System.Drawing.Point(3, 35);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(47, 12);
             this.label13.TabIndex = 131;
             this.label13.Text = "FTP用户";
             // 
-            // comftpip
-            // 
-            this.comftpip.FormattingEnabled = true;
-            this.comftpip.Location = new System.Drawing.Point(59, 14);
-            this.comftpip.Name = "comftpip";
-            this.comftpip.Size = new System.Drawing.Size(134, 20);
-            this.comftpip.TabIndex = 140;
-            // 
             // tbxFtpRoot
             // 
             this.tbxFtpRoot.Enabled = false;
-            this.tbxFtpRoot.Location = new System.Drawing.Point(59, 33);
+            this.tbxFtpRoot.Location = new System.Drawing.Point(51, 13);
             this.tbxFtpRoot.Multiline = true;
             this.tbxFtpRoot.Name = "tbxFtpRoot";
             this.tbxFtpRoot.Size = new System.Drawing.Size(172, 20);
             this.tbxFtpRoot.TabIndex = 141;
             // 
-            // butapp
-            // 
-            this.butapp.BackColor = System.Drawing.Color.DodgerBlue;
-            this.butapp.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.butapp.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.butapp.ForeColor = System.Drawing.Color.White;
-            this.butapp.Location = new System.Drawing.Point(231, 14);
-            this.butapp.Name = "butapp";
-            this.butapp.Size = new System.Drawing.Size(73, 20);
-            this.butapp.TabIndex = 185;
-            this.butapp.Text = "②选择FTP服务器根目录";
-            this.butapp.UseVisualStyleBackColor = false;
-            this.butapp.Click += new System.EventHandler(this.butapp_Click);
-            // 
             // label8
             // 
             this.label8.AutoSize = true;
             this.label8.BackColor = System.Drawing.Color.Transparent;
-            this.label8.Location = new System.Drawing.Point(11, 36);
+            this.label8.Location = new System.Drawing.Point(3, 16);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(47, 12);
             this.label8.TabIndex = 143;
@@ -1904,7 +3464,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.BackColor = System.Drawing.Color.Transparent;
-            this.label3.Location = new System.Drawing.Point(4, 77);
+            this.label3.Location = new System.Drawing.Point(-4, 77);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(53, 12);
             this.label3.TabIndex = 151;
@@ -1920,7 +3480,7 @@
             "33333",
             "33334",
             "33335"});
-            this.tbxFtpServerPort.Location = new System.Drawing.Point(192, 14);
+            this.tbxFtpServerPort.Location = new System.Drawing.Point(223, 13);
             this.tbxFtpServerPort.Name = "tbxFtpServerPort";
             this.tbxFtpServerPort.Size = new System.Drawing.Size(39, 20);
             this.tbxFtpServerPort.TabIndex = 244;
@@ -1929,7 +3489,7 @@
             // 
             this.checkpssd.AutoSize = true;
             this.checkpssd.FontWeight = MetroFramework.MetroCheckBoxWeight.Light;
-            this.checkpssd.Location = new System.Drawing.Point(233, 77);
+            this.checkpssd.Location = new System.Drawing.Point(189, 35);
             this.checkpssd.Name = "checkpssd";
             this.checkpssd.Size = new System.Drawing.Size(71, 15);
             this.checkpssd.TabIndex = 243;
@@ -1940,17 +3500,17 @@
             // 
             // textWriteCommunity
             // 
-            this.textWriteCommunity.Location = new System.Drawing.Point(303, 53);
+            this.textWriteCommunity.Location = new System.Drawing.Point(123, 52);
             this.textWriteCommunity.Multiline = true;
             this.textWriteCommunity.Name = "textWriteCommunity";
             this.textWriteCommunity.PasswordChar = '*';
-            this.textWriteCommunity.Size = new System.Drawing.Size(68, 21);
+            this.textWriteCommunity.Size = new System.Drawing.Size(137, 21);
             this.textWriteCommunity.TabIndex = 242;
             this.textWriteCommunity.Text = "private";
             // 
             // textReadCommunity
             // 
-            this.textReadCommunity.Location = new System.Drawing.Point(231, 53);
+            this.textReadCommunity.Location = new System.Drawing.Point(51, 52);
             this.textReadCommunity.Multiline = true;
             this.textReadCommunity.Name = "textReadCommunity";
             this.textReadCommunity.PasswordChar = '*';
@@ -1962,7 +3522,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.BackColor = System.Drawing.Color.Transparent;
-            this.label1.Location = new System.Drawing.Point(174, 58);
+            this.label1.Location = new System.Drawing.Point(0, 56);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(53, 12);
             this.label1.TabIndex = 240;
@@ -1970,1432 +3530,12 @@
             // 
             // textpsden
             // 
-            this.textpsden.Location = new System.Drawing.Point(163, 72);
+            this.textpsden.Location = new System.Drawing.Point(155, 72);
             this.textpsden.Name = "textpsden";
             this.textpsden.PasswordChar = '*';
-            this.textpsden.Size = new System.Drawing.Size(57, 21);
+            this.textpsden.Size = new System.Drawing.Size(105, 21);
             this.textpsden.TabIndex = 127;
             this.textpsden.Text = "greenway";
-            // 
-            // groupBox7
-            // 
-            this.groupBox7.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox7.Controls.Add(this.comcode4);
-            this.groupBox7.Controls.Add(this.labcodename4);
-            this.groupBox7.Controls.Add(this.checkcode4);
-            this.groupBox7.Controls.Add(this.labcode4);
-            this.groupBox7.Controls.Add(this.comcpld);
-            this.groupBox7.Controls.Add(this.label26);
-            this.groupBox7.Controls.Add(this.labcpld);
-            this.groupBox7.Controls.Add(this.checkcpld);
-            this.groupBox7.Controls.Add(this.comrebootos);
-            this.groupBox7.Controls.Add(this.label23);
-            this.groupBox7.Controls.Add(this.labrebootos);
-            this.groupBox7.Controls.Add(this.checkrebootos);
-            this.groupBox7.Controls.Add(this.comvoss);
-            this.groupBox7.Controls.Add(this.label21);
-            this.groupBox7.Controls.Add(this.labvoss);
-            this.groupBox7.Controls.Add(this.checkvoss);
-            this.groupBox7.Controls.Add(this.comapp2);
-            this.groupBox7.Controls.Add(this.labapp2name);
-            this.groupBox7.Controls.Add(this.checkapp2);
-            this.groupBox7.Controls.Add(this.labapp2);
-            this.groupBox7.Controls.Add(this.comsdn);
-            this.groupBox7.Controls.Add(this.labsdnname);
-            this.groupBox7.Controls.Add(this.checksdn);
-            this.groupBox7.Controls.Add(this.labsdn);
-            this.groupBox7.Controls.Add(this.comcode3);
-            this.groupBox7.Controls.Add(this.labcodename3);
-            this.groupBox7.Controls.Add(this.checkcode3);
-            this.groupBox7.Controls.Add(this.labcode3);
-            this.groupBox7.Controls.Add(this.comcode2);
-            this.groupBox7.Controls.Add(this.labcodename2);
-            this.groupBox7.Controls.Add(this.checkcode2);
-            this.groupBox7.Controls.Add(this.labcode2);
-            this.groupBox7.Controls.Add(this.lab7616);
-            this.groupBox7.Controls.Add(this.check7616);
-            this.groupBox7.Controls.Add(this.lab7616name);
-            this.groupBox7.Controls.Add(this.com7616);
-            this.groupBox7.Controls.Add(this.lab7614);
-            this.groupBox7.Controls.Add(this.check7614);
-            this.groupBox7.Controls.Add(this.lab7614name);
-            this.groupBox7.Controls.Add(this.com7614);
-            this.groupBox7.Controls.Add(this.lab7613);
-            this.groupBox7.Controls.Add(this.check7613);
-            this.groupBox7.Controls.Add(this.comapp);
-            this.groupBox7.Controls.Add(this.lab7613name);
-            this.groupBox7.Controls.Add(this.comcode);
-            this.groupBox7.Controls.Add(this.com7613);
-            this.groupBox7.Controls.Add(this.comnms);
-            this.groupBox7.Controls.Add(this.lab7612);
-            this.groupBox7.Controls.Add(this.comsw);
-            this.groupBox7.Controls.Add(this.lab7611);
-            this.groupBox7.Controls.Add(this.labappname);
-            this.groupBox7.Controls.Add(this.lab7610);
-            this.groupBox7.Controls.Add(this.labcodename);
-            this.groupBox7.Controls.Add(this.check7612);
-            this.groupBox7.Controls.Add(this.labnmsname);
-            this.groupBox7.Controls.Add(this.check7611);
-            this.groupBox7.Controls.Add(this.labswname);
-            this.groupBox7.Controls.Add(this.check7610);
-            this.groupBox7.Controls.Add(this.lab7612name);
-            this.groupBox7.Controls.Add(this.com7612);
-            this.groupBox7.Controls.Add(this.lab7611name);
-            this.groupBox7.Controls.Add(this.comconfig);
-            this.groupBox7.Controls.Add(this.lab7610name);
-            this.groupBox7.Controls.Add(this.comdb);
-            this.groupBox7.Controls.Add(this.com7611);
-            this.groupBox7.Controls.Add(this.comslotconfig);
-            this.groupBox7.Controls.Add(this.com7610);
-            this.groupBox7.Controls.Add(this.labdbname);
-            this.groupBox7.Controls.Add(this.labconfigname);
-            this.groupBox7.Controls.Add(this.labslotname);
-            this.groupBox7.Controls.Add(this.com760s);
-            this.groupBox7.Controls.Add(this.com760b);
-            this.groupBox7.Controls.Add(this.com760c);
-            this.groupBox7.Controls.Add(this.com760d);
-            this.groupBox7.Controls.Add(this.lab760sname);
-            this.groupBox7.Controls.Add(this.lab760bname);
-            this.groupBox7.Controls.Add(this.labuxc);
-            this.groupBox7.Controls.Add(this.lab760cname);
-            this.groupBox7.Controls.Add(this.checkuxc);
-            this.groupBox7.Controls.Add(this.lab760dname);
-            this.groupBox7.Controls.Add(this.lab760uxcname);
-            this.groupBox7.Controls.Add(this.com760e);
-            this.groupBox7.Controls.Add(this.comuxc);
-            this.groupBox7.Controls.Add(this.lab760ename);
-            this.groupBox7.Controls.Add(this.checkapp);
-            this.groupBox7.Controls.Add(this.checkcode);
-            this.groupBox7.Controls.Add(this.checknms);
-            this.groupBox7.Controls.Add(this.labdb);
-            this.groupBox7.Controls.Add(this.checksw);
-            this.groupBox7.Controls.Add(this.labslotconfig);
-            this.groupBox7.Controls.Add(this.check760s);
-            this.groupBox7.Controls.Add(this.labconfig);
-            this.groupBox7.Controls.Add(this.check760b);
-            this.groupBox7.Controls.Add(this.checkdb);
-            this.groupBox7.Controls.Add(this.check760c);
-            this.groupBox7.Controls.Add(this.checkslotconfig);
-            this.groupBox7.Controls.Add(this.check760d);
-            this.groupBox7.Controls.Add(this.checkconfig);
-            this.groupBox7.Controls.Add(this.check760e);
-            this.groupBox7.Controls.Add(this.labyaffs);
-            this.groupBox7.Controls.Add(this.comsysfile);
-            this.groupBox7.Controls.Add(this.labflash);
-            this.groupBox7.Controls.Add(this.labsysfilename);
-            this.groupBox7.Controls.Add(this.labsysfile);
-            this.groupBox7.Controls.Add(this.checksysfile);
-            this.groupBox7.Controls.Add(this.lab760e);
-            this.groupBox7.Controls.Add(this.lab760d);
-            this.groupBox7.Controls.Add(this.comgpn76list);
-            this.groupBox7.Controls.Add(this.lab760c);
-            this.groupBox7.Controls.Add(this.label24);
-            this.groupBox7.Controls.Add(this.lab760b);
-            this.groupBox7.Controls.Add(this.comflash);
-            this.groupBox7.Controls.Add(this.lab760s);
-            this.groupBox7.Controls.Add(this.labflashname);
-            this.groupBox7.Controls.Add(this.labsw);
-            this.groupBox7.Controls.Add(this.checkflash);
-            this.groupBox7.Controls.Add(this.labnms);
-            this.groupBox7.Controls.Add(this.comyaffs);
-            this.groupBox7.Controls.Add(this.labcode);
-            this.groupBox7.Controls.Add(this.labyaffsname);
-            this.groupBox7.Controls.Add(this.labapp);
-            this.groupBox7.Controls.Add(this.checkyaffs);
-            this.groupBox7.Location = new System.Drawing.Point(940, 3);
-            this.groupBox7.Margin = new System.Windows.Forms.Padding(2);
-            this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Padding = new System.Windows.Forms.Padding(2);
-            this.groupBox7.Size = new System.Drawing.Size(366, 622);
-            this.groupBox7.TabIndex = 270;
-            this.groupBox7.TabStop = false;
-            this.groupBox7.Text = "版本选择";
-            // 
-            // comcode4
-            // 
-            this.comcode4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.comcode4.FormattingEnabled = true;
-            this.comcode4.Location = new System.Drawing.Point(52, 161);
-            this.comcode4.Name = "comcode4";
-            this.comcode4.Size = new System.Drawing.Size(231, 20);
-            this.comcode4.TabIndex = 307;
-            this.comcode4.SelectedIndexChanged += new System.EventHandler(this.comcode4_SelectedIndexChanged);
-            // 
-            // labcodename4
-            // 
-            this.labcodename4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.labcodename4.AutoSize = true;
-            this.labcodename4.BackColor = System.Drawing.Color.Transparent;
-            this.labcodename4.Location = new System.Drawing.Point(7, 166);
-            this.labcodename4.Name = "labcodename4";
-            this.labcodename4.Size = new System.Drawing.Size(35, 12);
-            this.labcodename4.TabIndex = 308;
-            this.labcodename4.Text = "CODE4";
-            // 
-            // checkcode4
-            // 
-            this.checkcode4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkcode4.BackColor = System.Drawing.Color.Transparent;
-            this.checkcode4.Location = new System.Drawing.Point(292, 164);
-            this.checkcode4.Name = "checkcode4";
-            this.checkcode4.Size = new System.Drawing.Size(15, 14);
-            this.checkcode4.TabIndex = 309;
-            this.checkcode4.UseVisualStyleBackColor = false;
-            // 
-            // labcode4
-            // 
-            this.labcode4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.labcode4.AutoSize = true;
-            this.labcode4.BackColor = System.Drawing.Color.Transparent;
-            this.labcode4.Location = new System.Drawing.Point(308, 166);
-            this.labcode4.Name = "labcode4";
-            this.labcode4.Size = new System.Drawing.Size(17, 12);
-            this.labcode4.TabIndex = 310;
-            this.labcode4.Text = "空";
-            // 
-            // comcpld
-            // 
-            this.comcpld.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.comcpld.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.comcpld.FormattingEnabled = true;
-            this.comcpld.Location = new System.Drawing.Point(52, 521);
-            this.comcpld.Name = "comcpld";
-            this.comcpld.Size = new System.Drawing.Size(231, 20);
-            this.comcpld.TabIndex = 303;
-            this.comcpld.SelectedIndexChanged += new System.EventHandler(this.comcplde_SelectedIndexChanged);
-            // 
-            // label26
-            // 
-            this.label26.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label26.AutoSize = true;
-            this.label26.BackColor = System.Drawing.Color.Transparent;
-            this.label26.Location = new System.Drawing.Point(5, 526);
-            this.label26.Name = "label26";
-            this.label26.Size = new System.Drawing.Size(29, 12);
-            this.label26.TabIndex = 304;
-            this.label26.Text = "CPLD";
-            // 
-            // labcpld
-            // 
-            this.labcpld.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.labcpld.AutoSize = true;
-            this.labcpld.BackColor = System.Drawing.Color.Transparent;
-            this.labcpld.Location = new System.Drawing.Point(308, 526);
-            this.labcpld.Name = "labcpld";
-            this.labcpld.Size = new System.Drawing.Size(17, 12);
-            this.labcpld.TabIndex = 306;
-            this.labcpld.Text = "空";
-            // 
-            // checkcpld
-            // 
-            this.checkcpld.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkcpld.BackColor = System.Drawing.Color.Transparent;
-            this.checkcpld.Location = new System.Drawing.Point(292, 525);
-            this.checkcpld.Name = "checkcpld";
-            this.checkcpld.Size = new System.Drawing.Size(15, 14);
-            this.checkcpld.TabIndex = 305;
-            this.checkcpld.UseVisualStyleBackColor = false;
-            // 
-            // comrebootos
-            // 
-            this.comrebootos.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.comrebootos.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.comrebootos.FormattingEnabled = true;
-            this.comrebootos.Location = new System.Drawing.Point(52, 502);
-            this.comrebootos.Name = "comrebootos";
-            this.comrebootos.Size = new System.Drawing.Size(231, 20);
-            this.comrebootos.TabIndex = 299;
-            this.comrebootos.SelectedIndexChanged += new System.EventHandler(this.comrebootos_SelectedIndexChanged);
-            // 
-            // label23
-            // 
-            this.label23.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label23.AutoSize = true;
-            this.label23.BackColor = System.Drawing.Color.Transparent;
-            this.label23.Location = new System.Drawing.Point(0, 507);
-            this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(53, 12);
-            this.label23.TabIndex = 300;
-            this.label23.Text = "REBOOTOS";
-            // 
-            // labrebootos
-            // 
-            this.labrebootos.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.labrebootos.AutoSize = true;
-            this.labrebootos.BackColor = System.Drawing.Color.Transparent;
-            this.labrebootos.Location = new System.Drawing.Point(308, 507);
-            this.labrebootos.Name = "labrebootos";
-            this.labrebootos.Size = new System.Drawing.Size(17, 12);
-            this.labrebootos.TabIndex = 302;
-            this.labrebootos.Text = "空";
-            // 
-            // checkrebootos
-            // 
-            this.checkrebootos.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkrebootos.BackColor = System.Drawing.Color.Transparent;
-            this.checkrebootos.Location = new System.Drawing.Point(292, 506);
-            this.checkrebootos.Name = "checkrebootos";
-            this.checkrebootos.Size = new System.Drawing.Size(15, 14);
-            this.checkrebootos.TabIndex = 301;
-            this.checkrebootos.UseVisualStyleBackColor = false;
-            // 
-            // comvoss
-            // 
-            this.comvoss.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.comvoss.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.comvoss.FormattingEnabled = true;
-            this.comvoss.Location = new System.Drawing.Point(52, 483);
-            this.comvoss.Name = "comvoss";
-            this.comvoss.Size = new System.Drawing.Size(231, 20);
-            this.comvoss.TabIndex = 295;
-            this.comvoss.SelectedIndexChanged += new System.EventHandler(this.comvoss_SelectedIndexChanged);
-            // 
-            // label21
-            // 
-            this.label21.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label21.AutoSize = true;
-            this.label21.BackColor = System.Drawing.Color.Transparent;
-            this.label21.Location = new System.Drawing.Point(5, 488);
-            this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(29, 12);
-            this.label21.TabIndex = 296;
-            this.label21.Text = "VOSS";
-            // 
-            // labvoss
-            // 
-            this.labvoss.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.labvoss.AutoSize = true;
-            this.labvoss.BackColor = System.Drawing.Color.Transparent;
-            this.labvoss.Location = new System.Drawing.Point(308, 488);
-            this.labvoss.Name = "labvoss";
-            this.labvoss.Size = new System.Drawing.Size(17, 12);
-            this.labvoss.TabIndex = 298;
-            this.labvoss.Text = "空";
-            // 
-            // checkvoss
-            // 
-            this.checkvoss.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkvoss.BackColor = System.Drawing.Color.Transparent;
-            this.checkvoss.Location = new System.Drawing.Point(292, 487);
-            this.checkvoss.Name = "checkvoss";
-            this.checkvoss.Size = new System.Drawing.Size(15, 14);
-            this.checkvoss.TabIndex = 297;
-            this.checkvoss.UseVisualStyleBackColor = false;
-            // 
-            // comapp2
-            // 
-            this.comapp2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.comapp2.FormattingEnabled = true;
-            this.comapp2.Location = new System.Drawing.Point(52, 85);
-            this.comapp2.Name = "comapp2";
-            this.comapp2.Size = new System.Drawing.Size(231, 20);
-            this.comapp2.TabIndex = 287;
-            this.comapp2.SelectedIndexChanged += new System.EventHandler(this.comapp2_SelectedIndexChanged);
-            // 
-            // labapp2name
-            // 
-            this.labapp2name.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.labapp2name.AutoSize = true;
-            this.labapp2name.BackColor = System.Drawing.Color.Transparent;
-            this.labapp2name.Location = new System.Drawing.Point(7, 90);
-            this.labapp2name.Name = "labapp2name";
-            this.labapp2name.Size = new System.Drawing.Size(29, 12);
-            this.labapp2name.TabIndex = 288;
-            this.labapp2name.Text = "APP2";
-            // 
-            // checkapp2
-            // 
-            this.checkapp2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkapp2.BackColor = System.Drawing.Color.Transparent;
-            this.checkapp2.Location = new System.Drawing.Point(292, 88);
-            this.checkapp2.Name = "checkapp2";
-            this.checkapp2.Size = new System.Drawing.Size(15, 14);
-            this.checkapp2.TabIndex = 289;
-            this.checkapp2.UseVisualStyleBackColor = true;
-            // 
-            // labapp2
-            // 
-            this.labapp2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.labapp2.AutoSize = true;
-            this.labapp2.BackColor = System.Drawing.Color.Transparent;
-            this.labapp2.Location = new System.Drawing.Point(308, 90);
-            this.labapp2.Name = "labapp2";
-            this.labapp2.Size = new System.Drawing.Size(17, 12);
-            this.labapp2.TabIndex = 290;
-            this.labapp2.Text = "空";
-            // 
-            // comsdn
-            // 
-            this.comsdn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.comsdn.FormattingEnabled = true;
-            this.comsdn.Location = new System.Drawing.Point(52, 180);
-            this.comsdn.Name = "comsdn";
-            this.comsdn.Size = new System.Drawing.Size(231, 20);
-            this.comsdn.TabIndex = 283;
-            this.comsdn.SelectedIndexChanged += new System.EventHandler(this.comsdn_SelectedIndexChanged);
-            // 
-            // labsdnname
-            // 
-            this.labsdnname.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.labsdnname.AutoSize = true;
-            this.labsdnname.BackColor = System.Drawing.Color.Transparent;
-            this.labsdnname.Location = new System.Drawing.Point(7, 185);
-            this.labsdnname.Name = "labsdnname";
-            this.labsdnname.Size = new System.Drawing.Size(23, 12);
-            this.labsdnname.TabIndex = 284;
-            this.labsdnname.Text = "SDN";
-            // 
-            // checksdn
-            // 
-            this.checksdn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.checksdn.BackColor = System.Drawing.Color.Transparent;
-            this.checksdn.Location = new System.Drawing.Point(292, 183);
-            this.checksdn.Name = "checksdn";
-            this.checksdn.Size = new System.Drawing.Size(15, 14);
-            this.checksdn.TabIndex = 285;
-            this.checksdn.UseVisualStyleBackColor = false;
-            // 
-            // labsdn
-            // 
-            this.labsdn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.labsdn.AutoSize = true;
-            this.labsdn.BackColor = System.Drawing.Color.Transparent;
-            this.labsdn.Location = new System.Drawing.Point(308, 184);
-            this.labsdn.Name = "labsdn";
-            this.labsdn.Size = new System.Drawing.Size(17, 12);
-            this.labsdn.TabIndex = 286;
-            this.labsdn.Text = "空";
-            // 
-            // comcode3
-            // 
-            this.comcode3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.comcode3.FormattingEnabled = true;
-            this.comcode3.Location = new System.Drawing.Point(52, 142);
-            this.comcode3.Name = "comcode3";
-            this.comcode3.Size = new System.Drawing.Size(231, 20);
-            this.comcode3.TabIndex = 279;
-            this.comcode3.SelectedIndexChanged += new System.EventHandler(this.comcode3_SelectedIndexChanged);
-            // 
-            // labcodename3
-            // 
-            this.labcodename3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.labcodename3.AutoSize = true;
-            this.labcodename3.BackColor = System.Drawing.Color.Transparent;
-            this.labcodename3.Location = new System.Drawing.Point(7, 147);
-            this.labcodename3.Name = "labcodename3";
-            this.labcodename3.Size = new System.Drawing.Size(35, 12);
-            this.labcodename3.TabIndex = 280;
-            this.labcodename3.Text = "CODE3";
-            // 
-            // checkcode3
-            // 
-            this.checkcode3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkcode3.BackColor = System.Drawing.Color.Transparent;
-            this.checkcode3.Location = new System.Drawing.Point(292, 145);
-            this.checkcode3.Name = "checkcode3";
-            this.checkcode3.Size = new System.Drawing.Size(15, 14);
-            this.checkcode3.TabIndex = 281;
-            this.checkcode3.UseVisualStyleBackColor = false;
-            // 
-            // labcode3
-            // 
-            this.labcode3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.labcode3.AutoSize = true;
-            this.labcode3.BackColor = System.Drawing.Color.Transparent;
-            this.labcode3.Location = new System.Drawing.Point(308, 147);
-            this.labcode3.Name = "labcode3";
-            this.labcode3.Size = new System.Drawing.Size(17, 12);
-            this.labcode3.TabIndex = 282;
-            this.labcode3.Text = "空";
-            // 
-            // comcode2
-            // 
-            this.comcode2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.comcode2.FormattingEnabled = true;
-            this.comcode2.Location = new System.Drawing.Point(52, 123);
-            this.comcode2.Name = "comcode2";
-            this.comcode2.Size = new System.Drawing.Size(231, 20);
-            this.comcode2.TabIndex = 275;
-            this.comcode2.SelectedIndexChanged += new System.EventHandler(this.comcode2_SelectedIndexChanged);
-            // 
-            // labcodename2
-            // 
-            this.labcodename2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.labcodename2.AutoSize = true;
-            this.labcodename2.BackColor = System.Drawing.Color.Transparent;
-            this.labcodename2.Location = new System.Drawing.Point(7, 128);
-            this.labcodename2.Name = "labcodename2";
-            this.labcodename2.Size = new System.Drawing.Size(35, 12);
-            this.labcodename2.TabIndex = 276;
-            this.labcodename2.Text = "CODE2";
-            // 
-            // checkcode2
-            // 
-            this.checkcode2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkcode2.BackColor = System.Drawing.Color.Transparent;
-            this.checkcode2.Location = new System.Drawing.Point(292, 126);
-            this.checkcode2.Name = "checkcode2";
-            this.checkcode2.Size = new System.Drawing.Size(15, 14);
-            this.checkcode2.TabIndex = 277;
-            this.checkcode2.UseVisualStyleBackColor = false;
-            // 
-            // labcode2
-            // 
-            this.labcode2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.labcode2.AutoSize = true;
-            this.labcode2.BackColor = System.Drawing.Color.Transparent;
-            this.labcode2.Location = new System.Drawing.Point(308, 128);
-            this.labcode2.Name = "labcode2";
-            this.labcode2.Size = new System.Drawing.Size(17, 12);
-            this.labcode2.TabIndex = 278;
-            this.labcode2.Text = "空";
-            // 
-            // lab7616
-            // 
-            this.lab7616.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lab7616.AutoSize = true;
-            this.lab7616.BackColor = System.Drawing.Color.Transparent;
-            this.lab7616.Location = new System.Drawing.Point(308, 450);
-            this.lab7616.Name = "lab7616";
-            this.lab7616.Size = new System.Drawing.Size(17, 12);
-            this.lab7616.TabIndex = 273;
-            this.lab7616.Text = "空";
-            // 
-            // check7616
-            // 
-            this.check7616.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.check7616.BackColor = System.Drawing.Color.Transparent;
-            this.check7616.Location = new System.Drawing.Point(292, 450);
-            this.check7616.Name = "check7616";
-            this.check7616.Size = new System.Drawing.Size(15, 14);
-            this.check7616.TabIndex = 272;
-            this.check7616.UseVisualStyleBackColor = false;
-            // 
-            // lab7616name
-            // 
-            this.lab7616name.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lab7616name.AutoSize = true;
-            this.lab7616name.BackColor = System.Drawing.Color.Transparent;
-            this.lab7616name.Location = new System.Drawing.Point(7, 449);
-            this.lab7616name.Name = "lab7616name";
-            this.lab7616name.Size = new System.Drawing.Size(29, 12);
-            this.lab7616name.TabIndex = 271;
-            this.lab7616name.Text = "7616";
-            // 
-            // com7616
-            // 
-            this.com7616.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.com7616.FormattingEnabled = true;
-            this.com7616.Location = new System.Drawing.Point(52, 445);
-            this.com7616.Name = "com7616";
-            this.com7616.Size = new System.Drawing.Size(231, 20);
-            this.com7616.TabIndex = 270;
-            this.com7616.SelectedIndexChanged += new System.EventHandler(this.com7616_SelectedIndexChanged);
-            // 
-            // lab7614
-            // 
-            this.lab7614.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lab7614.AutoSize = true;
-            this.lab7614.BackColor = System.Drawing.Color.Transparent;
-            this.lab7614.Location = new System.Drawing.Point(308, 431);
-            this.lab7614.Name = "lab7614";
-            this.lab7614.Size = new System.Drawing.Size(17, 12);
-            this.lab7614.TabIndex = 269;
-            this.lab7614.Text = "空";
-            // 
-            // check7614
-            // 
-            this.check7614.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.check7614.BackColor = System.Drawing.Color.Transparent;
-            this.check7614.Location = new System.Drawing.Point(292, 431);
-            this.check7614.Name = "check7614";
-            this.check7614.Size = new System.Drawing.Size(15, 14);
-            this.check7614.TabIndex = 268;
-            this.check7614.UseVisualStyleBackColor = false;
-            // 
-            // lab7614name
-            // 
-            this.lab7614name.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lab7614name.AutoSize = true;
-            this.lab7614name.BackColor = System.Drawing.Color.Transparent;
-            this.lab7614name.Location = new System.Drawing.Point(7, 430);
-            this.lab7614name.Name = "lab7614name";
-            this.lab7614name.Size = new System.Drawing.Size(29, 12);
-            this.lab7614name.TabIndex = 267;
-            this.lab7614name.Text = "7614";
-            // 
-            // com7614
-            // 
-            this.com7614.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.com7614.FormattingEnabled = true;
-            this.com7614.Location = new System.Drawing.Point(52, 426);
-            this.com7614.Name = "com7614";
-            this.com7614.Size = new System.Drawing.Size(231, 20);
-            this.com7614.TabIndex = 266;
-            this.com7614.SelectedIndexChanged += new System.EventHandler(this.com7614_SelectedIndexChanged);
-            // 
-            // lab7613
-            // 
-            this.lab7613.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lab7613.AutoSize = true;
-            this.lab7613.BackColor = System.Drawing.Color.Transparent;
-            this.lab7613.Location = new System.Drawing.Point(308, 411);
-            this.lab7613.Name = "lab7613";
-            this.lab7613.Size = new System.Drawing.Size(17, 12);
-            this.lab7613.TabIndex = 265;
-            this.lab7613.Text = "空";
-            // 
-            // check7613
-            // 
-            this.check7613.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.check7613.BackColor = System.Drawing.Color.Transparent;
-            this.check7613.Location = new System.Drawing.Point(292, 411);
-            this.check7613.Name = "check7613";
-            this.check7613.Size = new System.Drawing.Size(15, 14);
-            this.check7613.TabIndex = 264;
-            this.check7613.UseVisualStyleBackColor = false;
-            // 
-            // comapp
-            // 
-            this.comapp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.comapp.FormattingEnabled = true;
-            this.comapp.Location = new System.Drawing.Point(52, 66);
-            this.comapp.Name = "comapp";
-            this.comapp.Size = new System.Drawing.Size(231, 20);
-            this.comapp.TabIndex = 132;
-            this.comapp.SelectedIndexChanged += new System.EventHandler(this.comapp_SelectedIndexChanged);
-            // 
-            // lab7613name
-            // 
-            this.lab7613name.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lab7613name.AutoSize = true;
-            this.lab7613name.BackColor = System.Drawing.Color.Transparent;
-            this.lab7613name.Location = new System.Drawing.Point(7, 412);
-            this.lab7613name.Name = "lab7613name";
-            this.lab7613name.Size = new System.Drawing.Size(29, 12);
-            this.lab7613name.TabIndex = 263;
-            this.lab7613name.Text = "7613";
-            // 
-            // comcode
-            // 
-            this.comcode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.comcode.FormattingEnabled = true;
-            this.comcode.Location = new System.Drawing.Point(52, 104);
-            this.comcode.Name = "comcode";
-            this.comcode.Size = new System.Drawing.Size(231, 20);
-            this.comcode.TabIndex = 133;
-            this.comcode.SelectedIndexChanged += new System.EventHandler(this.comcode_SelectedIndexChanged);
-            // 
-            // com7613
-            // 
-            this.com7613.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.com7613.FormattingEnabled = true;
-            this.com7613.Location = new System.Drawing.Point(52, 407);
-            this.com7613.Name = "com7613";
-            this.com7613.Size = new System.Drawing.Size(231, 20);
-            this.com7613.TabIndex = 262;
-            this.com7613.SelectedIndexChanged += new System.EventHandler(this.com7613_SelectedIndexChanged);
-            // 
-            // comnms
-            // 
-            this.comnms.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.comnms.FormattingEnabled = true;
-            this.comnms.Location = new System.Drawing.Point(52, 199);
-            this.comnms.Name = "comnms";
-            this.comnms.Size = new System.Drawing.Size(231, 20);
-            this.comnms.TabIndex = 134;
-            this.comnms.SelectedIndexChanged += new System.EventHandler(this.comnms_SelectedIndexChanged);
-            // 
-            // lab7612
-            // 
-            this.lab7612.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lab7612.AutoSize = true;
-            this.lab7612.BackColor = System.Drawing.Color.Transparent;
-            this.lab7612.Location = new System.Drawing.Point(308, 392);
-            this.lab7612.Name = "lab7612";
-            this.lab7612.Size = new System.Drawing.Size(17, 12);
-            this.lab7612.TabIndex = 261;
-            this.lab7612.Text = "空";
-            // 
-            // comsw
-            // 
-            this.comsw.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.comsw.FormattingEnabled = true;
-            this.comsw.Location = new System.Drawing.Point(52, 218);
-            this.comsw.Name = "comsw";
-            this.comsw.Size = new System.Drawing.Size(231, 20);
-            this.comsw.TabIndex = 135;
-            this.comsw.SelectedIndexChanged += new System.EventHandler(this.comsw_SelectedIndexChanged);
-            // 
-            // lab7611
-            // 
-            this.lab7611.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lab7611.AutoSize = true;
-            this.lab7611.BackColor = System.Drawing.Color.Transparent;
-            this.lab7611.Location = new System.Drawing.Point(308, 372);
-            this.lab7611.Name = "lab7611";
-            this.lab7611.Size = new System.Drawing.Size(17, 12);
-            this.lab7611.TabIndex = 260;
-            this.lab7611.Text = "空";
-            // 
-            // labappname
-            // 
-            this.labappname.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.labappname.AutoSize = true;
-            this.labappname.BackColor = System.Drawing.Color.Transparent;
-            this.labappname.Location = new System.Drawing.Point(7, 71);
-            this.labappname.Name = "labappname";
-            this.labappname.Size = new System.Drawing.Size(23, 12);
-            this.labappname.TabIndex = 136;
-            this.labappname.Text = "APP";
-            // 
-            // lab7610
-            // 
-            this.lab7610.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lab7610.AutoSize = true;
-            this.lab7610.BackColor = System.Drawing.Color.Transparent;
-            this.lab7610.Location = new System.Drawing.Point(308, 355);
-            this.lab7610.Name = "lab7610";
-            this.lab7610.Size = new System.Drawing.Size(17, 12);
-            this.lab7610.TabIndex = 259;
-            this.lab7610.Text = "空";
-            // 
-            // labcodename
-            // 
-            this.labcodename.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.labcodename.AutoSize = true;
-            this.labcodename.BackColor = System.Drawing.Color.Transparent;
-            this.labcodename.Location = new System.Drawing.Point(7, 109);
-            this.labcodename.Name = "labcodename";
-            this.labcodename.Size = new System.Drawing.Size(29, 12);
-            this.labcodename.TabIndex = 137;
-            this.labcodename.Text = "CODE";
-            // 
-            // check7612
-            // 
-            this.check7612.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.check7612.BackColor = System.Drawing.Color.Transparent;
-            this.check7612.Location = new System.Drawing.Point(292, 392);
-            this.check7612.Name = "check7612";
-            this.check7612.Size = new System.Drawing.Size(15, 14);
-            this.check7612.TabIndex = 258;
-            this.check7612.UseVisualStyleBackColor = false;
-            // 
-            // labnmsname
-            // 
-            this.labnmsname.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.labnmsname.AutoSize = true;
-            this.labnmsname.BackColor = System.Drawing.Color.Transparent;
-            this.labnmsname.Location = new System.Drawing.Point(7, 204);
-            this.labnmsname.Name = "labnmsname";
-            this.labnmsname.Size = new System.Drawing.Size(23, 12);
-            this.labnmsname.TabIndex = 138;
-            this.labnmsname.Text = "NMS";
-            // 
-            // check7611
-            // 
-            this.check7611.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.check7611.BackColor = System.Drawing.Color.Transparent;
-            this.check7611.Location = new System.Drawing.Point(292, 372);
-            this.check7611.Name = "check7611";
-            this.check7611.Size = new System.Drawing.Size(15, 14);
-            this.check7611.TabIndex = 257;
-            this.check7611.UseVisualStyleBackColor = false;
-            // 
-            // labswname
-            // 
-            this.labswname.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.labswname.AutoSize = true;
-            this.labswname.BackColor = System.Drawing.Color.Transparent;
-            this.labswname.Location = new System.Drawing.Point(7, 221);
-            this.labswname.Name = "labswname";
-            this.labswname.Size = new System.Drawing.Size(41, 12);
-            this.labswname.TabIndex = 139;
-            this.labswname.Text = "SW-A/B";
-            // 
-            // check7610
-            // 
-            this.check7610.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.check7610.BackColor = System.Drawing.Color.Transparent;
-            this.check7610.Location = new System.Drawing.Point(292, 353);
-            this.check7610.Name = "check7610";
-            this.check7610.Size = new System.Drawing.Size(15, 14);
-            this.check7610.TabIndex = 256;
-            this.check7610.UseVisualStyleBackColor = false;
-            // 
-            // lab7612name
-            // 
-            this.lab7612name.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lab7612name.AutoSize = true;
-            this.lab7612name.BackColor = System.Drawing.Color.Transparent;
-            this.lab7612name.Location = new System.Drawing.Point(7, 393);
-            this.lab7612name.Name = "lab7612name";
-            this.lab7612name.Size = new System.Drawing.Size(29, 12);
-            this.lab7612name.TabIndex = 255;
-            this.lab7612name.Text = "7612";
-            // 
-            // com7612
-            // 
-            this.com7612.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.com7612.FormattingEnabled = true;
-            this.com7612.Location = new System.Drawing.Point(52, 388);
-            this.com7612.Name = "com7612";
-            this.com7612.Size = new System.Drawing.Size(231, 20);
-            this.com7612.TabIndex = 254;
-            this.com7612.SelectedIndexChanged += new System.EventHandler(this.com7612_SelectedIndexChanged);
-            // 
-            // lab7611name
-            // 
-            this.lab7611name.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lab7611name.AutoSize = true;
-            this.lab7611name.BackColor = System.Drawing.Color.Transparent;
-            this.lab7611name.Location = new System.Drawing.Point(7, 375);
-            this.lab7611name.Name = "lab7611name";
-            this.lab7611name.Size = new System.Drawing.Size(29, 12);
-            this.lab7611name.TabIndex = 253;
-            this.lab7611name.Text = "7611";
-            // 
-            // comconfig
-            // 
-            this.comconfig.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.comconfig.BackColor = System.Drawing.SystemColors.Window;
-            this.comconfig.FormattingEnabled = true;
-            this.comconfig.Location = new System.Drawing.Point(52, 9);
-            this.comconfig.Name = "comconfig";
-            this.comconfig.Size = new System.Drawing.Size(231, 20);
-            this.comconfig.TabIndex = 145;
-            this.comconfig.SelectedIndexChanged += new System.EventHandler(this.comconfig_SelectedIndexChanged);
-            // 
-            // lab7610name
-            // 
-            this.lab7610name.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lab7610name.AutoSize = true;
-            this.lab7610name.BackColor = System.Drawing.Color.Transparent;
-            this.lab7610name.Location = new System.Drawing.Point(7, 354);
-            this.lab7610name.Name = "lab7610name";
-            this.lab7610name.Size = new System.Drawing.Size(29, 12);
-            this.lab7610name.TabIndex = 252;
-            this.lab7610name.Text = "7610";
-            // 
-            // comdb
-            // 
-            this.comdb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.comdb.FormattingEnabled = true;
-            this.comdb.Location = new System.Drawing.Point(52, 47);
-            this.comdb.Name = "comdb";
-            this.comdb.Size = new System.Drawing.Size(231, 20);
-            this.comdb.TabIndex = 146;
-            this.comdb.SelectedIndexChanged += new System.EventHandler(this.comdb_SelectedIndexChanged);
-            // 
-            // com7611
-            // 
-            this.com7611.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.com7611.FormattingEnabled = true;
-            this.com7611.Location = new System.Drawing.Point(52, 369);
-            this.com7611.Name = "com7611";
-            this.com7611.Size = new System.Drawing.Size(231, 20);
-            this.com7611.TabIndex = 251;
-            this.com7611.SelectedIndexChanged += new System.EventHandler(this.com7611_SelectedIndexChanged);
-            // 
-            // comslotconfig
-            // 
-            this.comslotconfig.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.comslotconfig.FormattingEnabled = true;
-            this.comslotconfig.Location = new System.Drawing.Point(52, 28);
-            this.comslotconfig.Name = "comslotconfig";
-            this.comslotconfig.Size = new System.Drawing.Size(231, 20);
-            this.comslotconfig.TabIndex = 147;
-            this.comslotconfig.SelectedIndexChanged += new System.EventHandler(this.comslotconfig_SelectedIndexChanged);
-            // 
-            // com7610
-            // 
-            this.com7610.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.com7610.FormattingEnabled = true;
-            this.com7610.Location = new System.Drawing.Point(52, 350);
-            this.com7610.Name = "com7610";
-            this.com7610.Size = new System.Drawing.Size(231, 20);
-            this.com7610.TabIndex = 250;
-            this.com7610.SelectedIndexChanged += new System.EventHandler(this.com7610_SelectedIndexChanged);
-            // 
-            // labdbname
-            // 
-            this.labdbname.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.labdbname.AutoSize = true;
-            this.labdbname.BackColor = System.Drawing.Color.Transparent;
-            this.labdbname.Location = new System.Drawing.Point(10, 51);
-            this.labdbname.Name = "labdbname";
-            this.labdbname.Size = new System.Drawing.Size(17, 12);
-            this.labdbname.TabIndex = 148;
-            this.labdbname.Text = "DB";
-            // 
-            // labconfigname
-            // 
-            this.labconfigname.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.labconfigname.AutoSize = true;
-            this.labconfigname.BackColor = System.Drawing.Color.Transparent;
-            this.labconfigname.Location = new System.Drawing.Point(4, 13);
-            this.labconfigname.Name = "labconfigname";
-            this.labconfigname.Size = new System.Drawing.Size(41, 12);
-            this.labconfigname.TabIndex = 149;
-            this.labconfigname.Text = "Config";
-            // 
-            // labslotname
-            // 
-            this.labslotname.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.labslotname.BackColor = System.Drawing.Color.Transparent;
-            this.labslotname.Location = new System.Drawing.Point(7, 33);
-            this.labslotname.Name = "labslotname";
-            this.labslotname.Size = new System.Drawing.Size(32, 18);
-            this.labslotname.TabIndex = 150;
-            this.labslotname.Text = "Slot";
-            // 
-            // com760s
-            // 
-            this.com760s.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.com760s.FormattingEnabled = true;
-            this.com760s.Location = new System.Drawing.Point(52, 237);
-            this.com760s.Name = "com760s";
-            this.com760s.Size = new System.Drawing.Size(231, 20);
-            this.com760s.TabIndex = 153;
-            this.com760s.SelectedIndexChanged += new System.EventHandler(this.com760s_SelectedIndexChanged);
-            // 
-            // com760b
-            // 
-            this.com760b.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.com760b.FormattingEnabled = true;
-            this.com760b.Location = new System.Drawing.Point(52, 255);
-            this.com760b.Name = "com760b";
-            this.com760b.Size = new System.Drawing.Size(231, 20);
-            this.com760b.TabIndex = 154;
-            this.com760b.SelectedIndexChanged += new System.EventHandler(this.com760b_SelectedIndexChanged);
-            // 
-            // com760c
-            // 
-            this.com760c.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.com760c.FormattingEnabled = true;
-            this.com760c.Location = new System.Drawing.Point(52, 274);
-            this.com760c.Name = "com760c";
-            this.com760c.Size = new System.Drawing.Size(231, 20);
-            this.com760c.TabIndex = 155;
-            this.com760c.SelectedIndexChanged += new System.EventHandler(this.com760c_SelectedIndexChanged);
-            // 
-            // com760d
-            // 
-            this.com760d.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.com760d.FormattingEnabled = true;
-            this.com760d.Location = new System.Drawing.Point(52, 293);
-            this.com760d.Name = "com760d";
-            this.com760d.Size = new System.Drawing.Size(231, 20);
-            this.com760d.TabIndex = 156;
-            this.com760d.SelectedIndexChanged += new System.EventHandler(this.com760d_SelectedIndexChanged);
-            // 
-            // lab760sname
-            // 
-            this.lab760sname.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lab760sname.AutoSize = true;
-            this.lab760sname.BackColor = System.Drawing.Color.Transparent;
-            this.lab760sname.Location = new System.Drawing.Point(7, 239);
-            this.lab760sname.Name = "lab760sname";
-            this.lab760sname.Size = new System.Drawing.Size(29, 12);
-            this.lab760sname.TabIndex = 157;
-            this.lab760sname.Text = "760S";
-            // 
-            // lab760bname
-            // 
-            this.lab760bname.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lab760bname.AutoSize = true;
-            this.lab760bname.BackColor = System.Drawing.Color.Transparent;
-            this.lab760bname.Location = new System.Drawing.Point(7, 258);
-            this.lab760bname.Name = "lab760bname";
-            this.lab760bname.Size = new System.Drawing.Size(29, 12);
-            this.lab760bname.TabIndex = 158;
-            this.lab760bname.Text = "760B";
-            // 
-            // labuxc
-            // 
-            this.labuxc.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.labuxc.AutoSize = true;
-            this.labuxc.BackColor = System.Drawing.Color.Transparent;
-            this.labuxc.Location = new System.Drawing.Point(308, 335);
-            this.labuxc.Name = "labuxc";
-            this.labuxc.Size = new System.Drawing.Size(17, 12);
-            this.labuxc.TabIndex = 239;
-            this.labuxc.Text = "空";
-            // 
-            // lab760cname
-            // 
-            this.lab760cname.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lab760cname.AutoSize = true;
-            this.lab760cname.BackColor = System.Drawing.Color.Transparent;
-            this.lab760cname.Location = new System.Drawing.Point(7, 277);
-            this.lab760cname.Name = "lab760cname";
-            this.lab760cname.Size = new System.Drawing.Size(29, 12);
-            this.lab760cname.TabIndex = 159;
-            this.lab760cname.Text = "760C";
-            // 
-            // checkuxc
-            // 
-            this.checkuxc.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkuxc.BackColor = System.Drawing.Color.Transparent;
-            this.checkuxc.Location = new System.Drawing.Point(292, 335);
-            this.checkuxc.Name = "checkuxc";
-            this.checkuxc.Size = new System.Drawing.Size(15, 14);
-            this.checkuxc.TabIndex = 238;
-            this.checkuxc.UseVisualStyleBackColor = false;
-            // 
-            // lab760dname
-            // 
-            this.lab760dname.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lab760dname.AutoSize = true;
-            this.lab760dname.BackColor = System.Drawing.Color.Transparent;
-            this.lab760dname.Location = new System.Drawing.Point(7, 295);
-            this.lab760dname.Name = "lab760dname";
-            this.lab760dname.Size = new System.Drawing.Size(29, 12);
-            this.lab760dname.TabIndex = 160;
-            this.lab760dname.Text = "760D";
-            // 
-            // lab760uxcname
-            // 
-            this.lab760uxcname.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lab760uxcname.AutoSize = true;
-            this.lab760uxcname.BackColor = System.Drawing.Color.Transparent;
-            this.lab760uxcname.Location = new System.Drawing.Point(10, 335);
-            this.lab760uxcname.Name = "lab760uxcname";
-            this.lab760uxcname.Size = new System.Drawing.Size(23, 12);
-            this.lab760uxcname.TabIndex = 237;
-            this.lab760uxcname.Text = "UXC";
-            // 
-            // com760e
-            // 
-            this.com760e.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.com760e.FormattingEnabled = true;
-            this.com760e.Location = new System.Drawing.Point(52, 312);
-            this.com760e.Name = "com760e";
-            this.com760e.Size = new System.Drawing.Size(231, 20);
-            this.com760e.TabIndex = 161;
-            this.com760e.SelectedIndexChanged += new System.EventHandler(this.com760e_SelectedIndexChanged);
-            // 
-            // comuxc
-            // 
-            this.comuxc.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.comuxc.FormattingEnabled = true;
-            this.comuxc.Location = new System.Drawing.Point(52, 331);
-            this.comuxc.Name = "comuxc";
-            this.comuxc.Size = new System.Drawing.Size(231, 20);
-            this.comuxc.TabIndex = 236;
-            this.comuxc.SelectedIndexChanged += new System.EventHandler(this.comuxc_SelectedIndexChanged);
-            // 
-            // lab760ename
-            // 
-            this.lab760ename.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lab760ename.AutoSize = true;
-            this.lab760ename.BackColor = System.Drawing.Color.Transparent;
-            this.lab760ename.Location = new System.Drawing.Point(7, 315);
-            this.lab760ename.Name = "lab760ename";
-            this.lab760ename.Size = new System.Drawing.Size(29, 12);
-            this.lab760ename.TabIndex = 162;
-            this.lab760ename.Text = "760E";
-            // 
-            // checkapp
-            // 
-            this.checkapp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkapp.BackColor = System.Drawing.Color.Transparent;
-            this.checkapp.Location = new System.Drawing.Point(292, 69);
-            this.checkapp.Name = "checkapp";
-            this.checkapp.Size = new System.Drawing.Size(15, 14);
-            this.checkapp.TabIndex = 163;
-            this.checkapp.UseVisualStyleBackColor = true;
-            // 
-            // checkcode
-            // 
-            this.checkcode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkcode.BackColor = System.Drawing.Color.Transparent;
-            this.checkcode.Location = new System.Drawing.Point(292, 107);
-            this.checkcode.Name = "checkcode";
-            this.checkcode.Size = new System.Drawing.Size(15, 14);
-            this.checkcode.TabIndex = 164;
-            this.checkcode.UseVisualStyleBackColor = false;
-            // 
-            // checknms
-            // 
-            this.checknms.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.checknms.BackColor = System.Drawing.Color.Transparent;
-            this.checknms.Location = new System.Drawing.Point(292, 202);
-            this.checknms.Name = "checknms";
-            this.checknms.Size = new System.Drawing.Size(15, 14);
-            this.checknms.TabIndex = 165;
-            this.checknms.UseVisualStyleBackColor = false;
-            // 
-            // labdb
-            // 
-            this.labdb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.labdb.AutoSize = true;
-            this.labdb.BackColor = System.Drawing.Color.Transparent;
-            this.labdb.Location = new System.Drawing.Point(308, 52);
-            this.labdb.Name = "labdb";
-            this.labdb.Size = new System.Drawing.Size(17, 12);
-            this.labdb.TabIndex = 226;
-            this.labdb.Text = "空";
-            // 
-            // checksw
-            // 
-            this.checksw.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.checksw.BackColor = System.Drawing.Color.Transparent;
-            this.checksw.Location = new System.Drawing.Point(292, 222);
-            this.checksw.Name = "checksw";
-            this.checksw.Size = new System.Drawing.Size(15, 14);
-            this.checksw.TabIndex = 166;
-            this.checksw.UseVisualStyleBackColor = false;
-            // 
-            // labslotconfig
-            // 
-            this.labslotconfig.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.labslotconfig.AutoSize = true;
-            this.labslotconfig.BackColor = System.Drawing.Color.Transparent;
-            this.labslotconfig.Location = new System.Drawing.Point(308, 33);
-            this.labslotconfig.Name = "labslotconfig";
-            this.labslotconfig.Size = new System.Drawing.Size(17, 12);
-            this.labslotconfig.TabIndex = 225;
-            this.labslotconfig.Text = "空";
-            // 
-            // check760s
-            // 
-            this.check760s.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.check760s.BackColor = System.Drawing.Color.Transparent;
-            this.check760s.Location = new System.Drawing.Point(292, 240);
-            this.check760s.Name = "check760s";
-            this.check760s.Size = new System.Drawing.Size(15, 14);
-            this.check760s.TabIndex = 167;
-            this.check760s.UseVisualStyleBackColor = false;
-            // 
-            // labconfig
-            // 
-            this.labconfig.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.labconfig.AutoSize = true;
-            this.labconfig.BackColor = System.Drawing.Color.Transparent;
-            this.labconfig.Location = new System.Drawing.Point(308, 14);
-            this.labconfig.Name = "labconfig";
-            this.labconfig.Size = new System.Drawing.Size(17, 12);
-            this.labconfig.TabIndex = 224;
-            this.labconfig.Text = "空";
-            // 
-            // check760b
-            // 
-            this.check760b.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.check760b.BackColor = System.Drawing.Color.Transparent;
-            this.check760b.Location = new System.Drawing.Point(292, 259);
-            this.check760b.Name = "check760b";
-            this.check760b.Size = new System.Drawing.Size(15, 14);
-            this.check760b.TabIndex = 168;
-            this.check760b.UseVisualStyleBackColor = false;
-            // 
-            // checkdb
-            // 
-            this.checkdb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkdb.BackColor = System.Drawing.Color.Transparent;
-            this.checkdb.Location = new System.Drawing.Point(292, 50);
-            this.checkdb.Name = "checkdb";
-            this.checkdb.Size = new System.Drawing.Size(15, 14);
-            this.checkdb.TabIndex = 223;
-            this.checkdb.UseVisualStyleBackColor = false;
-            // 
-            // check760c
-            // 
-            this.check760c.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.check760c.BackColor = System.Drawing.Color.Transparent;
-            this.check760c.Location = new System.Drawing.Point(292, 276);
-            this.check760c.Name = "check760c";
-            this.check760c.Size = new System.Drawing.Size(15, 14);
-            this.check760c.TabIndex = 169;
-            this.check760c.UseVisualStyleBackColor = false;
-            // 
-            // checkslotconfig
-            // 
-            this.checkslotconfig.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkslotconfig.BackColor = System.Drawing.Color.Transparent;
-            this.checkslotconfig.Location = new System.Drawing.Point(292, 32);
-            this.checkslotconfig.Name = "checkslotconfig";
-            this.checkslotconfig.Size = new System.Drawing.Size(15, 14);
-            this.checkslotconfig.TabIndex = 222;
-            this.checkslotconfig.UseVisualStyleBackColor = false;
-            // 
-            // check760d
-            // 
-            this.check760d.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.check760d.BackColor = System.Drawing.Color.Transparent;
-            this.check760d.Location = new System.Drawing.Point(292, 296);
-            this.check760d.Name = "check760d";
-            this.check760d.Size = new System.Drawing.Size(15, 14);
-            this.check760d.TabIndex = 170;
-            this.check760d.UseVisualStyleBackColor = false;
-            // 
-            // checkconfig
-            // 
-            this.checkconfig.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkconfig.BackColor = System.Drawing.Color.Transparent;
-            this.checkconfig.Location = new System.Drawing.Point(292, 13);
-            this.checkconfig.Name = "checkconfig";
-            this.checkconfig.Size = new System.Drawing.Size(15, 14);
-            this.checkconfig.TabIndex = 221;
-            this.checkconfig.UseVisualStyleBackColor = true;
-            // 
-            // check760e
-            // 
-            this.check760e.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.check760e.BackColor = System.Drawing.Color.Transparent;
-            this.check760e.Location = new System.Drawing.Point(292, 317);
-            this.check760e.Name = "check760e";
-            this.check760e.Size = new System.Drawing.Size(15, 14);
-            this.check760e.TabIndex = 171;
-            this.check760e.UseVisualStyleBackColor = false;
-            // 
-            // labyaffs
-            // 
-            this.labyaffs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.labyaffs.AutoSize = true;
-            this.labyaffs.BackColor = System.Drawing.Color.Transparent;
-            this.labyaffs.Location = new System.Drawing.Point(308, 563);
-            this.labyaffs.Name = "labyaffs";
-            this.labyaffs.Size = new System.Drawing.Size(17, 12);
-            this.labyaffs.TabIndex = 220;
-            this.labyaffs.Text = "空";
-            // 
-            // comsysfile
-            // 
-            this.comsysfile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.comsysfile.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.comsysfile.FormattingEnabled = true;
-            this.comsysfile.Location = new System.Drawing.Point(52, 464);
-            this.comsysfile.Name = "comsysfile";
-            this.comsysfile.Size = new System.Drawing.Size(231, 20);
-            this.comsysfile.TabIndex = 172;
-            this.comsysfile.SelectedIndexChanged += new System.EventHandler(this.comsysfile_SelectedIndexChanged);
-            // 
-            // labflash
-            // 
-            this.labflash.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.labflash.AutoSize = true;
-            this.labflash.BackColor = System.Drawing.Color.Transparent;
-            this.labflash.Location = new System.Drawing.Point(308, 544);
-            this.labflash.Name = "labflash";
-            this.labflash.Size = new System.Drawing.Size(17, 12);
-            this.labflash.TabIndex = 219;
-            this.labflash.Text = "空";
-            // 
-            // labsysfilename
-            // 
-            this.labsysfilename.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.labsysfilename.AutoSize = true;
-            this.labsysfilename.BackColor = System.Drawing.Color.Transparent;
-            this.labsysfilename.Location = new System.Drawing.Point(2, 469);
-            this.labsysfilename.Name = "labsysfilename";
-            this.labsysfilename.Size = new System.Drawing.Size(47, 12);
-            this.labsysfilename.TabIndex = 173;
-            this.labsysfilename.Text = "SYSFILE";
-            // 
-            // labsysfile
-            // 
-            this.labsysfile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.labsysfile.AutoSize = true;
-            this.labsysfile.BackColor = System.Drawing.Color.Transparent;
-            this.labsysfile.Location = new System.Drawing.Point(308, 469);
-            this.labsysfile.Name = "labsysfile";
-            this.labsysfile.Size = new System.Drawing.Size(17, 12);
-            this.labsysfile.TabIndex = 218;
-            this.labsysfile.Text = "空";
-            // 
-            // checksysfile
-            // 
-            this.checksysfile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.checksysfile.BackColor = System.Drawing.Color.Transparent;
-            this.checksysfile.Location = new System.Drawing.Point(292, 468);
-            this.checksysfile.Name = "checksysfile";
-            this.checksysfile.Size = new System.Drawing.Size(15, 14);
-            this.checksysfile.TabIndex = 174;
-            this.checksysfile.UseVisualStyleBackColor = false;
-            // 
-            // lab760e
-            // 
-            this.lab760e.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lab760e.AutoSize = true;
-            this.lab760e.BackColor = System.Drawing.Color.Transparent;
-            this.lab760e.Location = new System.Drawing.Point(308, 317);
-            this.lab760e.Name = "lab760e";
-            this.lab760e.Size = new System.Drawing.Size(17, 12);
-            this.lab760e.TabIndex = 217;
-            this.lab760e.Text = "空";
-            // 
-            // lab760d
-            // 
-            this.lab760d.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lab760d.AutoSize = true;
-            this.lab760d.BackColor = System.Drawing.Color.Transparent;
-            this.lab760d.Location = new System.Drawing.Point(308, 296);
-            this.lab760d.Name = "lab760d";
-            this.lab760d.Size = new System.Drawing.Size(17, 12);
-            this.lab760d.TabIndex = 216;
-            this.lab760d.Text = "空";
-            // 
-            // comgpn76list
-            // 
-            this.comgpn76list.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.comgpn76list.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.comgpn76list.FormattingEnabled = true;
-            this.comgpn76list.Location = new System.Drawing.Point(52, 578);
-            this.comgpn76list.Name = "comgpn76list";
-            this.comgpn76list.Size = new System.Drawing.Size(316, 20);
-            this.comgpn76list.TabIndex = 198;
-            // 
-            // lab760c
-            // 
-            this.lab760c.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lab760c.AutoSize = true;
-            this.lab760c.BackColor = System.Drawing.Color.Transparent;
-            this.lab760c.Location = new System.Drawing.Point(308, 279);
-            this.lab760c.Name = "lab760c";
-            this.lab760c.Size = new System.Drawing.Size(17, 12);
-            this.lab760c.TabIndex = 215;
-            this.lab760c.Text = "空";
-            // 
-            // label24
-            // 
-            this.label24.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label24.AutoSize = true;
-            this.label24.BackColor = System.Drawing.Color.Transparent;
-            this.label24.Location = new System.Drawing.Point(3, 583);
-            this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(41, 12);
-            this.label24.TabIndex = 199;
-            this.label24.Text = "76网管";
-            // 
-            // lab760b
-            // 
-            this.lab760b.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lab760b.AutoSize = true;
-            this.lab760b.BackColor = System.Drawing.Color.Transparent;
-            this.lab760b.Location = new System.Drawing.Point(308, 260);
-            this.lab760b.Name = "lab760b";
-            this.lab760b.Size = new System.Drawing.Size(17, 12);
-            this.lab760b.TabIndex = 214;
-            this.lab760b.Text = "空";
-            // 
-            // comflash
-            // 
-            this.comflash.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.comflash.FormattingEnabled = true;
-            this.comflash.Location = new System.Drawing.Point(52, 540);
-            this.comflash.Name = "comflash";
-            this.comflash.Size = new System.Drawing.Size(231, 20);
-            this.comflash.TabIndex = 201;
-            this.comflash.SelectedIndexChanged += new System.EventHandler(this.comflash_SelectedIndexChanged);
-            // 
-            // lab760s
-            // 
-            this.lab760s.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lab760s.AutoSize = true;
-            this.lab760s.BackColor = System.Drawing.Color.Transparent;
-            this.lab760s.Location = new System.Drawing.Point(308, 241);
-            this.lab760s.Name = "lab760s";
-            this.lab760s.Size = new System.Drawing.Size(17, 12);
-            this.lab760s.TabIndex = 213;
-            this.lab760s.Text = "空";
-            // 
-            // labflashname
-            // 
-            this.labflashname.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.labflashname.AutoSize = true;
-            this.labflashname.BackColor = System.Drawing.Color.Transparent;
-            this.labflashname.Location = new System.Drawing.Point(4, 545);
-            this.labflashname.Name = "labflashname";
-            this.labflashname.Size = new System.Drawing.Size(35, 12);
-            this.labflashname.TabIndex = 202;
-            this.labflashname.Text = "FLASH";
-            // 
-            // labsw
-            // 
-            this.labsw.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.labsw.AutoSize = true;
-            this.labsw.BackColor = System.Drawing.Color.Transparent;
-            this.labsw.Location = new System.Drawing.Point(308, 223);
-            this.labsw.Name = "labsw";
-            this.labsw.Size = new System.Drawing.Size(17, 12);
-            this.labsw.TabIndex = 212;
-            this.labsw.Text = "空";
-            // 
-            // checkflash
-            // 
-            this.checkflash.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkflash.BackColor = System.Drawing.Color.Transparent;
-            this.checkflash.Location = new System.Drawing.Point(292, 544);
-            this.checkflash.Name = "checkflash";
-            this.checkflash.Size = new System.Drawing.Size(15, 14);
-            this.checkflash.TabIndex = 203;
-            this.checkflash.UseVisualStyleBackColor = false;
-            // 
-            // labnms
-            // 
-            this.labnms.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.labnms.AutoSize = true;
-            this.labnms.BackColor = System.Drawing.Color.Transparent;
-            this.labnms.Location = new System.Drawing.Point(308, 203);
-            this.labnms.Name = "labnms";
-            this.labnms.Size = new System.Drawing.Size(17, 12);
-            this.labnms.TabIndex = 211;
-            this.labnms.Text = "空";
-            // 
-            // comyaffs
-            // 
-            this.comyaffs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.comyaffs.FormattingEnabled = true;
-            this.comyaffs.Location = new System.Drawing.Point(52, 559);
-            this.comyaffs.Name = "comyaffs";
-            this.comyaffs.Size = new System.Drawing.Size(231, 20);
-            this.comyaffs.TabIndex = 204;
-            this.comyaffs.SelectedIndexChanged += new System.EventHandler(this.comyaffs_SelectedIndexChanged);
-            // 
-            // labcode
-            // 
-            this.labcode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.labcode.AutoSize = true;
-            this.labcode.BackColor = System.Drawing.Color.Transparent;
-            this.labcode.Location = new System.Drawing.Point(308, 109);
-            this.labcode.Name = "labcode";
-            this.labcode.Size = new System.Drawing.Size(17, 12);
-            this.labcode.TabIndex = 210;
-            this.labcode.Text = "空";
-            // 
-            // labyaffsname
-            // 
-            this.labyaffsname.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.labyaffsname.AutoSize = true;
-            this.labyaffsname.BackColor = System.Drawing.Color.Transparent;
-            this.labyaffsname.Location = new System.Drawing.Point(4, 564);
-            this.labyaffsname.Name = "labyaffsname";
-            this.labyaffsname.Size = new System.Drawing.Size(35, 12);
-            this.labyaffsname.TabIndex = 205;
-            this.labyaffsname.Text = "YAFFS";
-            // 
-            // labapp
-            // 
-            this.labapp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.labapp.AutoSize = true;
-            this.labapp.BackColor = System.Drawing.Color.Transparent;
-            this.labapp.Location = new System.Drawing.Point(308, 71);
-            this.labapp.Name = "labapp";
-            this.labapp.Size = new System.Drawing.Size(17, 12);
-            this.labapp.TabIndex = 208;
-            this.labapp.Text = "空";
-            // 
-            // checkyaffs
-            // 
-            this.checkyaffs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkyaffs.BackColor = System.Drawing.Color.Transparent;
-            this.checkyaffs.Location = new System.Drawing.Point(292, 564);
-            this.checkyaffs.Name = "checkyaffs";
-            this.checkyaffs.Size = new System.Drawing.Size(15, 14);
-            this.checkyaffs.TabIndex = 206;
-            this.checkyaffs.UseVisualStyleBackColor = false;
             // 
             // butbatchip
             // 
@@ -3404,9 +3544,9 @@
             this.butbatchip.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.butbatchip.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.butbatchip.ForeColor = System.Drawing.Color.White;
-            this.butbatchip.Location = new System.Drawing.Point(851, 520);
+            this.butbatchip.Location = new System.Drawing.Point(695, 546);
             this.butbatchip.Name = "butbatchip";
-            this.butbatchip.Size = new System.Drawing.Size(86, 34);
+            this.butbatchip.Size = new System.Drawing.Size(122, 34);
             this.butbatchip.TabIndex = 249;
             this.butbatchip.Text = "添加ip地址到表格";
             this.butbatchip.UseVisualStyleBackColor = false;
@@ -3415,21 +3555,21 @@
             // DGVSTATUS
             // 
             this.DGVSTATUS.AllowUserToAddRows = false;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.DGVSTATUS.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.DGVSTATUS.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle11;
             this.DGVSTATUS.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.DGVSTATUS.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.DGVSTATUS.BackgroundColor = System.Drawing.Color.LightSteelBlue;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.DGVSTATUS.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle12.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle12.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle12.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle12.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle12.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.DGVSTATUS.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle12;
             this.DGVSTATUS.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.ip地址,
             this.设备类型,
@@ -3441,30 +3581,30 @@
             this.保存,
             this.当前版本});
             this.DGVSTATUS.ContextMenuStrip = this.metroContextMenu;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.DGVSTATUS.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle13.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle13.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle13.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle13.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle13.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle13.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.DGVSTATUS.DefaultCellStyle = dataGridViewCellStyle13;
             this.DGVSTATUS.Location = new System.Drawing.Point(0, 0);
             this.DGVSTATUS.Name = "DGVSTATUS";
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.DGVSTATUS.RowHeadersDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle14.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle14.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle14.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle14.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle14.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle14.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.DGVSTATUS.RowHeadersDefaultCellStyle = dataGridViewCellStyle14;
             this.DGVSTATUS.RowHeadersVisible = false;
             this.DGVSTATUS.RowHeadersWidth = 82;
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopCenter;
-            this.DGVSTATUS.RowsDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopCenter;
+            this.DGVSTATUS.RowsDefaultCellStyle = dataGridViewCellStyle15;
             this.DGVSTATUS.RowTemplate.Height = 23;
-            this.DGVSTATUS.Size = new System.Drawing.Size(938, 419);
+            this.DGVSTATUS.Size = new System.Drawing.Size(934, 419);
             this.DGVSTATUS.TabIndex = 245;
             this.DGVSTATUS.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.DGVSTATUS_EditingControlShowing);
             // 
@@ -3566,7 +3706,7 @@
             "2",
             "5",
             "10"});
-            this.compingcount.Location = new System.Drawing.Point(700, 520);
+            this.compingcount.Location = new System.Drawing.Point(518, 547);
             this.compingcount.Name = "compingcount";
             this.compingcount.Size = new System.Drawing.Size(61, 33);
             this.compingcount.TabIndex = 233;
@@ -3579,7 +3719,7 @@
             this.comip.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.comip.ForeColor = System.Drawing.Color.Gray;
             this.comip.FormattingEnabled = true;
-            this.comip.Location = new System.Drawing.Point(452, 520);
+            this.comip.Location = new System.Drawing.Point(270, 547);
             this.comip.Name = "comip";
             this.comip.Size = new System.Drawing.Size(249, 33);
             this.comip.TabIndex = 193;
@@ -3595,7 +3735,7 @@
             this.butsend.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.butsend.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.butsend.ForeColor = System.Drawing.Color.White;
-            this.butsend.Location = new System.Drawing.Point(763, 554);
+            this.butsend.Location = new System.Drawing.Point(581, 581);
             this.butsend.Name = "butsend";
             this.butsend.Size = new System.Drawing.Size(86, 34);
             this.butsend.TabIndex = 101;
@@ -3616,7 +3756,7 @@
             this.textDOS.Multiline = true;
             this.textDOS.Name = "textDOS";
             this.textDOS.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textDOS.Size = new System.Drawing.Size(938, 100);
+            this.textDOS.Size = new System.Drawing.Size(934, 100);
             this.textDOS.TabIndex = 5;
             this.textDOS.TextChanged += new System.EventHandler(this.textDOS_TextChanged);
             this.textDOS.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textcom_KeyDown);
@@ -3628,7 +3768,7 @@
             this.textcom.Enabled = false;
             this.textcom.Font = new System.Drawing.Font("微软雅黑", 14.25F);
             this.textcom.ForeColor = System.Drawing.Color.Gray;
-            this.textcom.Location = new System.Drawing.Point(452, 555);
+            this.textcom.Location = new System.Drawing.Point(270, 582);
             this.textcom.Multiline = true;
             this.textcom.Name = "textcom";
             this.textcom.Size = new System.Drawing.Size(309, 32);
@@ -3644,7 +3784,7 @@
             this.buttbatchupload.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttbatchupload.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.buttbatchupload.ForeColor = System.Drawing.Color.White;
-            this.buttbatchupload.Location = new System.Drawing.Point(763, 588);
+            this.buttbatchupload.Location = new System.Drawing.Point(848, 546);
             this.buttbatchupload.Name = "buttbatchupload";
             this.buttbatchupload.Size = new System.Drawing.Size(86, 34);
             this.buttbatchupload.TabIndex = 248;
@@ -3659,7 +3799,7 @@
             this.buttbatchdownload.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttbatchdownload.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.buttbatchdownload.ForeColor = System.Drawing.Color.White;
-            this.buttbatchdownload.Location = new System.Drawing.Point(851, 588);
+            this.buttbatchdownload.Location = new System.Drawing.Point(848, 580);
             this.buttbatchdownload.Name = "buttbatchdownload";
             this.buttbatchdownload.Size = new System.Drawing.Size(86, 34);
             this.buttbatchdownload.TabIndex = 246;
@@ -3667,50 +3807,27 @@
             this.buttbatchdownload.UseVisualStyleBackColor = false;
             this.buttbatchdownload.Click += new System.EventHandler(this.buttbatchdownload_Click);
             // 
-            // butinstall
+            // label9
             // 
-            this.butinstall.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butinstall.BackColor = System.Drawing.Color.DodgerBlue;
-            this.butinstall.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.butinstall.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.butinstall.ForeColor = System.Drawing.Color.White;
-            this.butinstall.Location = new System.Drawing.Point(542, 588);
-            this.butinstall.Name = "butinstall";
-            this.butinstall.Size = new System.Drawing.Size(86, 34);
-            this.butinstall.TabIndex = 194;
-            this.butinstall.Text = "安装GPN模块";
-            this.butinstall.UseVisualStyleBackColor = false;
-            this.butinstall.Click += new System.EventHandler(this.butinstall_Click);
+            this.label9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label9.AutoSize = true;
+            this.label9.BackColor = System.Drawing.Color.Transparent;
+            this.label9.Font = new System.Drawing.Font("黑体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label9.Location = new System.Drawing.Point(934, 35);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(64, 16);
+            this.label9.TabIndex = 128;
+            this.label9.Text = "FTP地址";
             // 
-            // butuninstall
+            // comftpip
             // 
-            this.butuninstall.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butuninstall.BackColor = System.Drawing.Color.DodgerBlue;
-            this.butuninstall.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.butuninstall.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.butuninstall.ForeColor = System.Drawing.Color.White;
-            this.butuninstall.Location = new System.Drawing.Point(452, 588);
-            this.butuninstall.Name = "butuninstall";
-            this.butuninstall.Size = new System.Drawing.Size(86, 34);
-            this.butuninstall.TabIndex = 195;
-            this.butuninstall.Text = "卸载GPN模块";
-            this.butuninstall.UseVisualStyleBackColor = false;
-            this.butuninstall.Click += new System.EventHandler(this.butuninstall_Click);
-            // 
-            // butbatch
-            // 
-            this.butbatch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butbatch.BackColor = System.Drawing.Color.DodgerBlue;
-            this.butbatch.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.butbatch.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.butbatch.ForeColor = System.Drawing.Color.White;
-            this.butbatch.Location = new System.Drawing.Point(851, 554);
-            this.butbatch.Name = "butbatch";
-            this.butbatch.Size = new System.Drawing.Size(86, 34);
-            this.butbatch.TabIndex = 192;
-            this.butbatch.Text = "其他功能";
-            this.butbatch.UseVisualStyleBackColor = false;
-            this.butbatch.Click += new System.EventHandler(this.Butbatch_Click);
+            this.comftpip.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.comftpip.Font = new System.Drawing.Font("黑体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.comftpip.FormattingEnabled = true;
+            this.comftpip.Location = new System.Drawing.Point(1004, 32);
+            this.comftpip.Name = "comftpip";
+            this.comftpip.Size = new System.Drawing.Size(134, 24);
+            this.comftpip.TabIndex = 140;
             // 
             // butrefresh
             // 
@@ -5725,45 +5842,45 @@
             // GridOtn
             // 
             this.GridOtn.AllowUserToAddRows = false;
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.GridOtn.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.GridOtn.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.GridOtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.GridOtn.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.GridOtn.BackgroundColor = System.Drawing.Color.LightSteelBlue;
             this.GridOtn.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle7.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.GridOtn.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.GridOtn.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.GridOtn.ContextMenuStrip = this.metroContextMenu;
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle8.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle8.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.GridOtn.DefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.GridOtn.DefaultCellStyle = dataGridViewCellStyle3;
             this.GridOtn.Location = new System.Drawing.Point(2, 138);
             this.GridOtn.Name = "GridOtn";
-            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle9.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle9.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle9.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle9.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle9.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.GridOtn.RowHeadersDefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.GridOtn.RowHeadersDefaultCellStyle = dataGridViewCellStyle4;
             this.GridOtn.RowHeadersVisible = false;
             this.GridOtn.RowHeadersWidth = 82;
-            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopCenter;
-            this.GridOtn.RowsDefaultCellStyle = dataGridViewCellStyle10;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopCenter;
+            this.GridOtn.RowsDefaultCellStyle = dataGridViewCellStyle5;
             this.GridOtn.RowTemplate.Height = 23;
             this.GridOtn.Size = new System.Drawing.Size(1022, 484);
             this.GridOtn.TabIndex = 246;
@@ -5794,6 +5911,31 @@
             this.groupBox10.TabIndex = 232;
             this.groupBox10.TabStop = false;
             this.groupBox10.Text = "业务排查  拓扑图";
+            // 
+            // label27
+            // 
+            this.label27.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label27.AutoSize = true;
+            this.label27.BackColor = System.Drawing.Color.Transparent;
+            this.label27.Font = new System.Drawing.Font("微软雅黑", 22F, System.Drawing.FontStyle.Bold);
+            this.label27.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.label27.Location = new System.Drawing.Point(1179, 21);
+            this.label27.Name = "label27";
+            this.label27.Size = new System.Drawing.Size(107, 80);
+            this.label27.TabIndex = 266;
+            this.label27.Text = "传输网\r\n  设备";
+            // 
+            // label25
+            // 
+            this.label25.AutoSize = true;
+            this.label25.BackColor = System.Drawing.Color.Transparent;
+            this.label25.Font = new System.Drawing.Font("微软雅黑", 22F, System.Drawing.FontStyle.Bold);
+            this.label25.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.label25.Location = new System.Drawing.Point(14, 20);
+            this.label25.Name = "label25";
+            this.label25.Size = new System.Drawing.Size(77, 80);
+            this.label25.TabIndex = 265;
+            this.label25.Text = "用户\r\n设备";
             // 
             // button3
             // 
@@ -6707,10 +6849,8 @@
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.BackColor = System.Drawing.Color.LightCyan;
-            this.panel1.Controls.Add(this.label22);
             this.panel1.Controls.Add(this.myProgressBarjindu);
-            this.panel1.Controls.Add(this.toolStripStatusLabellinkstat);
-            this.panel1.Controls.Add(this.toolStripStatusLabelreq);
+            this.panel1.Controls.Add(this.toolStripStatusLabelFTP);
             this.panel1.Controls.Add(this.toolStripStatusLabeltem);
             this.panel1.Controls.Add(this.toolStripStatusLabelmem);
             this.panel1.Controls.Add(this.toolStripStatusLabelcpu);
@@ -6731,19 +6871,6 @@
             this.panel1.TabIndex = 300;
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
             // 
-            // label22
-            // 
-            this.label22.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label22.AutoSize = true;
-            this.label22.BackColor = System.Drawing.Color.Transparent;
-            this.label22.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.label22.ForeColor = System.Drawing.Color.Black;
-            this.label22.Location = new System.Drawing.Point(890, 5);
-            this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(68, 15);
-            this.label22.TabIndex = 314;
-            this.label22.Text = "FTP连接数:";
-            // 
             // myProgressBarjindu
             // 
             this.myProgressBarjindu.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
@@ -6752,31 +6879,18 @@
             this.myProgressBarjindu.Size = new System.Drawing.Size(289, 23);
             this.myProgressBarjindu.TabIndex = 313;
             // 
-            // toolStripStatusLabellinkstat
+            // toolStripStatusLabelFTP
             // 
-            this.toolStripStatusLabellinkstat.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.toolStripStatusLabellinkstat.AutoSize = true;
-            this.toolStripStatusLabellinkstat.BackColor = System.Drawing.Color.Transparent;
-            this.toolStripStatusLabellinkstat.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.toolStripStatusLabellinkstat.ForeColor = System.Drawing.Color.Black;
-            this.toolStripStatusLabellinkstat.Location = new System.Drawing.Point(974, 5);
-            this.toolStripStatusLabellinkstat.Name = "toolStripStatusLabellinkstat";
-            this.toolStripStatusLabellinkstat.Size = new System.Drawing.Size(46, 15);
-            this.toolStripStatusLabellinkstat.TabIndex = 311;
-            this.toolStripStatusLabellinkstat.Text = "未连接";
-            // 
-            // toolStripStatusLabelreq
-            // 
-            this.toolStripStatusLabelreq.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.toolStripStatusLabelreq.AutoSize = true;
-            this.toolStripStatusLabelreq.BackColor = System.Drawing.Color.Transparent;
-            this.toolStripStatusLabelreq.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.toolStripStatusLabelreq.ForeColor = System.Drawing.Color.Black;
-            this.toolStripStatusLabelreq.Location = new System.Drawing.Point(956, 5);
-            this.toolStripStatusLabelreq.Name = "toolStripStatusLabelreq";
-            this.toolStripStatusLabelreq.Size = new System.Drawing.Size(13, 15);
-            this.toolStripStatusLabelreq.TabIndex = 310;
-            this.toolStripStatusLabelreq.Text = "0";
+            this.toolStripStatusLabelFTP.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.toolStripStatusLabelFTP.AutoSize = true;
+            this.toolStripStatusLabelFTP.BackColor = System.Drawing.Color.Transparent;
+            this.toolStripStatusLabelFTP.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.toolStripStatusLabelFTP.ForeColor = System.Drawing.Color.Black;
+            this.toolStripStatusLabelFTP.Location = new System.Drawing.Point(916, 5);
+            this.toolStripStatusLabelFTP.Name = "toolStripStatusLabelFTP";
+            this.toolStripStatusLabelFTP.Size = new System.Drawing.Size(104, 15);
+            this.toolStripStatusLabelFTP.TabIndex = 312;
+            this.toolStripStatusLabelFTP.Text = "FTP服务器未启动";
             // 
             // toolStripStatusLabeltem
             // 
@@ -6908,18 +7022,18 @@
             this.toolStripStatusLabelswa11.TabIndex = 300;
             this.toolStripStatusLabelswa11.Text = "11:无";
             // 
-            // toolStripStatusLabelFTP
+            // toolStripStatusLabelreq
             // 
-            this.toolStripStatusLabelFTP.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.toolStripStatusLabelFTP.AutoSize = true;
-            this.toolStripStatusLabelFTP.BackColor = System.Drawing.Color.Transparent;
-            this.toolStripStatusLabelFTP.Font = new System.Drawing.Font("Segoe UI", 12F);
-            this.toolStripStatusLabelFTP.ForeColor = System.Drawing.Color.Black;
-            this.toolStripStatusLabelFTP.Location = new System.Drawing.Point(921, 33);
-            this.toolStripStatusLabelFTP.Name = "toolStripStatusLabelFTP";
-            this.toolStripStatusLabelFTP.Size = new System.Drawing.Size(137, 21);
-            this.toolStripStatusLabelFTP.TabIndex = 312;
-            this.toolStripStatusLabelFTP.Text = "FTP服务器未启动";
+            this.toolStripStatusLabelreq.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.toolStripStatusLabelreq.AutoSize = true;
+            this.toolStripStatusLabelreq.BackColor = System.Drawing.Color.Transparent;
+            this.toolStripStatusLabelreq.Font = new System.Drawing.Font("Segoe UI", 14F);
+            this.toolStripStatusLabelreq.ForeColor = System.Drawing.Color.Black;
+            this.toolStripStatusLabelreq.Location = new System.Drawing.Point(850, 29);
+            this.toolStripStatusLabelreq.Name = "toolStripStatusLabelreq";
+            this.toolStripStatusLabelreq.Size = new System.Drawing.Size(22, 25);
+            this.toolStripStatusLabelreq.TabIndex = 310;
+            this.toolStripStatusLabelreq.Text = "0";
             // 
             // menuStrip1
             // 
@@ -6932,7 +7046,7 @@
             this.关于软件OToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(176, 25);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(403, 25);
+            this.menuStrip1.Size = new System.Drawing.Size(391, 25);
             this.menuStrip1.TabIndex = 301;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -6960,7 +7074,7 @@
             this.新建NToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.新建NToolStripMenuItem.Name = "新建NToolStripMenuItem";
             this.新建NToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.新建NToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
+            this.新建NToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
             this.新建NToolStripMenuItem.Text = "新建(&N)";
             // 
             // 打开OToolStripMenuItem
@@ -6969,14 +7083,14 @@
             this.打开OToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.打开OToolStripMenuItem.Name = "打开OToolStripMenuItem";
             this.打开OToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.打开OToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
-            this.打开OToolStripMenuItem.Text = "打开(&O)";
+            this.打开OToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
+            this.打开OToolStripMenuItem.Text = "打开FTP文件夹(&O)";
             this.打开OToolStripMenuItem.Click += new System.EventHandler(this.butapp_Click);
             // 
             // toolStripSeparator
             // 
             this.toolStripSeparator.Name = "toolStripSeparator";
-            this.toolStripSeparator.Size = new System.Drawing.Size(189, 6);
+            this.toolStripSeparator.Size = new System.Drawing.Size(218, 6);
             // 
             // 保存ToolStripMenuItem
             // 
@@ -6984,7 +7098,7 @@
             this.保存ToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.保存ToolStripMenuItem.Name = "保存ToolStripMenuItem";
             this.保存ToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.保存ToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
+            this.保存ToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
             this.保存ToolStripMenuItem.Text = "保存串口日志";
             this.保存ToolStripMenuItem.Click += new System.EventHandler(this.保存ToolStripMenuItem_Click);
             // 
@@ -6994,20 +7108,20 @@
             this.设置ToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.设置ToolStripMenuItem.Name = "设置ToolStripMenuItem";
             this.设置ToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.设置ToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
+            this.设置ToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
             this.设置ToolStripMenuItem.Text = "保存配置记忆";
             this.设置ToolStripMenuItem.Click += new System.EventHandler(this.设置ToolStripMenuItem_Click);
             // 
             // 另存为AToolStripMenuItem
             // 
             this.另存为AToolStripMenuItem.Name = "另存为AToolStripMenuItem";
-            this.另存为AToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
+            this.另存为AToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
             this.另存为AToolStripMenuItem.Text = "另存为(&A)";
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(189, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(218, 6);
             // 
             // 打印PToolStripMenuItem
             // 
@@ -7015,7 +7129,7 @@
             this.打印PToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.打印PToolStripMenuItem.Name = "打印PToolStripMenuItem";
             this.打印PToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
-            this.打印PToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
+            this.打印PToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
             this.打印PToolStripMenuItem.Text = "打印(&P)";
             // 
             // 打印预览VToolStripMenuItem
@@ -7023,18 +7137,18 @@
             this.打印预览VToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("打印预览VToolStripMenuItem.Image")));
             this.打印预览VToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.打印预览VToolStripMenuItem.Name = "打印预览VToolStripMenuItem";
-            this.打印预览VToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
+            this.打印预览VToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
             this.打印预览VToolStripMenuItem.Text = "打印预览(&V)";
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(189, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(218, 6);
             // 
             // 退出XToolStripMenuItem
             // 
             this.退出XToolStripMenuItem.Name = "退出XToolStripMenuItem";
-            this.退出XToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
+            this.退出XToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
             this.退出XToolStripMenuItem.Text = "退出(&X)";
             // 
             // 日志LToolStripMenuItem
@@ -7067,16 +7181,47 @@
             // 软件下载SToolStripMenuItem
             // 
             this.软件下载SToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripSeparator5});
+            this.toolStripSeparator5,
+            this.卸载GPN模块ToolStripMenuItem,
+            this.安装GPN模块ToolStripMenuItem,
+            this.其他功能ToolStripMenuItem,
+            this.绿色软件下载ToolStripMenuItem});
             this.软件下载SToolStripMenuItem.Name = "软件下载SToolStripMenuItem";
-            this.软件下载SToolStripMenuItem.Size = new System.Drawing.Size(83, 21);
-            this.软件下载SToolStripMenuItem.Text = "软件下载(S)";
-            this.软件下载SToolStripMenuItem.Click += new System.EventHandler(this.获取本地软件SToolStripMenuItem_Click);
+            this.软件下载SToolStripMenuItem.Size = new System.Drawing.Size(71, 21);
+            this.软件下载SToolStripMenuItem.Text = "工具箱(T)";
             // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(57, 6);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(147, 6);
+            // 
+            // 卸载GPN模块ToolStripMenuItem
+            // 
+            this.卸载GPN模块ToolStripMenuItem.Name = "卸载GPN模块ToolStripMenuItem";
+            this.卸载GPN模块ToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+            this.卸载GPN模块ToolStripMenuItem.Text = "卸载GPN模块";
+            this.卸载GPN模块ToolStripMenuItem.Click += new System.EventHandler(this.卸载GPN模块ToolStripMenuItem_Click);
+            // 
+            // 安装GPN模块ToolStripMenuItem
+            // 
+            this.安装GPN模块ToolStripMenuItem.Name = "安装GPN模块ToolStripMenuItem";
+            this.安装GPN模块ToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+            this.安装GPN模块ToolStripMenuItem.Text = "安装GPN模块";
+            this.安装GPN模块ToolStripMenuItem.Click += new System.EventHandler(this.安装GPN模块ToolStripMenuItem_Click);
+            // 
+            // 其他功能ToolStripMenuItem
+            // 
+            this.其他功能ToolStripMenuItem.Name = "其他功能ToolStripMenuItem";
+            this.其他功能ToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+            this.其他功能ToolStripMenuItem.Text = "其他功能";
+            this.其他功能ToolStripMenuItem.Click += new System.EventHandler(this.其他功能ToolStripMenuItem_Click);
+            // 
+            // 绿色软件下载ToolStripMenuItem
+            // 
+            this.绿色软件下载ToolStripMenuItem.Name = "绿色软件下载ToolStripMenuItem";
+            this.绿色软件下载ToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+            this.绿色软件下载ToolStripMenuItem.Text = "绿色软件下载";
+            this.绿色软件下载ToolStripMenuItem.Click += new System.EventHandler(this.绿色软件下载ToolStripMenuItem_Click);
             // 
             // 关于软件OToolStripMenuItem
             // 
@@ -7092,7 +7237,7 @@
             this.LabFtpLed.BackColor = System.Drawing.Color.Transparent;
             this.LabFtpLed.Font = new System.Drawing.Font("Segoe UI", 24F);
             this.LabFtpLed.ForeColor = System.Drawing.Color.Red;
-            this.LabFtpLed.Location = new System.Drawing.Point(1061, 15);
+            this.LabFtpLed.Location = new System.Drawing.Point(767, 16);
             this.LabFtpLed.Name = "LabFtpLed";
             this.LabFtpLed.Size = new System.Drawing.Size(77, 45);
             this.LabFtpLed.TabIndex = 315;
@@ -7113,40 +7258,30 @@
             this.btnFtpServerStartStop.UseVisualStyleBackColor = false;
             this.btnFtpServerStartStop.Click += new System.EventHandler(this.BtnFtpServerStartStop_Click);
             // 
-            // label25
+            // panel2
             // 
-            this.label25.AutoSize = true;
-            this.label25.BackColor = System.Drawing.Color.Transparent;
-            this.label25.Font = new System.Drawing.Font("微软雅黑", 22F, System.Drawing.FontStyle.Bold);
-            this.label25.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.label25.Location = new System.Drawing.Point(14, 20);
-            this.label25.Name = "label25";
-            this.label25.Size = new System.Drawing.Size(77, 80);
-            this.label25.TabIndex = 265;
-            this.label25.Text = "用户\r\n设备";
-            // 
-            // label27
-            // 
-            this.label27.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label27.AutoSize = true;
-            this.label27.BackColor = System.Drawing.Color.Transparent;
-            this.label27.Font = new System.Drawing.Font("微软雅黑", 22F, System.Drawing.FontStyle.Bold);
-            this.label27.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.label27.Location = new System.Drawing.Point(1179, 21);
-            this.label27.Name = "label27";
-            this.label27.Size = new System.Drawing.Size(107, 80);
-            this.label27.TabIndex = 266;
-            this.label27.Text = "传输网\r\n  设备";
+            this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel1.SetColumnSpan(this.panel2, 3);
+            this.panel2.Controls.Add(this.comgpn76list);
+            this.panel2.Location = new System.Drawing.Point(51, 589);
+            this.panel2.Margin = new System.Windows.Forms.Padding(0);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(317, 27);
+            this.panel2.TabIndex = 315;
             // 
             // GPN
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(1362, 733);
+            this.Controls.Add(this.label9);
             this.Controls.Add(this.LabFtpLed);
+            this.Controls.Add(this.toolStripStatusLabelreq);
             this.Controls.Add(this.panel1);
-            this.Controls.Add(this.toolStripStatusLabelFTP);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.tabControlDOS);
+            this.Controls.Add(this.comftpip);
             this.Controls.Add(this.butrefresh);
             this.Controls.Add(this.btnFtpServerStartStop);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -7167,10 +7302,10 @@
             this.groupBox1.PerformLayout();
             this.tabPageGpn.ResumeLayout(false);
             this.tabPageGpn.PerformLayout();
+            this.tableLayoutPanel1.ResumeLayout(false);
+            this.tableLayoutPanel1.PerformLayout();
             this.groupBox12.ResumeLayout(false);
             this.groupBox12.PerformLayout();
-            this.groupBox7.ResumeLayout(false);
-            this.groupBox7.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DGVSTATUS)).EndInit();
             this.metroContextMenu.ResumeLayout(false);
             this.tabControlDOS.ResumeLayout(false);
@@ -7200,6 +7335,7 @@
             this.panel1.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.panel2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -7221,7 +7357,6 @@
         private System.Windows.Forms.CheckBox checksysfile;
         private System.Windows.Forms.Label labsysfilename;
         private System.Windows.Forms.ComboBox comsysfile;
-        private System.Windows.Forms.Button butbatch;
         private System.Windows.Forms.CheckBox check760e;
         private System.Windows.Forms.CheckBox check760d;
         private System.Windows.Forms.CheckBox check760c;
@@ -7241,7 +7376,6 @@
         private System.Windows.Forms.ComboBox com760c;
         private System.Windows.Forms.ComboBox com760b;
         private System.Windows.Forms.ComboBox com760s;
-        private System.Windows.Forms.Button butapp;
         private System.Windows.Forms.Label labslotname;
         private System.Windows.Forms.Label labconfigname;
         private System.Windows.Forms.Label labdbname;
@@ -7282,8 +7416,6 @@
         private System.Windows.Forms.Button butpaigu;
         private System.Windows.Forms.Button butsyslog;
         private System.Windows.Forms.ComboBox comip;
-        private System.Windows.Forms.Button butuninstall;
-        private System.Windows.Forms.Button butinstall;
         private System.Windows.Forms.ComboBox comgpn76list;
         private System.Windows.Forms.Label label24;
         private System.Windows.Forms.CheckBox checkyaffs;
@@ -7493,7 +7625,6 @@
         private System.Windows.Forms.Label lab7610name;
         private System.Windows.Forms.ComboBox com7611;
         private System.Windows.Forms.ComboBox com7610;
-        private System.Windows.Forms.GroupBox groupBox7;
         private System.Windows.Forms.Label lab7616;
         private System.Windows.Forms.CheckBox check7616;
         private System.Windows.Forms.Label lab7616name;
@@ -7632,10 +7763,8 @@
         private System.Windows.Forms.Label toolStripStatusLabeltime;
         private System.Windows.Forms.Label toolStripStatusLabelzt;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Label label22;
         private MetroFramework.Controls.MetroProgressBar myProgressBarjindu;
         private System.Windows.Forms.Label toolStripStatusLabelFTP;
-        private System.Windows.Forms.Label toolStripStatusLabellinkstat;
         private System.Windows.Forms.Label toolStripStatusLabelreq;
         private System.Windows.Forms.Label toolStripStatusLabeltem;
         private System.Windows.Forms.Label toolStripStatusLabelmem;
@@ -7671,6 +7800,16 @@
         private System.Windows.Forms.Button btnFtpServerStartStop;
         private System.Windows.Forms.Label label27;
         private System.Windows.Forms.Label label25;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.Label lab7615name;
+        private System.Windows.Forms.ComboBox com7615;
+        private System.Windows.Forms.CheckBox check7615;
+        private System.Windows.Forms.Label lab7615;
+        private System.Windows.Forms.ToolStripMenuItem 卸载GPN模块ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 安装GPN模块ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 其他功能ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 绿色软件下载ToolStripMenuItem;
+        private System.Windows.Forms.Panel panel2;
     }
 }
 

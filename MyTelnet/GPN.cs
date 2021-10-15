@@ -57,6 +57,7 @@ namespace MyGpnSoftware
         public static int LoadCountsum = 0;                //上传下载设备个数
         public static object PiLiangShengJi = new object(); //批量升级累计完成数量加锁
         public static bool save = false;                //批量保存设备数据
+        public static string linkup = "";//设备Telnet连接状态
 
 
         // 保存户名和密码
@@ -217,6 +218,10 @@ namespace MyGpnSoftware
                     {
                         com7614.Text = ContentValue(strSec, "7614");
                     }
+                    if (com7615.Items.Contains(ContentValue(strSec, "7615")))
+                    {
+                        com7615.Text = ContentValue(strSec, "7615");
+                    }
                     if (com7616.Items.Contains(ContentValue(strSec, "7616")))
                     {
                         com7616.Text = ContentValue(strSec, "7616");
@@ -366,7 +371,7 @@ namespace MyGpnSoftware
             if (tbxFtpRoot.Text == "")
             {
                 MessageBox.Show("请选择FTP根目录！");
-                butapp.PerformClick();
+                打开OToolStripMenuItem.PerformClick();
                 //btnFtpServerStartStop.PerformClick();
             }
             else
@@ -1174,7 +1179,7 @@ namespace MyGpnSoftware
                 textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "已断开==================================================OK");
                 AcceptButton = ButLogin;
                 mysocket.Close();
-                toolStripStatusLabellinkstat.Text = "未连接";
+                linkup = "未连接";
                 Linkgpn.Abort();
                 Gpnsetini();
                 //readgpnip();
@@ -1362,7 +1367,7 @@ namespace MyGpnSoftware
                         }
                         Thread.Sleep(XHTime / 3);
                     }
-                    toolStripStatusLabellinkstat.Text = "已连接";
+                    linkup = "已连接";
                     // mysocket.SendData("service snmp source-ip auto");
                     Thread.Sleep(XHTime);
                     string slot = mysocket.ReceiveData(int.Parse(ts));
@@ -4142,7 +4147,7 @@ namespace MyGpnSoftware
         #region 连接后不停的发\x0
         private void timer2_Tick_1(object sender, EventArgs e)
         {
-            if (toolStripStatusLabellinkstat.Text == "已连接")
+            if (linkup == "已连接")
             {
                 mysocket.SendDate("\x0");
             }
@@ -4183,6 +4188,7 @@ namespace MyGpnSoftware
             com7612.Items.Clear();
             com7613.Items.Clear();
             com7614.Items.Clear();
+            com7615.Items.Clear();
             com7616.Items.Clear();
             comvoss.Items.Clear();
             comrebootos.Items.Clear();
@@ -4417,6 +4423,14 @@ namespace MyGpnSoftware
                     if (com7614.Items.Count > 0)
                     {
                         com7614.SelectedIndex = com7614.Items.Count - 1;
+                    }
+                }
+                if (s.Contains("OTN_SH")||s.Contains("7615"))
+                {
+                    com7615.Items.Add(s);
+                    if (com7615.Items.Count > 0)
+                    {
+                        com7615.SelectedIndex = com7615.Items.Count - 1;
                     }
                 }
                 if (s.Contains("7616"))
@@ -4773,6 +4787,7 @@ namespace MyGpnSoftware
                 WritePrivateProfileString(strSec, "7612", com7612.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "7613", com7613.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "7614", com7614.Text.Trim(), strFilePath);
+                WritePrivateProfileString(strSec, "7615", com7615.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "7616", com7616.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "sysfile", comsysfile.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "voss", comvoss.Text.Trim(), strFilePath);
@@ -4916,26 +4931,7 @@ namespace MyGpnSoftware
         #endregion
         private void Butbatch_Click(object sender, EventArgs e)
         {
-            //if (string.Compare(btnFtpServerStartStop.Text, "启动FTP") == 0)
-            //{
-            //    MessageBox.Show("请先③启动FTP服务器,进行后续操作！");
-            //    return;
-            //}
-            MessageBox.Show("支持了三方FTP工具，请先启动第三方FTP工具,然后点击批量升级。否则会出现卡死的情况，得重新关闭软件在打开！"
-                + "\r\n" + "注意事项：FTP用户名：admin密码：admin必须一样，APP文件必须和升级的文件名一致");
-            Batch batchfrm = new Batch
-            {
-                FTPIP = comftpip.Text,
-                FTPUSR = textftpusr.Text,
-                FTPPSD = textftppsd.Text,
-                GPNUSR = textusr.Text,
-                GPNPSD = textpsd.Text,
-                GPNPSDEN = textpsden.Text,
-                yanshi = ts,
-                app = comapp.Text
-            };//实例化窗体
-            batchfrm.Show();// 将窗体显示出来
-            //this.Hide();//当前窗体隐藏
+
         }
         private void GPN_Paint(object sender, PaintEventArgs e)
         {
@@ -6678,7 +6674,6 @@ namespace MyGpnSoftware
                 comvcg.Visible = false;
                 butpaigu.Visible = false;
                 butsyslog.Visible = false;
-                butbatch.Visible = true;
                 textcyclemingling.Visible = false;
                 labcishu.Visible = false;
                 comcishu.Visible = false;
@@ -6701,7 +6696,6 @@ namespace MyGpnSoftware
                 comvcg.Visible = true;
                 butpaigu.Visible = true;
                 butsyslog.Visible = true;
-                butbatch.Visible = false;
                 textcyclemingling.Visible = true;
                 labcishu.Visible = true;
                 comcishu.Visible = true;
@@ -7184,29 +7178,7 @@ namespace MyGpnSoftware
         #region 卸载GPN7600EMS模块
         private void butuninstall_Click(object sender, EventArgs e)
         {
-            DialogResult dr = MessageBox.Show("卸载前请确认已经退出网管服务器？", "提示", MessageBoxButtons.YesNo);
-            if (dr == DialogResult.Yes)
-            {
 
-                //户选择确认的操作
-                if (CheckGPN7600EMS() == false)
-                {
-                    MessageBox.Show("GPN76模块已卸载，请安装后进行卸载！");
-                    return;
-                }
-
-                Process p = new Process();
-                p.StartInfo.FileName = @"C:\Program Files (x86)\InstallShield Installation Information\{F54A1417-6804-4C74-8B36-C44592EDFEF2}\setup.exe";
-                //p.StartInfo.Arguments = " -runfromtemp -l0x0409  -removeonly";
-                p.Start();
-                textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "GPN模块已卸载==============================================OK" + "\r\n");
-
-            }
-            if (dr == DialogResult.No)
-            {
-                //户选择取消的操作
-                return;
-            }
 
         }
         #endregion
@@ -7233,21 +7205,7 @@ namespace MyGpnSoftware
         #region 安装GPN7600EMS模块
         private void butinstall_Click(object sender, EventArgs e)
         {
-            if (CheckGPN7600EMS() == true)
-            {
-                MessageBox.Show("GPN7600 EMS已安装，请卸载后进行安装！");
-                return;
-            }
-            if (comgpn76list.Text.Trim() == "")
-            {
-                MessageBox.Show("请获取GPN模块后，再次点击尝试！");
-                return;
-            }
-            Thread installgpnems = new Thread(InstallGPN)
-            {
-                IsBackground = true
-            };
-            installgpnems.Start();
+
         }
         #endregion
         private void InstallGPN()
@@ -7582,6 +7540,16 @@ namespace MyGpnSoftware
             {
                 lSize = new FileInfo(sFullName).Length;
                 lab7614.Text = lSize.ToString();
+            }
+        }
+        private void com7615_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            long lSize = 0;
+            string sFullName = @tbxFtpRoot.Text.Trim() + com7615.Text.Trim();
+            if (File.Exists(sFullName))
+            {
+                lSize = new FileInfo(sFullName).Length;
+                lab7615.Text = lSize.ToString();
             }
         }
         private void com7616_SelectedIndexChanged(object sender, EventArgs e)
@@ -9052,7 +9020,6 @@ namespace MyGpnSoftware
         bool UpLoadFile_Stop = true;
         bool UpLoadFile_On_Off = false;
         ManualResetEvent UpLoadFilePause;
-        Thread UpLoadFileThread;
         private void UpLoadFile()
         {
             //立即开始计时，时间间隔1000毫秒
@@ -13215,15 +13182,6 @@ namespace MyGpnSoftware
 
 
         }
-        private void 获取本地软件SToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Software software = new Software
-            {
-                //ShebeiIp = comip.Text
-            };
-            //实例化窗体
-            software.ShowDialog();// 将窗体显示出来
-        }
         private void comip_Leave(object sender, EventArgs e)
         {
             if (comip.Text == "")
@@ -14281,6 +14239,21 @@ namespace MyGpnSoftware
                 this.DGVSTATUS.Columns["7614"].FillWeight = 50;
                 DGVSTATUS.Columns["7614"].SortMode = DataGridViewColumnSortMode.NotSortable;
             }
+            if (check7615.Checked == true)
+            {
+                if (DGVSTATUS.Columns["7615"] == null)
+                {
+
+                    this.DGVSTATUS.Columns.Add("7615", "7615");
+                }
+                else
+                {
+                    this.DGVSTATUS.Columns.Remove("7615");
+                    this.DGVSTATUS.Columns.Add("7615", "7615");
+                }
+                this.DGVSTATUS.Columns["7615"].FillWeight = 50;
+                DGVSTATUS.Columns["7615"].SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
             if (check7616.Checked == true)
             {
                 if (DGVSTATUS.Columns["7616"] == null)
@@ -14993,6 +14966,7 @@ namespace MyGpnSoftware
                 { "7612",       "14",com7612.Text,      "/yaffs/sys/7612.fpga"          },
                 { "7613",       "14",com7613.Text,      "/yaffs/sys/7613.fpga"          },
                 { "7614",       "14",com7614.Text,      "/yaffs/sys/7614.fpga"          },
+                { "7615",       "14",com7615.Text,      "/yaffs/sys/7615.fpga"          },
                 { "7616",       "14",com7616.Text,      "/yaffs/sys/7616.fpga"          },
                 { "APP2",       "14",comapp2.Text,      "/flash/sys/app_code_backup2.bin"},
                 { "VOSS",       "14",comvoss.Text,      "/flash/sys/voss.sh"            },
@@ -17051,6 +17025,8 @@ namespace MyGpnSoftware
 
                     return;
                 }
+                //交叉索引ID找到了
+
                 dxcloop = Snmp.Get(ip, readcommunity, timeout, retry, Dxc.oduDxcLoopControl + dxcid);
                 if (LabTsLoop.Checked == true && dxcloop =="1") {
                     Snmp.Set(ip, readcommunity, writecommunity, timeout, retry, Dxc.oduDxcLoopControl + dxcid, "4", "Integer32");
@@ -19303,6 +19279,86 @@ namespace MyGpnSoftware
         private void panel1_Paint(object sender, PaintEventArgs e)
         {
 
+        }
+
+        private void 绿色软件下载ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Software software = new Software
+            {
+                //ShebeiIp = comip.Text
+            };
+            //实例化窗体
+            software.ShowDialog();// 将窗体显示出来
+        }
+
+        private void 卸载GPN模块ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DialogResult dr = MessageBox.Show("卸载前请确认已经退出网管服务器？", "提示", MessageBoxButtons.YesNo);
+            if (dr == DialogResult.Yes)
+            {
+
+                //户选择确认的操作
+                if (CheckGPN7600EMS() == false)
+                {
+                    MessageBox.Show("GPN76模块已卸载，请安装后进行卸载！");
+                    return;
+                }
+
+                Process p = new Process();
+                p.StartInfo.FileName = @"C:\Program Files (x86)\InstallShield Installation Information\{F54A1417-6804-4C74-8B36-C44592EDFEF2}\setup.exe";
+                //p.StartInfo.Arguments = " -runfromtemp -l0x0409  -removeonly";
+                p.Start();
+                textDOS.AppendText("\r\n" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "GPN模块已卸载==============================================OK" + "\r\n");
+
+            }
+            if (dr == DialogResult.No)
+            {
+                //户选择取消的操作
+                return;
+            }
+        }
+
+        private void 安装GPN模块ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (CheckGPN7600EMS() == true)
+            {
+                MessageBox.Show("GPN7600 EMS已安装，请卸载后进行安装！");
+                return;
+            }
+            if (comgpn76list.Text.Trim() == "")
+            {
+                MessageBox.Show("请获取GPN模块后，再次点击尝试！");
+                return;
+            }
+            Thread installgpnems = new Thread(InstallGPN)
+            {
+                IsBackground = true
+            };
+            installgpnems.Start();
+        }
+
+        private void 其他功能ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //if (string.Compare(btnFtpServerStartStop.Text, "启动FTP") == 0)
+            //{
+            //    MessageBox.Show("请先③启动FTP服务器,进行后续操作！");
+            //    return;
+            //}
+            MessageBox.Show("支持了三方FTP工具，请先启动第三方FTP工具,然后点击批量升级。否则会出现卡死的情况，得重新关闭软件在打开！"
+                + "\r\n" + "注意事项：FTP用户名：admin密码：admin必须一样，APP文件必须和升级的文件名一致");
+            Batch batchfrm = new Batch
+            {
+                FTPIP = comftpip.Text,
+                FTPUSR = textftpusr.Text,
+                FTPPSD = textftppsd.Text,
+                GPNUSR = textusr.Text,
+                GPNPSD = textpsd.Text,
+                GPNPSDEN = textpsden.Text,
+                yanshi = ts,
+                app = comapp.Text
+            };//实例化窗体
+            batchfrm.Show();// 将窗体显示出来
+            //this.Hide();//当前窗体隐藏
         }
     }
 }

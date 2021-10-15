@@ -122,7 +122,7 @@ namespace MyGpnSoftware
                 {
                     result = target.Request(pdu, param);
                 }
-                catch (SnmpException ex)
+                catch 
                 {
 
                 }
