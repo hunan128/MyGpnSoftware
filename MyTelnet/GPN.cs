@@ -14974,7 +14974,7 @@ namespace MyGpnSoftware
                 { "CPLD",       "14",comcpld.Text,      "/flash/sys/nms.cpld"           },
             };
             int row = array.GetLength(0);
-            for (int c = 9; c < colunms; c++)
+            for (int c = 8; c < colunms; c++)
             {
                 string header = DGVSTATUS.Columns[c].HeaderText;
 
@@ -15192,6 +15192,17 @@ namespace MyGpnSoftware
                                                 Thread.Sleep(240 * XHTime);
                                             }
                                         }
+                                        if (header.Contains("APP") && NmsTypeStrCount == 1 && ftpCtrlFlagID == "2" && SwTypeStrCount > 0)
+                                        {
+                                            DGVSTATUS.Rows[i].Cells[header].Value = "同步中240";
+
+                                            if (DGVSTATUS.ColumnCount > 10)
+                                            {
+                                                textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 主要影响APP同步升级的板卡有：" + NmsTypeStrCount.ToString() + "块" +
+"需要等待4分钟后继续执行其他操作\r\n"));
+                                                Thread.Sleep(240 * XHTime);
+                                            }
+                                        }
                                         if (header.Contains("APP") && NmsTypeStrCount == 2 && ftpCtrlFlagID == "2" && SwTypeStrCount > 0)
                                         {
                                             DGVSTATUS.Rows[i].Cells[header].Value = "同步中480";
@@ -15326,7 +15337,7 @@ namespace MyGpnSoftware
 
             }
 
-            for (int C = 10; C < DGVSTATUS.ColumnCount; C++)
+            for (int C = 8; C < DGVSTATUS.ColumnCount; C++)
             {
                 if (DGVSTATUS.Rows[i].Cells[C].Value.ToString().Contains("成功"))
                 {

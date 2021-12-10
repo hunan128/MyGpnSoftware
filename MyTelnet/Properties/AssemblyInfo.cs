@@ -7,6 +7,18 @@ using System.Runtime.InteropServices;
 // 与程序集关联的信息。
 [assembly: AssemblyTitle("排故好帮手")]
 [assembly: AssemblyDescription(""
+    + "2021.10.15 升级支持7615文件" + "\r\n"
++ "2021.08.04 新增CPLD / VOSS / REBOOTOS文件升级" + "\r\n"
++ "2021.07.31 新增OTN透传业务故障定位" + "\r\n"
++ "2021.07.25 新增OTN分组业务故障定位" + "\r\n"
++ "2021.07.05 新增EOS业务故障定位" + "\r\n"
++ "2021.06.24 新增了文件刷新功能" + "\r\n"
++ "2021.03.27 新增了Debug APP版本检查" + "\r\n"
++ "2021.03.25 新增了SDN文件升级" + "\r\n"
++ "2021.03.11 新增了7611 fpga升级" + "\r\n"
++ "2020.12.30 新增了移动集采版本升级和板卡改制" + "\r\n"
++ "2020.09.10 提升了VNC远程控制桌面的安全性" + "\r\n"
++ "2020.08.28 新增了ip或者域名ping检测功能" + "\r\n"
     + "2020.08.26 新增了软件下载功能（绿色版下载）" + "\r\n"
     + "2020.08.20 修改了远程共享设计，端口随机生成，自动获取用户" + "\r\n"
     + "2020.07.24 新增SNC-S的TCM时隙告警查询" + "\r\n"
@@ -66,4 +78,4 @@ using System.Runtime.InteropServices;
 //      内部版本号
 //      修订号
 //
-[assembly: AssemblyVersion("4.1.2.51")]
+[assembly: AssemblyVersion("2021.10.15.1")]

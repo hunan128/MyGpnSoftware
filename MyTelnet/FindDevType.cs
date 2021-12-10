@@ -12,7 +12,10 @@ namespace MyGpnSoftware
     {
 
         public static string Finddevtype(string str) {
-            string[] devtypeall = new string[] {"INVALID(0)","GPN7600(98)",
+            string[] devtypeall = new string[] {
+                "INVALID(0)",
+                "GPN7600(98)",
+                "GPN7600-III(113)",
 "GPN7500(103)",
 "GPN710A(104)",
 "GPN7600M(106)",
@@ -151,6 +154,8 @@ namespace MyGpnSoftware
 "GPN720-U1-3-AC220D(2874)",
 "GPN720-U1-3-DC48S(2875)",
 "GPN720-U1-3-DC48D(2876)",
+"GPN800-DE-NQQD(2878)",
+"GPN800-DE-NQNN(2879)",
 "MX100-FES2(3000)",
 "TME16FV61(3001)",
 "GPN710-B-4GE4E1-V3(3002)",
