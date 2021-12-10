@@ -4681,7 +4681,7 @@ namespace MyGpnSoftware
             butCycleSuspend.Visible = false;
             ComRDPType.Text = "tcp";
             ComVNCType.Text = "tcp";
-            // this.WindowState = FormWindowState.Maximized;
+           // this.WindowState = FormWindowState.Maximized;
             Process[] pro = Process.GetProcesses();
             int count = 0;
             foreach (var item in pro)
@@ -6705,8 +6705,8 @@ namespace MyGpnSoftware
             if (tabControlDOS.SelectedTab == tabPageRemote)
             {
                 timerYanshi.Interval = int.Parse(comjiangeshijian.Text);
-                timerYanshi.Start();
-                metroButYanshi.Text = "停止延时测试";
+                //timerYanshi.Start();
+                //metroButYanshi.Text = "停止延时测试";
                 Random rand = new Random();
                 string vncuser = System.Environment.UserName;
                 if (TextVNCUser.Text == "")
