@@ -72,7 +72,7 @@ namespace MyGpnSoftware
             return ReV;         
         }
 
-        public static List<string[]> Arry(string ip, string community, int timeout, int retry, string oid)
+        public static List<string[]> Array(string ip, string community, int timeout, int retry, string oid)
         {
 
             List<string[]> arry = new List<string[]>();

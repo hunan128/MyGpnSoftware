@@ -226,6 +226,30 @@ namespace MyGpnSoftware
                     {
                         com7616.Text = ContentValue(strSec, "7616");
                     }
+                    if (com7616c.Items.Contains(ContentValue(strSec, "7616c")))
+                    {
+                        com7616c.Text = ContentValue(strSec, "7616c");
+                    }
+                    if (com7618.Items.Contains(ContentValue(strSec, "7618")))
+                    {
+                        com7618.Text = ContentValue(strSec, "7618");
+                    }
+                    if (com7619.Items.Contains(ContentValue(strSec, "7619")))
+                    {
+                        com7619.Text = ContentValue(strSec, "7619");
+                    }
+                    if (com761a.Items.Contains(ContentValue(strSec, "761a")))
+                    {
+                        com761a.Text = ContentValue(strSec, "761a");
+                    }
+                    if (com761b.Items.Contains(ContentValue(strSec, "761b")))
+                    {
+                        com761b.Text = ContentValue(strSec, "761b");
+                    }
+                    if (com761c.Items.Contains(ContentValue(strSec, "761c")))
+                    {
+                        com761c.Text = ContentValue(strSec, "761c");
+                    }
                     if (comsysfile.Items.Contains(ContentValue(strSec, "sysfile")))
                     {
                         comsysfile.Text = ContentValue(strSec, "sysfile");
@@ -4190,6 +4214,12 @@ namespace MyGpnSoftware
             com7614.Items.Clear();
             com7615.Items.Clear();
             com7616.Items.Clear();
+            com7616c.Items.Clear();
+            com7618.Items.Clear();
+            com7619.Items.Clear();
+            com761a.Items.Clear();
+            com761b.Items.Clear();
+            com761c.Items.Clear();
             comvoss.Items.Clear();
             comrebootos.Items.Clear();
             comcpld.Items.Clear();
@@ -4439,6 +4469,54 @@ namespace MyGpnSoftware
                     if (com7616.Items.Count > 0)
                     {
                         com7616.SelectedIndex = com7616.Items.Count - 1;
+                    }
+                }
+                if (s.Contains("7616c")|| s.Contains("7616C"))
+                {
+                    com7616c.Items.Add(s);
+                    if (com7616c.Items.Count > 0)
+                    {
+                        com7616c.SelectedIndex = com7616c.Items.Count - 1;
+                    }
+                }
+                if (s.Contains("7618") )
+                {
+                    com7618.Items.Add(s);
+                    if (com7618.Items.Count > 0)
+                    {
+                        com7618.SelectedIndex = com7618.Items.Count - 1;
+                    }
+                }
+                if (s.Contains("7619") )
+                {
+                    com7619.Items.Add(s);
+                    if (com7619.Items.Count > 0)
+                    {
+                        com7619.SelectedIndex = com7619.Items.Count - 1;
+                    }
+                }
+                if (s.Contains("761a") || s.Contains("761A"))
+                {
+                    com761a.Items.Add(s);
+                    if (com761a.Items.Count > 0)
+                    {
+                        com761a.SelectedIndex = com761a.Items.Count - 1;
+                    }
+                }
+                if (s.Contains("761b") || s.Contains("761B"))
+                {
+                    com761b.Items.Add(s);
+                    if (com761b.Items.Count > 0)
+                    {
+                        com761b.SelectedIndex = com761b.Items.Count - 1;
+                    }
+                }
+                if (s.Contains("761c") || s.Contains("761C"))
+                {
+                    com761c.Items.Add(s);
+                    if (com761c.Items.Count > 0)
+                    {
+                        com761c.SelectedIndex = com761c.Items.Count - 1;
                     }
                 }
                 if (s.Contains("sysfile") || s.Contains("Sysfile") || s.Contains("SYSFILE") || s.Contains("SysFile"))
@@ -4789,6 +4867,12 @@ namespace MyGpnSoftware
                 WritePrivateProfileString(strSec, "7614", com7614.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "7615", com7615.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "7616", com7616.Text.Trim(), strFilePath);
+                WritePrivateProfileString(strSec, "7616c", com7616c.Text.Trim(), strFilePath);
+                WritePrivateProfileString(strSec, "7618", com7618.Text.Trim(), strFilePath);
+                WritePrivateProfileString(strSec, "7619", com7619.Text.Trim(), strFilePath);
+                WritePrivateProfileString(strSec, "761a", com761a.Text.Trim(), strFilePath);
+                WritePrivateProfileString(strSec, "761b", com761b.Text.Trim(), strFilePath);
+                WritePrivateProfileString(strSec, "761c", com761c.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "sysfile", comsysfile.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "voss", comvoss.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "rebootos", comrebootos.Text.Trim(), strFilePath);
@@ -7560,6 +7644,66 @@ namespace MyGpnSoftware
             {
                 lSize = new FileInfo(sFullName).Length;
                 lab7616.Text = lSize.ToString();
+            }
+        }
+        private void com7616c_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            long lSize = 0;
+            string sFullName = @tbxFtpRoot.Text.Trim() + com7616c.Text.Trim();
+            if (File.Exists(sFullName))
+            {
+                lSize = new FileInfo(sFullName).Length;
+                lab7616c.Text = lSize.ToString();
+            }
+        }
+        private void com7618_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            long lSize = 0;
+            string sFullName = @tbxFtpRoot.Text.Trim() + com7618.Text.Trim();
+            if (File.Exists(sFullName))
+            {
+                lSize = new FileInfo(sFullName).Length;
+                lab7618.Text = lSize.ToString();
+            }
+        }
+        private void com7619_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            long lSize = 0;
+            string sFullName = @tbxFtpRoot.Text.Trim() + com7619.Text.Trim();
+            if (File.Exists(sFullName))
+            {
+                lSize = new FileInfo(sFullName).Length;
+                lab7619.Text = lSize.ToString();
+            }
+        }
+        private void com761a_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            long lSize = 0;
+            string sFullName = @tbxFtpRoot.Text.Trim() + com761a.Text.Trim();
+            if (File.Exists(sFullName))
+            {
+                lSize = new FileInfo(sFullName).Length;
+                lab761a.Text = lSize.ToString();
+            }
+        }
+        private void com761b_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            long lSize = 0;
+            string sFullName = @tbxFtpRoot.Text.Trim() + com761b.Text.Trim();
+            if (File.Exists(sFullName))
+            {
+                lSize = new FileInfo(sFullName).Length;
+                lab761b.Text = lSize.ToString();
+            }
+        }
+        private void com761c_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            long lSize = 0;
+            string sFullName = @tbxFtpRoot.Text.Trim() + com761c.Text.Trim();
+            if (File.Exists(sFullName))
+            {
+                lSize = new FileInfo(sFullName).Length;
+                lab761c.Text = lSize.ToString();
             }
         }
         private void comsysfile_SelectedIndexChanged(object sender, EventArgs e)
@@ -13041,7 +13185,7 @@ namespace MyGpnSoftware
             {
 
                 this.lv2.Items.Clear();
-                List<string[]> array = Snmp.Arry(metroTextgpnip.Text, metroTextReadCommunity.Text, 2000, 2, metroTextoid.Text);
+                List<string[]> array = Snmp.Array(metroTextgpnip.Text, metroTextReadCommunity.Text, 2000, 2, metroTextoid.Text);
                 lv2.BeginUpdate();
                 foreach (var row in array)
                 {
@@ -14269,6 +14413,96 @@ namespace MyGpnSoftware
                 this.DGVSTATUS.Columns["7616"].FillWeight = 50;
                 DGVSTATUS.Columns["7616"].SortMode = DataGridViewColumnSortMode.NotSortable;
             }
+            if (check7616c.Checked == true)
+            {
+                if (DGVSTATUS.Columns["7616c"] == null)
+                {
+
+                    this.DGVSTATUS.Columns.Add("7616c", "7616c");
+                }
+                else
+                {
+                    this.DGVSTATUS.Columns.Remove("7616c");
+                    this.DGVSTATUS.Columns.Add("7616c", "7616c");
+                }
+                this.DGVSTATUS.Columns["7616c"].FillWeight = 50;
+                DGVSTATUS.Columns["7616c"].SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
+            if (check7618.Checked == true)
+            {
+                if (DGVSTATUS.Columns["7618"] == null)
+                {
+
+                    this.DGVSTATUS.Columns.Add("7618", "7618");
+                }
+                else
+                {
+                    this.DGVSTATUS.Columns.Remove("7618");
+                    this.DGVSTATUS.Columns.Add("7618", "7618");
+                }
+                this.DGVSTATUS.Columns["7618"].FillWeight = 50;
+                DGVSTATUS.Columns["7618"].SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
+            if (check7619.Checked == true)
+            {
+                if (DGVSTATUS.Columns["7619"] == null)
+                {
+
+                    this.DGVSTATUS.Columns.Add("7619", "7619");
+                }
+                else
+                {
+                    this.DGVSTATUS.Columns.Remove("7619");
+                    this.DGVSTATUS.Columns.Add("7619", "7619");
+                }
+                this.DGVSTATUS.Columns["7619"].FillWeight = 50;
+                DGVSTATUS.Columns["7619"].SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
+            if (check761a.Checked == true)
+            {
+                if (DGVSTATUS.Columns["761a"] == null)
+                {
+
+                    this.DGVSTATUS.Columns.Add("761a", "761a");
+                }
+                else
+                {
+                    this.DGVSTATUS.Columns.Remove("761a");
+                    this.DGVSTATUS.Columns.Add("761a", "761a");
+                }
+                this.DGVSTATUS.Columns["761a"].FillWeight = 50;
+                DGVSTATUS.Columns["761a"].SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
+            if (check761b.Checked == true)
+            {
+                if (DGVSTATUS.Columns["761b"] == null)
+                {
+
+                    this.DGVSTATUS.Columns.Add("761b", "761b");
+                }
+                else
+                {
+                    this.DGVSTATUS.Columns.Remove("761b");
+                    this.DGVSTATUS.Columns.Add("761b", "761b");
+                }
+                this.DGVSTATUS.Columns["761b"].FillWeight = 50;
+                DGVSTATUS.Columns["761b"].SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
+            if (check761c.Checked == true)
+            {
+                if (DGVSTATUS.Columns["761c"] == null)
+                {
+
+                    this.DGVSTATUS.Columns.Add("761c", "761c");
+                }
+                else
+                {
+                    this.DGVSTATUS.Columns.Remove("761c");
+                    this.DGVSTATUS.Columns.Add("761c", "761c");
+                }
+                this.DGVSTATUS.Columns["761c"].FillWeight = 50;
+                DGVSTATUS.Columns["761c"].SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
             if (checksysfile.Checked == true)
             {
                 if (DGVSTATUS.Columns["SysFile"] == null)
@@ -14968,6 +15202,12 @@ namespace MyGpnSoftware
                 { "7614",       "14",com7614.Text,      "/yaffs/sys/7614.fpga"          },
                 { "7615",       "14",com7615.Text,      "/yaffs/sys/7615.fpga"          },
                 { "7616",       "14",com7616.Text,      "/yaffs/sys/7616.fpga"          },
+                { "7616c",      "14",com7616c.Text,     "/yaffs/sys/7616c.fpga"         },
+                { "7618",       "14",com7618.Text,      "/yaffs/sys/7618.fpga"          },
+                { "7619",       "14",com7619.Text,      "/yaffs/sys/7619.fpga"          },
+                { "761a",       "14",com761a.Text,      "/yaffs/sys/761a.fpga"          },
+                { "761b",       "14",com761b.Text,      "/yaffs/sys/761b.fpga"          },
+                { "761c",       "14",com761c.Text,      "/yaffs/sys/761c.fpga"          },
                 { "APP2",       "14",comapp2.Text,      "/flash/sys/app_code_backup2.bin"},
                 { "VOSS",       "14",comvoss.Text,      "/flash/sys/voss.sh"            },
                 { "REBOOTOS",   "14",comrebootos.Text,  "/flash/sys/rebootos.sh"        },
@@ -16016,7 +16256,7 @@ namespace MyGpnSoftware
         {
             Ping ping = new Ping();
             PingOptions options = new PingOptions();
-            if (comDontFragment.Text == "是")
+            if (comDontFragment.Text == "否")
             {
                 options.DontFragment = true;
             }
@@ -19370,6 +19610,16 @@ namespace MyGpnSoftware
             };//实例化窗体
             batchfrm.Show();// 将窗体显示出来
             //this.Hide();//当前窗体隐藏
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void tabPageGpn_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

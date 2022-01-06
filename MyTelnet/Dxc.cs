@@ -84,7 +84,7 @@ namespace MyGpnSoftware
             }
             List<string[]> array;
             if (Array == null || ipp != ip) {
-                array = Snmp.Arry(ip, community, 2000, 2, srcLpOid);
+                array = Snmp.Array(ip, community, 2000, 2, srcLpOid);
                 Array = array;
             }
             ipp = ip;
@@ -110,7 +110,7 @@ namespace MyGpnSoftware
 
             string pathid = "0";
 
-            List<string[]> array = Snmp.Arry(ip, community, 2000, 2, oduDxcSinkIfList);
+            List<string[]> array = Snmp.Array(ip, community, 2000, 2, oduDxcSinkIfList);
           
             foreach (var row in array)
             {
@@ -124,7 +124,7 @@ namespace MyGpnSoftware
             }
             if (pathid == "0") {
 
-                array = Snmp.Arry(ip, community, 2000, 2, oduDxcSrcWorkIfList);
+                array = Snmp.Array(ip, community, 2000, 2, oduDxcSrcWorkIfList);
                 foreach (var row in array)
                 {
                     //metroTextResultDXC.AppendText(row[5] + "没找到\r\n");
@@ -147,7 +147,7 @@ namespace MyGpnSoftware
             string odukid = "0";
             string odukiftype = "0";
 
-            List<string[]> array= Snmp.Arry(ip, community, 2000, 2, oduklineoid);
+            List<string[]> array= Snmp.Array(ip, community, 2000, 2, oduklineoid);
             foreach (var row in array)
             {
                 //metroTextResultDXC.AppendText(row[5] + "没找到\r\n");
@@ -163,7 +163,7 @@ namespace MyGpnSoftware
             }
 
 
-            array = Snmp.Arry(ip, community, 2000, 2, odukcltoid);
+            array = Snmp.Array(ip, community, 2000, 2, odukcltoid);
                 foreach (var row in array)
                 {
                     //metroTextResultDXC.AppendText(row[5] + "没找到\r\n");
