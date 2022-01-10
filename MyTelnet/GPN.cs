@@ -19612,14 +19612,10 @@ namespace MyGpnSoftware
             //this.Hide();//当前窗体隐藏
         }
 
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+
+        private void netconfClient下载DToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
-        }
-
-        private void tabPageGpn_Click(object sender, EventArgs e)
-        {
-
+            Process.Start("http://hunan128.com/index.php/2021/09/02/netconfclient工具发布/");
         }
     }
 }

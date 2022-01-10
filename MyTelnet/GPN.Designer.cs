@@ -34,12 +34,12 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GPN));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
             this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.tabPageLog = new System.Windows.Forms.TabPage();
             this.label5 = new System.Windows.Forms.Label();
@@ -119,6 +119,195 @@
             this.comftpip = new System.Windows.Forms.ComboBox();
             this.butrefresh = new System.Windows.Forms.Button();
             this.tabControlDOS = new System.Windows.Forms.TabControl();
+            this.tabPageGpn = new System.Windows.Forms.TabPage();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.labyaffs = new System.Windows.Forms.Label();
+            this.label24 = new System.Windows.Forms.Label();
+            this.labcpld = new System.Windows.Forms.Label();
+            this.labflash = new System.Windows.Forms.Label();
+            this.comcpld = new System.Windows.Forms.ComboBox();
+            this.checkyaffs = new System.Windows.Forms.CheckBox();
+            this.comyaffs = new System.Windows.Forms.ComboBox();
+            this.checkcpld = new System.Windows.Forms.CheckBox();
+            this.labyaffsname = new System.Windows.Forms.Label();
+            this.labcode4 = new System.Windows.Forms.Label();
+            this.checkflash = new System.Windows.Forms.CheckBox();
+            this.comflash = new System.Windows.Forms.ComboBox();
+            this.label26 = new System.Windows.Forms.Label();
+            this.labflashname = new System.Windows.Forms.Label();
+            this.checkcode4 = new System.Windows.Forms.CheckBox();
+            this.comcode4 = new System.Windows.Forms.ComboBox();
+            this.labconfigname = new System.Windows.Forms.Label();
+            this.labrebootos = new System.Windows.Forms.Label();
+            this.checkrebootos = new System.Windows.Forms.CheckBox();
+            this.labcodename4 = new System.Windows.Forms.Label();
+            this.label23 = new System.Windows.Forms.Label();
+            this.comconfig = new System.Windows.Forms.ComboBox();
+            this.checkconfig = new System.Windows.Forms.CheckBox();
+            this.labconfig = new System.Windows.Forms.Label();
+            this.labvoss = new System.Windows.Forms.Label();
+            this.comvoss = new System.Windows.Forms.ComboBox();
+            this.checkvoss = new System.Windows.Forms.CheckBox();
+            this.labslotname = new System.Windows.Forms.Label();
+            this.label21 = new System.Windows.Forms.Label();
+            this.comslotconfig = new System.Windows.Forms.ComboBox();
+            this.checkslotconfig = new System.Windows.Forms.CheckBox();
+            this.labslotconfig = new System.Windows.Forms.Label();
+            this.lab7616 = new System.Windows.Forms.Label();
+            this.comsysfile = new System.Windows.Forms.ComboBox();
+            this.labsysfile = new System.Windows.Forms.Label();
+            this.labsdn = new System.Windows.Forms.Label();
+            this.checksysfile = new System.Windows.Forms.CheckBox();
+            this.check7616 = new System.Windows.Forms.CheckBox();
+            this.labsysfilename = new System.Windows.Forms.Label();
+            this.checksdn = new System.Windows.Forms.CheckBox();
+            this.com7616 = new System.Windows.Forms.ComboBox();
+            this.lab7616name = new System.Windows.Forms.Label();
+            this.comsdn = new System.Windows.Forms.ComboBox();
+            this.labdbname = new System.Windows.Forms.Label();
+            this.lab7614 = new System.Windows.Forms.Label();
+            this.labsdnname = new System.Windows.Forms.Label();
+            this.check7614 = new System.Windows.Forms.CheckBox();
+            this.comdb = new System.Windows.Forms.ComboBox();
+            this.com7614 = new System.Windows.Forms.ComboBox();
+            this.lab7614name = new System.Windows.Forms.Label();
+            this.checkdb = new System.Windows.Forms.CheckBox();
+            this.labdb = new System.Windows.Forms.Label();
+            this.lab7613 = new System.Windows.Forms.Label();
+            this.labappname = new System.Windows.Forms.Label();
+            this.check7613 = new System.Windows.Forms.CheckBox();
+            this.comapp = new System.Windows.Forms.ComboBox();
+            this.com7613 = new System.Windows.Forms.ComboBox();
+            this.lab7613name = new System.Windows.Forms.Label();
+            this.checkapp = new System.Windows.Forms.CheckBox();
+            this.labapp = new System.Windows.Forms.Label();
+            this.lab7612 = new System.Windows.Forms.Label();
+            this.comnms = new System.Windows.Forms.ComboBox();
+            this.check7612 = new System.Windows.Forms.CheckBox();
+            this.lab7611 = new System.Windows.Forms.Label();
+            this.com7612 = new System.Windows.Forms.ComboBox();
+            this.lab7612name = new System.Windows.Forms.Label();
+            this.comsw = new System.Windows.Forms.ComboBox();
+            this.lab7610 = new System.Windows.Forms.Label();
+            this.check7611 = new System.Windows.Forms.CheckBox();
+            this.labapp2 = new System.Windows.Forms.Label();
+            this.checkapp2 = new System.Windows.Forms.CheckBox();
+            this.comapp2 = new System.Windows.Forms.ComboBox();
+            this.com7611 = new System.Windows.Forms.ComboBox();
+            this.lab7611name = new System.Windows.Forms.Label();
+            this.check7610 = new System.Windows.Forms.CheckBox();
+            this.labapp2name = new System.Windows.Forms.Label();
+            this.labcode3 = new System.Windows.Forms.Label();
+            this.labswname = new System.Windows.Forms.Label();
+            this.checkcode3 = new System.Windows.Forms.CheckBox();
+            this.lab7610name = new System.Windows.Forms.Label();
+            this.com7610 = new System.Windows.Forms.ComboBox();
+            this.labnmsname = new System.Windows.Forms.Label();
+            this.comcode3 = new System.Windows.Forms.ComboBox();
+            this.labcodename = new System.Windows.Forms.Label();
+            this.labuxc = new System.Windows.Forms.Label();
+            this.com760d = new System.Windows.Forms.ComboBox();
+            this.checkuxc = new System.Windows.Forms.CheckBox();
+            this.com760c = new System.Windows.Forms.ComboBox();
+            this.comuxc = new System.Windows.Forms.ComboBox();
+            this.lab760uxcname = new System.Windows.Forms.Label();
+            this.com760b = new System.Windows.Forms.ComboBox();
+            this.com760e = new System.Windows.Forms.ComboBox();
+            this.check760e = new System.Windows.Forms.CheckBox();
+            this.com760s = new System.Windows.Forms.ComboBox();
+            this.lab760dname = new System.Windows.Forms.Label();
+            this.lab760ename = new System.Windows.Forms.Label();
+            this.labcodename3 = new System.Windows.Forms.Label();
+            this.check760d = new System.Windows.Forms.CheckBox();
+            this.lab760e = new System.Windows.Forms.Label();
+            this.lab760cname = new System.Windows.Forms.Label();
+            this.comcode = new System.Windows.Forms.ComboBox();
+            this.lab760bname = new System.Windows.Forms.Label();
+            this.checkcode = new System.Windows.Forms.CheckBox();
+            this.check760c = new System.Windows.Forms.CheckBox();
+            this.labcode = new System.Windows.Forms.Label();
+            this.lab760sname = new System.Windows.Forms.Label();
+            this.lab760d = new System.Windows.Forms.Label();
+            this.labcode2 = new System.Windows.Forms.Label();
+            this.checkcode2 = new System.Windows.Forms.CheckBox();
+            this.check760b = new System.Windows.Forms.CheckBox();
+            this.comcode2 = new System.Windows.Forms.ComboBox();
+            this.labcodename2 = new System.Windows.Forms.Label();
+            this.checknms = new System.Windows.Forms.CheckBox();
+            this.labnms = new System.Windows.Forms.Label();
+            this.check760s = new System.Windows.Forms.CheckBox();
+            this.lab760c = new System.Windows.Forms.Label();
+            this.checksw = new System.Windows.Forms.CheckBox();
+            this.labsw = new System.Windows.Forms.Label();
+            this.lab760s = new System.Windows.Forms.Label();
+            this.lab760b = new System.Windows.Forms.Label();
+            this.lab7615name = new System.Windows.Forms.Label();
+            this.com7615 = new System.Windows.Forms.ComboBox();
+            this.check7615 = new System.Windows.Forms.CheckBox();
+            this.lab7615 = new System.Windows.Forms.Label();
+            this.comrebootos = new System.Windows.Forms.ComboBox();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.comgpn76list = new System.Windows.Forms.ComboBox();
+            this.lab7616cname = new System.Windows.Forms.Label();
+            this.com7616c = new System.Windows.Forms.ComboBox();
+            this.lab7618name = new System.Windows.Forms.Label();
+            this.lab7618 = new System.Windows.Forms.Label();
+            this.lab7619name = new System.Windows.Forms.Label();
+            this.lab7619 = new System.Windows.Forms.Label();
+            this.lab761aname = new System.Windows.Forms.Label();
+            this.lab761a = new System.Windows.Forms.Label();
+            this.lab761bname = new System.Windows.Forms.Label();
+            this.lab761b = new System.Windows.Forms.Label();
+            this.lab761cname = new System.Windows.Forms.Label();
+            this.lab761c = new System.Windows.Forms.Label();
+            this.com7618 = new System.Windows.Forms.ComboBox();
+            this.com7619 = new System.Windows.Forms.ComboBox();
+            this.com761a = new System.Windows.Forms.ComboBox();
+            this.com761b = new System.Windows.Forms.ComboBox();
+            this.com761c = new System.Windows.Forms.ComboBox();
+            this.check7616c = new System.Windows.Forms.CheckBox();
+            this.check7618 = new System.Windows.Forms.CheckBox();
+            this.check7619 = new System.Windows.Forms.CheckBox();
+            this.check761a = new System.Windows.Forms.CheckBox();
+            this.check761b = new System.Windows.Forms.CheckBox();
+            this.check761c = new System.Windows.Forms.CheckBox();
+            this.lab7616c = new System.Windows.Forms.Label();
+            this.ButCheckFile = new System.Windows.Forms.Button();
+            this.ButLogin = new System.Windows.Forms.Button();
+            this.groupBox12 = new System.Windows.Forms.GroupBox();
+            this.textusr = new System.Windows.Forms.TextBox();
+            this.textftpusr = new System.Windows.Forms.TextBox();
+            this.textpsd = new System.Windows.Forms.TextBox();
+            this.textftppsd = new System.Windows.Forms.TextBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.tbxFtpRoot = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.tbxFtpServerPort = new System.Windows.Forms.ComboBox();
+            this.checkpssd = new MetroFramework.Controls.MetroCheckBox();
+            this.textWriteCommunity = new System.Windows.Forms.TextBox();
+            this.textReadCommunity = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.textpsden = new System.Windows.Forms.TextBox();
+            this.butbatchip = new System.Windows.Forms.Button();
+            this.DGVSTATUS = new System.Windows.Forms.DataGridView();
+            this.ip地址 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.设备类型 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.执行 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.优先级 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ping = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.操作 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.重启 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.保存 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.当前版本 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.compingcount = new System.Windows.Forms.ComboBox();
+            this.comip = new System.Windows.Forms.ComboBox();
+            this.butsend = new System.Windows.Forms.Button();
+            this.textDOS = new System.Windows.Forms.TextBox();
+            this.textcom = new System.Windows.Forms.TextBox();
+            this.buttbatchupload = new System.Windows.Forms.Button();
+            this.buttbatchdownload = new System.Windows.Forms.Button();
             this.tabPageSnmp = new System.Windows.Forms.TabPage();
             this.metroTextOidPermission = new MetroFramework.Controls.MetroTextBox();
             this.metroTextOidType = new MetroFramework.Controls.MetroTextBox();
@@ -342,202 +531,20 @@
             this.其他功能ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.绿色软件下载ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.关于软件OToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.netconfClient下载DToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.LabFtpLed = new System.Windows.Forms.Label();
             this.btnFtpServerStartStop = new System.Windows.Forms.Button();
-            this.buttbatchdownload = new System.Windows.Forms.Button();
-            this.buttbatchupload = new System.Windows.Forms.Button();
-            this.textcom = new System.Windows.Forms.TextBox();
-            this.textDOS = new System.Windows.Forms.TextBox();
-            this.butsend = new System.Windows.Forms.Button();
-            this.comip = new System.Windows.Forms.ComboBox();
-            this.compingcount = new System.Windows.Forms.ComboBox();
-            this.DGVSTATUS = new System.Windows.Forms.DataGridView();
-            this.当前版本 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.保存 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.重启 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.操作 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ping = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.优先级 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.执行 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.设备类型 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ip地址 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.butbatchip = new System.Windows.Forms.Button();
-            this.groupBox12 = new System.Windows.Forms.GroupBox();
-            this.textpsden = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.textReadCommunity = new System.Windows.Forms.TextBox();
-            this.textWriteCommunity = new System.Windows.Forms.TextBox();
-            this.checkpssd = new MetroFramework.Controls.MetroCheckBox();
-            this.tbxFtpServerPort = new System.Windows.Forms.ComboBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.tbxFtpRoot = new System.Windows.Forms.TextBox();
-            this.label13 = new System.Windows.Forms.Label();
-            this.textftppsd = new System.Windows.Forms.TextBox();
-            this.textpsd = new System.Windows.Forms.TextBox();
-            this.textftpusr = new System.Windows.Forms.TextBox();
-            this.textusr = new System.Windows.Forms.TextBox();
-            this.ButLogin = new System.Windows.Forms.Button();
-            this.ButCheckFile = new System.Windows.Forms.Button();
-            this.panel3 = new System.Windows.Forms.Panel();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.lab761cname = new System.Windows.Forms.Label();
-            this.lab761b = new System.Windows.Forms.Label();
-            this.lab761bname = new System.Windows.Forms.Label();
-            this.lab761a = new System.Windows.Forms.Label();
-            this.lab761aname = new System.Windows.Forms.Label();
-            this.lab7619 = new System.Windows.Forms.Label();
-            this.lab7619name = new System.Windows.Forms.Label();
-            this.lab7618 = new System.Windows.Forms.Label();
-            this.lab7618name = new System.Windows.Forms.Label();
-            this.lab7616c = new System.Windows.Forms.Label();
-            this.com7616c = new System.Windows.Forms.ComboBox();
-            this.lab7616cname = new System.Windows.Forms.Label();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.comgpn76list = new System.Windows.Forms.ComboBox();
-            this.comrebootos = new System.Windows.Forms.ComboBox();
-            this.lab7615 = new System.Windows.Forms.Label();
-            this.check7615 = new System.Windows.Forms.CheckBox();
-            this.com7615 = new System.Windows.Forms.ComboBox();
-            this.lab7615name = new System.Windows.Forms.Label();
-            this.lab760b = new System.Windows.Forms.Label();
-            this.lab760s = new System.Windows.Forms.Label();
-            this.labsw = new System.Windows.Forms.Label();
-            this.checksw = new System.Windows.Forms.CheckBox();
-            this.lab760c = new System.Windows.Forms.Label();
-            this.check760s = new System.Windows.Forms.CheckBox();
-            this.labnms = new System.Windows.Forms.Label();
-            this.checknms = new System.Windows.Forms.CheckBox();
-            this.labcodename2 = new System.Windows.Forms.Label();
-            this.comcode2 = new System.Windows.Forms.ComboBox();
-            this.check760b = new System.Windows.Forms.CheckBox();
-            this.checkcode2 = new System.Windows.Forms.CheckBox();
-            this.labcode2 = new System.Windows.Forms.Label();
-            this.lab760d = new System.Windows.Forms.Label();
-            this.lab760sname = new System.Windows.Forms.Label();
-            this.labcode = new System.Windows.Forms.Label();
-            this.check760c = new System.Windows.Forms.CheckBox();
-            this.checkcode = new System.Windows.Forms.CheckBox();
-            this.lab760bname = new System.Windows.Forms.Label();
-            this.comcode = new System.Windows.Forms.ComboBox();
-            this.lab760cname = new System.Windows.Forms.Label();
-            this.lab760e = new System.Windows.Forms.Label();
-            this.check760d = new System.Windows.Forms.CheckBox();
-            this.labcodename3 = new System.Windows.Forms.Label();
-            this.lab760ename = new System.Windows.Forms.Label();
-            this.lab760dname = new System.Windows.Forms.Label();
-            this.com760s = new System.Windows.Forms.ComboBox();
-            this.check760e = new System.Windows.Forms.CheckBox();
-            this.com760e = new System.Windows.Forms.ComboBox();
-            this.com760b = new System.Windows.Forms.ComboBox();
-            this.lab760uxcname = new System.Windows.Forms.Label();
-            this.comuxc = new System.Windows.Forms.ComboBox();
-            this.com760c = new System.Windows.Forms.ComboBox();
-            this.checkuxc = new System.Windows.Forms.CheckBox();
-            this.com760d = new System.Windows.Forms.ComboBox();
-            this.labuxc = new System.Windows.Forms.Label();
-            this.labcodename = new System.Windows.Forms.Label();
-            this.comcode3 = new System.Windows.Forms.ComboBox();
-            this.labnmsname = new System.Windows.Forms.Label();
-            this.com7610 = new System.Windows.Forms.ComboBox();
-            this.lab7610name = new System.Windows.Forms.Label();
-            this.checkcode3 = new System.Windows.Forms.CheckBox();
-            this.labswname = new System.Windows.Forms.Label();
-            this.labcode3 = new System.Windows.Forms.Label();
-            this.labapp2name = new System.Windows.Forms.Label();
-            this.check7610 = new System.Windows.Forms.CheckBox();
-            this.lab7611name = new System.Windows.Forms.Label();
-            this.com7611 = new System.Windows.Forms.ComboBox();
-            this.comapp2 = new System.Windows.Forms.ComboBox();
-            this.checkapp2 = new System.Windows.Forms.CheckBox();
-            this.labapp2 = new System.Windows.Forms.Label();
-            this.check7611 = new System.Windows.Forms.CheckBox();
-            this.lab7610 = new System.Windows.Forms.Label();
-            this.comsw = new System.Windows.Forms.ComboBox();
-            this.lab7612name = new System.Windows.Forms.Label();
-            this.com7612 = new System.Windows.Forms.ComboBox();
-            this.lab7611 = new System.Windows.Forms.Label();
-            this.check7612 = new System.Windows.Forms.CheckBox();
-            this.comnms = new System.Windows.Forms.ComboBox();
-            this.lab7612 = new System.Windows.Forms.Label();
-            this.labapp = new System.Windows.Forms.Label();
-            this.checkapp = new System.Windows.Forms.CheckBox();
-            this.lab7613name = new System.Windows.Forms.Label();
-            this.com7613 = new System.Windows.Forms.ComboBox();
-            this.comapp = new System.Windows.Forms.ComboBox();
-            this.check7613 = new System.Windows.Forms.CheckBox();
-            this.labappname = new System.Windows.Forms.Label();
-            this.lab7613 = new System.Windows.Forms.Label();
-            this.labdb = new System.Windows.Forms.Label();
-            this.checkdb = new System.Windows.Forms.CheckBox();
-            this.lab7614name = new System.Windows.Forms.Label();
-            this.com7614 = new System.Windows.Forms.ComboBox();
-            this.comdb = new System.Windows.Forms.ComboBox();
-            this.check7614 = new System.Windows.Forms.CheckBox();
-            this.labsdnname = new System.Windows.Forms.Label();
-            this.lab7614 = new System.Windows.Forms.Label();
-            this.labdbname = new System.Windows.Forms.Label();
-            this.comsdn = new System.Windows.Forms.ComboBox();
-            this.lab7616name = new System.Windows.Forms.Label();
-            this.com7616 = new System.Windows.Forms.ComboBox();
-            this.checksdn = new System.Windows.Forms.CheckBox();
-            this.labsysfilename = new System.Windows.Forms.Label();
-            this.check7616 = new System.Windows.Forms.CheckBox();
-            this.checksysfile = new System.Windows.Forms.CheckBox();
-            this.labsdn = new System.Windows.Forms.Label();
-            this.labsysfile = new System.Windows.Forms.Label();
-            this.comsysfile = new System.Windows.Forms.ComboBox();
-            this.lab7616 = new System.Windows.Forms.Label();
-            this.labslotconfig = new System.Windows.Forms.Label();
-            this.checkslotconfig = new System.Windows.Forms.CheckBox();
-            this.comslotconfig = new System.Windows.Forms.ComboBox();
-            this.label21 = new System.Windows.Forms.Label();
-            this.labslotname = new System.Windows.Forms.Label();
-            this.checkvoss = new System.Windows.Forms.CheckBox();
-            this.comvoss = new System.Windows.Forms.ComboBox();
-            this.labvoss = new System.Windows.Forms.Label();
-            this.labconfig = new System.Windows.Forms.Label();
-            this.checkconfig = new System.Windows.Forms.CheckBox();
-            this.comconfig = new System.Windows.Forms.ComboBox();
-            this.label23 = new System.Windows.Forms.Label();
-            this.labcodename4 = new System.Windows.Forms.Label();
-            this.checkrebootos = new System.Windows.Forms.CheckBox();
-            this.labrebootos = new System.Windows.Forms.Label();
-            this.labconfigname = new System.Windows.Forms.Label();
-            this.comcode4 = new System.Windows.Forms.ComboBox();
-            this.checkcode4 = new System.Windows.Forms.CheckBox();
-            this.labflashname = new System.Windows.Forms.Label();
-            this.label26 = new System.Windows.Forms.Label();
-            this.comflash = new System.Windows.Forms.ComboBox();
-            this.checkflash = new System.Windows.Forms.CheckBox();
-            this.labcode4 = new System.Windows.Forms.Label();
-            this.labyaffsname = new System.Windows.Forms.Label();
-            this.checkcpld = new System.Windows.Forms.CheckBox();
-            this.comyaffs = new System.Windows.Forms.ComboBox();
-            this.checkyaffs = new System.Windows.Forms.CheckBox();
-            this.comcpld = new System.Windows.Forms.ComboBox();
-            this.labflash = new System.Windows.Forms.Label();
-            this.labcpld = new System.Windows.Forms.Label();
-            this.label24 = new System.Windows.Forms.Label();
-            this.labyaffs = new System.Windows.Forms.Label();
-            this.tabPageGpn = new System.Windows.Forms.TabPage();
-            this.lab761c = new System.Windows.Forms.Label();
-            this.com7618 = new System.Windows.Forms.ComboBox();
-            this.com7619 = new System.Windows.Forms.ComboBox();
-            this.com761a = new System.Windows.Forms.ComboBox();
-            this.com761b = new System.Windows.Forms.ComboBox();
-            this.com761c = new System.Windows.Forms.ComboBox();
-            this.check7616c = new System.Windows.Forms.CheckBox();
-            this.check7618 = new System.Windows.Forms.CheckBox();
-            this.check7619 = new System.Windows.Forms.CheckBox();
-            this.check761a = new System.Windows.Forms.CheckBox();
-            this.check761b = new System.Windows.Forms.CheckBox();
-            this.check761c = new System.Windows.Forms.CheckBox();
             this.tabPageLog.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.metroContextMenu.SuspendLayout();
             this.tabControlDOS.SuspendLayout();
+            this.tabPageGpn.SuspendLayout();
+            this.panel3.SuspendLayout();
+            this.tableLayoutPanel1.SuspendLayout();
+            this.panel2.SuspendLayout();
+            this.groupBox12.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.DGVSTATUS)).BeginInit();
             this.tabPageSnmp.SuspendLayout();
             this.tabPageRemote.SuspendLayout();
             this.groupBox6.SuspendLayout();
@@ -553,12 +560,6 @@
             this.groupBox9.SuspendLayout();
             this.panel1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.DGVSTATUS)).BeginInit();
-            this.groupBox12.SuspendLayout();
-            this.panel3.SuspendLayout();
-            this.tableLayoutPanel1.SuspendLayout();
-            this.panel2.SuspendLayout();
-            this.tabPageGpn.SuspendLayout();
             this.SuspendLayout();
             // 
             // timer2
@@ -1827,6 +1828,2356 @@
             this.tabControlDOS.Size = new System.Drawing.Size(1319, 651);
             this.tabControlDOS.TabIndex = 16;
             this.tabControlDOS.SelectedIndexChanged += new System.EventHandler(this.TabControlDOS_SelectedIndexChanged);
+            // 
+            // tabPageGpn
+            // 
+            this.tabPageGpn.BackColor = System.Drawing.Color.LightBlue;
+            this.tabPageGpn.Controls.Add(this.panel3);
+            this.tabPageGpn.Controls.Add(this.ButCheckFile);
+            this.tabPageGpn.Controls.Add(this.ButLogin);
+            this.tabPageGpn.Controls.Add(this.groupBox12);
+            this.tabPageGpn.Controls.Add(this.butbatchip);
+            this.tabPageGpn.Controls.Add(this.DGVSTATUS);
+            this.tabPageGpn.Controls.Add(this.compingcount);
+            this.tabPageGpn.Controls.Add(this.comip);
+            this.tabPageGpn.Controls.Add(this.butsend);
+            this.tabPageGpn.Controls.Add(this.textDOS);
+            this.tabPageGpn.Controls.Add(this.textcom);
+            this.tabPageGpn.Controls.Add(this.buttbatchupload);
+            this.tabPageGpn.Controls.Add(this.buttbatchdownload);
+            this.tabPageGpn.Location = new System.Drawing.Point(4, 22);
+            this.tabPageGpn.Name = "tabPageGpn";
+            this.tabPageGpn.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageGpn.Size = new System.Drawing.Size(1311, 625);
+            this.tabPageGpn.TabIndex = 0;
+            this.tabPageGpn.Text = "设备升级";
+            // 
+            // panel3
+            // 
+            this.panel3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel3.AutoScroll = true;
+            this.panel3.Controls.Add(this.tableLayoutPanel1);
+            this.panel3.Location = new System.Drawing.Point(934, 0);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(378, 625);
+            this.panel3.TabIndex = 275;
+            // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.ColumnCount = 4;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 14.08487F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 67.66257F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 6.084188F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.16838F));
+            this.tableLayoutPanel1.Controls.Add(this.labyaffs, 3, 30);
+            this.tableLayoutPanel1.Controls.Add(this.label24, 0, 31);
+            this.tableLayoutPanel1.Controls.Add(this.labcpld, 3, 28);
+            this.tableLayoutPanel1.Controls.Add(this.labflash, 3, 29);
+            this.tableLayoutPanel1.Controls.Add(this.comcpld, 1, 28);
+            this.tableLayoutPanel1.Controls.Add(this.checkyaffs, 2, 30);
+            this.tableLayoutPanel1.Controls.Add(this.comyaffs, 1, 30);
+            this.tableLayoutPanel1.Controls.Add(this.checkcpld, 2, 28);
+            this.tableLayoutPanel1.Controls.Add(this.labyaffsname, 0, 30);
+            this.tableLayoutPanel1.Controls.Add(this.labcode4, 3, 8);
+            this.tableLayoutPanel1.Controls.Add(this.checkflash, 2, 29);
+            this.tableLayoutPanel1.Controls.Add(this.comflash, 1, 29);
+            this.tableLayoutPanel1.Controls.Add(this.label26, 0, 28);
+            this.tableLayoutPanel1.Controls.Add(this.labflashname, 0, 29);
+            this.tableLayoutPanel1.Controls.Add(this.checkcode4, 2, 8);
+            this.tableLayoutPanel1.Controls.Add(this.comcode4, 1, 8);
+            this.tableLayoutPanel1.Controls.Add(this.labconfigname, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.labrebootos, 3, 27);
+            this.tableLayoutPanel1.Controls.Add(this.checkrebootos, 2, 27);
+            this.tableLayoutPanel1.Controls.Add(this.labcodename4, 0, 8);
+            this.tableLayoutPanel1.Controls.Add(this.label23, 0, 27);
+            this.tableLayoutPanel1.Controls.Add(this.comconfig, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.checkconfig, 2, 0);
+            this.tableLayoutPanel1.Controls.Add(this.labconfig, 3, 0);
+            this.tableLayoutPanel1.Controls.Add(this.labvoss, 3, 26);
+            this.tableLayoutPanel1.Controls.Add(this.comvoss, 1, 26);
+            this.tableLayoutPanel1.Controls.Add(this.checkvoss, 2, 26);
+            this.tableLayoutPanel1.Controls.Add(this.labslotname, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.label21, 0, 26);
+            this.tableLayoutPanel1.Controls.Add(this.comslotconfig, 1, 1);
+            this.tableLayoutPanel1.Controls.Add(this.checkslotconfig, 2, 1);
+            this.tableLayoutPanel1.Controls.Add(this.labslotconfig, 3, 1);
+            this.tableLayoutPanel1.Controls.Add(this.lab7616, 3, 24);
+            this.tableLayoutPanel1.Controls.Add(this.comsysfile, 1, 25);
+            this.tableLayoutPanel1.Controls.Add(this.labsysfile, 3, 25);
+            this.tableLayoutPanel1.Controls.Add(this.labsdn, 3, 9);
+            this.tableLayoutPanel1.Controls.Add(this.checksysfile, 2, 25);
+            this.tableLayoutPanel1.Controls.Add(this.check7616, 2, 24);
+            this.tableLayoutPanel1.Controls.Add(this.labsysfilename, 0, 25);
+            this.tableLayoutPanel1.Controls.Add(this.checksdn, 2, 9);
+            this.tableLayoutPanel1.Controls.Add(this.com7616, 1, 24);
+            this.tableLayoutPanel1.Controls.Add(this.lab7616name, 0, 24);
+            this.tableLayoutPanel1.Controls.Add(this.comsdn, 1, 9);
+            this.tableLayoutPanel1.Controls.Add(this.labdbname, 0, 2);
+            this.tableLayoutPanel1.Controls.Add(this.lab7614, 3, 22);
+            this.tableLayoutPanel1.Controls.Add(this.labsdnname, 0, 9);
+            this.tableLayoutPanel1.Controls.Add(this.check7614, 2, 22);
+            this.tableLayoutPanel1.Controls.Add(this.comdb, 1, 2);
+            this.tableLayoutPanel1.Controls.Add(this.com7614, 1, 22);
+            this.tableLayoutPanel1.Controls.Add(this.lab7614name, 0, 22);
+            this.tableLayoutPanel1.Controls.Add(this.checkdb, 2, 2);
+            this.tableLayoutPanel1.Controls.Add(this.labdb, 3, 2);
+            this.tableLayoutPanel1.Controls.Add(this.lab7613, 3, 21);
+            this.tableLayoutPanel1.Controls.Add(this.labappname, 0, 3);
+            this.tableLayoutPanel1.Controls.Add(this.check7613, 2, 21);
+            this.tableLayoutPanel1.Controls.Add(this.comapp, 1, 3);
+            this.tableLayoutPanel1.Controls.Add(this.com7613, 1, 21);
+            this.tableLayoutPanel1.Controls.Add(this.lab7613name, 0, 21);
+            this.tableLayoutPanel1.Controls.Add(this.checkapp, 2, 3);
+            this.tableLayoutPanel1.Controls.Add(this.labapp, 3, 3);
+            this.tableLayoutPanel1.Controls.Add(this.lab7612, 3, 20);
+            this.tableLayoutPanel1.Controls.Add(this.comnms, 1, 10);
+            this.tableLayoutPanel1.Controls.Add(this.check7612, 2, 20);
+            this.tableLayoutPanel1.Controls.Add(this.lab7611, 3, 19);
+            this.tableLayoutPanel1.Controls.Add(this.com7612, 1, 20);
+            this.tableLayoutPanel1.Controls.Add(this.lab7612name, 0, 20);
+            this.tableLayoutPanel1.Controls.Add(this.comsw, 1, 11);
+            this.tableLayoutPanel1.Controls.Add(this.lab7610, 3, 18);
+            this.tableLayoutPanel1.Controls.Add(this.check7611, 2, 19);
+            this.tableLayoutPanel1.Controls.Add(this.labapp2, 3, 4);
+            this.tableLayoutPanel1.Controls.Add(this.checkapp2, 2, 4);
+            this.tableLayoutPanel1.Controls.Add(this.comapp2, 1, 4);
+            this.tableLayoutPanel1.Controls.Add(this.com7611, 1, 19);
+            this.tableLayoutPanel1.Controls.Add(this.lab7611name, 0, 19);
+            this.tableLayoutPanel1.Controls.Add(this.check7610, 2, 18);
+            this.tableLayoutPanel1.Controls.Add(this.labapp2name, 0, 4);
+            this.tableLayoutPanel1.Controls.Add(this.labcode3, 3, 7);
+            this.tableLayoutPanel1.Controls.Add(this.labswname, 0, 11);
+            this.tableLayoutPanel1.Controls.Add(this.checkcode3, 2, 7);
+            this.tableLayoutPanel1.Controls.Add(this.lab7610name, 0, 18);
+            this.tableLayoutPanel1.Controls.Add(this.com7610, 1, 18);
+            this.tableLayoutPanel1.Controls.Add(this.labnmsname, 0, 10);
+            this.tableLayoutPanel1.Controls.Add(this.comcode3, 1, 7);
+            this.tableLayoutPanel1.Controls.Add(this.labcodename, 0, 5);
+            this.tableLayoutPanel1.Controls.Add(this.labuxc, 3, 17);
+            this.tableLayoutPanel1.Controls.Add(this.com760d, 1, 15);
+            this.tableLayoutPanel1.Controls.Add(this.checkuxc, 2, 17);
+            this.tableLayoutPanel1.Controls.Add(this.com760c, 1, 14);
+            this.tableLayoutPanel1.Controls.Add(this.comuxc, 1, 17);
+            this.tableLayoutPanel1.Controls.Add(this.lab760uxcname, 0, 17);
+            this.tableLayoutPanel1.Controls.Add(this.com760b, 1, 13);
+            this.tableLayoutPanel1.Controls.Add(this.com760e, 1, 16);
+            this.tableLayoutPanel1.Controls.Add(this.check760e, 2, 16);
+            this.tableLayoutPanel1.Controls.Add(this.com760s, 1, 12);
+            this.tableLayoutPanel1.Controls.Add(this.lab760dname, 0, 15);
+            this.tableLayoutPanel1.Controls.Add(this.lab760ename, 0, 16);
+            this.tableLayoutPanel1.Controls.Add(this.labcodename3, 0, 7);
+            this.tableLayoutPanel1.Controls.Add(this.check760d, 2, 15);
+            this.tableLayoutPanel1.Controls.Add(this.lab760e, 3, 16);
+            this.tableLayoutPanel1.Controls.Add(this.lab760cname, 0, 14);
+            this.tableLayoutPanel1.Controls.Add(this.comcode, 1, 5);
+            this.tableLayoutPanel1.Controls.Add(this.lab760bname, 0, 13);
+            this.tableLayoutPanel1.Controls.Add(this.checkcode, 2, 5);
+            this.tableLayoutPanel1.Controls.Add(this.check760c, 2, 14);
+            this.tableLayoutPanel1.Controls.Add(this.labcode, 3, 5);
+            this.tableLayoutPanel1.Controls.Add(this.lab760sname, 0, 12);
+            this.tableLayoutPanel1.Controls.Add(this.lab760d, 3, 15);
+            this.tableLayoutPanel1.Controls.Add(this.labcode2, 3, 6);
+            this.tableLayoutPanel1.Controls.Add(this.checkcode2, 2, 6);
+            this.tableLayoutPanel1.Controls.Add(this.check760b, 2, 13);
+            this.tableLayoutPanel1.Controls.Add(this.comcode2, 1, 6);
+            this.tableLayoutPanel1.Controls.Add(this.labcodename2, 0, 6);
+            this.tableLayoutPanel1.Controls.Add(this.checknms, 2, 10);
+            this.tableLayoutPanel1.Controls.Add(this.labnms, 3, 10);
+            this.tableLayoutPanel1.Controls.Add(this.check760s, 2, 12);
+            this.tableLayoutPanel1.Controls.Add(this.lab760c, 3, 14);
+            this.tableLayoutPanel1.Controls.Add(this.checksw, 2, 11);
+            this.tableLayoutPanel1.Controls.Add(this.labsw, 3, 11);
+            this.tableLayoutPanel1.Controls.Add(this.lab760s, 3, 12);
+            this.tableLayoutPanel1.Controls.Add(this.lab760b, 3, 13);
+            this.tableLayoutPanel1.Controls.Add(this.lab7615name, 0, 23);
+            this.tableLayoutPanel1.Controls.Add(this.com7615, 1, 23);
+            this.tableLayoutPanel1.Controls.Add(this.check7615, 2, 23);
+            this.tableLayoutPanel1.Controls.Add(this.lab7615, 3, 23);
+            this.tableLayoutPanel1.Controls.Add(this.comrebootos, 1, 27);
+            this.tableLayoutPanel1.Controls.Add(this.panel2, 1, 31);
+            this.tableLayoutPanel1.Controls.Add(this.lab7616cname, 0, 32);
+            this.tableLayoutPanel1.Controls.Add(this.com7616c, 1, 32);
+            this.tableLayoutPanel1.Controls.Add(this.lab7618name, 0, 33);
+            this.tableLayoutPanel1.Controls.Add(this.lab7618, 3, 33);
+            this.tableLayoutPanel1.Controls.Add(this.lab7619name, 0, 34);
+            this.tableLayoutPanel1.Controls.Add(this.lab7619, 3, 34);
+            this.tableLayoutPanel1.Controls.Add(this.lab761aname, 0, 35);
+            this.tableLayoutPanel1.Controls.Add(this.lab761a, 3, 35);
+            this.tableLayoutPanel1.Controls.Add(this.lab761bname, 0, 36);
+            this.tableLayoutPanel1.Controls.Add(this.lab761b, 3, 36);
+            this.tableLayoutPanel1.Controls.Add(this.lab761cname, 0, 37);
+            this.tableLayoutPanel1.Controls.Add(this.lab761c, 3, 37);
+            this.tableLayoutPanel1.Controls.Add(this.com7618, 1, 33);
+            this.tableLayoutPanel1.Controls.Add(this.com7619, 1, 34);
+            this.tableLayoutPanel1.Controls.Add(this.com761a, 1, 35);
+            this.tableLayoutPanel1.Controls.Add(this.com761b, 1, 36);
+            this.tableLayoutPanel1.Controls.Add(this.com761c, 1, 37);
+            this.tableLayoutPanel1.Controls.Add(this.check7616c, 2, 32);
+            this.tableLayoutPanel1.Controls.Add(this.check7618, 2, 33);
+            this.tableLayoutPanel1.Controls.Add(this.check7619, 2, 34);
+            this.tableLayoutPanel1.Controls.Add(this.check761a, 2, 35);
+            this.tableLayoutPanel1.Controls.Add(this.check761b, 2, 36);
+            this.tableLayoutPanel1.Controls.Add(this.check761c, 2, 37);
+            this.tableLayoutPanel1.Controls.Add(this.lab7616c, 3, 32);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(2, 0);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 39;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(351, 782);
+            this.tableLayoutPanel1.TabIndex = 274;
+            // 
+            // labyaffs
+            // 
+            this.labyaffs.AutoSize = true;
+            this.labyaffs.BackColor = System.Drawing.Color.Transparent;
+            this.labyaffs.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labyaffs.Location = new System.Drawing.Point(310, 600);
+            this.labyaffs.Name = "labyaffs";
+            this.labyaffs.Size = new System.Drawing.Size(38, 20);
+            this.labyaffs.TabIndex = 220;
+            this.labyaffs.Text = "空";
+            this.labyaffs.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label24
+            // 
+            this.label24.AutoSize = true;
+            this.label24.BackColor = System.Drawing.Color.Transparent;
+            this.label24.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label24.Location = new System.Drawing.Point(3, 620);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(43, 20);
+            this.label24.TabIndex = 199;
+            this.label24.Text = "76网管";
+            this.label24.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // labcpld
+            // 
+            this.labcpld.AutoSize = true;
+            this.labcpld.BackColor = System.Drawing.Color.Transparent;
+            this.labcpld.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labcpld.Location = new System.Drawing.Point(310, 560);
+            this.labcpld.Name = "labcpld";
+            this.labcpld.Size = new System.Drawing.Size(38, 20);
+            this.labcpld.TabIndex = 306;
+            this.labcpld.Text = "空";
+            this.labcpld.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // labflash
+            // 
+            this.labflash.AutoSize = true;
+            this.labflash.BackColor = System.Drawing.Color.Transparent;
+            this.labflash.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labflash.Location = new System.Drawing.Point(310, 580);
+            this.labflash.Name = "labflash";
+            this.labflash.Size = new System.Drawing.Size(38, 20);
+            this.labflash.TabIndex = 219;
+            this.labflash.Text = "空";
+            this.labflash.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // comcpld
+            // 
+            this.comcpld.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comcpld.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.comcpld.FormattingEnabled = true;
+            this.comcpld.Location = new System.Drawing.Point(52, 563);
+            this.comcpld.Name = "comcpld";
+            this.comcpld.Size = new System.Drawing.Size(231, 20);
+            this.comcpld.TabIndex = 303;
+            this.comcpld.SelectedIndexChanged += new System.EventHandler(this.comcplde_SelectedIndexChanged);
+            // 
+            // checkyaffs
+            // 
+            this.checkyaffs.BackColor = System.Drawing.Color.Transparent;
+            this.checkyaffs.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkyaffs.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.checkyaffs.Location = new System.Drawing.Point(289, 603);
+            this.checkyaffs.Name = "checkyaffs";
+            this.checkyaffs.Size = new System.Drawing.Size(15, 14);
+            this.checkyaffs.TabIndex = 206;
+            this.checkyaffs.UseVisualStyleBackColor = false;
+            // 
+            // comyaffs
+            // 
+            this.comyaffs.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comyaffs.FormattingEnabled = true;
+            this.comyaffs.Location = new System.Drawing.Point(52, 603);
+            this.comyaffs.Name = "comyaffs";
+            this.comyaffs.Size = new System.Drawing.Size(231, 20);
+            this.comyaffs.TabIndex = 204;
+            this.comyaffs.SelectedIndexChanged += new System.EventHandler(this.comyaffs_SelectedIndexChanged);
+            // 
+            // checkcpld
+            // 
+            this.checkcpld.BackColor = System.Drawing.Color.Transparent;
+            this.checkcpld.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkcpld.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.checkcpld.Location = new System.Drawing.Point(289, 563);
+            this.checkcpld.Name = "checkcpld";
+            this.checkcpld.Size = new System.Drawing.Size(15, 14);
+            this.checkcpld.TabIndex = 305;
+            this.checkcpld.UseVisualStyleBackColor = false;
+            // 
+            // labyaffsname
+            // 
+            this.labyaffsname.AutoSize = true;
+            this.labyaffsname.BackColor = System.Drawing.Color.Transparent;
+            this.labyaffsname.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labyaffsname.Location = new System.Drawing.Point(3, 600);
+            this.labyaffsname.Name = "labyaffsname";
+            this.labyaffsname.Size = new System.Drawing.Size(43, 20);
+            this.labyaffsname.TabIndex = 205;
+            this.labyaffsname.Text = "YAFFS";
+            this.labyaffsname.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // labcode4
+            // 
+            this.labcode4.AutoSize = true;
+            this.labcode4.BackColor = System.Drawing.Color.Transparent;
+            this.labcode4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labcode4.Location = new System.Drawing.Point(310, 160);
+            this.labcode4.Name = "labcode4";
+            this.labcode4.Size = new System.Drawing.Size(38, 20);
+            this.labcode4.TabIndex = 310;
+            this.labcode4.Text = "空";
+            this.labcode4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // checkflash
+            // 
+            this.checkflash.BackColor = System.Drawing.Color.Transparent;
+            this.checkflash.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkflash.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.checkflash.Location = new System.Drawing.Point(289, 583);
+            this.checkflash.Name = "checkflash";
+            this.checkflash.Size = new System.Drawing.Size(15, 14);
+            this.checkflash.TabIndex = 203;
+            this.checkflash.UseVisualStyleBackColor = false;
+            // 
+            // comflash
+            // 
+            this.comflash.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comflash.FormattingEnabled = true;
+            this.comflash.Location = new System.Drawing.Point(52, 583);
+            this.comflash.Name = "comflash";
+            this.comflash.Size = new System.Drawing.Size(231, 20);
+            this.comflash.TabIndex = 201;
+            this.comflash.SelectedIndexChanged += new System.EventHandler(this.comflash_SelectedIndexChanged);
+            // 
+            // label26
+            // 
+            this.label26.AutoSize = true;
+            this.label26.BackColor = System.Drawing.Color.Transparent;
+            this.label26.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label26.Location = new System.Drawing.Point(3, 560);
+            this.label26.Name = "label26";
+            this.label26.Size = new System.Drawing.Size(43, 20);
+            this.label26.TabIndex = 304;
+            this.label26.Text = "CPLD";
+            this.label26.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // labflashname
+            // 
+            this.labflashname.AutoSize = true;
+            this.labflashname.BackColor = System.Drawing.Color.Transparent;
+            this.labflashname.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labflashname.Location = new System.Drawing.Point(3, 580);
+            this.labflashname.Name = "labflashname";
+            this.labflashname.Size = new System.Drawing.Size(43, 20);
+            this.labflashname.TabIndex = 202;
+            this.labflashname.Text = "FLASH";
+            this.labflashname.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // checkcode4
+            // 
+            this.checkcode4.BackColor = System.Drawing.Color.Transparent;
+            this.checkcode4.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkcode4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.checkcode4.Location = new System.Drawing.Point(289, 163);
+            this.checkcode4.Name = "checkcode4";
+            this.checkcode4.Size = new System.Drawing.Size(15, 14);
+            this.checkcode4.TabIndex = 309;
+            this.checkcode4.UseVisualStyleBackColor = false;
+            // 
+            // comcode4
+            // 
+            this.comcode4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comcode4.FormattingEnabled = true;
+            this.comcode4.Location = new System.Drawing.Point(52, 163);
+            this.comcode4.Name = "comcode4";
+            this.comcode4.Size = new System.Drawing.Size(231, 20);
+            this.comcode4.TabIndex = 307;
+            this.comcode4.SelectedIndexChanged += new System.EventHandler(this.comcode4_SelectedIndexChanged);
+            // 
+            // labconfigname
+            // 
+            this.labconfigname.AutoSize = true;
+            this.labconfigname.BackColor = System.Drawing.Color.Transparent;
+            this.labconfigname.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labconfigname.Location = new System.Drawing.Point(3, 0);
+            this.labconfigname.Name = "labconfigname";
+            this.labconfigname.Size = new System.Drawing.Size(43, 20);
+            this.labconfigname.TabIndex = 149;
+            this.labconfigname.Text = "Config";
+            this.labconfigname.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // labrebootos
+            // 
+            this.labrebootos.AutoSize = true;
+            this.labrebootos.BackColor = System.Drawing.Color.Transparent;
+            this.labrebootos.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labrebootos.Location = new System.Drawing.Point(310, 540);
+            this.labrebootos.Name = "labrebootos";
+            this.labrebootos.Size = new System.Drawing.Size(38, 20);
+            this.labrebootos.TabIndex = 302;
+            this.labrebootos.Text = "空";
+            this.labrebootos.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // checkrebootos
+            // 
+            this.checkrebootos.BackColor = System.Drawing.Color.Transparent;
+            this.checkrebootos.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkrebootos.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.checkrebootos.Location = new System.Drawing.Point(289, 543);
+            this.checkrebootos.Name = "checkrebootos";
+            this.checkrebootos.Size = new System.Drawing.Size(15, 14);
+            this.checkrebootos.TabIndex = 301;
+            this.checkrebootos.UseVisualStyleBackColor = false;
+            // 
+            // labcodename4
+            // 
+            this.labcodename4.AutoSize = true;
+            this.labcodename4.BackColor = System.Drawing.Color.Transparent;
+            this.labcodename4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labcodename4.Location = new System.Drawing.Point(3, 160);
+            this.labcodename4.Name = "labcodename4";
+            this.labcodename4.Size = new System.Drawing.Size(43, 20);
+            this.labcodename4.TabIndex = 308;
+            this.labcodename4.Text = "CODE4";
+            this.labcodename4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.BackColor = System.Drawing.Color.Transparent;
+            this.label23.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label23.Location = new System.Drawing.Point(3, 540);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(43, 20);
+            this.label23.TabIndex = 300;
+            this.label23.Text = "REBOOTOS";
+            this.label23.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // comconfig
+            // 
+            this.comconfig.BackColor = System.Drawing.SystemColors.Window;
+            this.comconfig.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comconfig.FormattingEnabled = true;
+            this.comconfig.Location = new System.Drawing.Point(52, 3);
+            this.comconfig.Name = "comconfig";
+            this.comconfig.Size = new System.Drawing.Size(231, 20);
+            this.comconfig.TabIndex = 145;
+            this.comconfig.SelectedIndexChanged += new System.EventHandler(this.comconfig_SelectedIndexChanged);
+            // 
+            // checkconfig
+            // 
+            this.checkconfig.BackColor = System.Drawing.Color.Transparent;
+            this.checkconfig.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkconfig.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.checkconfig.Location = new System.Drawing.Point(289, 3);
+            this.checkconfig.Name = "checkconfig";
+            this.checkconfig.Size = new System.Drawing.Size(15, 14);
+            this.checkconfig.TabIndex = 221;
+            this.checkconfig.UseVisualStyleBackColor = true;
+            // 
+            // labconfig
+            // 
+            this.labconfig.AutoSize = true;
+            this.labconfig.BackColor = System.Drawing.Color.Transparent;
+            this.labconfig.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labconfig.Location = new System.Drawing.Point(310, 0);
+            this.labconfig.Name = "labconfig";
+            this.labconfig.Size = new System.Drawing.Size(38, 20);
+            this.labconfig.TabIndex = 224;
+            this.labconfig.Text = "空";
+            this.labconfig.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // labvoss
+            // 
+            this.labvoss.AutoSize = true;
+            this.labvoss.BackColor = System.Drawing.Color.Transparent;
+            this.labvoss.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labvoss.Location = new System.Drawing.Point(310, 520);
+            this.labvoss.Name = "labvoss";
+            this.labvoss.Size = new System.Drawing.Size(38, 20);
+            this.labvoss.TabIndex = 298;
+            this.labvoss.Text = "空";
+            this.labvoss.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // comvoss
+            // 
+            this.comvoss.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comvoss.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.comvoss.FormattingEnabled = true;
+            this.comvoss.Location = new System.Drawing.Point(52, 523);
+            this.comvoss.Name = "comvoss";
+            this.comvoss.Size = new System.Drawing.Size(231, 20);
+            this.comvoss.TabIndex = 295;
+            this.comvoss.SelectedIndexChanged += new System.EventHandler(this.comvoss_SelectedIndexChanged);
+            // 
+            // checkvoss
+            // 
+            this.checkvoss.BackColor = System.Drawing.Color.Transparent;
+            this.checkvoss.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkvoss.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.checkvoss.Location = new System.Drawing.Point(289, 523);
+            this.checkvoss.Name = "checkvoss";
+            this.checkvoss.Size = new System.Drawing.Size(15, 14);
+            this.checkvoss.TabIndex = 297;
+            this.checkvoss.UseVisualStyleBackColor = false;
+            // 
+            // labslotname
+            // 
+            this.labslotname.BackColor = System.Drawing.Color.Transparent;
+            this.labslotname.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labslotname.Location = new System.Drawing.Point(3, 20);
+            this.labslotname.Name = "labslotname";
+            this.labslotname.Size = new System.Drawing.Size(43, 20);
+            this.labslotname.TabIndex = 150;
+            this.labslotname.Text = "Slot";
+            this.labslotname.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.BackColor = System.Drawing.Color.Transparent;
+            this.label21.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label21.Location = new System.Drawing.Point(3, 520);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(43, 20);
+            this.label21.TabIndex = 296;
+            this.label21.Text = "VOSS";
+            this.label21.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // comslotconfig
+            // 
+            this.comslotconfig.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comslotconfig.FormattingEnabled = true;
+            this.comslotconfig.Location = new System.Drawing.Point(52, 23);
+            this.comslotconfig.Name = "comslotconfig";
+            this.comslotconfig.Size = new System.Drawing.Size(231, 20);
+            this.comslotconfig.TabIndex = 147;
+            this.comslotconfig.SelectedIndexChanged += new System.EventHandler(this.comslotconfig_SelectedIndexChanged);
+            // 
+            // checkslotconfig
+            // 
+            this.checkslotconfig.BackColor = System.Drawing.Color.Transparent;
+            this.checkslotconfig.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkslotconfig.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.checkslotconfig.Location = new System.Drawing.Point(289, 23);
+            this.checkslotconfig.Name = "checkslotconfig";
+            this.checkslotconfig.Size = new System.Drawing.Size(15, 14);
+            this.checkslotconfig.TabIndex = 222;
+            this.checkslotconfig.UseVisualStyleBackColor = false;
+            // 
+            // labslotconfig
+            // 
+            this.labslotconfig.AutoSize = true;
+            this.labslotconfig.BackColor = System.Drawing.Color.Transparent;
+            this.labslotconfig.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labslotconfig.Location = new System.Drawing.Point(310, 20);
+            this.labslotconfig.Name = "labslotconfig";
+            this.labslotconfig.Size = new System.Drawing.Size(38, 20);
+            this.labslotconfig.TabIndex = 225;
+            this.labslotconfig.Text = "空";
+            this.labslotconfig.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lab7616
+            // 
+            this.lab7616.AutoSize = true;
+            this.lab7616.BackColor = System.Drawing.Color.Transparent;
+            this.lab7616.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab7616.Location = new System.Drawing.Point(310, 480);
+            this.lab7616.Name = "lab7616";
+            this.lab7616.Size = new System.Drawing.Size(38, 20);
+            this.lab7616.TabIndex = 273;
+            this.lab7616.Text = "空";
+            this.lab7616.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // comsysfile
+            // 
+            this.comsysfile.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comsysfile.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.comsysfile.FormattingEnabled = true;
+            this.comsysfile.Location = new System.Drawing.Point(52, 503);
+            this.comsysfile.Name = "comsysfile";
+            this.comsysfile.Size = new System.Drawing.Size(231, 20);
+            this.comsysfile.TabIndex = 172;
+            this.comsysfile.SelectedIndexChanged += new System.EventHandler(this.comsysfile_SelectedIndexChanged);
+            // 
+            // labsysfile
+            // 
+            this.labsysfile.AutoSize = true;
+            this.labsysfile.BackColor = System.Drawing.Color.Transparent;
+            this.labsysfile.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labsysfile.Location = new System.Drawing.Point(310, 500);
+            this.labsysfile.Name = "labsysfile";
+            this.labsysfile.Size = new System.Drawing.Size(38, 20);
+            this.labsysfile.TabIndex = 218;
+            this.labsysfile.Text = "空";
+            this.labsysfile.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // labsdn
+            // 
+            this.labsdn.AutoSize = true;
+            this.labsdn.BackColor = System.Drawing.Color.Transparent;
+            this.labsdn.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labsdn.Location = new System.Drawing.Point(310, 180);
+            this.labsdn.Name = "labsdn";
+            this.labsdn.Size = new System.Drawing.Size(38, 20);
+            this.labsdn.TabIndex = 286;
+            this.labsdn.Text = "空";
+            this.labsdn.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // checksysfile
+            // 
+            this.checksysfile.BackColor = System.Drawing.Color.Transparent;
+            this.checksysfile.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checksysfile.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.checksysfile.Location = new System.Drawing.Point(289, 503);
+            this.checksysfile.Name = "checksysfile";
+            this.checksysfile.Size = new System.Drawing.Size(15, 14);
+            this.checksysfile.TabIndex = 174;
+            this.checksysfile.UseVisualStyleBackColor = false;
+            // 
+            // check7616
+            // 
+            this.check7616.BackColor = System.Drawing.Color.Transparent;
+            this.check7616.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.check7616.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.check7616.Location = new System.Drawing.Point(289, 483);
+            this.check7616.Name = "check7616";
+            this.check7616.Size = new System.Drawing.Size(15, 14);
+            this.check7616.TabIndex = 272;
+            this.check7616.UseVisualStyleBackColor = false;
+            // 
+            // labsysfilename
+            // 
+            this.labsysfilename.AutoSize = true;
+            this.labsysfilename.BackColor = System.Drawing.Color.Transparent;
+            this.labsysfilename.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labsysfilename.Location = new System.Drawing.Point(3, 500);
+            this.labsysfilename.Name = "labsysfilename";
+            this.labsysfilename.Size = new System.Drawing.Size(43, 20);
+            this.labsysfilename.TabIndex = 173;
+            this.labsysfilename.Text = "SYSFILE";
+            this.labsysfilename.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // checksdn
+            // 
+            this.checksdn.BackColor = System.Drawing.Color.Transparent;
+            this.checksdn.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checksdn.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.checksdn.Location = new System.Drawing.Point(289, 183);
+            this.checksdn.Name = "checksdn";
+            this.checksdn.Size = new System.Drawing.Size(15, 14);
+            this.checksdn.TabIndex = 285;
+            this.checksdn.UseVisualStyleBackColor = false;
+            // 
+            // com7616
+            // 
+            this.com7616.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.com7616.FormattingEnabled = true;
+            this.com7616.Location = new System.Drawing.Point(52, 483);
+            this.com7616.Name = "com7616";
+            this.com7616.Size = new System.Drawing.Size(231, 20);
+            this.com7616.TabIndex = 270;
+            this.com7616.SelectedIndexChanged += new System.EventHandler(this.com7616_SelectedIndexChanged);
+            // 
+            // lab7616name
+            // 
+            this.lab7616name.AutoSize = true;
+            this.lab7616name.BackColor = System.Drawing.Color.Transparent;
+            this.lab7616name.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab7616name.Location = new System.Drawing.Point(3, 480);
+            this.lab7616name.Name = "lab7616name";
+            this.lab7616name.Size = new System.Drawing.Size(43, 20);
+            this.lab7616name.TabIndex = 271;
+            this.lab7616name.Text = "7616";
+            this.lab7616name.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // comsdn
+            // 
+            this.comsdn.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comsdn.FormattingEnabled = true;
+            this.comsdn.Location = new System.Drawing.Point(52, 183);
+            this.comsdn.Name = "comsdn";
+            this.comsdn.Size = new System.Drawing.Size(231, 20);
+            this.comsdn.TabIndex = 283;
+            this.comsdn.SelectedIndexChanged += new System.EventHandler(this.comsdn_SelectedIndexChanged);
+            // 
+            // labdbname
+            // 
+            this.labdbname.AutoSize = true;
+            this.labdbname.BackColor = System.Drawing.Color.Transparent;
+            this.labdbname.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labdbname.Location = new System.Drawing.Point(3, 40);
+            this.labdbname.Name = "labdbname";
+            this.labdbname.Size = new System.Drawing.Size(43, 20);
+            this.labdbname.TabIndex = 148;
+            this.labdbname.Text = "DB";
+            this.labdbname.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // lab7614
+            // 
+            this.lab7614.AutoSize = true;
+            this.lab7614.BackColor = System.Drawing.Color.Transparent;
+            this.lab7614.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab7614.Location = new System.Drawing.Point(310, 440);
+            this.lab7614.Name = "lab7614";
+            this.lab7614.Size = new System.Drawing.Size(38, 20);
+            this.lab7614.TabIndex = 269;
+            this.lab7614.Text = "空";
+            this.lab7614.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // labsdnname
+            // 
+            this.labsdnname.AutoSize = true;
+            this.labsdnname.BackColor = System.Drawing.Color.Transparent;
+            this.labsdnname.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labsdnname.Location = new System.Drawing.Point(3, 180);
+            this.labsdnname.Name = "labsdnname";
+            this.labsdnname.Size = new System.Drawing.Size(43, 20);
+            this.labsdnname.TabIndex = 284;
+            this.labsdnname.Text = "SDN";
+            this.labsdnname.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // check7614
+            // 
+            this.check7614.BackColor = System.Drawing.Color.Transparent;
+            this.check7614.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.check7614.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.check7614.Location = new System.Drawing.Point(289, 443);
+            this.check7614.Name = "check7614";
+            this.check7614.Size = new System.Drawing.Size(15, 14);
+            this.check7614.TabIndex = 268;
+            this.check7614.UseVisualStyleBackColor = false;
+            // 
+            // comdb
+            // 
+            this.comdb.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comdb.FormattingEnabled = true;
+            this.comdb.Location = new System.Drawing.Point(52, 43);
+            this.comdb.Name = "comdb";
+            this.comdb.Size = new System.Drawing.Size(231, 20);
+            this.comdb.TabIndex = 146;
+            this.comdb.SelectedIndexChanged += new System.EventHandler(this.comdb_SelectedIndexChanged);
+            // 
+            // com7614
+            // 
+            this.com7614.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.com7614.FormattingEnabled = true;
+            this.com7614.Location = new System.Drawing.Point(52, 443);
+            this.com7614.Name = "com7614";
+            this.com7614.Size = new System.Drawing.Size(231, 20);
+            this.com7614.TabIndex = 266;
+            this.com7614.SelectedIndexChanged += new System.EventHandler(this.com7614_SelectedIndexChanged);
+            // 
+            // lab7614name
+            // 
+            this.lab7614name.AutoSize = true;
+            this.lab7614name.BackColor = System.Drawing.Color.Transparent;
+            this.lab7614name.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab7614name.Location = new System.Drawing.Point(3, 440);
+            this.lab7614name.Name = "lab7614name";
+            this.lab7614name.Size = new System.Drawing.Size(43, 20);
+            this.lab7614name.TabIndex = 267;
+            this.lab7614name.Text = "7614";
+            this.lab7614name.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // checkdb
+            // 
+            this.checkdb.BackColor = System.Drawing.Color.Transparent;
+            this.checkdb.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkdb.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.checkdb.Location = new System.Drawing.Point(289, 43);
+            this.checkdb.Name = "checkdb";
+            this.checkdb.Size = new System.Drawing.Size(15, 14);
+            this.checkdb.TabIndex = 223;
+            this.checkdb.UseVisualStyleBackColor = false;
+            // 
+            // labdb
+            // 
+            this.labdb.AutoSize = true;
+            this.labdb.BackColor = System.Drawing.Color.Transparent;
+            this.labdb.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labdb.Location = new System.Drawing.Point(310, 40);
+            this.labdb.Name = "labdb";
+            this.labdb.Size = new System.Drawing.Size(38, 20);
+            this.labdb.TabIndex = 226;
+            this.labdb.Text = "空";
+            this.labdb.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lab7613
+            // 
+            this.lab7613.AutoSize = true;
+            this.lab7613.BackColor = System.Drawing.Color.Transparent;
+            this.lab7613.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab7613.Location = new System.Drawing.Point(310, 420);
+            this.lab7613.Name = "lab7613";
+            this.lab7613.Size = new System.Drawing.Size(38, 20);
+            this.lab7613.TabIndex = 265;
+            this.lab7613.Text = "空";
+            this.lab7613.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // labappname
+            // 
+            this.labappname.AutoSize = true;
+            this.labappname.BackColor = System.Drawing.Color.Transparent;
+            this.labappname.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labappname.Location = new System.Drawing.Point(3, 60);
+            this.labappname.Name = "labappname";
+            this.labappname.Size = new System.Drawing.Size(43, 20);
+            this.labappname.TabIndex = 136;
+            this.labappname.Text = "APP";
+            this.labappname.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // check7613
+            // 
+            this.check7613.BackColor = System.Drawing.Color.Transparent;
+            this.check7613.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.check7613.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.check7613.Location = new System.Drawing.Point(289, 423);
+            this.check7613.Name = "check7613";
+            this.check7613.Size = new System.Drawing.Size(15, 14);
+            this.check7613.TabIndex = 264;
+            this.check7613.UseVisualStyleBackColor = false;
+            // 
+            // comapp
+            // 
+            this.comapp.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comapp.FormattingEnabled = true;
+            this.comapp.Location = new System.Drawing.Point(52, 63);
+            this.comapp.Name = "comapp";
+            this.comapp.Size = new System.Drawing.Size(231, 20);
+            this.comapp.TabIndex = 132;
+            this.comapp.SelectedIndexChanged += new System.EventHandler(this.comapp_SelectedIndexChanged);
+            // 
+            // com7613
+            // 
+            this.com7613.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.com7613.FormattingEnabled = true;
+            this.com7613.Location = new System.Drawing.Point(52, 423);
+            this.com7613.Name = "com7613";
+            this.com7613.Size = new System.Drawing.Size(231, 20);
+            this.com7613.TabIndex = 262;
+            this.com7613.SelectedIndexChanged += new System.EventHandler(this.com7613_SelectedIndexChanged);
+            // 
+            // lab7613name
+            // 
+            this.lab7613name.AutoSize = true;
+            this.lab7613name.BackColor = System.Drawing.Color.Transparent;
+            this.lab7613name.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab7613name.Location = new System.Drawing.Point(3, 420);
+            this.lab7613name.Name = "lab7613name";
+            this.lab7613name.Size = new System.Drawing.Size(43, 20);
+            this.lab7613name.TabIndex = 263;
+            this.lab7613name.Text = "7613";
+            this.lab7613name.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // checkapp
+            // 
+            this.checkapp.BackColor = System.Drawing.Color.Transparent;
+            this.checkapp.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkapp.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.checkapp.Location = new System.Drawing.Point(289, 63);
+            this.checkapp.Name = "checkapp";
+            this.checkapp.Size = new System.Drawing.Size(15, 14);
+            this.checkapp.TabIndex = 163;
+            this.checkapp.UseVisualStyleBackColor = true;
+            // 
+            // labapp
+            // 
+            this.labapp.AutoSize = true;
+            this.labapp.BackColor = System.Drawing.Color.Transparent;
+            this.labapp.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labapp.Location = new System.Drawing.Point(310, 60);
+            this.labapp.Name = "labapp";
+            this.labapp.Size = new System.Drawing.Size(38, 20);
+            this.labapp.TabIndex = 208;
+            this.labapp.Text = "空";
+            this.labapp.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lab7612
+            // 
+            this.lab7612.AutoSize = true;
+            this.lab7612.BackColor = System.Drawing.Color.Transparent;
+            this.lab7612.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab7612.Location = new System.Drawing.Point(310, 400);
+            this.lab7612.Name = "lab7612";
+            this.lab7612.Size = new System.Drawing.Size(38, 20);
+            this.lab7612.TabIndex = 261;
+            this.lab7612.Text = "空";
+            this.lab7612.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // comnms
+            // 
+            this.comnms.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comnms.FormattingEnabled = true;
+            this.comnms.Location = new System.Drawing.Point(52, 203);
+            this.comnms.Name = "comnms";
+            this.comnms.Size = new System.Drawing.Size(231, 20);
+            this.comnms.TabIndex = 134;
+            this.comnms.SelectedIndexChanged += new System.EventHandler(this.comnms_SelectedIndexChanged);
+            // 
+            // check7612
+            // 
+            this.check7612.BackColor = System.Drawing.Color.Transparent;
+            this.check7612.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.check7612.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.check7612.Location = new System.Drawing.Point(289, 403);
+            this.check7612.Name = "check7612";
+            this.check7612.Size = new System.Drawing.Size(15, 14);
+            this.check7612.TabIndex = 258;
+            this.check7612.UseVisualStyleBackColor = false;
+            // 
+            // lab7611
+            // 
+            this.lab7611.AutoSize = true;
+            this.lab7611.BackColor = System.Drawing.Color.Transparent;
+            this.lab7611.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab7611.Location = new System.Drawing.Point(310, 380);
+            this.lab7611.Name = "lab7611";
+            this.lab7611.Size = new System.Drawing.Size(38, 20);
+            this.lab7611.TabIndex = 260;
+            this.lab7611.Text = "空";
+            this.lab7611.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // com7612
+            // 
+            this.com7612.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.com7612.FormattingEnabled = true;
+            this.com7612.Location = new System.Drawing.Point(52, 403);
+            this.com7612.Name = "com7612";
+            this.com7612.Size = new System.Drawing.Size(231, 20);
+            this.com7612.TabIndex = 254;
+            this.com7612.SelectedIndexChanged += new System.EventHandler(this.com7612_SelectedIndexChanged);
+            // 
+            // lab7612name
+            // 
+            this.lab7612name.AutoSize = true;
+            this.lab7612name.BackColor = System.Drawing.Color.Transparent;
+            this.lab7612name.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab7612name.Location = new System.Drawing.Point(3, 400);
+            this.lab7612name.Name = "lab7612name";
+            this.lab7612name.Size = new System.Drawing.Size(43, 20);
+            this.lab7612name.TabIndex = 255;
+            this.lab7612name.Text = "7612";
+            this.lab7612name.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // comsw
+            // 
+            this.comsw.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comsw.FormattingEnabled = true;
+            this.comsw.Location = new System.Drawing.Point(52, 223);
+            this.comsw.Name = "comsw";
+            this.comsw.Size = new System.Drawing.Size(231, 20);
+            this.comsw.TabIndex = 135;
+            this.comsw.SelectedIndexChanged += new System.EventHandler(this.comsw_SelectedIndexChanged);
+            // 
+            // lab7610
+            // 
+            this.lab7610.AutoSize = true;
+            this.lab7610.BackColor = System.Drawing.Color.Transparent;
+            this.lab7610.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab7610.Location = new System.Drawing.Point(310, 360);
+            this.lab7610.Name = "lab7610";
+            this.lab7610.Size = new System.Drawing.Size(38, 20);
+            this.lab7610.TabIndex = 259;
+            this.lab7610.Text = "空";
+            this.lab7610.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // check7611
+            // 
+            this.check7611.BackColor = System.Drawing.Color.Transparent;
+            this.check7611.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.check7611.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.check7611.Location = new System.Drawing.Point(289, 383);
+            this.check7611.Name = "check7611";
+            this.check7611.Size = new System.Drawing.Size(15, 14);
+            this.check7611.TabIndex = 257;
+            this.check7611.UseVisualStyleBackColor = false;
+            // 
+            // labapp2
+            // 
+            this.labapp2.AutoSize = true;
+            this.labapp2.BackColor = System.Drawing.Color.Transparent;
+            this.labapp2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labapp2.Location = new System.Drawing.Point(310, 80);
+            this.labapp2.Name = "labapp2";
+            this.labapp2.Size = new System.Drawing.Size(38, 20);
+            this.labapp2.TabIndex = 290;
+            this.labapp2.Text = "空";
+            this.labapp2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // checkapp2
+            // 
+            this.checkapp2.BackColor = System.Drawing.Color.Transparent;
+            this.checkapp2.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkapp2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.checkapp2.Location = new System.Drawing.Point(289, 83);
+            this.checkapp2.Name = "checkapp2";
+            this.checkapp2.Size = new System.Drawing.Size(15, 14);
+            this.checkapp2.TabIndex = 289;
+            this.checkapp2.UseVisualStyleBackColor = true;
+            // 
+            // comapp2
+            // 
+            this.comapp2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comapp2.FormattingEnabled = true;
+            this.comapp2.Location = new System.Drawing.Point(52, 83);
+            this.comapp2.Name = "comapp2";
+            this.comapp2.Size = new System.Drawing.Size(231, 20);
+            this.comapp2.TabIndex = 287;
+            this.comapp2.SelectedIndexChanged += new System.EventHandler(this.comapp2_SelectedIndexChanged);
+            // 
+            // com7611
+            // 
+            this.com7611.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.com7611.FormattingEnabled = true;
+            this.com7611.Location = new System.Drawing.Point(52, 383);
+            this.com7611.Name = "com7611";
+            this.com7611.Size = new System.Drawing.Size(231, 20);
+            this.com7611.TabIndex = 251;
+            this.com7611.SelectedIndexChanged += new System.EventHandler(this.com7611_SelectedIndexChanged);
+            // 
+            // lab7611name
+            // 
+            this.lab7611name.AutoSize = true;
+            this.lab7611name.BackColor = System.Drawing.Color.Transparent;
+            this.lab7611name.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab7611name.Location = new System.Drawing.Point(3, 380);
+            this.lab7611name.Name = "lab7611name";
+            this.lab7611name.Size = new System.Drawing.Size(43, 20);
+            this.lab7611name.TabIndex = 253;
+            this.lab7611name.Text = "7611";
+            this.lab7611name.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // check7610
+            // 
+            this.check7610.BackColor = System.Drawing.Color.Transparent;
+            this.check7610.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.check7610.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.check7610.Location = new System.Drawing.Point(289, 363);
+            this.check7610.Name = "check7610";
+            this.check7610.Size = new System.Drawing.Size(15, 14);
+            this.check7610.TabIndex = 256;
+            this.check7610.UseVisualStyleBackColor = false;
+            // 
+            // labapp2name
+            // 
+            this.labapp2name.AutoSize = true;
+            this.labapp2name.BackColor = System.Drawing.Color.Transparent;
+            this.labapp2name.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labapp2name.Location = new System.Drawing.Point(3, 80);
+            this.labapp2name.Name = "labapp2name";
+            this.labapp2name.Size = new System.Drawing.Size(43, 20);
+            this.labapp2name.TabIndex = 288;
+            this.labapp2name.Text = "APP2";
+            this.labapp2name.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // labcode3
+            // 
+            this.labcode3.AutoSize = true;
+            this.labcode3.BackColor = System.Drawing.Color.Transparent;
+            this.labcode3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labcode3.Location = new System.Drawing.Point(310, 140);
+            this.labcode3.Name = "labcode3";
+            this.labcode3.Size = new System.Drawing.Size(38, 20);
+            this.labcode3.TabIndex = 282;
+            this.labcode3.Text = "空";
+            this.labcode3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // labswname
+            // 
+            this.labswname.AutoSize = true;
+            this.labswname.BackColor = System.Drawing.Color.Transparent;
+            this.labswname.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labswname.Location = new System.Drawing.Point(3, 220);
+            this.labswname.Name = "labswname";
+            this.labswname.Size = new System.Drawing.Size(43, 20);
+            this.labswname.TabIndex = 139;
+            this.labswname.Text = "SW-A/B";
+            this.labswname.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // checkcode3
+            // 
+            this.checkcode3.BackColor = System.Drawing.Color.Transparent;
+            this.checkcode3.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkcode3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.checkcode3.Location = new System.Drawing.Point(289, 143);
+            this.checkcode3.Name = "checkcode3";
+            this.checkcode3.Size = new System.Drawing.Size(15, 14);
+            this.checkcode3.TabIndex = 281;
+            this.checkcode3.UseVisualStyleBackColor = false;
+            // 
+            // lab7610name
+            // 
+            this.lab7610name.AutoSize = true;
+            this.lab7610name.BackColor = System.Drawing.Color.Transparent;
+            this.lab7610name.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab7610name.Location = new System.Drawing.Point(3, 360);
+            this.lab7610name.Name = "lab7610name";
+            this.lab7610name.Size = new System.Drawing.Size(43, 20);
+            this.lab7610name.TabIndex = 252;
+            this.lab7610name.Text = "7610";
+            this.lab7610name.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // com7610
+            // 
+            this.com7610.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.com7610.FormattingEnabled = true;
+            this.com7610.Location = new System.Drawing.Point(52, 363);
+            this.com7610.Name = "com7610";
+            this.com7610.Size = new System.Drawing.Size(231, 20);
+            this.com7610.TabIndex = 250;
+            this.com7610.SelectedIndexChanged += new System.EventHandler(this.com7610_SelectedIndexChanged);
+            // 
+            // labnmsname
+            // 
+            this.labnmsname.AutoSize = true;
+            this.labnmsname.BackColor = System.Drawing.Color.Transparent;
+            this.labnmsname.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labnmsname.Location = new System.Drawing.Point(3, 200);
+            this.labnmsname.Name = "labnmsname";
+            this.labnmsname.Size = new System.Drawing.Size(43, 20);
+            this.labnmsname.TabIndex = 138;
+            this.labnmsname.Text = "NMS";
+            this.labnmsname.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // comcode3
+            // 
+            this.comcode3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comcode3.FormattingEnabled = true;
+            this.comcode3.Location = new System.Drawing.Point(52, 143);
+            this.comcode3.Name = "comcode3";
+            this.comcode3.Size = new System.Drawing.Size(231, 20);
+            this.comcode3.TabIndex = 279;
+            this.comcode3.SelectedIndexChanged += new System.EventHandler(this.comcode3_SelectedIndexChanged);
+            // 
+            // labcodename
+            // 
+            this.labcodename.AutoSize = true;
+            this.labcodename.BackColor = System.Drawing.Color.Transparent;
+            this.labcodename.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labcodename.Location = new System.Drawing.Point(3, 100);
+            this.labcodename.Name = "labcodename";
+            this.labcodename.Size = new System.Drawing.Size(43, 20);
+            this.labcodename.TabIndex = 137;
+            this.labcodename.Text = "CODE";
+            this.labcodename.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // labuxc
+            // 
+            this.labuxc.AutoSize = true;
+            this.labuxc.BackColor = System.Drawing.Color.Transparent;
+            this.labuxc.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labuxc.Location = new System.Drawing.Point(310, 340);
+            this.labuxc.Name = "labuxc";
+            this.labuxc.Size = new System.Drawing.Size(38, 20);
+            this.labuxc.TabIndex = 239;
+            this.labuxc.Text = "空";
+            this.labuxc.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // com760d
+            // 
+            this.com760d.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.com760d.FormattingEnabled = true;
+            this.com760d.Location = new System.Drawing.Point(52, 303);
+            this.com760d.Name = "com760d";
+            this.com760d.Size = new System.Drawing.Size(231, 20);
+            this.com760d.TabIndex = 156;
+            this.com760d.SelectedIndexChanged += new System.EventHandler(this.com760d_SelectedIndexChanged);
+            // 
+            // checkuxc
+            // 
+            this.checkuxc.BackColor = System.Drawing.Color.Transparent;
+            this.checkuxc.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkuxc.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.checkuxc.Location = new System.Drawing.Point(289, 343);
+            this.checkuxc.Name = "checkuxc";
+            this.checkuxc.Size = new System.Drawing.Size(15, 14);
+            this.checkuxc.TabIndex = 238;
+            this.checkuxc.UseVisualStyleBackColor = false;
+            // 
+            // com760c
+            // 
+            this.com760c.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.com760c.FormattingEnabled = true;
+            this.com760c.Location = new System.Drawing.Point(52, 283);
+            this.com760c.Name = "com760c";
+            this.com760c.Size = new System.Drawing.Size(231, 20);
+            this.com760c.TabIndex = 155;
+            this.com760c.SelectedIndexChanged += new System.EventHandler(this.com760c_SelectedIndexChanged);
+            // 
+            // comuxc
+            // 
+            this.comuxc.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comuxc.FormattingEnabled = true;
+            this.comuxc.Location = new System.Drawing.Point(52, 343);
+            this.comuxc.Name = "comuxc";
+            this.comuxc.Size = new System.Drawing.Size(231, 20);
+            this.comuxc.TabIndex = 236;
+            this.comuxc.SelectedIndexChanged += new System.EventHandler(this.comuxc_SelectedIndexChanged);
+            // 
+            // lab760uxcname
+            // 
+            this.lab760uxcname.AutoSize = true;
+            this.lab760uxcname.BackColor = System.Drawing.Color.Transparent;
+            this.lab760uxcname.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab760uxcname.Location = new System.Drawing.Point(3, 340);
+            this.lab760uxcname.Name = "lab760uxcname";
+            this.lab760uxcname.Size = new System.Drawing.Size(43, 20);
+            this.lab760uxcname.TabIndex = 237;
+            this.lab760uxcname.Text = "UXC";
+            this.lab760uxcname.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // com760b
+            // 
+            this.com760b.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.com760b.FormattingEnabled = true;
+            this.com760b.Location = new System.Drawing.Point(52, 263);
+            this.com760b.Name = "com760b";
+            this.com760b.Size = new System.Drawing.Size(231, 20);
+            this.com760b.TabIndex = 154;
+            this.com760b.SelectedIndexChanged += new System.EventHandler(this.com760b_SelectedIndexChanged);
+            // 
+            // com760e
+            // 
+            this.com760e.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.com760e.FormattingEnabled = true;
+            this.com760e.Location = new System.Drawing.Point(52, 323);
+            this.com760e.Name = "com760e";
+            this.com760e.Size = new System.Drawing.Size(231, 20);
+            this.com760e.TabIndex = 161;
+            this.com760e.SelectedIndexChanged += new System.EventHandler(this.com760e_SelectedIndexChanged);
+            // 
+            // check760e
+            // 
+            this.check760e.BackColor = System.Drawing.Color.Transparent;
+            this.check760e.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.check760e.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.check760e.Location = new System.Drawing.Point(289, 323);
+            this.check760e.Name = "check760e";
+            this.check760e.Size = new System.Drawing.Size(15, 14);
+            this.check760e.TabIndex = 171;
+            this.check760e.UseVisualStyleBackColor = false;
+            // 
+            // com760s
+            // 
+            this.com760s.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.com760s.FormattingEnabled = true;
+            this.com760s.Location = new System.Drawing.Point(52, 243);
+            this.com760s.Name = "com760s";
+            this.com760s.Size = new System.Drawing.Size(231, 20);
+            this.com760s.TabIndex = 153;
+            this.com760s.SelectedIndexChanged += new System.EventHandler(this.com760s_SelectedIndexChanged);
+            // 
+            // lab760dname
+            // 
+            this.lab760dname.AutoSize = true;
+            this.lab760dname.BackColor = System.Drawing.Color.Transparent;
+            this.lab760dname.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab760dname.Location = new System.Drawing.Point(3, 300);
+            this.lab760dname.Name = "lab760dname";
+            this.lab760dname.Size = new System.Drawing.Size(43, 20);
+            this.lab760dname.TabIndex = 160;
+            this.lab760dname.Text = "760D";
+            this.lab760dname.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // lab760ename
+            // 
+            this.lab760ename.AutoSize = true;
+            this.lab760ename.BackColor = System.Drawing.Color.Transparent;
+            this.lab760ename.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab760ename.Location = new System.Drawing.Point(3, 320);
+            this.lab760ename.Name = "lab760ename";
+            this.lab760ename.Size = new System.Drawing.Size(43, 20);
+            this.lab760ename.TabIndex = 162;
+            this.lab760ename.Text = "760E";
+            this.lab760ename.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // labcodename3
+            // 
+            this.labcodename3.AutoSize = true;
+            this.labcodename3.BackColor = System.Drawing.Color.Transparent;
+            this.labcodename3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labcodename3.Location = new System.Drawing.Point(3, 140);
+            this.labcodename3.Name = "labcodename3";
+            this.labcodename3.Size = new System.Drawing.Size(43, 20);
+            this.labcodename3.TabIndex = 280;
+            this.labcodename3.Text = "CODE3";
+            this.labcodename3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // check760d
+            // 
+            this.check760d.BackColor = System.Drawing.Color.Transparent;
+            this.check760d.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.check760d.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.check760d.Location = new System.Drawing.Point(289, 303);
+            this.check760d.Name = "check760d";
+            this.check760d.Size = new System.Drawing.Size(15, 14);
+            this.check760d.TabIndex = 170;
+            this.check760d.UseVisualStyleBackColor = false;
+            // 
+            // lab760e
+            // 
+            this.lab760e.AutoSize = true;
+            this.lab760e.BackColor = System.Drawing.Color.Transparent;
+            this.lab760e.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab760e.Location = new System.Drawing.Point(310, 320);
+            this.lab760e.Name = "lab760e";
+            this.lab760e.Size = new System.Drawing.Size(38, 20);
+            this.lab760e.TabIndex = 217;
+            this.lab760e.Text = "空";
+            this.lab760e.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lab760cname
+            // 
+            this.lab760cname.AutoSize = true;
+            this.lab760cname.BackColor = System.Drawing.Color.Transparent;
+            this.lab760cname.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab760cname.Location = new System.Drawing.Point(3, 280);
+            this.lab760cname.Name = "lab760cname";
+            this.lab760cname.Size = new System.Drawing.Size(43, 20);
+            this.lab760cname.TabIndex = 159;
+            this.lab760cname.Text = "760C";
+            this.lab760cname.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // comcode
+            // 
+            this.comcode.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comcode.FormattingEnabled = true;
+            this.comcode.Location = new System.Drawing.Point(52, 103);
+            this.comcode.Name = "comcode";
+            this.comcode.Size = new System.Drawing.Size(231, 20);
+            this.comcode.TabIndex = 133;
+            this.comcode.SelectedIndexChanged += new System.EventHandler(this.comcode_SelectedIndexChanged);
+            // 
+            // lab760bname
+            // 
+            this.lab760bname.AutoSize = true;
+            this.lab760bname.BackColor = System.Drawing.Color.Transparent;
+            this.lab760bname.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab760bname.Location = new System.Drawing.Point(3, 260);
+            this.lab760bname.Name = "lab760bname";
+            this.lab760bname.Size = new System.Drawing.Size(43, 20);
+            this.lab760bname.TabIndex = 158;
+            this.lab760bname.Text = "760B";
+            this.lab760bname.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // checkcode
+            // 
+            this.checkcode.BackColor = System.Drawing.Color.Transparent;
+            this.checkcode.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkcode.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.checkcode.Location = new System.Drawing.Point(289, 103);
+            this.checkcode.Name = "checkcode";
+            this.checkcode.Size = new System.Drawing.Size(15, 14);
+            this.checkcode.TabIndex = 164;
+            this.checkcode.UseVisualStyleBackColor = false;
+            // 
+            // check760c
+            // 
+            this.check760c.BackColor = System.Drawing.Color.Transparent;
+            this.check760c.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.check760c.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.check760c.Location = new System.Drawing.Point(289, 283);
+            this.check760c.Name = "check760c";
+            this.check760c.Size = new System.Drawing.Size(15, 14);
+            this.check760c.TabIndex = 169;
+            this.check760c.UseVisualStyleBackColor = false;
+            // 
+            // labcode
+            // 
+            this.labcode.AutoSize = true;
+            this.labcode.BackColor = System.Drawing.Color.Transparent;
+            this.labcode.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labcode.Location = new System.Drawing.Point(310, 100);
+            this.labcode.Name = "labcode";
+            this.labcode.Size = new System.Drawing.Size(38, 20);
+            this.labcode.TabIndex = 210;
+            this.labcode.Text = "空";
+            this.labcode.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lab760sname
+            // 
+            this.lab760sname.AutoSize = true;
+            this.lab760sname.BackColor = System.Drawing.Color.Transparent;
+            this.lab760sname.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab760sname.Location = new System.Drawing.Point(3, 240);
+            this.lab760sname.Name = "lab760sname";
+            this.lab760sname.Size = new System.Drawing.Size(43, 20);
+            this.lab760sname.TabIndex = 157;
+            this.lab760sname.Text = "760S";
+            this.lab760sname.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // lab760d
+            // 
+            this.lab760d.AutoSize = true;
+            this.lab760d.BackColor = System.Drawing.Color.Transparent;
+            this.lab760d.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab760d.Location = new System.Drawing.Point(310, 300);
+            this.lab760d.Name = "lab760d";
+            this.lab760d.Size = new System.Drawing.Size(38, 20);
+            this.lab760d.TabIndex = 216;
+            this.lab760d.Text = "空";
+            this.lab760d.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // labcode2
+            // 
+            this.labcode2.AutoSize = true;
+            this.labcode2.BackColor = System.Drawing.Color.Transparent;
+            this.labcode2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labcode2.Location = new System.Drawing.Point(310, 120);
+            this.labcode2.Name = "labcode2";
+            this.labcode2.Size = new System.Drawing.Size(38, 20);
+            this.labcode2.TabIndex = 278;
+            this.labcode2.Text = "空";
+            this.labcode2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // checkcode2
+            // 
+            this.checkcode2.BackColor = System.Drawing.Color.Transparent;
+            this.checkcode2.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkcode2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.checkcode2.Location = new System.Drawing.Point(289, 123);
+            this.checkcode2.Name = "checkcode2";
+            this.checkcode2.Size = new System.Drawing.Size(15, 14);
+            this.checkcode2.TabIndex = 277;
+            this.checkcode2.UseVisualStyleBackColor = false;
+            // 
+            // check760b
+            // 
+            this.check760b.BackColor = System.Drawing.Color.Transparent;
+            this.check760b.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.check760b.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.check760b.Location = new System.Drawing.Point(289, 263);
+            this.check760b.Name = "check760b";
+            this.check760b.Size = new System.Drawing.Size(15, 14);
+            this.check760b.TabIndex = 168;
+            this.check760b.UseVisualStyleBackColor = false;
+            // 
+            // comcode2
+            // 
+            this.comcode2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comcode2.FormattingEnabled = true;
+            this.comcode2.Location = new System.Drawing.Point(52, 123);
+            this.comcode2.Name = "comcode2";
+            this.comcode2.Size = new System.Drawing.Size(231, 20);
+            this.comcode2.TabIndex = 275;
+            this.comcode2.SelectedIndexChanged += new System.EventHandler(this.comcode2_SelectedIndexChanged);
+            // 
+            // labcodename2
+            // 
+            this.labcodename2.AutoSize = true;
+            this.labcodename2.BackColor = System.Drawing.Color.Transparent;
+            this.labcodename2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labcodename2.Location = new System.Drawing.Point(3, 120);
+            this.labcodename2.Name = "labcodename2";
+            this.labcodename2.Size = new System.Drawing.Size(43, 20);
+            this.labcodename2.TabIndex = 276;
+            this.labcodename2.Text = "CODE2";
+            this.labcodename2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // checknms
+            // 
+            this.checknms.BackColor = System.Drawing.Color.Transparent;
+            this.checknms.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checknms.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.checknms.Location = new System.Drawing.Point(289, 203);
+            this.checknms.Name = "checknms";
+            this.checknms.Size = new System.Drawing.Size(15, 14);
+            this.checknms.TabIndex = 165;
+            this.checknms.UseVisualStyleBackColor = false;
+            // 
+            // labnms
+            // 
+            this.labnms.AutoSize = true;
+            this.labnms.BackColor = System.Drawing.Color.Transparent;
+            this.labnms.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labnms.Location = new System.Drawing.Point(310, 200);
+            this.labnms.Name = "labnms";
+            this.labnms.Size = new System.Drawing.Size(38, 20);
+            this.labnms.TabIndex = 211;
+            this.labnms.Text = "空";
+            this.labnms.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // check760s
+            // 
+            this.check760s.BackColor = System.Drawing.Color.Transparent;
+            this.check760s.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.check760s.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.check760s.Location = new System.Drawing.Point(289, 243);
+            this.check760s.Name = "check760s";
+            this.check760s.Size = new System.Drawing.Size(15, 14);
+            this.check760s.TabIndex = 167;
+            this.check760s.UseVisualStyleBackColor = false;
+            // 
+            // lab760c
+            // 
+            this.lab760c.AutoSize = true;
+            this.lab760c.BackColor = System.Drawing.Color.Transparent;
+            this.lab760c.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab760c.Location = new System.Drawing.Point(310, 280);
+            this.lab760c.Name = "lab760c";
+            this.lab760c.Size = new System.Drawing.Size(38, 20);
+            this.lab760c.TabIndex = 215;
+            this.lab760c.Text = "空";
+            this.lab760c.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // checksw
+            // 
+            this.checksw.BackColor = System.Drawing.Color.Transparent;
+            this.checksw.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checksw.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.checksw.Location = new System.Drawing.Point(289, 223);
+            this.checksw.Name = "checksw";
+            this.checksw.Size = new System.Drawing.Size(15, 14);
+            this.checksw.TabIndex = 166;
+            this.checksw.UseVisualStyleBackColor = false;
+            // 
+            // labsw
+            // 
+            this.labsw.AutoSize = true;
+            this.labsw.BackColor = System.Drawing.Color.Transparent;
+            this.labsw.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labsw.Location = new System.Drawing.Point(310, 220);
+            this.labsw.Name = "labsw";
+            this.labsw.Size = new System.Drawing.Size(38, 20);
+            this.labsw.TabIndex = 212;
+            this.labsw.Text = "空";
+            this.labsw.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lab760s
+            // 
+            this.lab760s.AutoSize = true;
+            this.lab760s.BackColor = System.Drawing.Color.Transparent;
+            this.lab760s.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab760s.Location = new System.Drawing.Point(310, 240);
+            this.lab760s.Name = "lab760s";
+            this.lab760s.Size = new System.Drawing.Size(38, 20);
+            this.lab760s.TabIndex = 213;
+            this.lab760s.Text = "空";
+            this.lab760s.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lab760b
+            // 
+            this.lab760b.AutoSize = true;
+            this.lab760b.BackColor = System.Drawing.Color.Transparent;
+            this.lab760b.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab760b.Location = new System.Drawing.Point(310, 260);
+            this.lab760b.Name = "lab760b";
+            this.lab760b.Size = new System.Drawing.Size(38, 20);
+            this.lab760b.TabIndex = 214;
+            this.lab760b.Text = "空";
+            this.lab760b.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lab7615name
+            // 
+            this.lab7615name.AutoSize = true;
+            this.lab7615name.BackColor = System.Drawing.Color.Transparent;
+            this.lab7615name.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab7615name.Location = new System.Drawing.Point(3, 460);
+            this.lab7615name.Name = "lab7615name";
+            this.lab7615name.Size = new System.Drawing.Size(43, 20);
+            this.lab7615name.TabIndex = 311;
+            this.lab7615name.Text = "7615";
+            this.lab7615name.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // com7615
+            // 
+            this.com7615.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.com7615.FormattingEnabled = true;
+            this.com7615.Location = new System.Drawing.Point(52, 463);
+            this.com7615.Name = "com7615";
+            this.com7615.Size = new System.Drawing.Size(231, 20);
+            this.com7615.TabIndex = 312;
+            this.com7615.SelectedIndexChanged += new System.EventHandler(this.com7615_SelectedIndexChanged);
+            // 
+            // check7615
+            // 
+            this.check7615.AutoSize = true;
+            this.check7615.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.check7615.Location = new System.Drawing.Point(289, 463);
+            this.check7615.Name = "check7615";
+            this.check7615.Size = new System.Drawing.Size(15, 14);
+            this.check7615.TabIndex = 313;
+            this.check7615.Text = "checkBox1";
+            this.check7615.UseVisualStyleBackColor = true;
+            // 
+            // lab7615
+            // 
+            this.lab7615.AutoSize = true;
+            this.lab7615.BackColor = System.Drawing.Color.Transparent;
+            this.lab7615.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab7615.Location = new System.Drawing.Point(310, 460);
+            this.lab7615.Name = "lab7615";
+            this.lab7615.Size = new System.Drawing.Size(38, 20);
+            this.lab7615.TabIndex = 314;
+            this.lab7615.Text = "空";
+            this.lab7615.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // comrebootos
+            // 
+            this.comrebootos.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comrebootos.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.comrebootos.FormattingEnabled = true;
+            this.comrebootos.Location = new System.Drawing.Point(52, 543);
+            this.comrebootos.Name = "comrebootos";
+            this.comrebootos.Size = new System.Drawing.Size(231, 20);
+            this.comrebootos.TabIndex = 299;
+            this.comrebootos.SelectedIndexChanged += new System.EventHandler(this.comrebootos_SelectedIndexChanged);
+            // 
+            // panel2
+            // 
+            this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel1.SetColumnSpan(this.panel2, 3);
+            this.panel2.Controls.Add(this.comgpn76list);
+            this.panel2.Location = new System.Drawing.Point(49, 620);
+            this.panel2.Margin = new System.Windows.Forms.Padding(0);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(302, 20);
+            this.panel2.TabIndex = 315;
+            // 
+            // comgpn76list
+            // 
+            this.comgpn76list.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.comgpn76list.FormattingEnabled = true;
+            this.comgpn76list.Location = new System.Drawing.Point(3, 3);
+            this.comgpn76list.Name = "comgpn76list";
+            this.comgpn76list.Size = new System.Drawing.Size(296, 20);
+            this.comgpn76list.TabIndex = 198;
+            // 
+            // lab7616cname
+            // 
+            this.lab7616cname.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lab7616cname.AutoSize = true;
+            this.lab7616cname.Location = new System.Drawing.Point(3, 640);
+            this.lab7616cname.Name = "lab7616cname";
+            this.lab7616cname.Size = new System.Drawing.Size(43, 20);
+            this.lab7616cname.TabIndex = 316;
+            this.lab7616cname.Text = "7616C";
+            this.lab7616cname.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // com7616c
+            // 
+            this.com7616c.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.com7616c.FormattingEnabled = true;
+            this.com7616c.Location = new System.Drawing.Point(52, 643);
+            this.com7616c.Name = "com7616c";
+            this.com7616c.Size = new System.Drawing.Size(231, 20);
+            this.com7616c.TabIndex = 317;
+            this.com7616c.SelectedIndexChanged += new System.EventHandler(this.com7616c_SelectedIndexChanged);
+            // 
+            // lab7618name
+            // 
+            this.lab7618name.AutoSize = true;
+            this.lab7618name.Location = new System.Drawing.Point(3, 660);
+            this.lab7618name.Name = "lab7618name";
+            this.lab7618name.Size = new System.Drawing.Size(29, 12);
+            this.lab7618name.TabIndex = 320;
+            this.lab7618name.Text = "7618";
+            // 
+            // lab7618
+            // 
+            this.lab7618.AutoSize = true;
+            this.lab7618.Location = new System.Drawing.Point(310, 660);
+            this.lab7618.Name = "lab7618";
+            this.lab7618.Size = new System.Drawing.Size(17, 12);
+            this.lab7618.TabIndex = 321;
+            this.lab7618.Text = "空";
+            this.lab7618.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lab7619name
+            // 
+            this.lab7619name.AutoSize = true;
+            this.lab7619name.Location = new System.Drawing.Point(3, 680);
+            this.lab7619name.Name = "lab7619name";
+            this.lab7619name.Size = new System.Drawing.Size(29, 12);
+            this.lab7619name.TabIndex = 322;
+            this.lab7619name.Text = "7619";
+            // 
+            // lab7619
+            // 
+            this.lab7619.AutoSize = true;
+            this.lab7619.Location = new System.Drawing.Point(310, 680);
+            this.lab7619.Name = "lab7619";
+            this.lab7619.Size = new System.Drawing.Size(17, 12);
+            this.lab7619.TabIndex = 323;
+            this.lab7619.Text = "空";
+            this.lab7619.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lab761aname
+            // 
+            this.lab761aname.AutoSize = true;
+            this.lab761aname.Location = new System.Drawing.Point(3, 700);
+            this.lab761aname.Name = "lab761aname";
+            this.lab761aname.Size = new System.Drawing.Size(29, 12);
+            this.lab761aname.TabIndex = 324;
+            this.lab761aname.Text = "761A";
+            // 
+            // lab761a
+            // 
+            this.lab761a.AutoSize = true;
+            this.lab761a.Location = new System.Drawing.Point(310, 700);
+            this.lab761a.Name = "lab761a";
+            this.lab761a.Size = new System.Drawing.Size(17, 12);
+            this.lab761a.TabIndex = 325;
+            this.lab761a.Text = "空";
+            this.lab761a.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lab761bname
+            // 
+            this.lab761bname.AutoSize = true;
+            this.lab761bname.Location = new System.Drawing.Point(3, 720);
+            this.lab761bname.Name = "lab761bname";
+            this.lab761bname.Size = new System.Drawing.Size(29, 12);
+            this.lab761bname.TabIndex = 326;
+            this.lab761bname.Text = "761B";
+            // 
+            // lab761b
+            // 
+            this.lab761b.AutoSize = true;
+            this.lab761b.Location = new System.Drawing.Point(310, 720);
+            this.lab761b.Name = "lab761b";
+            this.lab761b.Size = new System.Drawing.Size(17, 12);
+            this.lab761b.TabIndex = 327;
+            this.lab761b.Text = "空";
+            this.lab761b.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lab761cname
+            // 
+            this.lab761cname.AutoSize = true;
+            this.lab761cname.Location = new System.Drawing.Point(3, 740);
+            this.lab761cname.Name = "lab761cname";
+            this.lab761cname.Size = new System.Drawing.Size(29, 12);
+            this.lab761cname.TabIndex = 328;
+            this.lab761cname.Text = "761C";
+            // 
+            // lab761c
+            // 
+            this.lab761c.AutoSize = true;
+            this.lab761c.Location = new System.Drawing.Point(310, 740);
+            this.lab761c.Name = "lab761c";
+            this.lab761c.Size = new System.Drawing.Size(17, 12);
+            this.lab761c.TabIndex = 330;
+            this.lab761c.Text = "空";
+            this.lab761c.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // com7618
+            // 
+            this.com7618.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.com7618.FormattingEnabled = true;
+            this.com7618.Location = new System.Drawing.Point(52, 663);
+            this.com7618.Name = "com7618";
+            this.com7618.Size = new System.Drawing.Size(231, 20);
+            this.com7618.TabIndex = 331;
+            this.com7618.SelectedIndexChanged += new System.EventHandler(this.com7618_SelectedIndexChanged);
+            // 
+            // com7619
+            // 
+            this.com7619.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.com7619.FormattingEnabled = true;
+            this.com7619.Location = new System.Drawing.Point(52, 683);
+            this.com7619.Name = "com7619";
+            this.com7619.Size = new System.Drawing.Size(231, 20);
+            this.com7619.TabIndex = 332;
+            this.com7619.SelectedIndexChanged += new System.EventHandler(this.com7619_SelectedIndexChanged);
+            // 
+            // com761a
+            // 
+            this.com761a.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.com761a.FormattingEnabled = true;
+            this.com761a.Location = new System.Drawing.Point(52, 703);
+            this.com761a.Name = "com761a";
+            this.com761a.Size = new System.Drawing.Size(231, 20);
+            this.com761a.TabIndex = 333;
+            this.com761a.SelectedIndexChanged += new System.EventHandler(this.com761a_SelectedIndexChanged);
+            // 
+            // com761b
+            // 
+            this.com761b.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.com761b.FormattingEnabled = true;
+            this.com761b.Location = new System.Drawing.Point(52, 723);
+            this.com761b.Name = "com761b";
+            this.com761b.Size = new System.Drawing.Size(231, 20);
+            this.com761b.TabIndex = 334;
+            this.com761b.SelectedIndexChanged += new System.EventHandler(this.com761b_SelectedIndexChanged);
+            // 
+            // com761c
+            // 
+            this.com761c.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.com761c.FormattingEnabled = true;
+            this.com761c.Location = new System.Drawing.Point(52, 743);
+            this.com761c.Name = "com761c";
+            this.com761c.Size = new System.Drawing.Size(231, 20);
+            this.com761c.TabIndex = 335;
+            this.com761c.SelectedIndexChanged += new System.EventHandler(this.com761c_SelectedIndexChanged);
+            // 
+            // check7616c
+            // 
+            this.check7616c.AutoSize = true;
+            this.check7616c.Location = new System.Drawing.Point(289, 643);
+            this.check7616c.Name = "check7616c";
+            this.check7616c.Size = new System.Drawing.Size(15, 14);
+            this.check7616c.TabIndex = 336;
+            this.check7616c.Text = "checkBox1";
+            this.check7616c.UseVisualStyleBackColor = true;
+            // 
+            // check7618
+            // 
+            this.check7618.AutoSize = true;
+            this.check7618.Location = new System.Drawing.Point(289, 663);
+            this.check7618.Name = "check7618";
+            this.check7618.Size = new System.Drawing.Size(15, 14);
+            this.check7618.TabIndex = 337;
+            this.check7618.Text = "checkBox2";
+            this.check7618.UseVisualStyleBackColor = true;
+            // 
+            // check7619
+            // 
+            this.check7619.AutoSize = true;
+            this.check7619.Location = new System.Drawing.Point(289, 683);
+            this.check7619.Name = "check7619";
+            this.check7619.Size = new System.Drawing.Size(15, 14);
+            this.check7619.TabIndex = 338;
+            this.check7619.Text = "checkBox3";
+            this.check7619.UseVisualStyleBackColor = true;
+            // 
+            // check761a
+            // 
+            this.check761a.AutoSize = true;
+            this.check761a.Location = new System.Drawing.Point(289, 703);
+            this.check761a.Name = "check761a";
+            this.check761a.Size = new System.Drawing.Size(15, 14);
+            this.check761a.TabIndex = 339;
+            this.check761a.Text = "checkBox4";
+            this.check761a.UseVisualStyleBackColor = true;
+            // 
+            // check761b
+            // 
+            this.check761b.AutoSize = true;
+            this.check761b.Location = new System.Drawing.Point(289, 723);
+            this.check761b.Name = "check761b";
+            this.check761b.Size = new System.Drawing.Size(15, 14);
+            this.check761b.TabIndex = 340;
+            this.check761b.Text = "checkBox5";
+            this.check761b.UseVisualStyleBackColor = true;
+            // 
+            // check761c
+            // 
+            this.check761c.AutoSize = true;
+            this.check761c.Location = new System.Drawing.Point(289, 743);
+            this.check761c.Name = "check761c";
+            this.check761c.Size = new System.Drawing.Size(15, 14);
+            this.check761c.TabIndex = 341;
+            this.check761c.Text = "checkBox6";
+            this.check761c.UseVisualStyleBackColor = true;
+            // 
+            // lab7616c
+            // 
+            this.lab7616c.AutoSize = true;
+            this.lab7616c.Location = new System.Drawing.Point(310, 640);
+            this.lab7616c.Name = "lab7616c";
+            this.lab7616c.Size = new System.Drawing.Size(17, 12);
+            this.lab7616c.TabIndex = 319;
+            this.lab7616c.Text = "空";
+            this.lab7616c.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // ButCheckFile
+            // 
+            this.ButCheckFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.ButCheckFile.BackColor = System.Drawing.Color.DodgerBlue;
+            this.ButCheckFile.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ButCheckFile.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.ButCheckFile.ForeColor = System.Drawing.Color.White;
+            this.ButCheckFile.Location = new System.Drawing.Point(695, 581);
+            this.ButCheckFile.Name = "ButCheckFile";
+            this.ButCheckFile.Size = new System.Drawing.Size(122, 34);
+            this.ButCheckFile.TabIndex = 273;
+            this.ButCheckFile.Text = "检查文件大小";
+            this.ButCheckFile.UseVisualStyleBackColor = false;
+            this.ButCheckFile.Click += new System.EventHandler(this.ButCheckFile_Click);
+            // 
+            // ButLogin
+            // 
+            this.ButLogin.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.ButLogin.BackColor = System.Drawing.Color.DodgerBlue;
+            this.ButLogin.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ButLogin.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.ButLogin.ForeColor = System.Drawing.Color.White;
+            this.ButLogin.Location = new System.Drawing.Point(581, 547);
+            this.ButLogin.Name = "ButLogin";
+            this.ButLogin.Size = new System.Drawing.Size(86, 34);
+            this.ButLogin.TabIndex = 272;
+            this.ButLogin.Text = "①连接设备";
+            this.ButLogin.UseVisualStyleBackColor = false;
+            this.ButLogin.Click += new System.EventHandler(this.Butlogin_Click);
+            // 
+            // groupBox12
+            // 
+            this.groupBox12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.groupBox12.Controls.Add(this.textusr);
+            this.groupBox12.Controls.Add(this.textftpusr);
+            this.groupBox12.Controls.Add(this.textpsd);
+            this.groupBox12.Controls.Add(this.textftppsd);
+            this.groupBox12.Controls.Add(this.label13);
+            this.groupBox12.Controls.Add(this.tbxFtpRoot);
+            this.groupBox12.Controls.Add(this.label8);
+            this.groupBox12.Controls.Add(this.label3);
+            this.groupBox12.Controls.Add(this.tbxFtpServerPort);
+            this.groupBox12.Controls.Add(this.checkpssd);
+            this.groupBox12.Controls.Add(this.textWriteCommunity);
+            this.groupBox12.Controls.Add(this.textReadCommunity);
+            this.groupBox12.Controls.Add(this.label1);
+            this.groupBox12.Controls.Add(this.textpsden);
+            this.groupBox12.Location = new System.Drawing.Point(3, 522);
+            this.groupBox12.Name = "groupBox12";
+            this.groupBox12.Size = new System.Drawing.Size(266, 95);
+            this.groupBox12.TabIndex = 271;
+            this.groupBox12.TabStop = false;
+            this.groupBox12.Text = "FTP服务器";
+            // 
+            // textusr
+            // 
+            this.textusr.Location = new System.Drawing.Point(51, 72);
+            this.textusr.Name = "textusr";
+            this.textusr.Size = new System.Drawing.Size(49, 21);
+            this.textusr.TabIndex = 125;
+            this.textusr.Text = "admin";
+            // 
+            // textftpusr
+            // 
+            this.textftpusr.Location = new System.Drawing.Point(51, 32);
+            this.textftpusr.Multiline = true;
+            this.textftpusr.Name = "textftpusr";
+            this.textftpusr.Size = new System.Drawing.Size(49, 21);
+            this.textftpusr.TabIndex = 129;
+            this.textftpusr.Text = "admin";
+            // 
+            // textpsd
+            // 
+            this.textpsd.Location = new System.Drawing.Point(99, 72);
+            this.textpsd.Name = "textpsd";
+            this.textpsd.PasswordChar = '*';
+            this.textpsd.Size = new System.Drawing.Size(57, 21);
+            this.textpsd.TabIndex = 126;
+            this.textpsd.Text = "greenway";
+            // 
+            // textftppsd
+            // 
+            this.textftppsd.Location = new System.Drawing.Point(99, 32);
+            this.textftppsd.Multiline = true;
+            this.textftppsd.Name = "textftppsd";
+            this.textftppsd.PasswordChar = '*';
+            this.textftppsd.Size = new System.Drawing.Size(84, 21);
+            this.textftppsd.TabIndex = 130;
+            this.textftppsd.Text = "admin";
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.BackColor = System.Drawing.Color.Transparent;
+            this.label13.Location = new System.Drawing.Point(3, 35);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(47, 12);
+            this.label13.TabIndex = 131;
+            this.label13.Text = "FTP用户";
+            // 
+            // tbxFtpRoot
+            // 
+            this.tbxFtpRoot.Enabled = false;
+            this.tbxFtpRoot.Location = new System.Drawing.Point(51, 13);
+            this.tbxFtpRoot.Multiline = true;
+            this.tbxFtpRoot.Name = "tbxFtpRoot";
+            this.tbxFtpRoot.Size = new System.Drawing.Size(172, 20);
+            this.tbxFtpRoot.TabIndex = 141;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.BackColor = System.Drawing.Color.Transparent;
+            this.label8.Location = new System.Drawing.Point(3, 16);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(47, 12);
+            this.label8.TabIndex = 143;
+            this.label8.Text = "FTP目录";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.BackColor = System.Drawing.Color.Transparent;
+            this.label3.Location = new System.Drawing.Point(-2, 77);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(53, 12);
+            this.label3.TabIndex = 151;
+            this.label3.Text = "设备密码";
+            // 
+            // tbxFtpServerPort
+            // 
+            this.tbxFtpServerPort.BackColor = System.Drawing.SystemColors.Window;
+            this.tbxFtpServerPort.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.tbxFtpServerPort.FormattingEnabled = true;
+            this.tbxFtpServerPort.Items.AddRange(new object[] {
+            "21",
+            "33333",
+            "33334",
+            "33335"});
+            this.tbxFtpServerPort.Location = new System.Drawing.Point(223, 13);
+            this.tbxFtpServerPort.Name = "tbxFtpServerPort";
+            this.tbxFtpServerPort.Size = new System.Drawing.Size(39, 20);
+            this.tbxFtpServerPort.TabIndex = 244;
+            // 
+            // checkpssd
+            // 
+            this.checkpssd.AutoSize = true;
+            this.checkpssd.FontWeight = MetroFramework.MetroCheckBoxWeight.Light;
+            this.checkpssd.Location = new System.Drawing.Point(189, 35);
+            this.checkpssd.Name = "checkpssd";
+            this.checkpssd.Size = new System.Drawing.Size(71, 15);
+            this.checkpssd.TabIndex = 243;
+            this.checkpssd.Text = "显示密码";
+            this.checkpssd.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.checkpssd.UseSelectable = true;
+            this.checkpssd.CheckedChanged += new System.EventHandler(this.Checkpssd_CheckedChanged);
+            // 
+            // textWriteCommunity
+            // 
+            this.textWriteCommunity.Location = new System.Drawing.Point(123, 52);
+            this.textWriteCommunity.Multiline = true;
+            this.textWriteCommunity.Name = "textWriteCommunity";
+            this.textWriteCommunity.PasswordChar = '*';
+            this.textWriteCommunity.Size = new System.Drawing.Size(137, 21);
+            this.textWriteCommunity.TabIndex = 242;
+            this.textWriteCommunity.Text = "private";
+            // 
+            // textReadCommunity
+            // 
+            this.textReadCommunity.Location = new System.Drawing.Point(51, 52);
+            this.textReadCommunity.Multiline = true;
+            this.textReadCommunity.Name = "textReadCommunity";
+            this.textReadCommunity.PasswordChar = '*';
+            this.textReadCommunity.Size = new System.Drawing.Size(73, 21);
+            this.textReadCommunity.TabIndex = 241;
+            this.textReadCommunity.Text = "public";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.BackColor = System.Drawing.Color.Transparent;
+            this.label1.Location = new System.Drawing.Point(0, 56);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(53, 12);
+            this.label1.TabIndex = 240;
+            this.label1.Text = "读写团体";
+            // 
+            // textpsden
+            // 
+            this.textpsden.Location = new System.Drawing.Point(155, 72);
+            this.textpsden.Name = "textpsden";
+            this.textpsden.PasswordChar = '*';
+            this.textpsden.Size = new System.Drawing.Size(105, 21);
+            this.textpsden.TabIndex = 127;
+            this.textpsden.Text = "greenway";
+            // 
+            // butbatchip
+            // 
+            this.butbatchip.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butbatchip.BackColor = System.Drawing.Color.DodgerBlue;
+            this.butbatchip.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.butbatchip.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.butbatchip.ForeColor = System.Drawing.Color.White;
+            this.butbatchip.Location = new System.Drawing.Point(695, 546);
+            this.butbatchip.Name = "butbatchip";
+            this.butbatchip.Size = new System.Drawing.Size(122, 34);
+            this.butbatchip.TabIndex = 249;
+            this.butbatchip.Text = "添加ip地址到表格";
+            this.butbatchip.UseVisualStyleBackColor = false;
+            this.butbatchip.Click += new System.EventHandler(this.butbatchip_Click);
+            // 
+            // DGVSTATUS
+            // 
+            this.DGVSTATUS.AllowUserToAddRows = false;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.DGVSTATUS.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            this.DGVSTATUS.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.DGVSTATUS.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.DGVSTATUS.BackgroundColor = System.Drawing.Color.LightSteelBlue;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.DGVSTATUS.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            this.DGVSTATUS.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.ip地址,
+            this.设备类型,
+            this.执行,
+            this.优先级,
+            this.ping,
+            this.操作,
+            this.重启,
+            this.保存,
+            this.当前版本});
+            this.DGVSTATUS.ContextMenuStrip = this.metroContextMenu;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.DGVSTATUS.DefaultCellStyle = dataGridViewCellStyle3;
+            this.DGVSTATUS.Location = new System.Drawing.Point(0, 0);
+            this.DGVSTATUS.Name = "DGVSTATUS";
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.DGVSTATUS.RowHeadersDefaultCellStyle = dataGridViewCellStyle4;
+            this.DGVSTATUS.RowHeadersVisible = false;
+            this.DGVSTATUS.RowHeadersWidth = 82;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopCenter;
+            this.DGVSTATUS.RowsDefaultCellStyle = dataGridViewCellStyle5;
+            this.DGVSTATUS.RowTemplate.Height = 23;
+            this.DGVSTATUS.Size = new System.Drawing.Size(934, 419);
+            this.DGVSTATUS.TabIndex = 245;
+            this.DGVSTATUS.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.DGVSTATUS_EditingControlShowing);
+            // 
+            // ip地址
+            // 
+            this.ip地址.HeaderText = "ip地址";
+            this.ip地址.MinimumWidth = 10;
+            this.ip地址.Name = "ip地址";
+            this.ip地址.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // 设备类型
+            // 
+            this.设备类型.HeaderText = "设备类型";
+            this.设备类型.Name = "设备类型";
+            // 
+            // 执行
+            // 
+            this.执行.FillWeight = 30F;
+            this.执行.HeaderText = "执行";
+            this.执行.MinimumWidth = 10;
+            this.执行.Name = "执行";
+            // 
+            // 优先级
+            // 
+            this.优先级.FillWeight = 30F;
+            this.优先级.HeaderText = "优先级";
+            this.优先级.MinimumWidth = 10;
+            this.优先级.Name = "优先级";
+            this.优先级.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            // 
+            // ping
+            // 
+            this.ping.FillWeight = 30F;
+            this.ping.HeaderText = "ping";
+            this.ping.MinimumWidth = 10;
+            this.ping.Name = "ping";
+            this.ping.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // 操作
+            // 
+            this.操作.FillWeight = 30F;
+            this.操作.HeaderText = "操作";
+            this.操作.MinimumWidth = 10;
+            this.操作.Name = "操作";
+            this.操作.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // 重启
+            // 
+            this.重启.FillWeight = 30F;
+            this.重启.HeaderText = "重启";
+            this.重启.MinimumWidth = 10;
+            this.重启.Name = "重启";
+            // 
+            // 保存
+            // 
+            this.保存.FillWeight = 30F;
+            this.保存.HeaderText = "保存";
+            this.保存.MinimumWidth = 10;
+            this.保存.Name = "保存";
+            this.保存.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // 当前版本
+            // 
+            this.当前版本.FillWeight = 200F;
+            this.当前版本.HeaderText = "当前版本";
+            this.当前版本.MinimumWidth = 10;
+            this.当前版本.Name = "当前版本";
+            this.当前版本.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // compingcount
+            // 
+            this.compingcount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.compingcount.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.compingcount.FormattingEnabled = true;
+            this.compingcount.Items.AddRange(new object[] {
+            "2",
+            "5",
+            "10"});
+            this.compingcount.Location = new System.Drawing.Point(518, 547);
+            this.compingcount.Name = "compingcount";
+            this.compingcount.Size = new System.Drawing.Size(61, 33);
+            this.compingcount.TabIndex = 233;
+            this.compingcount.Text = "5";
+            // 
+            // comip
+            // 
+            this.comip.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.comip.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.comip.ForeColor = System.Drawing.Color.Gray;
+            this.comip.FormattingEnabled = true;
+            this.comip.Location = new System.Drawing.Point(270, 547);
+            this.comip.Name = "comip";
+            this.comip.Size = new System.Drawing.Size(249, 33);
+            this.comip.TabIndex = 193;
+            this.comip.Text = "请输入设备ip地址";
+            this.comip.Click += new System.EventHandler(this.comip_Click);
+            this.comip.Leave += new System.EventHandler(this.comip_Leave);
+            // 
+            // butsend
+            // 
+            this.butsend.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butsend.BackColor = System.Drawing.Color.DodgerBlue;
+            this.butsend.Enabled = false;
+            this.butsend.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.butsend.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.butsend.ForeColor = System.Drawing.Color.White;
+            this.butsend.Location = new System.Drawing.Point(581, 581);
+            this.butsend.Name = "butsend";
+            this.butsend.Size = new System.Drawing.Size(86, 34);
+            this.butsend.TabIndex = 101;
+            this.butsend.Text = "回车发送";
+            this.butsend.UseVisualStyleBackColor = false;
+            this.butsend.Click += new System.EventHandler(this.butsend_Click);
+            // 
+            // textDOS
+            // 
+            this.textDOS.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textDOS.BackColor = System.Drawing.Color.Black;
+            this.textDOS.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textDOS.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.textDOS.Font = new System.Drawing.Font("宋体", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.textDOS.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
+            this.textDOS.Location = new System.Drawing.Point(0, 419);
+            this.textDOS.Multiline = true;
+            this.textDOS.Name = "textDOS";
+            this.textDOS.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textDOS.Size = new System.Drawing.Size(934, 100);
+            this.textDOS.TabIndex = 5;
+            this.textDOS.TextChanged += new System.EventHandler(this.textDOS_TextChanged);
+            this.textDOS.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textcom_KeyDown);
+            // 
+            // textcom
+            // 
+            this.textcom.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textcom.Enabled = false;
+            this.textcom.Font = new System.Drawing.Font("微软雅黑", 14.25F);
+            this.textcom.ForeColor = System.Drawing.Color.Gray;
+            this.textcom.Location = new System.Drawing.Point(270, 582);
+            this.textcom.Multiline = true;
+            this.textcom.Name = "textcom";
+            this.textcom.Size = new System.Drawing.Size(309, 32);
+            this.textcom.TabIndex = 3;
+            this.textcom.Text = "请输入命令行查询";
+            this.textcom.Click += new System.EventHandler(this.textcom_Click);
+            this.textcom.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textcom_KeyDown);
+            // 
+            // buttbatchupload
+            // 
+            this.buttbatchupload.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttbatchupload.BackColor = System.Drawing.Color.DodgerBlue;
+            this.buttbatchupload.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttbatchupload.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.buttbatchupload.ForeColor = System.Drawing.Color.White;
+            this.buttbatchupload.Location = new System.Drawing.Point(848, 546);
+            this.buttbatchupload.Name = "buttbatchupload";
+            this.buttbatchupload.Size = new System.Drawing.Size(86, 34);
+            this.buttbatchupload.TabIndex = 248;
+            this.buttbatchupload.Text = "批量上传";
+            this.buttbatchupload.UseVisualStyleBackColor = false;
+            this.buttbatchupload.Click += new System.EventHandler(this.buttbatchupload_Click);
+            // 
+            // buttbatchdownload
+            // 
+            this.buttbatchdownload.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttbatchdownload.BackColor = System.Drawing.Color.DodgerBlue;
+            this.buttbatchdownload.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttbatchdownload.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.buttbatchdownload.ForeColor = System.Drawing.Color.White;
+            this.buttbatchdownload.Location = new System.Drawing.Point(848, 580);
+            this.buttbatchdownload.Name = "buttbatchdownload";
+            this.buttbatchdownload.Size = new System.Drawing.Size(86, 34);
+            this.buttbatchdownload.TabIndex = 246;
+            this.buttbatchdownload.Text = "批量下载";
+            this.buttbatchdownload.UseVisualStyleBackColor = false;
+            this.buttbatchdownload.Click += new System.EventHandler(this.buttbatchdownload_Click);
             // 
             // tabPageSnmp
             // 
@@ -3808,45 +6159,45 @@
             // GridOtn
             // 
             this.GridOtn.AllowUserToAddRows = false;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.GridOtn.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.GridOtn.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle6;
             this.GridOtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.GridOtn.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.GridOtn.BackgroundColor = System.Drawing.Color.LightSteelBlue;
             this.GridOtn.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.GridOtn.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle7.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.GridOtn.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
             this.GridOtn.ContextMenuStrip = this.metroContextMenu;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.GridOtn.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle8.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle8.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.GridOtn.DefaultCellStyle = dataGridViewCellStyle8;
             this.GridOtn.Location = new System.Drawing.Point(2, 138);
             this.GridOtn.Name = "GridOtn";
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.GridOtn.RowHeadersDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle9.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle9.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle9.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle9.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle9.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.GridOtn.RowHeadersDefaultCellStyle = dataGridViewCellStyle9;
             this.GridOtn.RowHeadersVisible = false;
             this.GridOtn.RowHeadersWidth = 82;
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopCenter;
-            this.GridOtn.RowsDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopCenter;
+            this.GridOtn.RowsDefaultCellStyle = dataGridViewCellStyle10;
             this.GridOtn.RowTemplate.Height = 23;
             this.GridOtn.Size = new System.Drawing.Size(1022, 484);
             this.GridOtn.TabIndex = 246;
@@ -5009,10 +7360,11 @@
             this.日志LToolStripMenuItem,
             this.问题反馈ToolStripMenuItem,
             this.软件下载SToolStripMenuItem,
-            this.关于软件OToolStripMenuItem});
+            this.关于软件OToolStripMenuItem,
+            this.netconfClient下载DToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(176, 25);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(391, 25);
+            this.menuStrip1.Size = new System.Drawing.Size(534, 25);
             this.menuStrip1.TabIndex = 301;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -5196,6 +7548,13 @@
             this.关于软件OToolStripMenuItem.Text = "关于软件(O)";
             this.关于软件OToolStripMenuItem.Click += new System.EventHandler(this.关于软件OToolStripMenuItem_Click);
             // 
+            // netconfClient下载DToolStripMenuItem
+            // 
+            this.netconfClient下载DToolStripMenuItem.Name = "netconfClient下载DToolStripMenuItem";
+            this.netconfClient下载DToolStripMenuItem.Size = new System.Drawing.Size(143, 21);
+            this.netconfClient下载DToolStripMenuItem.Text = "Netconf Client下载(D)";
+            this.netconfClient下载DToolStripMenuItem.Click += new System.EventHandler(this.netconfClient下载DToolStripMenuItem_Click);
+            // 
             // LabFtpLed
             // 
             this.LabFtpLed.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -5223,2357 +7582,6 @@
             this.btnFtpServerStartStop.Text = "③启动FTP服务器";
             this.btnFtpServerStartStop.UseVisualStyleBackColor = false;
             this.btnFtpServerStartStop.Click += new System.EventHandler(this.BtnFtpServerStartStop_Click);
-            // 
-            // buttbatchdownload
-            // 
-            this.buttbatchdownload.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttbatchdownload.BackColor = System.Drawing.Color.DodgerBlue;
-            this.buttbatchdownload.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttbatchdownload.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.buttbatchdownload.ForeColor = System.Drawing.Color.White;
-            this.buttbatchdownload.Location = new System.Drawing.Point(848, 580);
-            this.buttbatchdownload.Name = "buttbatchdownload";
-            this.buttbatchdownload.Size = new System.Drawing.Size(86, 34);
-            this.buttbatchdownload.TabIndex = 246;
-            this.buttbatchdownload.Text = "批量下载";
-            this.buttbatchdownload.UseVisualStyleBackColor = false;
-            this.buttbatchdownload.Click += new System.EventHandler(this.buttbatchdownload_Click);
-            // 
-            // buttbatchupload
-            // 
-            this.buttbatchupload.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttbatchupload.BackColor = System.Drawing.Color.DodgerBlue;
-            this.buttbatchupload.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttbatchupload.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.buttbatchupload.ForeColor = System.Drawing.Color.White;
-            this.buttbatchupload.Location = new System.Drawing.Point(848, 546);
-            this.buttbatchupload.Name = "buttbatchupload";
-            this.buttbatchupload.Size = new System.Drawing.Size(86, 34);
-            this.buttbatchupload.TabIndex = 248;
-            this.buttbatchupload.Text = "批量上传";
-            this.buttbatchupload.UseVisualStyleBackColor = false;
-            this.buttbatchupload.Click += new System.EventHandler(this.buttbatchupload_Click);
-            // 
-            // textcom
-            // 
-            this.textcom.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textcom.Enabled = false;
-            this.textcom.Font = new System.Drawing.Font("微软雅黑", 14.25F);
-            this.textcom.ForeColor = System.Drawing.Color.Gray;
-            this.textcom.Location = new System.Drawing.Point(270, 582);
-            this.textcom.Multiline = true;
-            this.textcom.Name = "textcom";
-            this.textcom.Size = new System.Drawing.Size(309, 32);
-            this.textcom.TabIndex = 3;
-            this.textcom.Text = "请输入命令行查询";
-            this.textcom.Click += new System.EventHandler(this.textcom_Click);
-            this.textcom.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textcom_KeyDown);
-            // 
-            // textDOS
-            // 
-            this.textDOS.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textDOS.BackColor = System.Drawing.Color.Black;
-            this.textDOS.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.textDOS.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.textDOS.Font = new System.Drawing.Font("宋体", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.textDOS.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.textDOS.Location = new System.Drawing.Point(0, 419);
-            this.textDOS.Multiline = true;
-            this.textDOS.Name = "textDOS";
-            this.textDOS.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textDOS.Size = new System.Drawing.Size(934, 100);
-            this.textDOS.TabIndex = 5;
-            this.textDOS.TextChanged += new System.EventHandler(this.textDOS_TextChanged);
-            this.textDOS.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textcom_KeyDown);
-            // 
-            // butsend
-            // 
-            this.butsend.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butsend.BackColor = System.Drawing.Color.DodgerBlue;
-            this.butsend.Enabled = false;
-            this.butsend.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.butsend.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.butsend.ForeColor = System.Drawing.Color.White;
-            this.butsend.Location = new System.Drawing.Point(581, 581);
-            this.butsend.Name = "butsend";
-            this.butsend.Size = new System.Drawing.Size(86, 34);
-            this.butsend.TabIndex = 101;
-            this.butsend.Text = "回车发送";
-            this.butsend.UseVisualStyleBackColor = false;
-            this.butsend.Click += new System.EventHandler(this.butsend_Click);
-            // 
-            // comip
-            // 
-            this.comip.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.comip.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.comip.ForeColor = System.Drawing.Color.Gray;
-            this.comip.FormattingEnabled = true;
-            this.comip.Location = new System.Drawing.Point(270, 547);
-            this.comip.Name = "comip";
-            this.comip.Size = new System.Drawing.Size(249, 33);
-            this.comip.TabIndex = 193;
-            this.comip.Text = "请输入设备ip地址";
-            this.comip.Click += new System.EventHandler(this.comip_Click);
-            this.comip.Leave += new System.EventHandler(this.comip_Leave);
-            // 
-            // compingcount
-            // 
-            this.compingcount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.compingcount.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.compingcount.FormattingEnabled = true;
-            this.compingcount.Items.AddRange(new object[] {
-            "2",
-            "5",
-            "10"});
-            this.compingcount.Location = new System.Drawing.Point(518, 547);
-            this.compingcount.Name = "compingcount";
-            this.compingcount.Size = new System.Drawing.Size(61, 33);
-            this.compingcount.TabIndex = 233;
-            this.compingcount.Text = "5";
-            // 
-            // DGVSTATUS
-            // 
-            this.DGVSTATUS.AllowUserToAddRows = false;
-            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.DGVSTATUS.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle11;
-            this.DGVSTATUS.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.DGVSTATUS.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.DGVSTATUS.BackgroundColor = System.Drawing.Color.LightSteelBlue;
-            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle12.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle12.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle12.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle12.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle12.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.DGVSTATUS.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle12;
-            this.DGVSTATUS.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.ip地址,
-            this.设备类型,
-            this.执行,
-            this.优先级,
-            this.ping,
-            this.操作,
-            this.重启,
-            this.保存,
-            this.当前版本});
-            this.DGVSTATUS.ContextMenuStrip = this.metroContextMenu;
-            dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle13.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle13.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle13.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle13.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle13.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle13.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.DGVSTATUS.DefaultCellStyle = dataGridViewCellStyle13;
-            this.DGVSTATUS.Location = new System.Drawing.Point(0, 0);
-            this.DGVSTATUS.Name = "DGVSTATUS";
-            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle14.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle14.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle14.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle14.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle14.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle14.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.DGVSTATUS.RowHeadersDefaultCellStyle = dataGridViewCellStyle14;
-            this.DGVSTATUS.RowHeadersVisible = false;
-            this.DGVSTATUS.RowHeadersWidth = 82;
-            dataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopCenter;
-            this.DGVSTATUS.RowsDefaultCellStyle = dataGridViewCellStyle15;
-            this.DGVSTATUS.RowTemplate.Height = 23;
-            this.DGVSTATUS.Size = new System.Drawing.Size(934, 419);
-            this.DGVSTATUS.TabIndex = 245;
-            this.DGVSTATUS.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.DGVSTATUS_EditingControlShowing);
-            // 
-            // 当前版本
-            // 
-            this.当前版本.FillWeight = 200F;
-            this.当前版本.HeaderText = "当前版本";
-            this.当前版本.MinimumWidth = 10;
-            this.当前版本.Name = "当前版本";
-            this.当前版本.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // 保存
-            // 
-            this.保存.FillWeight = 30F;
-            this.保存.HeaderText = "保存";
-            this.保存.MinimumWidth = 10;
-            this.保存.Name = "保存";
-            this.保存.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // 重启
-            // 
-            this.重启.FillWeight = 30F;
-            this.重启.HeaderText = "重启";
-            this.重启.MinimumWidth = 10;
-            this.重启.Name = "重启";
-            // 
-            // 操作
-            // 
-            this.操作.FillWeight = 30F;
-            this.操作.HeaderText = "操作";
-            this.操作.MinimumWidth = 10;
-            this.操作.Name = "操作";
-            this.操作.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // ping
-            // 
-            this.ping.FillWeight = 30F;
-            this.ping.HeaderText = "ping";
-            this.ping.MinimumWidth = 10;
-            this.ping.Name = "ping";
-            this.ping.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // 优先级
-            // 
-            this.优先级.FillWeight = 30F;
-            this.优先级.HeaderText = "优先级";
-            this.优先级.MinimumWidth = 10;
-            this.优先级.Name = "优先级";
-            this.优先级.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            // 
-            // 执行
-            // 
-            this.执行.FillWeight = 30F;
-            this.执行.HeaderText = "执行";
-            this.执行.MinimumWidth = 10;
-            this.执行.Name = "执行";
-            // 
-            // 设备类型
-            // 
-            this.设备类型.HeaderText = "设备类型";
-            this.设备类型.Name = "设备类型";
-            // 
-            // ip地址
-            // 
-            this.ip地址.HeaderText = "ip地址";
-            this.ip地址.MinimumWidth = 10;
-            this.ip地址.Name = "ip地址";
-            this.ip地址.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // butbatchip
-            // 
-            this.butbatchip.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butbatchip.BackColor = System.Drawing.Color.DodgerBlue;
-            this.butbatchip.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.butbatchip.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.butbatchip.ForeColor = System.Drawing.Color.White;
-            this.butbatchip.Location = new System.Drawing.Point(695, 546);
-            this.butbatchip.Name = "butbatchip";
-            this.butbatchip.Size = new System.Drawing.Size(122, 34);
-            this.butbatchip.TabIndex = 249;
-            this.butbatchip.Text = "添加ip地址到表格";
-            this.butbatchip.UseVisualStyleBackColor = false;
-            this.butbatchip.Click += new System.EventHandler(this.butbatchip_Click);
-            // 
-            // groupBox12
-            // 
-            this.groupBox12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.groupBox12.Controls.Add(this.textusr);
-            this.groupBox12.Controls.Add(this.textftpusr);
-            this.groupBox12.Controls.Add(this.textpsd);
-            this.groupBox12.Controls.Add(this.textftppsd);
-            this.groupBox12.Controls.Add(this.label13);
-            this.groupBox12.Controls.Add(this.tbxFtpRoot);
-            this.groupBox12.Controls.Add(this.label8);
-            this.groupBox12.Controls.Add(this.label3);
-            this.groupBox12.Controls.Add(this.tbxFtpServerPort);
-            this.groupBox12.Controls.Add(this.checkpssd);
-            this.groupBox12.Controls.Add(this.textWriteCommunity);
-            this.groupBox12.Controls.Add(this.textReadCommunity);
-            this.groupBox12.Controls.Add(this.label1);
-            this.groupBox12.Controls.Add(this.textpsden);
-            this.groupBox12.Location = new System.Drawing.Point(3, 522);
-            this.groupBox12.Name = "groupBox12";
-            this.groupBox12.Size = new System.Drawing.Size(266, 95);
-            this.groupBox12.TabIndex = 271;
-            this.groupBox12.TabStop = false;
-            this.groupBox12.Text = "FTP服务器";
-            // 
-            // textpsden
-            // 
-            this.textpsden.Location = new System.Drawing.Point(155, 72);
-            this.textpsden.Name = "textpsden";
-            this.textpsden.PasswordChar = '*';
-            this.textpsden.Size = new System.Drawing.Size(105, 21);
-            this.textpsden.TabIndex = 127;
-            this.textpsden.Text = "greenway";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.BackColor = System.Drawing.Color.Transparent;
-            this.label1.Location = new System.Drawing.Point(0, 56);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(53, 12);
-            this.label1.TabIndex = 240;
-            this.label1.Text = "读写团体";
-            // 
-            // textReadCommunity
-            // 
-            this.textReadCommunity.Location = new System.Drawing.Point(51, 52);
-            this.textReadCommunity.Multiline = true;
-            this.textReadCommunity.Name = "textReadCommunity";
-            this.textReadCommunity.PasswordChar = '*';
-            this.textReadCommunity.Size = new System.Drawing.Size(73, 21);
-            this.textReadCommunity.TabIndex = 241;
-            this.textReadCommunity.Text = "public";
-            // 
-            // textWriteCommunity
-            // 
-            this.textWriteCommunity.Location = new System.Drawing.Point(123, 52);
-            this.textWriteCommunity.Multiline = true;
-            this.textWriteCommunity.Name = "textWriteCommunity";
-            this.textWriteCommunity.PasswordChar = '*';
-            this.textWriteCommunity.Size = new System.Drawing.Size(137, 21);
-            this.textWriteCommunity.TabIndex = 242;
-            this.textWriteCommunity.Text = "private";
-            // 
-            // checkpssd
-            // 
-            this.checkpssd.AutoSize = true;
-            this.checkpssd.FontWeight = MetroFramework.MetroCheckBoxWeight.Light;
-            this.checkpssd.Location = new System.Drawing.Point(189, 35);
-            this.checkpssd.Name = "checkpssd";
-            this.checkpssd.Size = new System.Drawing.Size(71, 15);
-            this.checkpssd.TabIndex = 243;
-            this.checkpssd.Text = "显示密码";
-            this.checkpssd.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
-            this.checkpssd.UseSelectable = true;
-            this.checkpssd.CheckedChanged += new System.EventHandler(this.Checkpssd_CheckedChanged);
-            // 
-            // tbxFtpServerPort
-            // 
-            this.tbxFtpServerPort.BackColor = System.Drawing.SystemColors.Window;
-            this.tbxFtpServerPort.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.tbxFtpServerPort.FormattingEnabled = true;
-            this.tbxFtpServerPort.Items.AddRange(new object[] {
-            "21",
-            "33333",
-            "33334",
-            "33335"});
-            this.tbxFtpServerPort.Location = new System.Drawing.Point(223, 13);
-            this.tbxFtpServerPort.Name = "tbxFtpServerPort";
-            this.tbxFtpServerPort.Size = new System.Drawing.Size(39, 20);
-            this.tbxFtpServerPort.TabIndex = 244;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.BackColor = System.Drawing.Color.Transparent;
-            this.label3.Location = new System.Drawing.Point(-2, 77);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(53, 12);
-            this.label3.TabIndex = 151;
-            this.label3.Text = "设备密码";
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.BackColor = System.Drawing.Color.Transparent;
-            this.label8.Location = new System.Drawing.Point(3, 16);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(47, 12);
-            this.label8.TabIndex = 143;
-            this.label8.Text = "FTP目录";
-            // 
-            // tbxFtpRoot
-            // 
-            this.tbxFtpRoot.Enabled = false;
-            this.tbxFtpRoot.Location = new System.Drawing.Point(51, 13);
-            this.tbxFtpRoot.Multiline = true;
-            this.tbxFtpRoot.Name = "tbxFtpRoot";
-            this.tbxFtpRoot.Size = new System.Drawing.Size(172, 20);
-            this.tbxFtpRoot.TabIndex = 141;
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.BackColor = System.Drawing.Color.Transparent;
-            this.label13.Location = new System.Drawing.Point(3, 35);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(47, 12);
-            this.label13.TabIndex = 131;
-            this.label13.Text = "FTP用户";
-            // 
-            // textftppsd
-            // 
-            this.textftppsd.Location = new System.Drawing.Point(99, 32);
-            this.textftppsd.Multiline = true;
-            this.textftppsd.Name = "textftppsd";
-            this.textftppsd.PasswordChar = '*';
-            this.textftppsd.Size = new System.Drawing.Size(84, 21);
-            this.textftppsd.TabIndex = 130;
-            this.textftppsd.Text = "admin";
-            // 
-            // textpsd
-            // 
-            this.textpsd.Location = new System.Drawing.Point(99, 72);
-            this.textpsd.Name = "textpsd";
-            this.textpsd.PasswordChar = '*';
-            this.textpsd.Size = new System.Drawing.Size(57, 21);
-            this.textpsd.TabIndex = 126;
-            this.textpsd.Text = "greenway";
-            // 
-            // textftpusr
-            // 
-            this.textftpusr.Location = new System.Drawing.Point(51, 32);
-            this.textftpusr.Multiline = true;
-            this.textftpusr.Name = "textftpusr";
-            this.textftpusr.Size = new System.Drawing.Size(49, 21);
-            this.textftpusr.TabIndex = 129;
-            this.textftpusr.Text = "admin";
-            // 
-            // textusr
-            // 
-            this.textusr.Location = new System.Drawing.Point(51, 72);
-            this.textusr.Name = "textusr";
-            this.textusr.Size = new System.Drawing.Size(49, 21);
-            this.textusr.TabIndex = 125;
-            this.textusr.Text = "admin";
-            // 
-            // ButLogin
-            // 
-            this.ButLogin.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.ButLogin.BackColor = System.Drawing.Color.DodgerBlue;
-            this.ButLogin.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ButLogin.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.ButLogin.ForeColor = System.Drawing.Color.White;
-            this.ButLogin.Location = new System.Drawing.Point(581, 547);
-            this.ButLogin.Name = "ButLogin";
-            this.ButLogin.Size = new System.Drawing.Size(86, 34);
-            this.ButLogin.TabIndex = 272;
-            this.ButLogin.Text = "①连接设备";
-            this.ButLogin.UseVisualStyleBackColor = false;
-            this.ButLogin.Click += new System.EventHandler(this.Butlogin_Click);
-            // 
-            // ButCheckFile
-            // 
-            this.ButCheckFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.ButCheckFile.BackColor = System.Drawing.Color.DodgerBlue;
-            this.ButCheckFile.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ButCheckFile.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.ButCheckFile.ForeColor = System.Drawing.Color.White;
-            this.ButCheckFile.Location = new System.Drawing.Point(695, 581);
-            this.ButCheckFile.Name = "ButCheckFile";
-            this.ButCheckFile.Size = new System.Drawing.Size(122, 34);
-            this.ButCheckFile.TabIndex = 273;
-            this.ButCheckFile.Text = "检查文件大小";
-            this.ButCheckFile.UseVisualStyleBackColor = false;
-            this.ButCheckFile.Click += new System.EventHandler(this.ButCheckFile_Click);
-            // 
-            // panel3
-            // 
-            this.panel3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel3.AutoScroll = true;
-            this.panel3.Controls.Add(this.tableLayoutPanel1);
-            this.panel3.Location = new System.Drawing.Point(934, 0);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(378, 625);
-            this.panel3.TabIndex = 275;
-            // 
-            // tableLayoutPanel1
-            // 
-            this.tableLayoutPanel1.ColumnCount = 4;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 14.08487F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 67.66257F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 6.084188F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.16838F));
-            this.tableLayoutPanel1.Controls.Add(this.labyaffs, 3, 30);
-            this.tableLayoutPanel1.Controls.Add(this.label24, 0, 31);
-            this.tableLayoutPanel1.Controls.Add(this.labcpld, 3, 28);
-            this.tableLayoutPanel1.Controls.Add(this.labflash, 3, 29);
-            this.tableLayoutPanel1.Controls.Add(this.comcpld, 1, 28);
-            this.tableLayoutPanel1.Controls.Add(this.checkyaffs, 2, 30);
-            this.tableLayoutPanel1.Controls.Add(this.comyaffs, 1, 30);
-            this.tableLayoutPanel1.Controls.Add(this.checkcpld, 2, 28);
-            this.tableLayoutPanel1.Controls.Add(this.labyaffsname, 0, 30);
-            this.tableLayoutPanel1.Controls.Add(this.labcode4, 3, 8);
-            this.tableLayoutPanel1.Controls.Add(this.checkflash, 2, 29);
-            this.tableLayoutPanel1.Controls.Add(this.comflash, 1, 29);
-            this.tableLayoutPanel1.Controls.Add(this.label26, 0, 28);
-            this.tableLayoutPanel1.Controls.Add(this.labflashname, 0, 29);
-            this.tableLayoutPanel1.Controls.Add(this.checkcode4, 2, 8);
-            this.tableLayoutPanel1.Controls.Add(this.comcode4, 1, 8);
-            this.tableLayoutPanel1.Controls.Add(this.labconfigname, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.labrebootos, 3, 27);
-            this.tableLayoutPanel1.Controls.Add(this.checkrebootos, 2, 27);
-            this.tableLayoutPanel1.Controls.Add(this.labcodename4, 0, 8);
-            this.tableLayoutPanel1.Controls.Add(this.label23, 0, 27);
-            this.tableLayoutPanel1.Controls.Add(this.comconfig, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.checkconfig, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.labconfig, 3, 0);
-            this.tableLayoutPanel1.Controls.Add(this.labvoss, 3, 26);
-            this.tableLayoutPanel1.Controls.Add(this.comvoss, 1, 26);
-            this.tableLayoutPanel1.Controls.Add(this.checkvoss, 2, 26);
-            this.tableLayoutPanel1.Controls.Add(this.labslotname, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.label21, 0, 26);
-            this.tableLayoutPanel1.Controls.Add(this.comslotconfig, 1, 1);
-            this.tableLayoutPanel1.Controls.Add(this.checkslotconfig, 2, 1);
-            this.tableLayoutPanel1.Controls.Add(this.labslotconfig, 3, 1);
-            this.tableLayoutPanel1.Controls.Add(this.lab7616, 3, 24);
-            this.tableLayoutPanel1.Controls.Add(this.comsysfile, 1, 25);
-            this.tableLayoutPanel1.Controls.Add(this.labsysfile, 3, 25);
-            this.tableLayoutPanel1.Controls.Add(this.labsdn, 3, 9);
-            this.tableLayoutPanel1.Controls.Add(this.checksysfile, 2, 25);
-            this.tableLayoutPanel1.Controls.Add(this.check7616, 2, 24);
-            this.tableLayoutPanel1.Controls.Add(this.labsysfilename, 0, 25);
-            this.tableLayoutPanel1.Controls.Add(this.checksdn, 2, 9);
-            this.tableLayoutPanel1.Controls.Add(this.com7616, 1, 24);
-            this.tableLayoutPanel1.Controls.Add(this.lab7616name, 0, 24);
-            this.tableLayoutPanel1.Controls.Add(this.comsdn, 1, 9);
-            this.tableLayoutPanel1.Controls.Add(this.labdbname, 0, 2);
-            this.tableLayoutPanel1.Controls.Add(this.lab7614, 3, 22);
-            this.tableLayoutPanel1.Controls.Add(this.labsdnname, 0, 9);
-            this.tableLayoutPanel1.Controls.Add(this.check7614, 2, 22);
-            this.tableLayoutPanel1.Controls.Add(this.comdb, 1, 2);
-            this.tableLayoutPanel1.Controls.Add(this.com7614, 1, 22);
-            this.tableLayoutPanel1.Controls.Add(this.lab7614name, 0, 22);
-            this.tableLayoutPanel1.Controls.Add(this.checkdb, 2, 2);
-            this.tableLayoutPanel1.Controls.Add(this.labdb, 3, 2);
-            this.tableLayoutPanel1.Controls.Add(this.lab7613, 3, 21);
-            this.tableLayoutPanel1.Controls.Add(this.labappname, 0, 3);
-            this.tableLayoutPanel1.Controls.Add(this.check7613, 2, 21);
-            this.tableLayoutPanel1.Controls.Add(this.comapp, 1, 3);
-            this.tableLayoutPanel1.Controls.Add(this.com7613, 1, 21);
-            this.tableLayoutPanel1.Controls.Add(this.lab7613name, 0, 21);
-            this.tableLayoutPanel1.Controls.Add(this.checkapp, 2, 3);
-            this.tableLayoutPanel1.Controls.Add(this.labapp, 3, 3);
-            this.tableLayoutPanel1.Controls.Add(this.lab7612, 3, 20);
-            this.tableLayoutPanel1.Controls.Add(this.comnms, 1, 10);
-            this.tableLayoutPanel1.Controls.Add(this.check7612, 2, 20);
-            this.tableLayoutPanel1.Controls.Add(this.lab7611, 3, 19);
-            this.tableLayoutPanel1.Controls.Add(this.com7612, 1, 20);
-            this.tableLayoutPanel1.Controls.Add(this.lab7612name, 0, 20);
-            this.tableLayoutPanel1.Controls.Add(this.comsw, 1, 11);
-            this.tableLayoutPanel1.Controls.Add(this.lab7610, 3, 18);
-            this.tableLayoutPanel1.Controls.Add(this.check7611, 2, 19);
-            this.tableLayoutPanel1.Controls.Add(this.labapp2, 3, 4);
-            this.tableLayoutPanel1.Controls.Add(this.checkapp2, 2, 4);
-            this.tableLayoutPanel1.Controls.Add(this.comapp2, 1, 4);
-            this.tableLayoutPanel1.Controls.Add(this.com7611, 1, 19);
-            this.tableLayoutPanel1.Controls.Add(this.lab7611name, 0, 19);
-            this.tableLayoutPanel1.Controls.Add(this.check7610, 2, 18);
-            this.tableLayoutPanel1.Controls.Add(this.labapp2name, 0, 4);
-            this.tableLayoutPanel1.Controls.Add(this.labcode3, 3, 7);
-            this.tableLayoutPanel1.Controls.Add(this.labswname, 0, 11);
-            this.tableLayoutPanel1.Controls.Add(this.checkcode3, 2, 7);
-            this.tableLayoutPanel1.Controls.Add(this.lab7610name, 0, 18);
-            this.tableLayoutPanel1.Controls.Add(this.com7610, 1, 18);
-            this.tableLayoutPanel1.Controls.Add(this.labnmsname, 0, 10);
-            this.tableLayoutPanel1.Controls.Add(this.comcode3, 1, 7);
-            this.tableLayoutPanel1.Controls.Add(this.labcodename, 0, 5);
-            this.tableLayoutPanel1.Controls.Add(this.labuxc, 3, 17);
-            this.tableLayoutPanel1.Controls.Add(this.com760d, 1, 15);
-            this.tableLayoutPanel1.Controls.Add(this.checkuxc, 2, 17);
-            this.tableLayoutPanel1.Controls.Add(this.com760c, 1, 14);
-            this.tableLayoutPanel1.Controls.Add(this.comuxc, 1, 17);
-            this.tableLayoutPanel1.Controls.Add(this.lab760uxcname, 0, 17);
-            this.tableLayoutPanel1.Controls.Add(this.com760b, 1, 13);
-            this.tableLayoutPanel1.Controls.Add(this.com760e, 1, 16);
-            this.tableLayoutPanel1.Controls.Add(this.check760e, 2, 16);
-            this.tableLayoutPanel1.Controls.Add(this.com760s, 1, 12);
-            this.tableLayoutPanel1.Controls.Add(this.lab760dname, 0, 15);
-            this.tableLayoutPanel1.Controls.Add(this.lab760ename, 0, 16);
-            this.tableLayoutPanel1.Controls.Add(this.labcodename3, 0, 7);
-            this.tableLayoutPanel1.Controls.Add(this.check760d, 2, 15);
-            this.tableLayoutPanel1.Controls.Add(this.lab760e, 3, 16);
-            this.tableLayoutPanel1.Controls.Add(this.lab760cname, 0, 14);
-            this.tableLayoutPanel1.Controls.Add(this.comcode, 1, 5);
-            this.tableLayoutPanel1.Controls.Add(this.lab760bname, 0, 13);
-            this.tableLayoutPanel1.Controls.Add(this.checkcode, 2, 5);
-            this.tableLayoutPanel1.Controls.Add(this.check760c, 2, 14);
-            this.tableLayoutPanel1.Controls.Add(this.labcode, 3, 5);
-            this.tableLayoutPanel1.Controls.Add(this.lab760sname, 0, 12);
-            this.tableLayoutPanel1.Controls.Add(this.lab760d, 3, 15);
-            this.tableLayoutPanel1.Controls.Add(this.labcode2, 3, 6);
-            this.tableLayoutPanel1.Controls.Add(this.checkcode2, 2, 6);
-            this.tableLayoutPanel1.Controls.Add(this.check760b, 2, 13);
-            this.tableLayoutPanel1.Controls.Add(this.comcode2, 1, 6);
-            this.tableLayoutPanel1.Controls.Add(this.labcodename2, 0, 6);
-            this.tableLayoutPanel1.Controls.Add(this.checknms, 2, 10);
-            this.tableLayoutPanel1.Controls.Add(this.labnms, 3, 10);
-            this.tableLayoutPanel1.Controls.Add(this.check760s, 2, 12);
-            this.tableLayoutPanel1.Controls.Add(this.lab760c, 3, 14);
-            this.tableLayoutPanel1.Controls.Add(this.checksw, 2, 11);
-            this.tableLayoutPanel1.Controls.Add(this.labsw, 3, 11);
-            this.tableLayoutPanel1.Controls.Add(this.lab760s, 3, 12);
-            this.tableLayoutPanel1.Controls.Add(this.lab760b, 3, 13);
-            this.tableLayoutPanel1.Controls.Add(this.lab7615name, 0, 23);
-            this.tableLayoutPanel1.Controls.Add(this.com7615, 1, 23);
-            this.tableLayoutPanel1.Controls.Add(this.check7615, 2, 23);
-            this.tableLayoutPanel1.Controls.Add(this.lab7615, 3, 23);
-            this.tableLayoutPanel1.Controls.Add(this.comrebootos, 1, 27);
-            this.tableLayoutPanel1.Controls.Add(this.panel2, 1, 31);
-            this.tableLayoutPanel1.Controls.Add(this.lab7616cname, 0, 32);
-            this.tableLayoutPanel1.Controls.Add(this.com7616c, 1, 32);
-            this.tableLayoutPanel1.Controls.Add(this.lab7618name, 0, 33);
-            this.tableLayoutPanel1.Controls.Add(this.lab7618, 3, 33);
-            this.tableLayoutPanel1.Controls.Add(this.lab7619name, 0, 34);
-            this.tableLayoutPanel1.Controls.Add(this.lab7619, 3, 34);
-            this.tableLayoutPanel1.Controls.Add(this.lab761aname, 0, 35);
-            this.tableLayoutPanel1.Controls.Add(this.lab761a, 3, 35);
-            this.tableLayoutPanel1.Controls.Add(this.lab761bname, 0, 36);
-            this.tableLayoutPanel1.Controls.Add(this.lab761b, 3, 36);
-            this.tableLayoutPanel1.Controls.Add(this.lab761cname, 0, 37);
-            this.tableLayoutPanel1.Controls.Add(this.lab761c, 3, 37);
-            this.tableLayoutPanel1.Controls.Add(this.com7618, 1, 33);
-            this.tableLayoutPanel1.Controls.Add(this.com7619, 1, 34);
-            this.tableLayoutPanel1.Controls.Add(this.com761a, 1, 35);
-            this.tableLayoutPanel1.Controls.Add(this.com761b, 1, 36);
-            this.tableLayoutPanel1.Controls.Add(this.com761c, 1, 37);
-            this.tableLayoutPanel1.Controls.Add(this.check7616c, 2, 32);
-            this.tableLayoutPanel1.Controls.Add(this.check7618, 2, 33);
-            this.tableLayoutPanel1.Controls.Add(this.check7619, 2, 34);
-            this.tableLayoutPanel1.Controls.Add(this.check761a, 2, 35);
-            this.tableLayoutPanel1.Controls.Add(this.check761b, 2, 36);
-            this.tableLayoutPanel1.Controls.Add(this.check761c, 2, 37);
-            this.tableLayoutPanel1.Controls.Add(this.lab7616c, 3, 32);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(2, 0);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 39;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(351, 782);
-            this.tableLayoutPanel1.TabIndex = 274;
-            // 
-            // lab761cname
-            // 
-            this.lab761cname.AutoSize = true;
-            this.lab761cname.Location = new System.Drawing.Point(3, 740);
-            this.lab761cname.Name = "lab761cname";
-            this.lab761cname.Size = new System.Drawing.Size(29, 12);
-            this.lab761cname.TabIndex = 328;
-            this.lab761cname.Text = "761C";
-            // 
-            // lab761b
-            // 
-            this.lab761b.AutoSize = true;
-            this.lab761b.Location = new System.Drawing.Point(310, 720);
-            this.lab761b.Name = "lab761b";
-            this.lab761b.Size = new System.Drawing.Size(17, 12);
-            this.lab761b.TabIndex = 327;
-            this.lab761b.Text = "空";
-            this.lab761b.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // lab761bname
-            // 
-            this.lab761bname.AutoSize = true;
-            this.lab761bname.Location = new System.Drawing.Point(3, 720);
-            this.lab761bname.Name = "lab761bname";
-            this.lab761bname.Size = new System.Drawing.Size(29, 12);
-            this.lab761bname.TabIndex = 326;
-            this.lab761bname.Text = "761B";
-            // 
-            // lab761a
-            // 
-            this.lab761a.AutoSize = true;
-            this.lab761a.Location = new System.Drawing.Point(310, 700);
-            this.lab761a.Name = "lab761a";
-            this.lab761a.Size = new System.Drawing.Size(17, 12);
-            this.lab761a.TabIndex = 325;
-            this.lab761a.Text = "空";
-            this.lab761a.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // lab761aname
-            // 
-            this.lab761aname.AutoSize = true;
-            this.lab761aname.Location = new System.Drawing.Point(3, 700);
-            this.lab761aname.Name = "lab761aname";
-            this.lab761aname.Size = new System.Drawing.Size(29, 12);
-            this.lab761aname.TabIndex = 324;
-            this.lab761aname.Text = "761A";
-            // 
-            // lab7619
-            // 
-            this.lab7619.AutoSize = true;
-            this.lab7619.Location = new System.Drawing.Point(310, 680);
-            this.lab7619.Name = "lab7619";
-            this.lab7619.Size = new System.Drawing.Size(17, 12);
-            this.lab7619.TabIndex = 323;
-            this.lab7619.Text = "空";
-            this.lab7619.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // lab7619name
-            // 
-            this.lab7619name.AutoSize = true;
-            this.lab7619name.Location = new System.Drawing.Point(3, 680);
-            this.lab7619name.Name = "lab7619name";
-            this.lab7619name.Size = new System.Drawing.Size(29, 12);
-            this.lab7619name.TabIndex = 322;
-            this.lab7619name.Text = "7619";
-            // 
-            // lab7618
-            // 
-            this.lab7618.AutoSize = true;
-            this.lab7618.Location = new System.Drawing.Point(310, 660);
-            this.lab7618.Name = "lab7618";
-            this.lab7618.Size = new System.Drawing.Size(17, 12);
-            this.lab7618.TabIndex = 321;
-            this.lab7618.Text = "空";
-            this.lab7618.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // lab7618name
-            // 
-            this.lab7618name.AutoSize = true;
-            this.lab7618name.Location = new System.Drawing.Point(3, 660);
-            this.lab7618name.Name = "lab7618name";
-            this.lab7618name.Size = new System.Drawing.Size(29, 12);
-            this.lab7618name.TabIndex = 320;
-            this.lab7618name.Text = "7618";
-            // 
-            // lab7616c
-            // 
-            this.lab7616c.AutoSize = true;
-            this.lab7616c.Location = new System.Drawing.Point(310, 640);
-            this.lab7616c.Name = "lab7616c";
-            this.lab7616c.Size = new System.Drawing.Size(17, 12);
-            this.lab7616c.TabIndex = 319;
-            this.lab7616c.Text = "空";
-            this.lab7616c.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // com7616c
-            // 
-            this.com7616c.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.com7616c.FormattingEnabled = true;
-            this.com7616c.Location = new System.Drawing.Point(52, 643);
-            this.com7616c.Name = "com7616c";
-            this.com7616c.Size = new System.Drawing.Size(231, 20);
-            this.com7616c.TabIndex = 317;
-            this.com7616c.SelectedIndexChanged += new System.EventHandler(this.com7616c_SelectedIndexChanged);
-            // 
-            // lab7616cname
-            // 
-            this.lab7616cname.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lab7616cname.AutoSize = true;
-            this.lab7616cname.Location = new System.Drawing.Point(3, 640);
-            this.lab7616cname.Name = "lab7616cname";
-            this.lab7616cname.Size = new System.Drawing.Size(35, 12);
-            this.lab7616cname.TabIndex = 316;
-            this.lab7616cname.Text = "7616C";
-            this.lab7616cname.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // panel2
-            // 
-            this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tableLayoutPanel1.SetColumnSpan(this.panel2, 3);
-            this.panel2.Controls.Add(this.comgpn76list);
-            this.panel2.Location = new System.Drawing.Point(49, 620);
-            this.panel2.Margin = new System.Windows.Forms.Padding(0);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(302, 20);
-            this.panel2.TabIndex = 315;
-            // 
-            // comgpn76list
-            // 
-            this.comgpn76list.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.comgpn76list.FormattingEnabled = true;
-            this.comgpn76list.Location = new System.Drawing.Point(3, 3);
-            this.comgpn76list.Name = "comgpn76list";
-            this.comgpn76list.Size = new System.Drawing.Size(296, 20);
-            this.comgpn76list.TabIndex = 198;
-            // 
-            // comrebootos
-            // 
-            this.comrebootos.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.comrebootos.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.comrebootos.FormattingEnabled = true;
-            this.comrebootos.Location = new System.Drawing.Point(52, 543);
-            this.comrebootos.Name = "comrebootos";
-            this.comrebootos.Size = new System.Drawing.Size(231, 20);
-            this.comrebootos.TabIndex = 299;
-            this.comrebootos.SelectedIndexChanged += new System.EventHandler(this.comrebootos_SelectedIndexChanged);
-            // 
-            // lab7615
-            // 
-            this.lab7615.AutoSize = true;
-            this.lab7615.BackColor = System.Drawing.Color.Transparent;
-            this.lab7615.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lab7615.Location = new System.Drawing.Point(310, 460);
-            this.lab7615.Name = "lab7615";
-            this.lab7615.Size = new System.Drawing.Size(38, 20);
-            this.lab7615.TabIndex = 314;
-            this.lab7615.Text = "空";
-            this.lab7615.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // check7615
-            // 
-            this.check7615.AutoSize = true;
-            this.check7615.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.check7615.Location = new System.Drawing.Point(289, 463);
-            this.check7615.Name = "check7615";
-            this.check7615.Size = new System.Drawing.Size(15, 14);
-            this.check7615.TabIndex = 313;
-            this.check7615.Text = "checkBox1";
-            this.check7615.UseVisualStyleBackColor = true;
-            // 
-            // com7615
-            // 
-            this.com7615.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.com7615.FormattingEnabled = true;
-            this.com7615.Location = new System.Drawing.Point(52, 463);
-            this.com7615.Name = "com7615";
-            this.com7615.Size = new System.Drawing.Size(231, 20);
-            this.com7615.TabIndex = 312;
-            this.com7615.SelectedIndexChanged += new System.EventHandler(this.com7615_SelectedIndexChanged);
-            // 
-            // lab7615name
-            // 
-            this.lab7615name.AutoSize = true;
-            this.lab7615name.BackColor = System.Drawing.Color.Transparent;
-            this.lab7615name.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lab7615name.Location = new System.Drawing.Point(3, 460);
-            this.lab7615name.Name = "lab7615name";
-            this.lab7615name.Size = new System.Drawing.Size(43, 20);
-            this.lab7615name.TabIndex = 311;
-            this.lab7615name.Text = "7615";
-            this.lab7615name.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // lab760b
-            // 
-            this.lab760b.AutoSize = true;
-            this.lab760b.BackColor = System.Drawing.Color.Transparent;
-            this.lab760b.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lab760b.Location = new System.Drawing.Point(310, 260);
-            this.lab760b.Name = "lab760b";
-            this.lab760b.Size = new System.Drawing.Size(38, 20);
-            this.lab760b.TabIndex = 214;
-            this.lab760b.Text = "空";
-            this.lab760b.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // lab760s
-            // 
-            this.lab760s.AutoSize = true;
-            this.lab760s.BackColor = System.Drawing.Color.Transparent;
-            this.lab760s.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lab760s.Location = new System.Drawing.Point(310, 240);
-            this.lab760s.Name = "lab760s";
-            this.lab760s.Size = new System.Drawing.Size(38, 20);
-            this.lab760s.TabIndex = 213;
-            this.lab760s.Text = "空";
-            this.lab760s.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // labsw
-            // 
-            this.labsw.AutoSize = true;
-            this.labsw.BackColor = System.Drawing.Color.Transparent;
-            this.labsw.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labsw.Location = new System.Drawing.Point(310, 220);
-            this.labsw.Name = "labsw";
-            this.labsw.Size = new System.Drawing.Size(38, 20);
-            this.labsw.TabIndex = 212;
-            this.labsw.Text = "空";
-            this.labsw.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // checksw
-            // 
-            this.checksw.BackColor = System.Drawing.Color.Transparent;
-            this.checksw.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checksw.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.checksw.Location = new System.Drawing.Point(289, 223);
-            this.checksw.Name = "checksw";
-            this.checksw.Size = new System.Drawing.Size(15, 14);
-            this.checksw.TabIndex = 166;
-            this.checksw.UseVisualStyleBackColor = false;
-            // 
-            // lab760c
-            // 
-            this.lab760c.AutoSize = true;
-            this.lab760c.BackColor = System.Drawing.Color.Transparent;
-            this.lab760c.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lab760c.Location = new System.Drawing.Point(310, 280);
-            this.lab760c.Name = "lab760c";
-            this.lab760c.Size = new System.Drawing.Size(38, 20);
-            this.lab760c.TabIndex = 215;
-            this.lab760c.Text = "空";
-            this.lab760c.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // check760s
-            // 
-            this.check760s.BackColor = System.Drawing.Color.Transparent;
-            this.check760s.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.check760s.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.check760s.Location = new System.Drawing.Point(289, 243);
-            this.check760s.Name = "check760s";
-            this.check760s.Size = new System.Drawing.Size(15, 14);
-            this.check760s.TabIndex = 167;
-            this.check760s.UseVisualStyleBackColor = false;
-            // 
-            // labnms
-            // 
-            this.labnms.AutoSize = true;
-            this.labnms.BackColor = System.Drawing.Color.Transparent;
-            this.labnms.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labnms.Location = new System.Drawing.Point(310, 200);
-            this.labnms.Name = "labnms";
-            this.labnms.Size = new System.Drawing.Size(38, 20);
-            this.labnms.TabIndex = 211;
-            this.labnms.Text = "空";
-            this.labnms.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // checknms
-            // 
-            this.checknms.BackColor = System.Drawing.Color.Transparent;
-            this.checknms.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checknms.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.checknms.Location = new System.Drawing.Point(289, 203);
-            this.checknms.Name = "checknms";
-            this.checknms.Size = new System.Drawing.Size(15, 14);
-            this.checknms.TabIndex = 165;
-            this.checknms.UseVisualStyleBackColor = false;
-            // 
-            // labcodename2
-            // 
-            this.labcodename2.AutoSize = true;
-            this.labcodename2.BackColor = System.Drawing.Color.Transparent;
-            this.labcodename2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labcodename2.Location = new System.Drawing.Point(3, 120);
-            this.labcodename2.Name = "labcodename2";
-            this.labcodename2.Size = new System.Drawing.Size(43, 20);
-            this.labcodename2.TabIndex = 276;
-            this.labcodename2.Text = "CODE2";
-            this.labcodename2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // comcode2
-            // 
-            this.comcode2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.comcode2.FormattingEnabled = true;
-            this.comcode2.Location = new System.Drawing.Point(52, 123);
-            this.comcode2.Name = "comcode2";
-            this.comcode2.Size = new System.Drawing.Size(231, 20);
-            this.comcode2.TabIndex = 275;
-            this.comcode2.SelectedIndexChanged += new System.EventHandler(this.comcode2_SelectedIndexChanged);
-            // 
-            // check760b
-            // 
-            this.check760b.BackColor = System.Drawing.Color.Transparent;
-            this.check760b.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.check760b.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.check760b.Location = new System.Drawing.Point(289, 263);
-            this.check760b.Name = "check760b";
-            this.check760b.Size = new System.Drawing.Size(15, 14);
-            this.check760b.TabIndex = 168;
-            this.check760b.UseVisualStyleBackColor = false;
-            // 
-            // checkcode2
-            // 
-            this.checkcode2.BackColor = System.Drawing.Color.Transparent;
-            this.checkcode2.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkcode2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.checkcode2.Location = new System.Drawing.Point(289, 123);
-            this.checkcode2.Name = "checkcode2";
-            this.checkcode2.Size = new System.Drawing.Size(15, 14);
-            this.checkcode2.TabIndex = 277;
-            this.checkcode2.UseVisualStyleBackColor = false;
-            // 
-            // labcode2
-            // 
-            this.labcode2.AutoSize = true;
-            this.labcode2.BackColor = System.Drawing.Color.Transparent;
-            this.labcode2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labcode2.Location = new System.Drawing.Point(310, 120);
-            this.labcode2.Name = "labcode2";
-            this.labcode2.Size = new System.Drawing.Size(38, 20);
-            this.labcode2.TabIndex = 278;
-            this.labcode2.Text = "空";
-            this.labcode2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // lab760d
-            // 
-            this.lab760d.AutoSize = true;
-            this.lab760d.BackColor = System.Drawing.Color.Transparent;
-            this.lab760d.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lab760d.Location = new System.Drawing.Point(310, 300);
-            this.lab760d.Name = "lab760d";
-            this.lab760d.Size = new System.Drawing.Size(38, 20);
-            this.lab760d.TabIndex = 216;
-            this.lab760d.Text = "空";
-            this.lab760d.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // lab760sname
-            // 
-            this.lab760sname.AutoSize = true;
-            this.lab760sname.BackColor = System.Drawing.Color.Transparent;
-            this.lab760sname.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lab760sname.Location = new System.Drawing.Point(3, 240);
-            this.lab760sname.Name = "lab760sname";
-            this.lab760sname.Size = new System.Drawing.Size(43, 20);
-            this.lab760sname.TabIndex = 157;
-            this.lab760sname.Text = "760S";
-            this.lab760sname.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // labcode
-            // 
-            this.labcode.AutoSize = true;
-            this.labcode.BackColor = System.Drawing.Color.Transparent;
-            this.labcode.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labcode.Location = new System.Drawing.Point(310, 100);
-            this.labcode.Name = "labcode";
-            this.labcode.Size = new System.Drawing.Size(38, 20);
-            this.labcode.TabIndex = 210;
-            this.labcode.Text = "空";
-            this.labcode.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // check760c
-            // 
-            this.check760c.BackColor = System.Drawing.Color.Transparent;
-            this.check760c.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.check760c.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.check760c.Location = new System.Drawing.Point(289, 283);
-            this.check760c.Name = "check760c";
-            this.check760c.Size = new System.Drawing.Size(15, 14);
-            this.check760c.TabIndex = 169;
-            this.check760c.UseVisualStyleBackColor = false;
-            // 
-            // checkcode
-            // 
-            this.checkcode.BackColor = System.Drawing.Color.Transparent;
-            this.checkcode.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkcode.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.checkcode.Location = new System.Drawing.Point(289, 103);
-            this.checkcode.Name = "checkcode";
-            this.checkcode.Size = new System.Drawing.Size(15, 14);
-            this.checkcode.TabIndex = 164;
-            this.checkcode.UseVisualStyleBackColor = false;
-            // 
-            // lab760bname
-            // 
-            this.lab760bname.AutoSize = true;
-            this.lab760bname.BackColor = System.Drawing.Color.Transparent;
-            this.lab760bname.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lab760bname.Location = new System.Drawing.Point(3, 260);
-            this.lab760bname.Name = "lab760bname";
-            this.lab760bname.Size = new System.Drawing.Size(43, 20);
-            this.lab760bname.TabIndex = 158;
-            this.lab760bname.Text = "760B";
-            this.lab760bname.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // comcode
-            // 
-            this.comcode.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.comcode.FormattingEnabled = true;
-            this.comcode.Location = new System.Drawing.Point(52, 103);
-            this.comcode.Name = "comcode";
-            this.comcode.Size = new System.Drawing.Size(231, 20);
-            this.comcode.TabIndex = 133;
-            this.comcode.SelectedIndexChanged += new System.EventHandler(this.comcode_SelectedIndexChanged);
-            // 
-            // lab760cname
-            // 
-            this.lab760cname.AutoSize = true;
-            this.lab760cname.BackColor = System.Drawing.Color.Transparent;
-            this.lab760cname.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lab760cname.Location = new System.Drawing.Point(3, 280);
-            this.lab760cname.Name = "lab760cname";
-            this.lab760cname.Size = new System.Drawing.Size(43, 20);
-            this.lab760cname.TabIndex = 159;
-            this.lab760cname.Text = "760C";
-            this.lab760cname.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // lab760e
-            // 
-            this.lab760e.AutoSize = true;
-            this.lab760e.BackColor = System.Drawing.Color.Transparent;
-            this.lab760e.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lab760e.Location = new System.Drawing.Point(310, 320);
-            this.lab760e.Name = "lab760e";
-            this.lab760e.Size = new System.Drawing.Size(38, 20);
-            this.lab760e.TabIndex = 217;
-            this.lab760e.Text = "空";
-            this.lab760e.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // check760d
-            // 
-            this.check760d.BackColor = System.Drawing.Color.Transparent;
-            this.check760d.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.check760d.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.check760d.Location = new System.Drawing.Point(289, 303);
-            this.check760d.Name = "check760d";
-            this.check760d.Size = new System.Drawing.Size(15, 14);
-            this.check760d.TabIndex = 170;
-            this.check760d.UseVisualStyleBackColor = false;
-            // 
-            // labcodename3
-            // 
-            this.labcodename3.AutoSize = true;
-            this.labcodename3.BackColor = System.Drawing.Color.Transparent;
-            this.labcodename3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labcodename3.Location = new System.Drawing.Point(3, 140);
-            this.labcodename3.Name = "labcodename3";
-            this.labcodename3.Size = new System.Drawing.Size(43, 20);
-            this.labcodename3.TabIndex = 280;
-            this.labcodename3.Text = "CODE3";
-            this.labcodename3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // lab760ename
-            // 
-            this.lab760ename.AutoSize = true;
-            this.lab760ename.BackColor = System.Drawing.Color.Transparent;
-            this.lab760ename.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lab760ename.Location = new System.Drawing.Point(3, 320);
-            this.lab760ename.Name = "lab760ename";
-            this.lab760ename.Size = new System.Drawing.Size(43, 20);
-            this.lab760ename.TabIndex = 162;
-            this.lab760ename.Text = "760E";
-            this.lab760ename.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // lab760dname
-            // 
-            this.lab760dname.AutoSize = true;
-            this.lab760dname.BackColor = System.Drawing.Color.Transparent;
-            this.lab760dname.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lab760dname.Location = new System.Drawing.Point(3, 300);
-            this.lab760dname.Name = "lab760dname";
-            this.lab760dname.Size = new System.Drawing.Size(43, 20);
-            this.lab760dname.TabIndex = 160;
-            this.lab760dname.Text = "760D";
-            this.lab760dname.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // com760s
-            // 
-            this.com760s.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.com760s.FormattingEnabled = true;
-            this.com760s.Location = new System.Drawing.Point(52, 243);
-            this.com760s.Name = "com760s";
-            this.com760s.Size = new System.Drawing.Size(231, 20);
-            this.com760s.TabIndex = 153;
-            this.com760s.SelectedIndexChanged += new System.EventHandler(this.com760s_SelectedIndexChanged);
-            // 
-            // check760e
-            // 
-            this.check760e.BackColor = System.Drawing.Color.Transparent;
-            this.check760e.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.check760e.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.check760e.Location = new System.Drawing.Point(289, 323);
-            this.check760e.Name = "check760e";
-            this.check760e.Size = new System.Drawing.Size(15, 14);
-            this.check760e.TabIndex = 171;
-            this.check760e.UseVisualStyleBackColor = false;
-            // 
-            // com760e
-            // 
-            this.com760e.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.com760e.FormattingEnabled = true;
-            this.com760e.Location = new System.Drawing.Point(52, 323);
-            this.com760e.Name = "com760e";
-            this.com760e.Size = new System.Drawing.Size(231, 20);
-            this.com760e.TabIndex = 161;
-            this.com760e.SelectedIndexChanged += new System.EventHandler(this.com760e_SelectedIndexChanged);
-            // 
-            // com760b
-            // 
-            this.com760b.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.com760b.FormattingEnabled = true;
-            this.com760b.Location = new System.Drawing.Point(52, 263);
-            this.com760b.Name = "com760b";
-            this.com760b.Size = new System.Drawing.Size(231, 20);
-            this.com760b.TabIndex = 154;
-            this.com760b.SelectedIndexChanged += new System.EventHandler(this.com760b_SelectedIndexChanged);
-            // 
-            // lab760uxcname
-            // 
-            this.lab760uxcname.AutoSize = true;
-            this.lab760uxcname.BackColor = System.Drawing.Color.Transparent;
-            this.lab760uxcname.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lab760uxcname.Location = new System.Drawing.Point(3, 340);
-            this.lab760uxcname.Name = "lab760uxcname";
-            this.lab760uxcname.Size = new System.Drawing.Size(43, 20);
-            this.lab760uxcname.TabIndex = 237;
-            this.lab760uxcname.Text = "UXC";
-            this.lab760uxcname.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // comuxc
-            // 
-            this.comuxc.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.comuxc.FormattingEnabled = true;
-            this.comuxc.Location = new System.Drawing.Point(52, 343);
-            this.comuxc.Name = "comuxc";
-            this.comuxc.Size = new System.Drawing.Size(231, 20);
-            this.comuxc.TabIndex = 236;
-            this.comuxc.SelectedIndexChanged += new System.EventHandler(this.comuxc_SelectedIndexChanged);
-            // 
-            // com760c
-            // 
-            this.com760c.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.com760c.FormattingEnabled = true;
-            this.com760c.Location = new System.Drawing.Point(52, 283);
-            this.com760c.Name = "com760c";
-            this.com760c.Size = new System.Drawing.Size(231, 20);
-            this.com760c.TabIndex = 155;
-            this.com760c.SelectedIndexChanged += new System.EventHandler(this.com760c_SelectedIndexChanged);
-            // 
-            // checkuxc
-            // 
-            this.checkuxc.BackColor = System.Drawing.Color.Transparent;
-            this.checkuxc.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkuxc.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.checkuxc.Location = new System.Drawing.Point(289, 343);
-            this.checkuxc.Name = "checkuxc";
-            this.checkuxc.Size = new System.Drawing.Size(15, 14);
-            this.checkuxc.TabIndex = 238;
-            this.checkuxc.UseVisualStyleBackColor = false;
-            // 
-            // com760d
-            // 
-            this.com760d.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.com760d.FormattingEnabled = true;
-            this.com760d.Location = new System.Drawing.Point(52, 303);
-            this.com760d.Name = "com760d";
-            this.com760d.Size = new System.Drawing.Size(231, 20);
-            this.com760d.TabIndex = 156;
-            this.com760d.SelectedIndexChanged += new System.EventHandler(this.com760d_SelectedIndexChanged);
-            // 
-            // labuxc
-            // 
-            this.labuxc.AutoSize = true;
-            this.labuxc.BackColor = System.Drawing.Color.Transparent;
-            this.labuxc.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labuxc.Location = new System.Drawing.Point(310, 340);
-            this.labuxc.Name = "labuxc";
-            this.labuxc.Size = new System.Drawing.Size(38, 20);
-            this.labuxc.TabIndex = 239;
-            this.labuxc.Text = "空";
-            this.labuxc.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // labcodename
-            // 
-            this.labcodename.AutoSize = true;
-            this.labcodename.BackColor = System.Drawing.Color.Transparent;
-            this.labcodename.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labcodename.Location = new System.Drawing.Point(3, 100);
-            this.labcodename.Name = "labcodename";
-            this.labcodename.Size = new System.Drawing.Size(43, 20);
-            this.labcodename.TabIndex = 137;
-            this.labcodename.Text = "CODE";
-            this.labcodename.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // comcode3
-            // 
-            this.comcode3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.comcode3.FormattingEnabled = true;
-            this.comcode3.Location = new System.Drawing.Point(52, 143);
-            this.comcode3.Name = "comcode3";
-            this.comcode3.Size = new System.Drawing.Size(231, 20);
-            this.comcode3.TabIndex = 279;
-            this.comcode3.SelectedIndexChanged += new System.EventHandler(this.comcode3_SelectedIndexChanged);
-            // 
-            // labnmsname
-            // 
-            this.labnmsname.AutoSize = true;
-            this.labnmsname.BackColor = System.Drawing.Color.Transparent;
-            this.labnmsname.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labnmsname.Location = new System.Drawing.Point(3, 200);
-            this.labnmsname.Name = "labnmsname";
-            this.labnmsname.Size = new System.Drawing.Size(43, 20);
-            this.labnmsname.TabIndex = 138;
-            this.labnmsname.Text = "NMS";
-            this.labnmsname.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // com7610
-            // 
-            this.com7610.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.com7610.FormattingEnabled = true;
-            this.com7610.Location = new System.Drawing.Point(52, 363);
-            this.com7610.Name = "com7610";
-            this.com7610.Size = new System.Drawing.Size(231, 20);
-            this.com7610.TabIndex = 250;
-            this.com7610.SelectedIndexChanged += new System.EventHandler(this.com7610_SelectedIndexChanged);
-            // 
-            // lab7610name
-            // 
-            this.lab7610name.AutoSize = true;
-            this.lab7610name.BackColor = System.Drawing.Color.Transparent;
-            this.lab7610name.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lab7610name.Location = new System.Drawing.Point(3, 360);
-            this.lab7610name.Name = "lab7610name";
-            this.lab7610name.Size = new System.Drawing.Size(43, 20);
-            this.lab7610name.TabIndex = 252;
-            this.lab7610name.Text = "7610";
-            this.lab7610name.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // checkcode3
-            // 
-            this.checkcode3.BackColor = System.Drawing.Color.Transparent;
-            this.checkcode3.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkcode3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.checkcode3.Location = new System.Drawing.Point(289, 143);
-            this.checkcode3.Name = "checkcode3";
-            this.checkcode3.Size = new System.Drawing.Size(15, 14);
-            this.checkcode3.TabIndex = 281;
-            this.checkcode3.UseVisualStyleBackColor = false;
-            // 
-            // labswname
-            // 
-            this.labswname.AutoSize = true;
-            this.labswname.BackColor = System.Drawing.Color.Transparent;
-            this.labswname.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labswname.Location = new System.Drawing.Point(3, 220);
-            this.labswname.Name = "labswname";
-            this.labswname.Size = new System.Drawing.Size(43, 20);
-            this.labswname.TabIndex = 139;
-            this.labswname.Text = "SW-A/B";
-            this.labswname.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // labcode3
-            // 
-            this.labcode3.AutoSize = true;
-            this.labcode3.BackColor = System.Drawing.Color.Transparent;
-            this.labcode3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labcode3.Location = new System.Drawing.Point(310, 140);
-            this.labcode3.Name = "labcode3";
-            this.labcode3.Size = new System.Drawing.Size(38, 20);
-            this.labcode3.TabIndex = 282;
-            this.labcode3.Text = "空";
-            this.labcode3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // labapp2name
-            // 
-            this.labapp2name.AutoSize = true;
-            this.labapp2name.BackColor = System.Drawing.Color.Transparent;
-            this.labapp2name.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labapp2name.Location = new System.Drawing.Point(3, 80);
-            this.labapp2name.Name = "labapp2name";
-            this.labapp2name.Size = new System.Drawing.Size(43, 20);
-            this.labapp2name.TabIndex = 288;
-            this.labapp2name.Text = "APP2";
-            this.labapp2name.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // check7610
-            // 
-            this.check7610.BackColor = System.Drawing.Color.Transparent;
-            this.check7610.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.check7610.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.check7610.Location = new System.Drawing.Point(289, 363);
-            this.check7610.Name = "check7610";
-            this.check7610.Size = new System.Drawing.Size(15, 14);
-            this.check7610.TabIndex = 256;
-            this.check7610.UseVisualStyleBackColor = false;
-            // 
-            // lab7611name
-            // 
-            this.lab7611name.AutoSize = true;
-            this.lab7611name.BackColor = System.Drawing.Color.Transparent;
-            this.lab7611name.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lab7611name.Location = new System.Drawing.Point(3, 380);
-            this.lab7611name.Name = "lab7611name";
-            this.lab7611name.Size = new System.Drawing.Size(43, 20);
-            this.lab7611name.TabIndex = 253;
-            this.lab7611name.Text = "7611";
-            this.lab7611name.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // com7611
-            // 
-            this.com7611.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.com7611.FormattingEnabled = true;
-            this.com7611.Location = new System.Drawing.Point(52, 383);
-            this.com7611.Name = "com7611";
-            this.com7611.Size = new System.Drawing.Size(231, 20);
-            this.com7611.TabIndex = 251;
-            this.com7611.SelectedIndexChanged += new System.EventHandler(this.com7611_SelectedIndexChanged);
-            // 
-            // comapp2
-            // 
-            this.comapp2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.comapp2.FormattingEnabled = true;
-            this.comapp2.Location = new System.Drawing.Point(52, 83);
-            this.comapp2.Name = "comapp2";
-            this.comapp2.Size = new System.Drawing.Size(231, 20);
-            this.comapp2.TabIndex = 287;
-            this.comapp2.SelectedIndexChanged += new System.EventHandler(this.comapp2_SelectedIndexChanged);
-            // 
-            // checkapp2
-            // 
-            this.checkapp2.BackColor = System.Drawing.Color.Transparent;
-            this.checkapp2.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkapp2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.checkapp2.Location = new System.Drawing.Point(289, 83);
-            this.checkapp2.Name = "checkapp2";
-            this.checkapp2.Size = new System.Drawing.Size(15, 14);
-            this.checkapp2.TabIndex = 289;
-            this.checkapp2.UseVisualStyleBackColor = true;
-            // 
-            // labapp2
-            // 
-            this.labapp2.AutoSize = true;
-            this.labapp2.BackColor = System.Drawing.Color.Transparent;
-            this.labapp2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labapp2.Location = new System.Drawing.Point(310, 80);
-            this.labapp2.Name = "labapp2";
-            this.labapp2.Size = new System.Drawing.Size(38, 20);
-            this.labapp2.TabIndex = 290;
-            this.labapp2.Text = "空";
-            this.labapp2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // check7611
-            // 
-            this.check7611.BackColor = System.Drawing.Color.Transparent;
-            this.check7611.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.check7611.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.check7611.Location = new System.Drawing.Point(289, 383);
-            this.check7611.Name = "check7611";
-            this.check7611.Size = new System.Drawing.Size(15, 14);
-            this.check7611.TabIndex = 257;
-            this.check7611.UseVisualStyleBackColor = false;
-            // 
-            // lab7610
-            // 
-            this.lab7610.AutoSize = true;
-            this.lab7610.BackColor = System.Drawing.Color.Transparent;
-            this.lab7610.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lab7610.Location = new System.Drawing.Point(310, 360);
-            this.lab7610.Name = "lab7610";
-            this.lab7610.Size = new System.Drawing.Size(38, 20);
-            this.lab7610.TabIndex = 259;
-            this.lab7610.Text = "空";
-            this.lab7610.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // comsw
-            // 
-            this.comsw.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.comsw.FormattingEnabled = true;
-            this.comsw.Location = new System.Drawing.Point(52, 223);
-            this.comsw.Name = "comsw";
-            this.comsw.Size = new System.Drawing.Size(231, 20);
-            this.comsw.TabIndex = 135;
-            this.comsw.SelectedIndexChanged += new System.EventHandler(this.comsw_SelectedIndexChanged);
-            // 
-            // lab7612name
-            // 
-            this.lab7612name.AutoSize = true;
-            this.lab7612name.BackColor = System.Drawing.Color.Transparent;
-            this.lab7612name.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lab7612name.Location = new System.Drawing.Point(3, 400);
-            this.lab7612name.Name = "lab7612name";
-            this.lab7612name.Size = new System.Drawing.Size(43, 20);
-            this.lab7612name.TabIndex = 255;
-            this.lab7612name.Text = "7612";
-            this.lab7612name.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // com7612
-            // 
-            this.com7612.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.com7612.FormattingEnabled = true;
-            this.com7612.Location = new System.Drawing.Point(52, 403);
-            this.com7612.Name = "com7612";
-            this.com7612.Size = new System.Drawing.Size(231, 20);
-            this.com7612.TabIndex = 254;
-            this.com7612.SelectedIndexChanged += new System.EventHandler(this.com7612_SelectedIndexChanged);
-            // 
-            // lab7611
-            // 
-            this.lab7611.AutoSize = true;
-            this.lab7611.BackColor = System.Drawing.Color.Transparent;
-            this.lab7611.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lab7611.Location = new System.Drawing.Point(310, 380);
-            this.lab7611.Name = "lab7611";
-            this.lab7611.Size = new System.Drawing.Size(38, 20);
-            this.lab7611.TabIndex = 260;
-            this.lab7611.Text = "空";
-            this.lab7611.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // check7612
-            // 
-            this.check7612.BackColor = System.Drawing.Color.Transparent;
-            this.check7612.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.check7612.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.check7612.Location = new System.Drawing.Point(289, 403);
-            this.check7612.Name = "check7612";
-            this.check7612.Size = new System.Drawing.Size(15, 14);
-            this.check7612.TabIndex = 258;
-            this.check7612.UseVisualStyleBackColor = false;
-            // 
-            // comnms
-            // 
-            this.comnms.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.comnms.FormattingEnabled = true;
-            this.comnms.Location = new System.Drawing.Point(52, 203);
-            this.comnms.Name = "comnms";
-            this.comnms.Size = new System.Drawing.Size(231, 20);
-            this.comnms.TabIndex = 134;
-            this.comnms.SelectedIndexChanged += new System.EventHandler(this.comnms_SelectedIndexChanged);
-            // 
-            // lab7612
-            // 
-            this.lab7612.AutoSize = true;
-            this.lab7612.BackColor = System.Drawing.Color.Transparent;
-            this.lab7612.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lab7612.Location = new System.Drawing.Point(310, 400);
-            this.lab7612.Name = "lab7612";
-            this.lab7612.Size = new System.Drawing.Size(38, 20);
-            this.lab7612.TabIndex = 261;
-            this.lab7612.Text = "空";
-            this.lab7612.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // labapp
-            // 
-            this.labapp.AutoSize = true;
-            this.labapp.BackColor = System.Drawing.Color.Transparent;
-            this.labapp.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labapp.Location = new System.Drawing.Point(310, 60);
-            this.labapp.Name = "labapp";
-            this.labapp.Size = new System.Drawing.Size(38, 20);
-            this.labapp.TabIndex = 208;
-            this.labapp.Text = "空";
-            this.labapp.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // checkapp
-            // 
-            this.checkapp.BackColor = System.Drawing.Color.Transparent;
-            this.checkapp.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkapp.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.checkapp.Location = new System.Drawing.Point(289, 63);
-            this.checkapp.Name = "checkapp";
-            this.checkapp.Size = new System.Drawing.Size(15, 14);
-            this.checkapp.TabIndex = 163;
-            this.checkapp.UseVisualStyleBackColor = true;
-            // 
-            // lab7613name
-            // 
-            this.lab7613name.AutoSize = true;
-            this.lab7613name.BackColor = System.Drawing.Color.Transparent;
-            this.lab7613name.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lab7613name.Location = new System.Drawing.Point(3, 420);
-            this.lab7613name.Name = "lab7613name";
-            this.lab7613name.Size = new System.Drawing.Size(43, 20);
-            this.lab7613name.TabIndex = 263;
-            this.lab7613name.Text = "7613";
-            this.lab7613name.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // com7613
-            // 
-            this.com7613.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.com7613.FormattingEnabled = true;
-            this.com7613.Location = new System.Drawing.Point(52, 423);
-            this.com7613.Name = "com7613";
-            this.com7613.Size = new System.Drawing.Size(231, 20);
-            this.com7613.TabIndex = 262;
-            this.com7613.SelectedIndexChanged += new System.EventHandler(this.com7613_SelectedIndexChanged);
-            // 
-            // comapp
-            // 
-            this.comapp.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.comapp.FormattingEnabled = true;
-            this.comapp.Location = new System.Drawing.Point(52, 63);
-            this.comapp.Name = "comapp";
-            this.comapp.Size = new System.Drawing.Size(231, 20);
-            this.comapp.TabIndex = 132;
-            this.comapp.SelectedIndexChanged += new System.EventHandler(this.comapp_SelectedIndexChanged);
-            // 
-            // check7613
-            // 
-            this.check7613.BackColor = System.Drawing.Color.Transparent;
-            this.check7613.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.check7613.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.check7613.Location = new System.Drawing.Point(289, 423);
-            this.check7613.Name = "check7613";
-            this.check7613.Size = new System.Drawing.Size(15, 14);
-            this.check7613.TabIndex = 264;
-            this.check7613.UseVisualStyleBackColor = false;
-            // 
-            // labappname
-            // 
-            this.labappname.AutoSize = true;
-            this.labappname.BackColor = System.Drawing.Color.Transparent;
-            this.labappname.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labappname.Location = new System.Drawing.Point(3, 60);
-            this.labappname.Name = "labappname";
-            this.labappname.Size = new System.Drawing.Size(43, 20);
-            this.labappname.TabIndex = 136;
-            this.labappname.Text = "APP";
-            this.labappname.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // lab7613
-            // 
-            this.lab7613.AutoSize = true;
-            this.lab7613.BackColor = System.Drawing.Color.Transparent;
-            this.lab7613.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lab7613.Location = new System.Drawing.Point(310, 420);
-            this.lab7613.Name = "lab7613";
-            this.lab7613.Size = new System.Drawing.Size(38, 20);
-            this.lab7613.TabIndex = 265;
-            this.lab7613.Text = "空";
-            this.lab7613.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // labdb
-            // 
-            this.labdb.AutoSize = true;
-            this.labdb.BackColor = System.Drawing.Color.Transparent;
-            this.labdb.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labdb.Location = new System.Drawing.Point(310, 40);
-            this.labdb.Name = "labdb";
-            this.labdb.Size = new System.Drawing.Size(38, 20);
-            this.labdb.TabIndex = 226;
-            this.labdb.Text = "空";
-            this.labdb.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // checkdb
-            // 
-            this.checkdb.BackColor = System.Drawing.Color.Transparent;
-            this.checkdb.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkdb.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.checkdb.Location = new System.Drawing.Point(289, 43);
-            this.checkdb.Name = "checkdb";
-            this.checkdb.Size = new System.Drawing.Size(15, 14);
-            this.checkdb.TabIndex = 223;
-            this.checkdb.UseVisualStyleBackColor = false;
-            // 
-            // lab7614name
-            // 
-            this.lab7614name.AutoSize = true;
-            this.lab7614name.BackColor = System.Drawing.Color.Transparent;
-            this.lab7614name.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lab7614name.Location = new System.Drawing.Point(3, 440);
-            this.lab7614name.Name = "lab7614name";
-            this.lab7614name.Size = new System.Drawing.Size(43, 20);
-            this.lab7614name.TabIndex = 267;
-            this.lab7614name.Text = "7614";
-            this.lab7614name.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // com7614
-            // 
-            this.com7614.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.com7614.FormattingEnabled = true;
-            this.com7614.Location = new System.Drawing.Point(52, 443);
-            this.com7614.Name = "com7614";
-            this.com7614.Size = new System.Drawing.Size(231, 20);
-            this.com7614.TabIndex = 266;
-            this.com7614.SelectedIndexChanged += new System.EventHandler(this.com7614_SelectedIndexChanged);
-            // 
-            // comdb
-            // 
-            this.comdb.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.comdb.FormattingEnabled = true;
-            this.comdb.Location = new System.Drawing.Point(52, 43);
-            this.comdb.Name = "comdb";
-            this.comdb.Size = new System.Drawing.Size(231, 20);
-            this.comdb.TabIndex = 146;
-            this.comdb.SelectedIndexChanged += new System.EventHandler(this.comdb_SelectedIndexChanged);
-            // 
-            // check7614
-            // 
-            this.check7614.BackColor = System.Drawing.Color.Transparent;
-            this.check7614.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.check7614.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.check7614.Location = new System.Drawing.Point(289, 443);
-            this.check7614.Name = "check7614";
-            this.check7614.Size = new System.Drawing.Size(15, 14);
-            this.check7614.TabIndex = 268;
-            this.check7614.UseVisualStyleBackColor = false;
-            // 
-            // labsdnname
-            // 
-            this.labsdnname.AutoSize = true;
-            this.labsdnname.BackColor = System.Drawing.Color.Transparent;
-            this.labsdnname.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labsdnname.Location = new System.Drawing.Point(3, 180);
-            this.labsdnname.Name = "labsdnname";
-            this.labsdnname.Size = new System.Drawing.Size(43, 20);
-            this.labsdnname.TabIndex = 284;
-            this.labsdnname.Text = "SDN";
-            this.labsdnname.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // lab7614
-            // 
-            this.lab7614.AutoSize = true;
-            this.lab7614.BackColor = System.Drawing.Color.Transparent;
-            this.lab7614.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lab7614.Location = new System.Drawing.Point(310, 440);
-            this.lab7614.Name = "lab7614";
-            this.lab7614.Size = new System.Drawing.Size(38, 20);
-            this.lab7614.TabIndex = 269;
-            this.lab7614.Text = "空";
-            this.lab7614.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // labdbname
-            // 
-            this.labdbname.AutoSize = true;
-            this.labdbname.BackColor = System.Drawing.Color.Transparent;
-            this.labdbname.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labdbname.Location = new System.Drawing.Point(3, 40);
-            this.labdbname.Name = "labdbname";
-            this.labdbname.Size = new System.Drawing.Size(43, 20);
-            this.labdbname.TabIndex = 148;
-            this.labdbname.Text = "DB";
-            this.labdbname.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // comsdn
-            // 
-            this.comsdn.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.comsdn.FormattingEnabled = true;
-            this.comsdn.Location = new System.Drawing.Point(52, 183);
-            this.comsdn.Name = "comsdn";
-            this.comsdn.Size = new System.Drawing.Size(231, 20);
-            this.comsdn.TabIndex = 283;
-            this.comsdn.SelectedIndexChanged += new System.EventHandler(this.comsdn_SelectedIndexChanged);
-            // 
-            // lab7616name
-            // 
-            this.lab7616name.AutoSize = true;
-            this.lab7616name.BackColor = System.Drawing.Color.Transparent;
-            this.lab7616name.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lab7616name.Location = new System.Drawing.Point(3, 480);
-            this.lab7616name.Name = "lab7616name";
-            this.lab7616name.Size = new System.Drawing.Size(43, 20);
-            this.lab7616name.TabIndex = 271;
-            this.lab7616name.Text = "7616";
-            this.lab7616name.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // com7616
-            // 
-            this.com7616.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.com7616.FormattingEnabled = true;
-            this.com7616.Location = new System.Drawing.Point(52, 483);
-            this.com7616.Name = "com7616";
-            this.com7616.Size = new System.Drawing.Size(231, 20);
-            this.com7616.TabIndex = 270;
-            this.com7616.SelectedIndexChanged += new System.EventHandler(this.com7616_SelectedIndexChanged);
-            // 
-            // checksdn
-            // 
-            this.checksdn.BackColor = System.Drawing.Color.Transparent;
-            this.checksdn.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checksdn.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.checksdn.Location = new System.Drawing.Point(289, 183);
-            this.checksdn.Name = "checksdn";
-            this.checksdn.Size = new System.Drawing.Size(15, 14);
-            this.checksdn.TabIndex = 285;
-            this.checksdn.UseVisualStyleBackColor = false;
-            // 
-            // labsysfilename
-            // 
-            this.labsysfilename.AutoSize = true;
-            this.labsysfilename.BackColor = System.Drawing.Color.Transparent;
-            this.labsysfilename.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labsysfilename.Location = new System.Drawing.Point(3, 500);
-            this.labsysfilename.Name = "labsysfilename";
-            this.labsysfilename.Size = new System.Drawing.Size(43, 20);
-            this.labsysfilename.TabIndex = 173;
-            this.labsysfilename.Text = "SYSFILE";
-            this.labsysfilename.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // check7616
-            // 
-            this.check7616.BackColor = System.Drawing.Color.Transparent;
-            this.check7616.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.check7616.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.check7616.Location = new System.Drawing.Point(289, 483);
-            this.check7616.Name = "check7616";
-            this.check7616.Size = new System.Drawing.Size(15, 14);
-            this.check7616.TabIndex = 272;
-            this.check7616.UseVisualStyleBackColor = false;
-            // 
-            // checksysfile
-            // 
-            this.checksysfile.BackColor = System.Drawing.Color.Transparent;
-            this.checksysfile.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checksysfile.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.checksysfile.Location = new System.Drawing.Point(289, 503);
-            this.checksysfile.Name = "checksysfile";
-            this.checksysfile.Size = new System.Drawing.Size(15, 14);
-            this.checksysfile.TabIndex = 174;
-            this.checksysfile.UseVisualStyleBackColor = false;
-            // 
-            // labsdn
-            // 
-            this.labsdn.AutoSize = true;
-            this.labsdn.BackColor = System.Drawing.Color.Transparent;
-            this.labsdn.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labsdn.Location = new System.Drawing.Point(310, 180);
-            this.labsdn.Name = "labsdn";
-            this.labsdn.Size = new System.Drawing.Size(38, 20);
-            this.labsdn.TabIndex = 286;
-            this.labsdn.Text = "空";
-            this.labsdn.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // labsysfile
-            // 
-            this.labsysfile.AutoSize = true;
-            this.labsysfile.BackColor = System.Drawing.Color.Transparent;
-            this.labsysfile.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labsysfile.Location = new System.Drawing.Point(310, 500);
-            this.labsysfile.Name = "labsysfile";
-            this.labsysfile.Size = new System.Drawing.Size(38, 20);
-            this.labsysfile.TabIndex = 218;
-            this.labsysfile.Text = "空";
-            this.labsysfile.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // comsysfile
-            // 
-            this.comsysfile.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.comsysfile.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.comsysfile.FormattingEnabled = true;
-            this.comsysfile.Location = new System.Drawing.Point(52, 503);
-            this.comsysfile.Name = "comsysfile";
-            this.comsysfile.Size = new System.Drawing.Size(231, 20);
-            this.comsysfile.TabIndex = 172;
-            this.comsysfile.SelectedIndexChanged += new System.EventHandler(this.comsysfile_SelectedIndexChanged);
-            // 
-            // lab7616
-            // 
-            this.lab7616.AutoSize = true;
-            this.lab7616.BackColor = System.Drawing.Color.Transparent;
-            this.lab7616.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lab7616.Location = new System.Drawing.Point(310, 480);
-            this.lab7616.Name = "lab7616";
-            this.lab7616.Size = new System.Drawing.Size(38, 20);
-            this.lab7616.TabIndex = 273;
-            this.lab7616.Text = "空";
-            this.lab7616.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // labslotconfig
-            // 
-            this.labslotconfig.AutoSize = true;
-            this.labslotconfig.BackColor = System.Drawing.Color.Transparent;
-            this.labslotconfig.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labslotconfig.Location = new System.Drawing.Point(310, 20);
-            this.labslotconfig.Name = "labslotconfig";
-            this.labslotconfig.Size = new System.Drawing.Size(38, 20);
-            this.labslotconfig.TabIndex = 225;
-            this.labslotconfig.Text = "空";
-            this.labslotconfig.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // checkslotconfig
-            // 
-            this.checkslotconfig.BackColor = System.Drawing.Color.Transparent;
-            this.checkslotconfig.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkslotconfig.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.checkslotconfig.Location = new System.Drawing.Point(289, 23);
-            this.checkslotconfig.Name = "checkslotconfig";
-            this.checkslotconfig.Size = new System.Drawing.Size(15, 14);
-            this.checkslotconfig.TabIndex = 222;
-            this.checkslotconfig.UseVisualStyleBackColor = false;
-            // 
-            // comslotconfig
-            // 
-            this.comslotconfig.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.comslotconfig.FormattingEnabled = true;
-            this.comslotconfig.Location = new System.Drawing.Point(52, 23);
-            this.comslotconfig.Name = "comslotconfig";
-            this.comslotconfig.Size = new System.Drawing.Size(231, 20);
-            this.comslotconfig.TabIndex = 147;
-            this.comslotconfig.SelectedIndexChanged += new System.EventHandler(this.comslotconfig_SelectedIndexChanged);
-            // 
-            // label21
-            // 
-            this.label21.AutoSize = true;
-            this.label21.BackColor = System.Drawing.Color.Transparent;
-            this.label21.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label21.Location = new System.Drawing.Point(3, 520);
-            this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(43, 20);
-            this.label21.TabIndex = 296;
-            this.label21.Text = "VOSS";
-            this.label21.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // labslotname
-            // 
-            this.labslotname.BackColor = System.Drawing.Color.Transparent;
-            this.labslotname.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labslotname.Location = new System.Drawing.Point(3, 20);
-            this.labslotname.Name = "labslotname";
-            this.labslotname.Size = new System.Drawing.Size(43, 20);
-            this.labslotname.TabIndex = 150;
-            this.labslotname.Text = "Slot";
-            this.labslotname.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // checkvoss
-            // 
-            this.checkvoss.BackColor = System.Drawing.Color.Transparent;
-            this.checkvoss.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkvoss.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.checkvoss.Location = new System.Drawing.Point(289, 523);
-            this.checkvoss.Name = "checkvoss";
-            this.checkvoss.Size = new System.Drawing.Size(15, 14);
-            this.checkvoss.TabIndex = 297;
-            this.checkvoss.UseVisualStyleBackColor = false;
-            // 
-            // comvoss
-            // 
-            this.comvoss.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.comvoss.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.comvoss.FormattingEnabled = true;
-            this.comvoss.Location = new System.Drawing.Point(52, 523);
-            this.comvoss.Name = "comvoss";
-            this.comvoss.Size = new System.Drawing.Size(231, 20);
-            this.comvoss.TabIndex = 295;
-            this.comvoss.SelectedIndexChanged += new System.EventHandler(this.comvoss_SelectedIndexChanged);
-            // 
-            // labvoss
-            // 
-            this.labvoss.AutoSize = true;
-            this.labvoss.BackColor = System.Drawing.Color.Transparent;
-            this.labvoss.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labvoss.Location = new System.Drawing.Point(310, 520);
-            this.labvoss.Name = "labvoss";
-            this.labvoss.Size = new System.Drawing.Size(38, 20);
-            this.labvoss.TabIndex = 298;
-            this.labvoss.Text = "空";
-            this.labvoss.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // labconfig
-            // 
-            this.labconfig.AutoSize = true;
-            this.labconfig.BackColor = System.Drawing.Color.Transparent;
-            this.labconfig.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labconfig.Location = new System.Drawing.Point(310, 0);
-            this.labconfig.Name = "labconfig";
-            this.labconfig.Size = new System.Drawing.Size(38, 20);
-            this.labconfig.TabIndex = 224;
-            this.labconfig.Text = "空";
-            this.labconfig.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // checkconfig
-            // 
-            this.checkconfig.BackColor = System.Drawing.Color.Transparent;
-            this.checkconfig.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkconfig.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.checkconfig.Location = new System.Drawing.Point(289, 3);
-            this.checkconfig.Name = "checkconfig";
-            this.checkconfig.Size = new System.Drawing.Size(15, 14);
-            this.checkconfig.TabIndex = 221;
-            this.checkconfig.UseVisualStyleBackColor = true;
-            // 
-            // comconfig
-            // 
-            this.comconfig.BackColor = System.Drawing.SystemColors.Window;
-            this.comconfig.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.comconfig.FormattingEnabled = true;
-            this.comconfig.Location = new System.Drawing.Point(52, 3);
-            this.comconfig.Name = "comconfig";
-            this.comconfig.Size = new System.Drawing.Size(231, 20);
-            this.comconfig.TabIndex = 145;
-            this.comconfig.SelectedIndexChanged += new System.EventHandler(this.comconfig_SelectedIndexChanged);
-            // 
-            // label23
-            // 
-            this.label23.AutoSize = true;
-            this.label23.BackColor = System.Drawing.Color.Transparent;
-            this.label23.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label23.Location = new System.Drawing.Point(3, 540);
-            this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(43, 20);
-            this.label23.TabIndex = 300;
-            this.label23.Text = "REBOOTOS";
-            this.label23.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // labcodename4
-            // 
-            this.labcodename4.AutoSize = true;
-            this.labcodename4.BackColor = System.Drawing.Color.Transparent;
-            this.labcodename4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labcodename4.Location = new System.Drawing.Point(3, 160);
-            this.labcodename4.Name = "labcodename4";
-            this.labcodename4.Size = new System.Drawing.Size(43, 20);
-            this.labcodename4.TabIndex = 308;
-            this.labcodename4.Text = "CODE4";
-            this.labcodename4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // checkrebootos
-            // 
-            this.checkrebootos.BackColor = System.Drawing.Color.Transparent;
-            this.checkrebootos.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkrebootos.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.checkrebootos.Location = new System.Drawing.Point(289, 543);
-            this.checkrebootos.Name = "checkrebootos";
-            this.checkrebootos.Size = new System.Drawing.Size(15, 14);
-            this.checkrebootos.TabIndex = 301;
-            this.checkrebootos.UseVisualStyleBackColor = false;
-            // 
-            // labrebootos
-            // 
-            this.labrebootos.AutoSize = true;
-            this.labrebootos.BackColor = System.Drawing.Color.Transparent;
-            this.labrebootos.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labrebootos.Location = new System.Drawing.Point(310, 540);
-            this.labrebootos.Name = "labrebootos";
-            this.labrebootos.Size = new System.Drawing.Size(38, 20);
-            this.labrebootos.TabIndex = 302;
-            this.labrebootos.Text = "空";
-            this.labrebootos.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // labconfigname
-            // 
-            this.labconfigname.AutoSize = true;
-            this.labconfigname.BackColor = System.Drawing.Color.Transparent;
-            this.labconfigname.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labconfigname.Location = new System.Drawing.Point(3, 0);
-            this.labconfigname.Name = "labconfigname";
-            this.labconfigname.Size = new System.Drawing.Size(43, 20);
-            this.labconfigname.TabIndex = 149;
-            this.labconfigname.Text = "Config";
-            this.labconfigname.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // comcode4
-            // 
-            this.comcode4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.comcode4.FormattingEnabled = true;
-            this.comcode4.Location = new System.Drawing.Point(52, 163);
-            this.comcode4.Name = "comcode4";
-            this.comcode4.Size = new System.Drawing.Size(231, 20);
-            this.comcode4.TabIndex = 307;
-            this.comcode4.SelectedIndexChanged += new System.EventHandler(this.comcode4_SelectedIndexChanged);
-            // 
-            // checkcode4
-            // 
-            this.checkcode4.BackColor = System.Drawing.Color.Transparent;
-            this.checkcode4.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkcode4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.checkcode4.Location = new System.Drawing.Point(289, 163);
-            this.checkcode4.Name = "checkcode4";
-            this.checkcode4.Size = new System.Drawing.Size(15, 14);
-            this.checkcode4.TabIndex = 309;
-            this.checkcode4.UseVisualStyleBackColor = false;
-            // 
-            // labflashname
-            // 
-            this.labflashname.AutoSize = true;
-            this.labflashname.BackColor = System.Drawing.Color.Transparent;
-            this.labflashname.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labflashname.Location = new System.Drawing.Point(3, 580);
-            this.labflashname.Name = "labflashname";
-            this.labflashname.Size = new System.Drawing.Size(43, 20);
-            this.labflashname.TabIndex = 202;
-            this.labflashname.Text = "FLASH";
-            this.labflashname.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label26
-            // 
-            this.label26.AutoSize = true;
-            this.label26.BackColor = System.Drawing.Color.Transparent;
-            this.label26.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label26.Location = new System.Drawing.Point(3, 560);
-            this.label26.Name = "label26";
-            this.label26.Size = new System.Drawing.Size(43, 20);
-            this.label26.TabIndex = 304;
-            this.label26.Text = "CPLD";
-            this.label26.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // comflash
-            // 
-            this.comflash.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.comflash.FormattingEnabled = true;
-            this.comflash.Location = new System.Drawing.Point(52, 583);
-            this.comflash.Name = "comflash";
-            this.comflash.Size = new System.Drawing.Size(231, 20);
-            this.comflash.TabIndex = 201;
-            this.comflash.SelectedIndexChanged += new System.EventHandler(this.comflash_SelectedIndexChanged);
-            // 
-            // checkflash
-            // 
-            this.checkflash.BackColor = System.Drawing.Color.Transparent;
-            this.checkflash.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkflash.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.checkflash.Location = new System.Drawing.Point(289, 583);
-            this.checkflash.Name = "checkflash";
-            this.checkflash.Size = new System.Drawing.Size(15, 14);
-            this.checkflash.TabIndex = 203;
-            this.checkflash.UseVisualStyleBackColor = false;
-            // 
-            // labcode4
-            // 
-            this.labcode4.AutoSize = true;
-            this.labcode4.BackColor = System.Drawing.Color.Transparent;
-            this.labcode4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labcode4.Location = new System.Drawing.Point(310, 160);
-            this.labcode4.Name = "labcode4";
-            this.labcode4.Size = new System.Drawing.Size(38, 20);
-            this.labcode4.TabIndex = 310;
-            this.labcode4.Text = "空";
-            this.labcode4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // labyaffsname
-            // 
-            this.labyaffsname.AutoSize = true;
-            this.labyaffsname.BackColor = System.Drawing.Color.Transparent;
-            this.labyaffsname.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labyaffsname.Location = new System.Drawing.Point(3, 600);
-            this.labyaffsname.Name = "labyaffsname";
-            this.labyaffsname.Size = new System.Drawing.Size(43, 20);
-            this.labyaffsname.TabIndex = 205;
-            this.labyaffsname.Text = "YAFFS";
-            this.labyaffsname.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // checkcpld
-            // 
-            this.checkcpld.BackColor = System.Drawing.Color.Transparent;
-            this.checkcpld.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkcpld.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.checkcpld.Location = new System.Drawing.Point(289, 563);
-            this.checkcpld.Name = "checkcpld";
-            this.checkcpld.Size = new System.Drawing.Size(15, 14);
-            this.checkcpld.TabIndex = 305;
-            this.checkcpld.UseVisualStyleBackColor = false;
-            // 
-            // comyaffs
-            // 
-            this.comyaffs.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.comyaffs.FormattingEnabled = true;
-            this.comyaffs.Location = new System.Drawing.Point(52, 603);
-            this.comyaffs.Name = "comyaffs";
-            this.comyaffs.Size = new System.Drawing.Size(231, 20);
-            this.comyaffs.TabIndex = 204;
-            this.comyaffs.SelectedIndexChanged += new System.EventHandler(this.comyaffs_SelectedIndexChanged);
-            // 
-            // checkyaffs
-            // 
-            this.checkyaffs.BackColor = System.Drawing.Color.Transparent;
-            this.checkyaffs.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkyaffs.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.checkyaffs.Location = new System.Drawing.Point(289, 603);
-            this.checkyaffs.Name = "checkyaffs";
-            this.checkyaffs.Size = new System.Drawing.Size(15, 14);
-            this.checkyaffs.TabIndex = 206;
-            this.checkyaffs.UseVisualStyleBackColor = false;
-            // 
-            // comcpld
-            // 
-            this.comcpld.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.comcpld.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.comcpld.FormattingEnabled = true;
-            this.comcpld.Location = new System.Drawing.Point(52, 563);
-            this.comcpld.Name = "comcpld";
-            this.comcpld.Size = new System.Drawing.Size(231, 20);
-            this.comcpld.TabIndex = 303;
-            this.comcpld.SelectedIndexChanged += new System.EventHandler(this.comcplde_SelectedIndexChanged);
-            // 
-            // labflash
-            // 
-            this.labflash.AutoSize = true;
-            this.labflash.BackColor = System.Drawing.Color.Transparent;
-            this.labflash.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labflash.Location = new System.Drawing.Point(310, 580);
-            this.labflash.Name = "labflash";
-            this.labflash.Size = new System.Drawing.Size(38, 20);
-            this.labflash.TabIndex = 219;
-            this.labflash.Text = "空";
-            this.labflash.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // labcpld
-            // 
-            this.labcpld.AutoSize = true;
-            this.labcpld.BackColor = System.Drawing.Color.Transparent;
-            this.labcpld.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labcpld.Location = new System.Drawing.Point(310, 560);
-            this.labcpld.Name = "labcpld";
-            this.labcpld.Size = new System.Drawing.Size(38, 20);
-            this.labcpld.TabIndex = 306;
-            this.labcpld.Text = "空";
-            this.labcpld.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // label24
-            // 
-            this.label24.AutoSize = true;
-            this.label24.BackColor = System.Drawing.Color.Transparent;
-            this.label24.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label24.Location = new System.Drawing.Point(3, 620);
-            this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(43, 20);
-            this.label24.TabIndex = 199;
-            this.label24.Text = "76网管";
-            this.label24.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // labyaffs
-            // 
-            this.labyaffs.AutoSize = true;
-            this.labyaffs.BackColor = System.Drawing.Color.Transparent;
-            this.labyaffs.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labyaffs.Location = new System.Drawing.Point(310, 600);
-            this.labyaffs.Name = "labyaffs";
-            this.labyaffs.Size = new System.Drawing.Size(38, 20);
-            this.labyaffs.TabIndex = 220;
-            this.labyaffs.Text = "空";
-            this.labyaffs.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // tabPageGpn
-            // 
-            this.tabPageGpn.BackColor = System.Drawing.Color.LightBlue;
-            this.tabPageGpn.Controls.Add(this.panel3);
-            this.tabPageGpn.Controls.Add(this.ButCheckFile);
-            this.tabPageGpn.Controls.Add(this.ButLogin);
-            this.tabPageGpn.Controls.Add(this.groupBox12);
-            this.tabPageGpn.Controls.Add(this.butbatchip);
-            this.tabPageGpn.Controls.Add(this.DGVSTATUS);
-            this.tabPageGpn.Controls.Add(this.compingcount);
-            this.tabPageGpn.Controls.Add(this.comip);
-            this.tabPageGpn.Controls.Add(this.butsend);
-            this.tabPageGpn.Controls.Add(this.textDOS);
-            this.tabPageGpn.Controls.Add(this.textcom);
-            this.tabPageGpn.Controls.Add(this.buttbatchupload);
-            this.tabPageGpn.Controls.Add(this.buttbatchdownload);
-            this.tabPageGpn.Location = new System.Drawing.Point(4, 22);
-            this.tabPageGpn.Name = "tabPageGpn";
-            this.tabPageGpn.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageGpn.Size = new System.Drawing.Size(1311, 625);
-            this.tabPageGpn.TabIndex = 0;
-            this.tabPageGpn.Text = "设备升级";
-            this.tabPageGpn.Click += new System.EventHandler(this.tabPageGpn_Click);
-            // 
-            // lab761c
-            // 
-            this.lab761c.AutoSize = true;
-            this.lab761c.Location = new System.Drawing.Point(310, 740);
-            this.lab761c.Name = "lab761c";
-            this.lab761c.Size = new System.Drawing.Size(17, 12);
-            this.lab761c.TabIndex = 330;
-            this.lab761c.Text = "空";
-            this.lab761c.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // com7618
-            // 
-            this.com7618.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.com7618.FormattingEnabled = true;
-            this.com7618.Location = new System.Drawing.Point(52, 663);
-            this.com7618.Name = "com7618";
-            this.com7618.Size = new System.Drawing.Size(231, 20);
-            this.com7618.TabIndex = 331;
-            this.com7618.SelectedIndexChanged += new System.EventHandler(this.com7618_SelectedIndexChanged);
-            // 
-            // com7619
-            // 
-            this.com7619.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.com7619.FormattingEnabled = true;
-            this.com7619.Location = new System.Drawing.Point(52, 683);
-            this.com7619.Name = "com7619";
-            this.com7619.Size = new System.Drawing.Size(231, 20);
-            this.com7619.TabIndex = 332;
-            this.com7619.SelectedIndexChanged += new System.EventHandler(this.com7619_SelectedIndexChanged);
-            // 
-            // com761a
-            // 
-            this.com761a.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.com761a.FormattingEnabled = true;
-            this.com761a.Location = new System.Drawing.Point(52, 703);
-            this.com761a.Name = "com761a";
-            this.com761a.Size = new System.Drawing.Size(231, 20);
-            this.com761a.TabIndex = 333;
-            this.com761a.SelectedIndexChanged += new System.EventHandler(this.com761a_SelectedIndexChanged);
-            // 
-            // com761b
-            // 
-            this.com761b.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.com761b.FormattingEnabled = true;
-            this.com761b.Location = new System.Drawing.Point(52, 723);
-            this.com761b.Name = "com761b";
-            this.com761b.Size = new System.Drawing.Size(231, 20);
-            this.com761b.TabIndex = 334;
-            this.com761b.SelectedIndexChanged += new System.EventHandler(this.com761b_SelectedIndexChanged);
-            // 
-            // com761c
-            // 
-            this.com761c.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.com761c.FormattingEnabled = true;
-            this.com761c.Location = new System.Drawing.Point(52, 743);
-            this.com761c.Name = "com761c";
-            this.com761c.Size = new System.Drawing.Size(231, 20);
-            this.com761c.TabIndex = 335;
-            this.com761c.SelectedIndexChanged += new System.EventHandler(this.com761c_SelectedIndexChanged);
-            // 
-            // check7616c
-            // 
-            this.check7616c.AutoSize = true;
-            this.check7616c.Location = new System.Drawing.Point(289, 643);
-            this.check7616c.Name = "check7616c";
-            this.check7616c.Size = new System.Drawing.Size(15, 14);
-            this.check7616c.TabIndex = 336;
-            this.check7616c.Text = "checkBox1";
-            this.check7616c.UseVisualStyleBackColor = true;
-            // 
-            // check7618
-            // 
-            this.check7618.AutoSize = true;
-            this.check7618.Location = new System.Drawing.Point(289, 663);
-            this.check7618.Name = "check7618";
-            this.check7618.Size = new System.Drawing.Size(15, 14);
-            this.check7618.TabIndex = 337;
-            this.check7618.Text = "checkBox2";
-            this.check7618.UseVisualStyleBackColor = true;
-            // 
-            // check7619
-            // 
-            this.check7619.AutoSize = true;
-            this.check7619.Location = new System.Drawing.Point(289, 683);
-            this.check7619.Name = "check7619";
-            this.check7619.Size = new System.Drawing.Size(15, 14);
-            this.check7619.TabIndex = 338;
-            this.check7619.Text = "checkBox3";
-            this.check7619.UseVisualStyleBackColor = true;
-            // 
-            // check761a
-            // 
-            this.check761a.AutoSize = true;
-            this.check761a.Location = new System.Drawing.Point(289, 703);
-            this.check761a.Name = "check761a";
-            this.check761a.Size = new System.Drawing.Size(15, 14);
-            this.check761a.TabIndex = 339;
-            this.check761a.Text = "checkBox4";
-            this.check761a.UseVisualStyleBackColor = true;
-            // 
-            // check761b
-            // 
-            this.check761b.AutoSize = true;
-            this.check761b.Location = new System.Drawing.Point(289, 723);
-            this.check761b.Name = "check761b";
-            this.check761b.Size = new System.Drawing.Size(15, 14);
-            this.check761b.TabIndex = 340;
-            this.check761b.Text = "checkBox5";
-            this.check761b.UseVisualStyleBackColor = true;
-            // 
-            // check761c
-            // 
-            this.check761c.AutoSize = true;
-            this.check761c.Location = new System.Drawing.Point(289, 743);
-            this.check761c.Name = "check761c";
-            this.check761c.Size = new System.Drawing.Size(15, 14);
-            this.check761c.TabIndex = 341;
-            this.check761c.Text = "checkBox6";
-            this.check761c.UseVisualStyleBackColor = true;
             // 
             // GPN
             // 
@@ -7606,6 +7614,15 @@
             this.groupBox1.PerformLayout();
             this.metroContextMenu.ResumeLayout(false);
             this.tabControlDOS.ResumeLayout(false);
+            this.tabPageGpn.ResumeLayout(false);
+            this.tabPageGpn.PerformLayout();
+            this.panel3.ResumeLayout(false);
+            this.tableLayoutPanel1.ResumeLayout(false);
+            this.tableLayoutPanel1.PerformLayout();
+            this.panel2.ResumeLayout(false);
+            this.groupBox12.ResumeLayout(false);
+            this.groupBox12.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.DGVSTATUS)).EndInit();
             this.tabPageSnmp.ResumeLayout(false);
             this.tabPageSnmp.PerformLayout();
             this.tabPageRemote.ResumeLayout(false);
@@ -7632,15 +7649,6 @@
             this.panel1.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.DGVSTATUS)).EndInit();
-            this.groupBox12.ResumeLayout(false);
-            this.groupBox12.PerformLayout();
-            this.panel3.ResumeLayout(false);
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
-            this.panel2.ResumeLayout(false);
-            this.tabPageGpn.ResumeLayout(false);
-            this.tabPageGpn.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -8140,6 +8148,7 @@
         private System.Windows.Forms.TextBox textcom;
         private System.Windows.Forms.Button buttbatchupload;
         private System.Windows.Forms.Button buttbatchdownload;
+        private System.Windows.Forms.ToolStripMenuItem netconfClient下载DToolStripMenuItem;
     }
 }
 
