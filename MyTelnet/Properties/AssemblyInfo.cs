@@ -7,9 +7,10 @@ using System.Runtime.InteropServices;
 // 与程序集关联的信息。
 [assembly: AssemblyTitle("排故好帮手")]
 [assembly: AssemblyDescription(""
+     + "2022.01.13 支持新7618-c的FPGA版本检查" + "\r\n"
      + "2022.01.06 支持新7618-c的FPGA版本升级" + "\r\n"
     + "2021.10.15 升级支持7615文件" + "\r\n"
-+ "2021.08.04 新增CPLD / VOSS / REBOOTOS文件升级" + "\r\n"
+    + "2021.08.04 新增CPLD / VOSS / REBOOTOS文件升级" + "\r\n"
 + "2021.07.31 新增OTN透传业务故障定位" + "\r\n"
 + "2021.07.25 新增OTN分组业务故障定位" + "\r\n"
 + "2021.07.05 新增EOS业务故障定位" + "\r\n"
@@ -79,4 +80,4 @@ using System.Runtime.InteropServices;
 //      内部版本号
 //      修订号
 //
-[assembly: AssemblyVersion("2022.01.06.02")]
+[assembly: AssemblyVersion("2022.1.6.5")]

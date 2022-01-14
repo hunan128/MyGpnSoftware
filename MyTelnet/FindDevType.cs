@@ -11,11 +11,12 @@ namespace MyGpnSoftware
     class FindDevType
     {
 
-        public static string Finddevtype(string str) {
+        public static string Finddevtype(string str)
+        {
             string[] devtypeall = new string[] {
                 "INVALID(0)",
                 "GPN7600(98)",
-                "GPN7600-III(113)",
+
 "GPN7500(103)",
 "GPN710A(104)",
 "GPN7600M(106)",
@@ -25,6 +26,8 @@ namespace MyGpnSoftware
 "OTP5500-W-I(110)",
 "OTP5500-W-II(111)",
 "OTP5500-W-IV(112)",
+"GPN7600-III(113)",
+"GPN7600-III(115)",
 "UNKNOWN(1000)",
 "OTSA120P(1001)",
 "GFT1501C(1002)",
@@ -156,6 +159,9 @@ namespace MyGpnSoftware
 "GPN720-U1-3-DC48D(2876)",
 "GPN800-DE-NQQD(2878)",
 "GPN800-DE-NQNN(2879)",
+"GPN800-DE-NQNN-M(2884)",
+"GPN800-DX-HNND-M(2885)",
+"GPN800-DX-NNND-M(2886)",
 "MX100-FES2(3000)",
 "TME16FV61(3001)",
 "GPN710-B-4GE4E1-V3(3002)",
@@ -173,7 +179,7 @@ namespace MyGpnSoftware
                     string strRegex = @"([\-\d\w]+)([\(])*";
 
                     Regex r = new Regex(strRegex, RegexOptions.IgnoreCase | RegexOptions.Multiline);
-                    string  m = r.Match(s).Groups[1].Value;
+                    string m = r.Match(s).Groups[1].Value;
                     strr = m;
                 }
             }
@@ -325,12 +331,14 @@ namespace MyGpnSoftware
             //将字符串转换成数组（字符串拼接格式：***,***#***,***#***,***，例如apple,banana#cat,dog#red,black）
             string[] originalRow = original.Split(new string[] { "\r\n" }, StringSplitOptions.None);
             string[] originalColstart = null;
-            int[] originalColstartcount = new int [originalRow.Length];
+            int[] originalColstartcount = new int[originalRow.Length];
 
-            for (int m = 0; m < originalRow.Length; m++) {
+            for (int m = 0; m < originalRow.Length; m++)
+            {
                 originalColstart = Regex.Split(originalRow[m], "\\s+", RegexOptions.IgnoreCase);
-              //  MessageBox.Show(originalColstart.Length.ToString());
-                if (originalColstart != null) {
+                //  MessageBox.Show(originalColstart.Length.ToString());
+                if (originalColstart != null)
+                {
                     originalColstartcount[m] = originalColstart.Length;
 
                 }
@@ -339,7 +347,7 @@ namespace MyGpnSoftware
             list.Sort();
             int min = Convert.ToInt32(list[0]);
             int max = Convert.ToInt32(list[list.Count - 1]);
-          //  MessageBox.Show(max.ToString());
+            //  MessageBox.Show(max.ToString());
 
             string[] originalCol = new string[max]; //string[,]是等长数组，列维度一样，只要取任意一行的列维度即可确定整个二维数组的列维度
             int x = originalRow.Length;

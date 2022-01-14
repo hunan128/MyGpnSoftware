@@ -7093,6 +7093,38 @@ namespace MyGpnSoftware
                 Thread.Sleep(3000);
                 textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " ext-info2 mode=" + mode;
             }
+            if (comotnboardmode.Text.Contains("GSM-UC"))
+            {
+                mode = "34";
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " type " + "GPN7600-V2-OTN-8AT2";
+                butguzhangsend.PerformClick();
+                Thread.Sleep(3000);
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " ext-info2 mode=" + mode;
+            }
+            if (comotnboardmode.Text.Contains("GSM-UXQX"))
+            {
+                mode = "28";
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " type " + "GPN7600-V2-OTN-8AT2";
+                butguzhangsend.PerformClick();
+                Thread.Sleep(3000);
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " ext-info2 mode=" + mode;
+            }
+            if (comotnboardmode.Text.Contains("8AST2集采盒子"))
+            {
+                mode = "33";
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " type " + "GPN7600-V2-OTN-8AT2";
+                butguzhangsend.PerformClick();
+                Thread.Sleep(3000);
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " ext-info2 mode=" + mode;
+            }
+            if (comotnboardmode.Text.Contains("2XT2集采盒子"))
+            {
+                mode = "37";
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " type " + "GPN7600-V2-OTN-8AT2";
+                butguzhangsend.PerformClick();
+                Thread.Sleep(3000);
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " ext-info2 mode=" + mode;
+            }
             if (comotnboardmode.Text.Contains("UCQX"))
             {
                 mode = "GPN7600-UXC_SW";
@@ -15425,7 +15457,7 @@ namespace MyGpnSoftware
                                         {
                                             DGVSTATUS.Rows[i].Cells[header].Value = "同步中240";
 
-                                            if (DGVSTATUS.ColumnCount > 10)
+                                            if (DGVSTATUS.ColumnCount >= 10)
                                             {
                                                 textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 主要影响APP同步升级的板卡有：" + NmsTypeStrCount.ToString() + "块" +
 "需要等待4分钟后继续执行其他操作\r\n"));
@@ -15436,7 +15468,7 @@ namespace MyGpnSoftware
                                         {
                                             DGVSTATUS.Rows[i].Cells[header].Value = "同步中240";
 
-                                            if (DGVSTATUS.ColumnCount > 10)
+                                            if (DGVSTATUS.ColumnCount >= 10)
                                             {
                                                 textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 主要影响APP同步升级的板卡有：" + NmsTypeStrCount.ToString() + "块" +
 "需要等待4分钟后继续执行其他操作\r\n"));
@@ -15447,7 +15479,7 @@ namespace MyGpnSoftware
                                         {
                                             DGVSTATUS.Rows[i].Cells[header].Value = "同步中480";
 
-                                            if (DGVSTATUS.ColumnCount > 10)
+                                            if (DGVSTATUS.ColumnCount >= 10)
                                             {
                                                 textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 主要影响APP同步升级的板卡有：" + (NmsTypeStrCount+SwTypeStrCount).ToString() + "块" +
 "需要等待8分钟后继续执行其他操作\r\n"));
@@ -15457,7 +15489,7 @@ namespace MyGpnSoftware
                                         if (header == "CODE" && NmsTypeStrCount == 2 && ftpCtrlFlagID == "2" )
                                         {
                                             DGVSTATUS.Rows[i].Cells[header].Value = "同步中60";
-                                            if (DGVSTATUS.ColumnCount > 10)
+                                            if (DGVSTATUS.ColumnCount >= 10)
                                             {
                                                 textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 主要影响CODE同步升级的板卡有：" + NmsTypeStrCount.ToString() + "块" +
 "需要等待1分钟后继续执行其他操作\r\n"));
@@ -15467,7 +15499,7 @@ namespace MyGpnSoftware
                                         if (header == "NMS" && NmsTypeStrCount == 2 && ftpCtrlFlagID == "2")
                                         {
                                             DGVSTATUS.Rows[i].Cells[header].Value = "同步中40";
-                                            if (DGVSTATUS.ColumnCount > 10)
+                                            if (DGVSTATUS.ColumnCount >= 10)
                                             {
                                                 textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 主要影响NMS同步升级的板卡有：" + NmsTypeStrCount.ToString() + "块" +
 "需要等待40秒后继续执行其他操作\r\n"));
@@ -15477,7 +15509,7 @@ namespace MyGpnSoftware
                                         if (header.Contains("760") && NmsTypeStrCount == 2 && ftpCtrlFlagID == "2")
                                         {
                                             DGVSTATUS.Rows[i].Cells[header].Value = "同步中20";
-                                            if (DGVSTATUS.ColumnCount > 10)
+                                            if (DGVSTATUS.ColumnCount >= 10)
                                             {
                                                 textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 主要影响OTN同步升级的板卡有：" + NmsTypeStrCount.ToString() + "块" +
 "需要等待20秒后继续执行其他操作\r\n"));
@@ -15487,7 +15519,7 @@ namespace MyGpnSoftware
                                         if (header.Contains("761") && NmsTypeStrCount == 2 && ftpCtrlFlagID == "2")
                                         {
                                             DGVSTATUS.Rows[i].Cells[header].Value = "同步中20";
-                                            if (DGVSTATUS.ColumnCount > 10)
+                                            if (DGVSTATUS.ColumnCount >= 10)
                                             {
                                                 textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 主要影响OTN同步升级的板卡有：" + NmsTypeStrCount.ToString() + "块" +
 "需要等待20秒后继续执行其他操作\r\n"));
@@ -15497,7 +15529,7 @@ namespace MyGpnSoftware
                                         if (header.Contains("UXC") && NmsTypeStrCount == 2 && ftpCtrlFlagID == "2")
                                         {
                                             DGVSTATUS.Rows[i].Cells[header].Value = "同步中20";
-                                            if (DGVSTATUS.ColumnCount > 10)
+                                            if (DGVSTATUS.ColumnCount >= 10)
                                             {
                                                 textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 主要影响OTN同步升级的板卡有：" + NmsTypeStrCount.ToString() + "块" +
 "需要等待20秒后继续执行其他操作\r\n"));
@@ -15508,7 +15540,7 @@ namespace MyGpnSoftware
                                         if (header == "SW" && NmsTypeStrCount == 2 && ftpCtrlFlagID == "2")
                                         {
                                             DGVSTATUS.Rows[i].Cells[header].Value = "同步中20";
-                                            if (DGVSTATUS.ColumnCount > 10)
+                                            if (DGVSTATUS.ColumnCount >= 10)
                                             {
                                                 textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 主要影响SW同步升级的板卡有：" + NmsTypeStrCount.ToString() + "块" +
 "需要等待20秒后继续执行其他操作\r\n"));
@@ -15519,7 +15551,7 @@ namespace MyGpnSoftware
                                         {
                                             DGVSTATUS.Rows[i].Cells[header].Value = "同步中20";
 
-                                            if (DGVSTATUS.ColumnCount > 10)
+                                            if (DGVSTATUS.ColumnCount >= 10)
                                             {
                                                 textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 主要影响Sysfile同步升级的板卡有：" + NmsTypeStrCount.ToString() + "块" +
 "需要等待20秒后继续执行其他操作\r\n"));
@@ -16359,7 +16391,12 @@ namespace MyGpnSoftware
             com7613.Items.Clear();
             com7614.Items.Clear();
             com7616.Items.Clear();
-
+            com7616c.Items.Clear();
+            com7618.Items.Clear();
+            com7619.Items.Clear();
+            com761a.Items.Clear();
+            com761b.Items.Clear();
+            com761c.Items.Clear();
 
 
 
@@ -16453,6 +16490,30 @@ namespace MyGpnSoftware
                 if (com7616.Items.Contains(ContentValue(strSec, "7616")))
                 {
                     com7616.Text = ContentValue(strSec, "7616");
+                }
+                if (com7616c.Items.Contains(ContentValue(strSec, "761c")))
+                {
+                    com761c.Text = ContentValue(strSec, "761c");
+                }
+                if (com7618.Items.Contains(ContentValue(strSec, "7618")))
+                {
+                    com7618.Text = ContentValue(strSec, "7618");
+                }
+                if (com7619.Items.Contains(ContentValue(strSec, "7619")))
+                {
+                    com7619.Text = ContentValue(strSec, "7619");
+                }
+                if (com761a.Items.Contains(ContentValue(strSec, "761a")))
+                {
+                    com761a.Text = ContentValue(strSec, "761a");
+                }
+                if (com761b.Items.Contains(ContentValue(strSec, "761b")))
+                {
+                    com761b.Text = ContentValue(strSec, "761b");
+                }
+                if (com761c.Items.Contains(ContentValue(strSec, "761c")))
+                {
+                    com761c.Text = ContentValue(strSec, "761c");
                 }
                 if (comsysfile.Items.Contains(ContentValue(strSec, "sysfile")))
                 {
@@ -19184,6 +19245,12 @@ namespace MyGpnSoftware
                 { "7613",       "7613.fpga",                    lab7613.Text },
                 { "7614",       "7614.fpga",                    lab7614.Text },
                 { "7616",       "7616.fpga",                    lab7616.Text },
+                { "7616c",      "7616c.fpga" ,                 lab7616c.Text},
+                { "7618",       "7618.fpga",                    lab7618.Text },
+                { "7619",       "7619.fpga",                    lab7619.Text },
+                { "761a",       "761a.fpga",                    lab761a.Text },
+                { "761b",       "761b.fpga",                    lab761b.Text },
+                { "761c",       "761c.fpga",                    lab761c.Text },
                 { "APP2",       "app_code_backup2.bin",         labapp2.Text },
                 { "VOSS",       "voss.sh" ,                     labvoss.Text},
                 { "REBOOTOS",   "rebootos.sh",                  labrebootos.Text },
@@ -19450,6 +19517,12 @@ namespace MyGpnSoftware
                 { "7613",       "7613.fpga",lab7613.Text },
                 { "7614",       "7614.fpga",lab7614.Text },
                 { "7616",       "7616.fpga",lab7616.Text },
+                { "7616c",      "7616c.fpga" ,                 lab7616c.Text},
+                { "7618",       "7618.fpga",                    lab7618.Text },
+                { "7619",       "7619.fpga",                    lab7619.Text },
+                { "761a",       "761a.fpga",                    lab761a.Text },
+                { "761b",       "761b.fpga",                    lab761b.Text },
+                { "761c",       "761c.fpga",                    lab761c.Text },
                 { "APP2",       "app_code_backup2.bin",labapp2.Text },
                 { "VOSS",       "voss.sh" ,labvoss.Text},
                 { "REBOOTOS",   "rebootos.sh",labrebootos.Text },
@@ -19616,6 +19689,9 @@ namespace MyGpnSoftware
         private void netconfClient下载DToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Process.Start("http://hunan128.com/index.php/2021/09/02/netconfclient工具发布/");
+            //string UxcSwNmsTypeStr = "318/318/168/168";
+            //int NmsTypeStrCount = UxcSwNmsTypeStr.Split(new string[] { "168" }, StringSplitOptions.None).Length - 1;
+            //MessageBox.Show(NmsTypeStrCount.ToString());
         }
     }
 }
