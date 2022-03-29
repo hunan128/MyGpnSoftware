@@ -41,6 +41,8 @@ namespace MyGpnSoftware
         public string GPNUSR;
         public string GPNPSD;
         public string GPNPSDEN;
+        public string GPN_New_Login_Password = "greenway";
+        public string GPN_New_Enable_Password = "greenway";
 
 
         //导入Excel表格
@@ -1346,7 +1348,12 @@ namespace MyGpnSoftware
                     ThreadPool.QueueUserWorkItem(new WaitCallback(Checkver), i.ToString());
 
                 }
+                if (obj.ToString() == "ModifyPassword") 
+                {
+                    Thread.Sleep(500);
+                    ThreadPool.QueueUserWorkItem(new WaitCallback(ModifyPassword), i.ToString());
 
+                }
             }
 
 
@@ -2984,11 +2991,14 @@ namespace MyGpnSoftware
 
         private void butcheckver_Click(object sender, EventArgs e)
         {
+
+
             if (dataGridView1.CurrentCell == null)
             {
                 MessageBox.Show("请先导入「网管导出的表格」或「制作IP表」，然后再次尝试");
                 return;
             }
+
             if (dataGridView1.Columns["升级后当前版本"] == null)
             {
 
@@ -2999,7 +3009,6 @@ namespace MyGpnSoftware
                 this.dataGridView1.Columns.Remove("升级后当前版本");
                 this.dataGridView1.Columns.Add("升级后当前版本", "升级后当前版本");
             }
-
             TimeNow = DateTime.Now;
 
             this.timer1.Enabled = true;
@@ -3019,15 +3028,6 @@ namespace MyGpnSoftware
                 IsBackground = true
             };
             bar.Start();
-
-
-
-
-
-
-
-
-
 
 
 
@@ -3369,7 +3369,386 @@ namespace MyGpnSoftware
             //MessageBox.Show("一键保存结束");
 
         }
+        public void ModifyPassword(object obj)
+        {
 
+            int i = int.Parse(obj.ToString());
+            this.dataGridView1.Rows[i].Cells["开始时间"].Value = DateTime.Now.ToString();
+            MySocket mysocket1 = new MySocket();
+            string ip = dataGridView1.Rows[i].Cells["地址"].Value.ToString();
+            Ping ping = new Ping();
+            PingReply pingReply = ping.Send(ip);
+
+            for (int a = 0; a <= 1; a++)
+            {
+                if (pingReply.Status == IPStatus.Success)
+                {
+                    break;
+                }
+                Thread.Sleep(1000);
+                pingReply = ping.Send(ip);
+            }
+            if (pingReply.Status == IPStatus.Success)
+            {
+                this.dataGridView1.Rows[i].Cells["ping测试"].Value = "OK";
+              //  this.dataGridView1.Rows[i].Cells["升级后当前版本"].Value = "初始化";
+
+
+                this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.White;
+
+                bool bo = mysocket1.Connect(ip, "23");
+                if (bo)
+                {
+
+                    mysocket1.SendData(GPNUSR);
+                    for (int a = 0; a <= 1000; a++)
+                    {
+                        string login = mysocket1.ReceiveData(int.Parse(yanshi));
+                        // MessageBox.Show(login);
+                        if (login.Contains("Password:"))
+                        {
+                            mysocket1.SendData(GPNPSD);
+                            break;
+                        }
+                        Thread.Sleep(10);
+                    }
+                    for (int c = 0; c <= 1000; c++)
+                    {
+                        string passd = mysocket1.ReceiveData(int.Parse(yanshi));
+                        //MessageBox.Show(passd);
+                        if (passd.Contains("Error") || passd.Contains("failed") || passd.Contains("Kerberos") || passd.Contains("Bad passwords"))
+                        {
+
+                            //textDOS.AppendText("\r\n" + "用户名或密码错误，请重新输入");
+                            this.dataGridView1.Rows[i].Cells["最终结果"].Value = "Login用户名密码错误";
+                            this.dataGridView1.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString();
+                            this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.Yellow;
+                            lock (sb)
+                            {
+                                int s = int.Parse(toolStripStatusLabelshibai.Text);
+                                s = s + 1;
+                                toolStripStatusLabelshibai.Text = s.ToString();
+                            }
+                            lock (o1)
+                            {
+                                int d = int.Parse(toolStripStatusLabelshengyu.Text);
+                                d = d - 1;
+                                toolStripStatusLabelshengyu.Text = d.ToString();
+
+                                doneCount++;
+
+                            }
+                            return;
+                        }
+                        if (passd.Contains("Password:"))
+                        {
+                            mysocket1.SendData(GPNPSD);
+                        }
+                        if (passd.Contains(">"))
+                        {
+                            //textDOS.AppendText("\r\n" + "用户名密码正确==========================================OK");
+                            mysocket1.SendData("enable");
+                            for (int b = 0; b <= 1000; b++)
+                            {
+                                string pass = mysocket1.ReceiveData(int.Parse(yanshi));
+                                if (pass.Contains("Pas"))
+                                {
+                                    mysocket1.SendData(GPNPSDEN);
+                                    //Thread.Sleep(500);
+                                    for (int d = 0; d <= 1000; d++)
+                                    {
+                                        string locked = mysocket1.ReceiveData(int.Parse(yanshi));
+                                        if (locked.Contains("configuration is locked by other user"))
+                                        //configuration is locked by other user
+                                        {
+                                            //textDOS.AppendText("\r\n" + "已经有用户登录，正在重新登录========================OK");
+                                            mysocket1.SendData("grosadvdebug");
+                                            Thread.Sleep(200);
+                                            mysocket1.SendData("vty user limit no");
+                                            Thread.Sleep(200);
+                                            mysocket1.SendData("exit");
+                                            Thread.Sleep(200);
+                                            mysocket1.SendData("enable");
+                                            Thread.Sleep(200);
+                                            if (mysocket1.ReceiveData(int.Parse(yanshi)).Contains("Pas"))
+                                            {
+                                                mysocket1.SendData(GPNPSDEN);
+                                                Thread.Sleep(200);
+                                                if (!mysocket1.ReceiveData(int.Parse(yanshi)).Contains("failed"))
+                                                {
+                                                    this.dataGridView1.Rows[i].Cells["最终结果"].Value = "enbale密码错误";
+                                                    this.dataGridView1.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString();
+                                                    this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.Yellow;
+                                                    lock (sb)
+                                                    {
+                                                        int s = int.Parse(toolStripStatusLabelshibai.Text);
+                                                        s = s + 1;
+                                                        toolStripStatusLabelshibai.Text = s.ToString();
+                                                    }
+                                                    lock (o1)
+                                                    {
+                                                        int e = int.Parse(toolStripStatusLabelshengyu.Text);
+                                                        e = e - 1;
+                                                        toolStripStatusLabelshengyu.Text = e.ToString();
+
+                                                        doneCount++;
+
+                                                    }
+                                                    return;
+                                                }
+
+                                                break;
+                                            }
+                                        }
+                                        if (locked.Contains("#"))
+                                        {
+                                            break;
+                                        }
+                                        if (locked.Contains("% Invalid password..."))
+                                        {
+
+                                            //textDOS.AppendText("\r\n" + "用户名或密码错误，请重新输入");
+                                            this.dataGridView1.Rows[i].Cells["最终结果"].Value = "enbale密码错误";
+                                            this.dataGridView1.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString();
+                                            this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.Yellow;
+                                            lock (sb)
+                                            {
+                                                int s = int.Parse(toolStripStatusLabelshibai.Text);
+                                                s = s + 1;
+                                                toolStripStatusLabelshibai.Text = s.ToString();
+                                            }
+                                            lock (o1)
+                                            {
+                                                int e = int.Parse(toolStripStatusLabelshengyu.Text);
+                                                e = e - 1;
+                                                toolStripStatusLabelshengyu.Text = e.ToString();
+
+                                                doneCount++;
+
+                                            }
+                                            return;
+                                        }
+                                        Thread.Sleep(10);
+                                    }
+                                    break;
+                                }
+                                if (pass.Contains("#"))
+                                {
+                                    break;
+                                }
+                                if (pass.Contains("configuration is locked by other user"))
+                                //configuration is locked by other user
+                                {
+                                    //textDOS.AppendText("\r\n" + "已经有用户登录，正在重新登录=============================OK");
+                                    mysocket1.SendData("grosadvdebug");
+                                    Thread.Sleep(200);
+                                    mysocket1.SendData("vty user limit no");
+                                    Thread.Sleep(200);
+                                    mysocket1.SendData("exit");
+                                    Thread.Sleep(200);
+                                    mysocket1.SendData("enable");
+                                    Thread.Sleep(200);
+                                    if (mysocket1.ReceiveData(int.Parse(yanshi)).Contains("Pas"))
+                                    {
+                                        mysocket1.SendData(GPNPSDEN);
+                                        Thread.Sleep(200);
+                                        if (!mysocket1.ReceiveData(int.Parse(yanshi)).Contains("failed"))
+                                        {
+                                            this.dataGridView1.Rows[i].Cells["最终结果"].Value = "用户名密码错误2";
+                                            this.dataGridView1.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString();
+                                            this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.Yellow;
+                                            lock (sb)
+                                            {
+                                                int s = int.Parse(toolStripStatusLabelshibai.Text);
+                                                s = s + 1;
+                                                toolStripStatusLabelshibai.Text = s.ToString();
+                                            }
+                                            lock (o1)
+                                            {
+                                                int e = int.Parse(toolStripStatusLabelshengyu.Text);
+                                                e = e - 1;
+                                                toolStripStatusLabelshengyu.Text = e.ToString();
+
+                                                doneCount++;
+
+                                            }
+                                            return;
+                                        }
+
+                                        break;
+                                    }
+                                    break;
+                                }
+                                Thread.Sleep(1);
+                            }
+                            break;
+                        }
+                        Thread.Sleep(10);
+                    }
+                    this.dataGridView1.Rows[i].Cells["修改密码"].Value = "未开始";
+                    //  mysocket1.SendData("user add admin login-password "+ GPN_New_Password);
+                    mysocket1.SendData("login-password");
+                    Thread.Sleep(1000);
+                    mysocket1.SendData(GPN_New_Login_Password);
+                    Thread.Sleep(1000);
+                    mysocket1.SendData(GPN_New_Login_Password);
+                    Thread.Sleep(1000);
+                    mysocket1.SendData("user enable-password admin");
+                    Thread.Sleep(1000);
+                    mysocket1.SendData(GPN_New_Enable_Password);
+                    Thread.Sleep(1000);
+                    mysocket1.SendData(GPN_New_Enable_Password);
+                    Thread.Sleep(1000);
+                    //mysocket1.SendData("user role admin admin enable-password " + GPN_New_Password);
+                    this.dataGridView1.Rows[i].Cells["修改密码"].Value = "成功";
+                    this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.GreenYellow;
+                    //mysocket1.SendData("show ver");
+                    //string ver = "";
+                    //string ver2 = "";
+                    //for (int a = 0; a <= 1000; a++)
+                    //{
+                    //    ver2 = mysocket1.ReceiveData(int.Parse(yanshi));
+                    //    ver = ver + ver2;
+                    //    if (ver2.Contains("Ctrl+c"))
+                    //    {
+                    //        mysocket1.SendDate("\r\n");
+                    //        //MessageBox.Show(ver);
+                    //    }
+                    //    if (ver2.Contains("(config)#"))
+                    //    {
+                    //        ver2 = mysocket1.ReceiveData(int.Parse(yanshi));
+                    //        ver = ver + ver2;
+                    //        break;
+                    //    }
+                    //    Thread.Sleep(10);
+                    //}
+                    //Regex r = new Regex(@"ProductOS\s*Version\s*([\w\d]+)[\s*\(]*", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                    //string banben = r.Match(ver).Groups[1].Value;
+                    //if (banben.ToString() == "")
+                    //{
+                    //    this.dataGridView1.Rows[i].Cells["升级后当前版本"].Value = "获取失败";
+                    //    this.dataGridView1.Rows[i].Cells["最终结果"].Value = "失败";
+                    //    this.dataGridView1.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString();
+                    //    this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.Yellow;
+                    //    lock (sb)
+                    //    {
+                    //        int s = int.Parse(toolStripStatusLabelshibai.Text);
+                    //        s = s + 1;
+                    //        toolStripStatusLabelshibai.Text = s.ToString();
+                    //    }
+
+
+                    //}
+                    //else
+                    //{
+                    //    this.dataGridView1.Rows[i].Cells["升级后当前版本"].Value = banben.ToString();
+                    //    this.dataGridView1.Rows[i].Cells["最终结果"].Value = "成功";
+                    //    this.dataGridView1.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString();
+                    //    this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.GreenYellow;
+                    //    lock (cg)
+                    //    {
+                    //        //MessageBox.Show("fff");
+                    //        int cg = int.Parse(toolStripStatusLabelchenggong.Text);
+                    //        cg = cg + 1;
+                    //        toolStripStatusLabelchenggong.Text = cg.ToString();
+                    //    }
+
+                    //}
+
+
+                    mysocket1.SendData("save");
+                    for (int a = 1; a <= 5000; a++)
+                    {
+                        string box = mysocket1.ReceiveData(int.Parse("10")); ;
+                        if (box.Contains("successfully"))
+                        {
+                            this.dataGridView1.Rows[i].Cells["最终结果"].Value = "成功";
+                            this.dataGridView1.Rows[i].Cells["保存配置"].Value = "成功";
+                            this.dataGridView1.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString();
+                            this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.GreenYellow;
+                            lock (cg)
+                            {
+                                int c = int.Parse(toolStripStatusLabelchenggong.Text);
+                                c = c + 1;
+                                toolStripStatusLabelchenggong.Text = c.ToString();
+                                break;
+                            }
+                        }
+                        if (box.Contains("erro"))
+                        {
+                            this.dataGridView1.Rows[i].Cells["最终结果"].Value = "失败";
+                            this.dataGridView1.Rows[i].Cells["保存配置"].Value = "失败";
+                            this.dataGridView1.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString();
+                            this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.Yellow;
+                            lock (sb)
+                            {
+                                int s = int.Parse(toolStripStatusLabelshibai.Text);
+                                s = s + 1;
+                                toolStripStatusLabelshibai.Text = s.ToString();
+                                break;
+                            }
+                        }
+
+                        Thread.Sleep(1);
+                    }
+                    mysocket1.SendData("logout");
+
+                }
+
+                else
+                {
+                    this.dataGridView1.Rows[i].Cells["最终结果"].Value = "telnet失败";
+                    this.dataGridView1.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString();
+                    this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.Yellow;
+                    lock (sb)
+                    {
+                        int s = int.Parse(toolStripStatusLabelshibai.Text);
+                        s = s + 1;
+                        toolStripStatusLabelshibai.Text = s.ToString();
+                    }
+                }
+
+
+            }
+            else
+            {
+
+                this.dataGridView1.Rows[i].Cells["ping测试"].Value = "NOK";
+                this.dataGridView1.Rows[i].Cells["最终结果"].Value = "失败";
+                this.dataGridView1.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString();
+                this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.Yellow;
+                lock (sb)
+                {
+                    int s = int.Parse(toolStripStatusLabelshibai.Text);
+                    s = s + 1;
+                    toolStripStatusLabelshibai.Text = s.ToString();
+                }
+            }
+            if (dataGridView1.Rows[i].Cells["最终结果"].Value.ToString() == "初始化")
+            {
+                this.dataGridView1.Rows[i].Cells["最终结果"].Value = "telnet失败";
+                this.dataGridView1.Rows[i].Cells["结束时间"].Value = DateTime.Now.ToString();
+                this.dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.Yellow;
+                lock (sb)
+                {
+                    int s = int.Parse(toolStripStatusLabelshibai.Text);
+                    s = s + 1;
+
+                }
+            }
+
+            lock (o1)
+            {
+                int d = int.Parse(toolStripStatusLabelshengyu.Text);
+                d = d - 1;
+                toolStripStatusLabelshengyu.Text = d.ToString();
+
+                doneCount++;
+
+            }
+            //MessageBox.Show("一键保存结束");
+
+        }
 
         private void butUtility_Click(object sender, EventArgs e)
         {
@@ -3607,6 +3986,70 @@ namespace MyGpnSoftware
             {
                 conn.Close();
             }
+        }
+
+        private void ButModifyPassword_Click(object sender, EventArgs e)
+        {
+
+
+            if (dataGridView1.CurrentCell == null)
+            {
+                MessageBox.Show("请先导入「网管导出的表格」或「制作IP表」，然后再次尝试");
+                return;
+            }
+            var Formoam = new NewPassword(GPNPSD,GPNPSDEN);
+            // 以对话框方式显示FormInfo  
+            if (Formoam.ShowDialog() == DialogResult.OK)
+            {
+                //如果点击了FromInfo的“确定”按钮，获取修改后的信息并显示
+                GPN_New_Login_Password = Formoam._NewLoginPassword;
+                GPN_New_Enable_Password = Formoam._NewEnablePassword;
+
+            }
+            else {
+                GPN_New_Login_Password = Formoam._NewLoginPassword;
+                GPN_New_Enable_Password = Formoam._NewEnablePassword;
+                return;
+            }
+            if (dataGridView1.Columns["修改密码"] == null)
+            {
+
+                this.dataGridView1.Columns.Add("修改密码", "修改密码");
+            }
+            else
+            {
+                this.dataGridView1.Columns.Remove("修改密码");
+                this.dataGridView1.Columns.Add("修改密码", "修改密码");
+            }
+            if (dataGridView1.Columns["保存配置"] == null)
+            {
+
+                this.dataGridView1.Columns.Add("保存配置", "保存配置");
+            }
+            else
+            {
+                this.dataGridView1.Columns.Remove("保存配置");
+                this.dataGridView1.Columns.Add("保存配置", "保存配置");
+            }
+            TimeNow = DateTime.Now;
+
+            this.timer1.Enabled = true;
+            this.timer1.Start();
+            doneCount = 0;
+            toolStripStatusLabelshengyu.Text = toolStripStatusLabelzonggong.Text;
+            toolStripStatusLabelchenggong.Text = "0";
+            toolStripStatusLabelshibai.Text = "0";
+            toolStripStatusLabelyichang.Text = "0";
+
+            string task = "ModifyPassword";
+            ParameterizedThreadStart p = new ParameterizedThreadStart(Xianchengchi);
+            Thread t = new Thread(p);
+            t.Start(task);
+            Thread bar = new Thread(Bartest)
+            {
+                IsBackground = true
+            };
+            bar.Start();
         }
     }
 

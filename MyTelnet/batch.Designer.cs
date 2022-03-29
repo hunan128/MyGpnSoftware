@@ -79,6 +79,7 @@
             this.TextStartIp = new System.Windows.Forms.TextBox();
             this.dataGridView2 = new System.Windows.Forms.DataGridView();
             this.butoid = new System.Windows.Forms.Button();
+            this.ButModifyPassword = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.statusStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -493,6 +494,7 @@
             // panel2
             // 
             this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.panel2.Controls.Add(this.ButModifyPassword);
             this.panel2.Controls.Add(this.butUtility);
             this.panel2.Controls.Add(this.metroLabel1);
             this.panel2.Controls.Add(this.metroCom603gsysfile);
@@ -572,7 +574,7 @@
             this.butcheckver.Name = "butcheckver";
             this.butcheckver.Size = new System.Drawing.Size(75, 34);
             this.butcheckver.TabIndex = 73;
-            this.butcheckver.Text = "检查603G版本";
+            this.butcheckver.Text = "检查版本";
             this.butcheckver.UseVisualStyleBackColor = false;
             this.butcheckver.Click += new System.EventHandler(this.butcheckver_Click);
             // 
@@ -690,6 +692,22 @@
             this.butoid.UseVisualStyleBackColor = false;
             this.butoid.Click += new System.EventHandler(this.butoid_Click);
             // 
+            // ButModifyPassword
+            // 
+            this.ButModifyPassword.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.ButModifyPassword.BackColor = System.Drawing.Color.DodgerBlue;
+            this.ButModifyPassword.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.ButModifyPassword.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ButModifyPassword.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ButModifyPassword.ForeColor = System.Drawing.Color.White;
+            this.ButModifyPassword.Location = new System.Drawing.Point(762, 3);
+            this.ButModifyPassword.Name = "ButModifyPassword";
+            this.ButModifyPassword.Size = new System.Drawing.Size(75, 34);
+            this.ButModifyPassword.TabIndex = 77;
+            this.ButModifyPassword.Text = "修改登录密码";
+            this.ButModifyPassword.UseVisualStyleBackColor = false;
+            this.ButModifyPassword.Click += new System.EventHandler(this.ButModifyPassword_Click);
+            // 
             // Batch
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -761,5 +779,6 @@
         private System.Windows.Forms.Button butoid;
         private MetroFramework.Controls.MetroLabel metroLabel2;
         private MetroFramework.Controls.MetroTextBox textselect;
+        private System.Windows.Forms.Button ButModifyPassword;
     }
 }

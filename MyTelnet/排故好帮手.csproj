@@ -35,7 +35,7 @@
     <PublisherName>排故好帮手</PublisherName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>index.html</WebPage>
-    <ApplicationRevision>6</ApplicationRevision>
+    <ApplicationRevision>15</ApplicationRevision>
     <ApplicationVersion>2022.1.6.%2a</ApplicationVersion>
     <UseApplicationTrust>true</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -214,6 +214,12 @@
     </Compile>
     <Compile Include="Gpnip.cs" />
     <Compile Include="MySocket.cs" />
+    <Compile Include="NewPassword.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NewPassword.Designer.cs">
+      <DependentUpon>NewPassword.cs</DependentUpon>
+    </Compile>
     <Compile Include="NPOIExcel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -242,6 +248,9 @@
     <EmbeddedResource Include="GPN.resx">
       <SubType>Designer</SubType>
       <DependentUpon>GPN.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewPassword.resx">
+      <DependentUpon>NewPassword.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -211,3 +211,4 @@ D:\排故好帮手\MyGpnSoftware\MyTelnet\obj\Debug\排故好帮手.application
 D:\排故好帮手\MyGpnSoftware\MyTelnet\obj\Debug\排故好帮手.csproj.CopyComplete
 D:\排故好帮手\MyGpnSoftware\MyTelnet\obj\Debug\排故好帮手.exe
 D:\排故好帮手\MyGpnSoftware\MyTelnet\obj\Debug\排故好帮手.pdb
+D:\排故好帮手\MyGpnSoftware\MyTelnet\obj\Debug\MyGpnSoftware.NewPassword.resources

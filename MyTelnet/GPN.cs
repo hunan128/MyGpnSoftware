@@ -250,6 +250,10 @@ namespace MyGpnSoftware
                     {
                         com761c.Text = ContentValue(strSec, "761c");
                     }
+                    if (com761d.Items.Contains(ContentValue(strSec, "761d")))
+                    {
+                        com761d.Text = ContentValue(strSec, "761d");
+                    }
                     if (comsysfile.Items.Contains(ContentValue(strSec, "sysfile")))
                     {
                         comsysfile.Text = ContentValue(strSec, "sysfile");
@@ -657,11 +661,11 @@ namespace MyGpnSoftware
             try
             {
                 user.CommandSession.streamWriter.WriteLine(str);
-                //AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+string.Format("向客户端（{0}）发送[{1}]", user.commandSession.tcpClient.Client.RemoteEndPoint, str));
+                AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+string.Format("向客户端（{0}）发送[{1}]", user.CommandSession.tcpClient.Client.RemoteEndPoint, str));
             }
             catch
             {
-                // AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+string.Format("向客户端（{0}）发送信息失败", user.commandSession.tcpClient.Client.RemoteEndPoint));
+                 AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+string.Format("向客户端（{0}）发送信息失败", user.CommandSession.tcpClient.Client.RemoteEndPoint));
             }
         }
         // 向屏幕输出显示状态信息（这里使了委托机制）
@@ -836,6 +840,7 @@ namespace MyGpnSoftware
         // 处理RETR命令，提供下载功能，将户请求的文件发送给户
         private void CommandRETR(User user, string filename)
         {
+
             string sendString = "";
             // 下载的文件全名
             string path = user.CurrentDir + filename;
@@ -848,14 +853,18 @@ namespace MyGpnSoftware
                 // 发送150到户，表示服务器文件状态良好，将要打开数据连接传输文件
                 if (user.IsBinary)
                 {
-                    sendString = "150 Opening BINARY mode data connection for download";
+                      sendString = "150 Opening BINARY mode data connection for download";
+                    //sendString = "125 Using existing data connection";
                 }
                 else
                 {
                     sendString = "150 Opening ASCII mode data connection for download";
                 }
+                // Thread.Sleep(2000);
+
                 RepleyCommandToUser(user, sendString);
                 InitDataSession(user);
+                /// Thread.Sleep(2000);
                 SendFileByUserSession(user, filestream, path);
                 RepleyCommandToUser(user, "226 Transfer complete");
 
@@ -906,7 +915,8 @@ namespace MyGpnSoftware
         private void CommandPASV(User user)
         {
             string sendString = string.Empty;
-            IPAddress localip = Dns.GetHostEntry("").AddressList[1];
+            // IPAddress localip = Dns.GetHostEntry("").AddressList[1];
+            IPAddress localip = IPAddress.Parse(comftpip.Text);
             // 被动模式，即服务器接收客户端的连接请求
             // 被动模式下FTP服务器使随机生成的端口进行传输数据
             // 而主动模式下FTP服务器使端口20进行数据传输
@@ -935,6 +945,8 @@ namespace MyGpnSoftware
                 // 必须把端口号IP地址告诉客户端，客户端接收到响应命令后，
                 // 再通过新的端口连接服务器的端口P，然后进行文件数据传输
                 sendString = "227 Entering Passive Mode(" + temp + "," + random1 + "," + random2 + ")";
+
+
                 RepleyCommandToUser(user, sendString);
                 user.DataListener.Start();
                 break;
@@ -985,16 +997,19 @@ namespace MyGpnSoftware
             TcpClient client = null;
             if (user.IsPassive)
             {
-                //AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"采被动模式返回LIST目录和文件列表");
+                AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"采被动模式返回LIST目录和文件列表");
                 client = user.DataListener.AcceptTcpClient();
+
+
             }
             else
             {
-                //AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"采主动模式向户发送LIST目录和文件列表");
+                AddInfo(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"采主动模式向户发送LIST目录和文件列表");
                 client = new TcpClient();
                 client.Connect(user.RemoteEndPoint);
             }
-            user.DataSession = new UserSeesion(client);
+                user.DataSession = new UserSeesion(client);
+           
         }
         #endregion
         #region 使数据连接发送字符串
@@ -4220,6 +4235,8 @@ namespace MyGpnSoftware
             com761a.Items.Clear();
             com761b.Items.Clear();
             com761c.Items.Clear();
+            com761d.Items.Clear();
+
             comvoss.Items.Clear();
             comrebootos.Items.Clear();
             comcpld.Items.Clear();
@@ -4517,6 +4534,14 @@ namespace MyGpnSoftware
                     if (com761c.Items.Count > 0)
                     {
                         com761c.SelectedIndex = com761c.Items.Count - 1;
+                    }
+                }
+                if (s.Contains("761d") || s.Contains("761D"))
+                {
+                    com761d.Items.Add(s);
+                    if (com761d.Items.Count > 0)
+                    {
+                        com761d.SelectedIndex = com761d.Items.Count - 1;
                     }
                 }
                 if (s.Contains("sysfile") || s.Contains("Sysfile") || s.Contains("SYSFILE") || s.Contains("SysFile"))
@@ -4873,6 +4898,8 @@ namespace MyGpnSoftware
                 WritePrivateProfileString(strSec, "761a", com761a.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "761b", com761b.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "761c", com761c.Text.Trim(), strFilePath);
+                WritePrivateProfileString(strSec, "761d", com761d.Text.Trim(), strFilePath);
+
                 WritePrivateProfileString(strSec, "sysfile", comsysfile.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "voss", comvoss.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "rebootos", comrebootos.Text.Trim(), strFilePath);
@@ -7043,6 +7070,19 @@ namespace MyGpnSoftware
                 textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " type " + "GPN7600-V2-OTN-8AT2";
                 butguzhangsend.PerformClick();
                 Thread.Sleep(3000);
+                textguzhangmingling.Text = "exit";
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "reboot " + comotnslot.Text;
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "y";
+                butguzhangsend.PerformClick();
+                Thread.Sleep(12000);
+                textguzhangmingling.Text = "grosadvdebug";
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " version " + "V0.2B1";
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " date " + "2022-01-22";
+                butguzhangsend.PerformClick();
                 textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " ext-info2 mode=" + mode;
             }
             if (comotnboardmode.Text.Contains("AOQX"))
@@ -7059,6 +7099,19 @@ namespace MyGpnSoftware
                 textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " type " + "GPN7600-V2-OTN-8AT2";
                 butguzhangsend.PerformClick();
                 Thread.Sleep(3000);
+                textguzhangmingling.Text = "exit";
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "reboot " + comotnslot.Text;
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "y";
+                butguzhangsend.PerformClick();
+                Thread.Sleep(12000);
+                textguzhangmingling.Text = "grosadvdebug";
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " version " + "V1.0B1";
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " date " + "2021-04-23";
+                butguzhangsend.PerformClick();
                 textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " ext-info2 mode=" + mode;
             }
             if (comotnboardmode.Text.Contains("EODX"))
@@ -7067,6 +7120,19 @@ namespace MyGpnSoftware
                 textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " type " + "GPN7600-V2-OTN-8AT2";
                 butguzhangsend.PerformClick();
                 Thread.Sleep(3000);
+                textguzhangmingling.Text = "exit";
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "reboot " + comotnslot.Text;
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "y";
+                butguzhangsend.PerformClick();
+                Thread.Sleep(12000);
+                textguzhangmingling.Text = "grosadvdebug";
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " version " + "V0.1B1";
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " date " + "2022-02-11";
+                butguzhangsend.PerformClick();
                 textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " ext-info2 mode=" + mode;
             }
             if (comotnboardmode.Text.Contains("OOOG-I"))
@@ -7083,6 +7149,61 @@ namespace MyGpnSoftware
                 textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " type " + "GPN7600-V2-OTN-8AT2";
                 butguzhangsend.PerformClick();
                 Thread.Sleep(3000);
+                textguzhangmingling.Text = "exit";
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "reboot "+ comotnslot.Text;
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "y";
+                butguzhangsend.PerformClick();
+                Thread.Sleep(12000);
+                textguzhangmingling.Text = "grosadvdebug";
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " version " + "V0.2B1";
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " date " + "2022-02-11";
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " ext-info2 mode=" + mode;
+            }
+            if (comotnboardmode.Text.Contains("IODS"))
+            {
+                mode = "31";
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " type " + "GPN7600-V2-OTN-8AT2";
+                butguzhangsend.PerformClick();
+                Thread.Sleep(3000);
+                textguzhangmingling.Text = "exit";
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "reboot " + comotnslot.Text;
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "y";
+                butguzhangsend.PerformClick();
+                Thread.Sleep(12000);
+                textguzhangmingling.Text = "grosadvdebug";
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " version " + "V0.2B1";
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " date " + "2022-02-15";
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " ext-info2 mode=" + mode;
+            }
+            if (comotnboardmode.Text.Contains("UXOX"))
+            {
+                mode = "35";
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " type " + "GPN7600-V2-OTN-8AT2";
+                butguzhangsend.PerformClick();
+                Thread.Sleep(3000);
+                textguzhangmingling.Text = "exit";
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "reboot " + comotnslot.Text;
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "y";
+                butguzhangsend.PerformClick();
+                Thread.Sleep(12000);
+                textguzhangmingling.Text = "grosadvdebug";
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " version " + "V0.1B1";
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " date " + "2022-02-11";
+                butguzhangsend.PerformClick();
                 textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " ext-info2 mode=" + mode;
             }
             if (comotnboardmode.Text.Contains("UXDX-I"))
@@ -7091,7 +7212,21 @@ namespace MyGpnSoftware
                 textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " type " + "GPN7600-V2-OTN-8AT2";
                 butguzhangsend.PerformClick();
                 Thread.Sleep(3000);
+                textguzhangmingling.Text = "exit";
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "reboot " + comotnslot.Text;
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "y";
+                butguzhangsend.PerformClick();
+                Thread.Sleep(12000);
+                textguzhangmingling.Text = "grosadvdebug";
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " version " + "V0.1B1";
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " date " + "2022-01-22";
+                butguzhangsend.PerformClick();
                 textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " ext-info2 mode=" + mode;
+
             }
             if (comotnboardmode.Text.Contains("GSM-UC"))
             {
@@ -7099,6 +7234,19 @@ namespace MyGpnSoftware
                 textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " type " + "GPN7600-V2-OTN-8AT2";
                 butguzhangsend.PerformClick();
                 Thread.Sleep(3000);
+                textguzhangmingling.Text = "exit";
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "reboot " + comotnslot.Text;
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "y";
+                butguzhangsend.PerformClick();
+                Thread.Sleep(12000);
+                textguzhangmingling.Text = "grosadvdebug";
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " version " + "V0.3B1";
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " date " + "2021-11-15";
+                butguzhangsend.PerformClick();
                 textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " ext-info2 mode=" + mode;
             }
             if (comotnboardmode.Text.Contains("GSM-UXQX"))
@@ -7107,6 +7255,19 @@ namespace MyGpnSoftware
                 textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " type " + "GPN7600-V2-OTN-8AT2";
                 butguzhangsend.PerformClick();
                 Thread.Sleep(3000);
+                textguzhangmingling.Text = "exit";
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "reboot " + comotnslot.Text;
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "y";
+                butguzhangsend.PerformClick();
+                Thread.Sleep(12000);
+                textguzhangmingling.Text = "grosadvdebug";
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " version " + "V0.1B1";
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " date " + "2022-02-11";
+                butguzhangsend.PerformClick();
                 textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " ext-info2 mode=" + mode;
             }
             if (comotnboardmode.Text.Contains("8AST2集采盒子"))
@@ -7115,6 +7276,19 @@ namespace MyGpnSoftware
                 textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " type " + "GPN7600-V2-OTN-8AT2";
                 butguzhangsend.PerformClick();
                 Thread.Sleep(3000);
+                textguzhangmingling.Text = "exit";
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "reboot " + comotnslot.Text;
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "y";
+                butguzhangsend.PerformClick();
+                Thread.Sleep(12000);
+                textguzhangmingling.Text = "grosadvdebug";
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " version " + "V1.0B1";
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " date " + "2021-04-23";
+                butguzhangsend.PerformClick();
                 textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " ext-info2 mode=" + mode;
             }
             if (comotnboardmode.Text.Contains("2XT2集采盒子"))
@@ -7123,7 +7297,20 @@ namespace MyGpnSoftware
                 textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " type " + "GPN7600-V2-OTN-8AT2";
                 butguzhangsend.PerformClick();
                 Thread.Sleep(3000);
+                textguzhangmingling.Text = "exit";
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "reboot " + comotnslot.Text;
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "y";
+                butguzhangsend.PerformClick();
+                Thread.Sleep(12000);
+                textguzhangmingling.Text = "grosadvdebug";
+                butguzhangsend.PerformClick();
                 textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " ext-info2 mode=" + mode;
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " version " + "V0.1B1";
+                butguzhangsend.PerformClick();
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " date " + "2022-02-11";
             }
             if (comotnboardmode.Text.Contains("UCQX"))
             {
@@ -7218,6 +7405,15 @@ namespace MyGpnSoftware
                 Thread.Sleep(3000);
                 textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " ext-info2 mode=" + mode;
             }
+            if (comotnboardmode.Text.Contains("UXQE-I"))
+            {
+                mode = "18";
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " type " + "GPN7600-V2-OTN-8AT2";
+                butguzhangsend.PerformClick();
+                Thread.Sleep(3000);
+                textguzhangmingling.Text = "board-eeprom " + comotnslot.Text + " ext-info2 mode=" + mode;
+            }
+
             if (comotnboardmode.Text.Contains("76-III机框类型-2562"))
             {
                 textguzhangmingling.Text = "chassis-type 2562";
@@ -7269,8 +7465,8 @@ namespace MyGpnSoftware
             butguzhangsend.PerformClick();
             textguzhangmingling.Text = "exit";
             butguzhangsend.PerformClick();
-            textguzhangmingling.Text = "enable show boardname by e2-extinfo";
-            butguzhangsend.PerformClick();
+           // textguzhangmingling.Text = "enable show boardname by e2-extinfo";
+           // butguzhangsend.PerformClick();
             Thread.Sleep(XHTime);
             //textguzhangmingling.Text = "reboot " + comotnslot.Text;
             //butguzhangsend.PerformClick();
@@ -7283,12 +7479,40 @@ namespace MyGpnSoftware
         }
         private void butgaizhi_Click(object sender, EventArgs e)
         {
-            CycleThread = new Thread(ExchangeBoard)
-            {
-                IsBackground = true
-            };
-            CycleThread.Start();
 
+            Thread thread = new Thread(() => modfy());
+            thread.Start();
+
+        }
+        private void modfy() {
+            DialogResult dr = MessageBox.Show("板卡卸载后才可以改制！！！同型号板卡是否遍历所有槽位（"+ comotnslotstart.Text + "-"+ comotnslotend.Text + ",11和12不进行改制）？\r\n", "提示", MessageBoxButtons.YesNoCancel);
+            if (dr == DialogResult.Yes)
+            {
+                for (int i = int.Parse(comotnslotstart.Text); i <= int.Parse(comotnslotend.Text); i++)
+                {
+                    if (i != 11 && i != 12)
+                    {
+                        comotnslot.Text = i.ToString();
+                        CycleThread = new Thread(ExchangeBoard)
+                        {
+                            IsBackground = true
+                        };
+                        CycleThread.Start();
+                        Thread.Sleep(30000);
+                    }
+                }
+            }
+            if (dr == DialogResult.No)
+            {
+                CycleThread = new Thread(ExchangeBoard)
+                {
+                    IsBackground = true
+                };
+                CycleThread.Start();
+            }
+            if (dr == DialogResult.Cancel)
+            {
+            }
         }
         #endregion
         #region 卸载GPN7600EMS模块
@@ -7736,6 +7960,16 @@ namespace MyGpnSoftware
             {
                 lSize = new FileInfo(sFullName).Length;
                 lab761c.Text = lSize.ToString();
+            }
+        }
+        private void com761d_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            long lSize = 0;
+            string sFullName = @tbxFtpRoot.Text.Trim() + com761d.Text.Trim();
+            if (File.Exists(sFullName))
+            {
+                lSize = new FileInfo(sFullName).Length;
+                lab761d.Text = lSize.ToString();
             }
         }
         private void comsysfile_SelectedIndexChanged(object sender, EventArgs e)
@@ -14535,6 +14769,21 @@ namespace MyGpnSoftware
                 this.DGVSTATUS.Columns["761c"].FillWeight = 50;
                 DGVSTATUS.Columns["761c"].SortMode = DataGridViewColumnSortMode.NotSortable;
             }
+            if (check761d.Checked == true)
+            {
+                if (DGVSTATUS.Columns["761d"] == null)
+                {
+
+                    this.DGVSTATUS.Columns.Add("761d", "761d");
+                }
+                else
+                {
+                    this.DGVSTATUS.Columns.Remove("761d");
+                    this.DGVSTATUS.Columns.Add("761d", "761d");
+                }
+                this.DGVSTATUS.Columns["761d"].FillWeight = 50;
+                DGVSTATUS.Columns["761d"].SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
             if (checksysfile.Checked == true)
             {
                 if (DGVSTATUS.Columns["SysFile"] == null)
@@ -14928,7 +15177,9 @@ namespace MyGpnSoftware
             int UxcTypeStrCount = 0;
             int SwTypeStrCount = 0;
             int NmsTypeStrCount = 0;
-            
+            string nms17type = "";
+            string nms18type = "";
+
             Ping ping = new Ping();
             PingReply pingReply = ping.Send(gpnip, 2000);
             bool link = false;
@@ -15085,6 +15336,8 @@ namespace MyGpnSoftware
                                         RuningUxcSwStr = result.Pdu.VbList[3].Value.ToString() + "/" + result.Pdu.VbList[4].Value.ToString();
                                         RuningNmsStr = result.Pdu.VbList[5].Value.ToString() + "/" + result.Pdu.VbList[6].Value.ToString();
                                         UxcSwNmsTypeStr = result.Pdu.VbList[7].Value.ToString() + "/" + result.Pdu.VbList[8].Value.ToString() + "/" + result.Pdu.VbList[9].Value.ToString() + "/" + result.Pdu.VbList[10].Value.ToString();
+                                        nms17type = result.Pdu.VbList[9].Value.ToString();
+                                        nms18type = result.Pdu.VbList[10].Value.ToString(); 
                                         textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 板卡运行状态11/12槽位 4-running 1-null ：" + RuningUxcSwStr + "\r\n"));
                                         textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 板卡运行状态17/18槽位 4-running 1-null ：" + RuningNmsStr + "\r\n"));
                                         textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 板卡运行型号11/12/17/18槽位 257-uxc 1-null 168-nms ：" + UxcSwNmsTypeStr + "\r\n"));
@@ -15182,6 +15435,8 @@ namespace MyGpnSoftware
                         RuningNmsStr = result.Pdu.VbList[5].Value.ToString() + "/" + result.Pdu.VbList[6].Value.ToString();
                         DGVSTATUS.Rows[i].Cells["设备类型"].Value = FindDevType.Finddevtype(result.Pdu.VbList[11].Value.ToString());
                         UxcSwNmsTypeStr = result.Pdu.VbList[7].Value.ToString() + "/" + result.Pdu.VbList[8].Value.ToString() + "/" + result.Pdu.VbList[9].Value.ToString() + "/" + result.Pdu.VbList[10].Value.ToString();
+                        nms17type = result.Pdu.VbList[9].Value.ToString();
+                        nms18type = result.Pdu.VbList[10].Value.ToString();
                         textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 板卡运行状态11/12槽位 4-running 1-null ：" + RuningUxcSwStr + "\r\n"));
                         textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 板卡运行状态17/18槽位 4-running 1-null ：" + RuningNmsStr + "\r\n"));
                         textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 板卡运行型号11/12/17/18槽位 257-uxc 1-null 168-nms ：" + UxcSwNmsTypeStr + "\r\n"));
@@ -15203,7 +15458,7 @@ namespace MyGpnSoftware
 
 
 
-
+         
             int colunms = DGVSTATUS.ColumnCount;
             string[,] array = new string[,] {
                 { "APP",        "2",comapp.Text,        ""                              },
@@ -15240,11 +15495,58 @@ namespace MyGpnSoftware
                 { "761a",       "14",com761a.Text,      "/yaffs/sys/761a.fpga"          },
                 { "761b",       "14",com761b.Text,      "/yaffs/sys/761b.fpga"          },
                 { "761c",       "14",com761c.Text,      "/yaffs/sys/761c.fpga"          },
+                { "761d",       "14",com761d.Text,      "/yaffs/sys/761d.fpga"          },
+
                 { "APP2",       "14",comapp2.Text,      "/flash/sys/app_code_backup2.bin"},
                 { "VOSS",       "14",comvoss.Text,      "/flash/sys/voss.sh"            },
                 { "REBOOTOS",   "14",comrebootos.Text,  "/flash/sys/rebootos.sh"        },
                 { "CPLD",       "14",comcpld.Text,      "/flash/sys/nms.cpld"           },
             };
+            if (nms17type == "280" || nms17type == "280")
+            {
+                array = new string[,] {
+                { "APP",        "2",comapp.Text,        ""                              },
+                { "CODE",       "7",comcode.Text,       ""                              },
+                { "CODE2",      "14",comcode2.Text,     "/flash/sys/fpga_code2.bin"     },
+                { "CODE3",      "14",comcode3.Text,     "/flash/sys/fpga_code3.bin"     },
+                { "CODE4",      "14",comcode4.Text,     "/flash/sys/fpga_code4.bin"     },
+                { "SDN",        "21",comsdn.Text,       ""                              },
+                { "NMS",        "6",comnms.Text,        ""                              },
+                { "SW",         "5",comsw.Text,         ""                              },
+                { "Config" ,    "11",comconfig.Text,    ""                              },
+                { "Db",         "12",comdb.Text,        ""                              },
+                { "SlotConfig", "18",comslotconfig.Text,""                              },
+                { "FLASH",      "15",comflash.Text,     ""                              },
+                { "SysFile",    "13",comsysfile.Text,   ""                              },
+              //{ "OTNPACK",    "20",com760f.Text,      ""                              },
+                { "YAFFS",      "",comyaffs.Text,       ""                              },
+                { "760S",       "14",com760s.Text,      "/mmc0a/sys/760s.fpga"          },
+                { "760B",       "14",com760b.Text,      "/mmc0a/sys/760b.fpga"          },
+                { "760C",       "14",com760c.Text,      "/mmc0a/sys/760c.fpga"          },
+                { "760D",       "14",com760d.Text,      "/mmc0a/sys/760d.fpga"          },
+                { "760E",       "14",com760e.Text,      "/mmc0a/sys/760e.fpga"          },
+                { "UXC",        "14",comuxc.Text,       "/mmc0a/sys/uxc_a.fpga"         },
+                { "7610",       "14",com7610.Text,      "/mmc0a/sys/7610.fpga"          },
+                { "7611",       "14",com7611.Text,      "/mmc0a/sys/7611.fpga"          },
+                { "7612",       "14",com7612.Text,      "/mmc0a/sys/7612.fpga"          },
+                { "7613",       "14",com7613.Text,      "/mmc0a/sys/7613.fpga"          },
+                { "7614",       "14",com7614.Text,      "/mmc0a/sys/7614.fpga"          },
+                { "7615",       "14",com7615.Text,      "/mmc0a/sys/7615.fpga"          },
+                { "7616",       "14",com7616.Text,      "/mmc0a/sys/7616.fpga"          },
+                { "7616c",      "14",com7616c.Text,     "/mmc0a/sys/7616c.fpga"         },
+                { "7618",       "14",com7618.Text,      "/mmc0a/sys/7618.fpga"          },
+                { "7619",       "14",com7619.Text,      "/mmc0a/sys/7619.fpga"          },
+                { "761a",       "14",com761a.Text,      "/mmc0a/sys/761a.fpga"          },
+                { "761b",       "14",com761b.Text,      "/mmc0a/sys/761b.fpga"          },
+                { "761c",       "14",com761c.Text,      "/mmc0a/sys/761c.fpga"          },
+                { "761d",       "14",com761d.Text,      "/mmc0a/sys/761d.fpga"          },
+
+                { "APP2",       "14",comapp2.Text,      "/flash/sys/app_code_backup2.bin"},
+                { "VOSS",       "14",comvoss.Text,      "/flash/sys/voss.sh"            },
+                { "REBOOTOS",   "14",comrebootos.Text,  "/flash/sys/rebootos.sh"        },
+                { "CPLD",       "14",comcpld.Text,      "/flash/sys/nms.cpld"           },
+            };
+            }
             int row = array.GetLength(0);
             for (int c = 8; c < colunms; c++)
             {
@@ -16069,7 +16371,7 @@ namespace MyGpnSoftware
             }
             FileStream stream;
             //string gpnname = comgpn76list.Text;
-            string url = "http://dx.hunan128.com:92/ftp/vnc/frpc_stop.bat";
+            string url = "http://dx.hunan128.com:888/vnc/frpc_stop.bat";
             //string strZipPath = @"C:\gpn\" + "frpc_start.exe";
             //   string strUnZipPath = @"C:\gpn\";
             int percent = 0;
@@ -16135,10 +16437,10 @@ namespace MyGpnSoftware
             }
             FileStream stream;
             //string gpnname = comgpn76list.Text;
-            string tvnserverurl = "http://dx.hunan128.com:92/ftp/vnc/tvnserver.exe";
-            string frpcurl = "http://dx.hunan128.com:92/ftp/vnc/frpc.exe";
-            string frpcstarturl = "http://dx.hunan128.com:92/ftp/vnc/frpc_start.bat";
-            string vncsurl = "http://dx.hunan128.com:92/ftp/vnc/vncs.reg";
+            string tvnserverurl = "http://dx.hunan128.com:888/vnc/tvnserver.exe";
+            string frpcurl = "http://dx.hunan128.com:888/vnc/frpc.exe";
+            string frpcstarturl = "http://dx.hunan128.com:888/vnc/frpc_start.bat";
+            string vncsurl = "http://dx.hunan128.com:888/vnc/vncs.reg";
             string strZipPath = "";
             string url = "";
             for (int i = 0; i < 4; i++)
@@ -16231,7 +16533,7 @@ namespace MyGpnSoftware
             }
             FileStream stream;
             //string gpnname = comgpn76list.Text;
-            string url = "http://dx.hunan128.com:92/ftp/vnc/VNC.exe";
+            string url = "http://dx.hunan128.com:888/vnc/VNC.exe";
             //string strZipPath = @"C:\gpn\" + "frpc_start.exe";
             //   string strUnZipPath = @"C:\gpn\";
             int percent = 0;
@@ -16397,6 +16699,7 @@ namespace MyGpnSoftware
             com761a.Items.Clear();
             com761b.Items.Clear();
             com761c.Items.Clear();
+            com761d.Items.Clear();
 
 
 
@@ -16491,9 +16794,9 @@ namespace MyGpnSoftware
                 {
                     com7616.Text = ContentValue(strSec, "7616");
                 }
-                if (com7616c.Items.Contains(ContentValue(strSec, "761c")))
+                if (com7616c.Items.Contains(ContentValue(strSec, "7616c")))
                 {
-                    com761c.Text = ContentValue(strSec, "761c");
+                    com7616c.Text = ContentValue(strSec, "7616c");
                 }
                 if (com7618.Items.Contains(ContentValue(strSec, "7618")))
                 {
@@ -16514,6 +16817,10 @@ namespace MyGpnSoftware
                 if (com761c.Items.Contains(ContentValue(strSec, "761c")))
                 {
                     com761c.Text = ContentValue(strSec, "761c");
+                }
+                if (com761d.Items.Contains(ContentValue(strSec, "761d")))
+                {
+                    com761d.Text = ContentValue(strSec, "761d");
                 }
                 if (comsysfile.Items.Contains(ContentValue(strSec, "sysfile")))
                 {
@@ -18993,7 +19300,7 @@ namespace MyGpnSoftware
             }
 
             DGVSTATUS.Rows[i].Cells["设备类型"].Value = FindDevType.Finddevtype(Snmp.Get(gpnip, readcommunity, 2000, 2, devtype));
-            if (FindDevType.Finddevtype(Snmp.Get(gpnip, readcommunity, 2000, 2, devtype)).Contains("7600")) {
+            if (FindDevType.Finddevtype(Snmp.Get(gpnip, readcommunity, 2000, 2, devtype)).Contains("7600")|| FindDevType.Finddevtype(Snmp.Get(gpnip, readcommunity, 2000, 2, devtype)).Contains("800-DX") || FindDevType.Finddevtype(Snmp.Get(gpnip, readcommunity, 2000, 2, devtype)).Contains("800-8") || FindDevType.Finddevtype(Snmp.Get(gpnip, readcommunity, 2000, 2, devtype)).Contains("800-2")) {
                 this.DGVSTATUS.Rows[i].Cells["当前版本"].Value = "初始化";
                 bool bo = mysocketftp.Connect(gpnip, "23");
                 if (bo)
@@ -19166,6 +19473,7 @@ namespace MyGpnSoftware
                     Thread.Sleep(2 * XHTime);
                     mysocketftp.SendData("cd /flash/sys");
                     Thread.Sleep(2 * XHTime);
+                 
                     mysocketftp.SendData("ll");
                     Thread.Sleep(1 * XHTime);
                     mysocketftp.SendData("\r\n");
@@ -19178,13 +19486,30 @@ namespace MyGpnSoftware
                     Thread.Sleep(1 * XHTime);
                     mysocketftp.SendData("cd /yaffs/sys");
                     Thread.Sleep(1 * XHTime);
-                    mysocketftp.SendData("ll");
-                    Thread.Sleep(1 * XHTime);
-                    mysocketftp.SendData("\r\n");
-                    Thread.Sleep(1 * XHTime);
-                    mysocketftp.SendData("\r\n");
-                    Thread.Sleep(1 * XHTime);
-                    mysocketftp.SendData("\r\n");
+                    command = mysocketftp.ReceiveData(int.Parse(ts));
+                    if (command.Contains("/yaffs/sys not a directory"))
+                    {
+                        mysocketftp.SendData("cd /mmc0a/sys");
+                        Thread.Sleep(2 * XHTime);
+                        mysocketftp.SendData("ll");
+                        Thread.Sleep(1 * XHTime);
+                        mysocketftp.SendData("\r\n");
+                        Thread.Sleep(1 * XHTime);
+                        mysocketftp.SendData("\r\n");
+                        Thread.Sleep(1 * XHTime);
+                        mysocketftp.SendData("\r\n");
+                        Thread.Sleep(1 * XHTime);
+                    }
+                    else {
+                        mysocketftp.SendData("ll");
+                        Thread.Sleep(1 * XHTime);
+                        mysocketftp.SendData("\r\n");
+                        Thread.Sleep(1 * XHTime);
+                        mysocketftp.SendData("\r\n");
+                        Thread.Sleep(1 * XHTime);
+                        mysocketftp.SendData("\r\n");
+                    }
+
                     mysocketftp.SendData("cd /flash/sdn");
                     Thread.Sleep(1 * XHTime);
                     mysocketftp.SendData("ll");
@@ -19196,7 +19521,7 @@ namespace MyGpnSoftware
                     mysocketftp.SendData("\r\n");
                     Thread.Sleep(1 * XHTime);
                     mysocketftp.SendData("exit");
-                    command = mysocketftp.ReceiveData(int.Parse(ts));
+                    command = command + mysocketftp.ReceiveData(int.Parse(ts));
                     this.DGVSTATUS.Rows[i].Cells["当前版本"].Value = Wave + "|" + Fpga;
                     //this.DGVSTATUS.Rows[i].Cells["ping"].Value = "OK" + "|" + "netid已删除";
                     DGVSTATUS.Rows[i].Cells["当前版本"].Style.BackColor = Color.GreenYellow;
@@ -19251,6 +19576,8 @@ namespace MyGpnSoftware
                 { "761a",       "761a.fpga",                    lab761a.Text },
                 { "761b",       "761b.fpga",                    lab761b.Text },
                 { "761c",       "761c.fpga",                    lab761c.Text },
+                { "761d",       "761d.fpga",                    lab761d.Text },
+
                 { "APP2",       "app_code_backup2.bin",         labapp2.Text },
                 { "VOSS",       "voss.sh" ,                     labvoss.Text},
                 { "REBOOTOS",   "rebootos.sh",                  labrebootos.Text },
@@ -19307,7 +19634,7 @@ namespace MyGpnSoftware
                     }
                 }
             }
-            if (FindDevType.Finddevtype(Snmp.Get(gpnip, readcommunity, 2000, 2, devtype)).Contains("800"))
+            if (FindDevType.Finddevtype(Snmp.Get(gpnip, readcommunity, 2000, 2, devtype)).Contains("800-DE"))
             {
                 this.DGVSTATUS.Rows[i].Cells["当前版本"].Value = "初始化";
                 bool bo = mysocketftp.Connect(gpnip, "23");
@@ -19516,6 +19843,7 @@ namespace MyGpnSoftware
                 { "7612",       "7612.fpga",lab7612.Text },
                 { "7613",       "7613.fpga",lab7613.Text },
                 { "7614",       "7614.fpga",lab7614.Text },
+                { "7615",       "7615.fpga",lab7615.Text },
                 { "7616",       "7616.fpga",lab7616.Text },
                 { "7616c",      "7616c.fpga" ,                 lab7616c.Text},
                 { "7618",       "7618.fpga",                    lab7618.Text },
@@ -19523,6 +19851,8 @@ namespace MyGpnSoftware
                 { "761a",       "761a.fpga",                    lab761a.Text },
                 { "761b",       "761b.fpga",                    lab761b.Text },
                 { "761c",       "761c.fpga",                    lab761c.Text },
+                { "761d",       "761d.fpga",                    lab761d.Text },
+
                 { "APP2",       "app_code_backup2.bin",labapp2.Text },
                 { "VOSS",       "voss.sh" ,labvoss.Text},
                 { "REBOOTOS",   "rebootos.sh",labrebootos.Text },
@@ -19692,6 +20022,11 @@ namespace MyGpnSoftware
             //string UxcSwNmsTypeStr = "318/318/168/168";
             //int NmsTypeStrCount = UxcSwNmsTypeStr.Split(new string[] { "168" }, StringSplitOptions.None).Length - 1;
             //MessageBox.Show(NmsTypeStrCount.ToString());
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
