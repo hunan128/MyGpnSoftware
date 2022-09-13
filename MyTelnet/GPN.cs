@@ -16,6 +16,7 @@ using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
@@ -58,6 +59,7 @@ namespace MyGpnSoftware
         public static object PiLiangShengJi = new object(); //批量升级累计完成数量加锁
         public static bool save = false;                //批量保存设备数据
         public static string linkup = "";//设备Telnet连接状态
+        public static string appver = "";
 
 
         // 保存户名和密码
@@ -118,6 +120,7 @@ namespace MyGpnSoftware
                     textftppsd.Text = ContentValue(strSec, "FTPpsd");
                     tbxFtpRoot.Text = ContentValue(strSec, "FTPpath");
                     TextVNCUser.Text = ContentValue(strSec, "VNCUSER");
+                    appver = ContentValue(strSec, "appver");
                     if (ContentValue(strSec, "ReadCommunity") != "")
                     {
                         textReadCommunity.Text = ContentValue(strSec, "ReadCommunity");
@@ -254,6 +257,18 @@ namespace MyGpnSoftware
                     {
                         com761d.Text = ContentValue(strSec, "761d");
                     }
+                    if (com761e.Items.Contains(ContentValue(strSec, "761e")))
+                    {
+                        com761e.Text = ContentValue(strSec, "761e");
+                    }
+                    if (com761f.Items.Contains(ContentValue(strSec, "761f")))
+                    {
+                        com761f.Text = ContentValue(strSec, "761f");
+                    }
+                    if (com7620.Items.Contains(ContentValue(strSec, "7620")))
+                    {
+                        com7620.Text = ContentValue(strSec, "7620");
+                    }
                     if (comsysfile.Items.Contains(ContentValue(strSec, "sysfile")))
                     {
                         comsysfile.Text = ContentValue(strSec, "sysfile");
@@ -278,7 +293,7 @@ namespace MyGpnSoftware
                     {
                         comyaffs.Text = ContentValue(strSec, "YAFFS");
                     }
-                    comgpn76list.Text = ContentValue(strSec, "GPN7600EMS");
+                    comgpn76list.Text = ContentValue(strSec, "GPN7600EMS"); 
                 }
                 if (File.Exists(frpcPath))//读取时先要判读INI文件是否存在
                 {
@@ -4236,7 +4251,9 @@ namespace MyGpnSoftware
             com761b.Items.Clear();
             com761c.Items.Clear();
             com761d.Items.Clear();
-
+            com761e.Items.Clear();
+            com761f.Items.Clear();
+            com7620.Items.Clear();
             comvoss.Items.Clear();
             comrebootos.Items.Clear();
             comcpld.Items.Clear();
@@ -4544,6 +4561,30 @@ namespace MyGpnSoftware
                         com761d.SelectedIndex = com761d.Items.Count - 1;
                     }
                 }
+                if (s.Contains("761e") || s.Contains("761E"))
+                {
+                    com761e.Items.Add(s);
+                    if (com761e.Items.Count > 0)
+                    {
+                        com761e.SelectedIndex = com761e.Items.Count - 1;
+                    }
+                }
+                if (s.Contains("761f") || s.Contains("761F"))
+                {
+                    com761f.Items.Add(s);
+                    if (com761f.Items.Count > 0)
+                    {
+                        com761f.SelectedIndex = com761f.Items.Count - 1;
+                    }
+                }
+                if (s.Contains("7620") )
+                {
+                    com7620.Items.Add(s);
+                    if (com7620.Items.Count > 0)
+                    {
+                        com7620.SelectedIndex = com7620.Items.Count - 1;
+                    }
+                }
                 if (s.Contains("sysfile") || s.Contains("Sysfile") || s.Contains("SYSFILE") || s.Contains("SysFile"))
                 {
                     comsysfile.Items.Add(s);
@@ -4787,6 +4828,14 @@ namespace MyGpnSoftware
            // this.WindowState = FormWindowState.Maximized;
             Process[] pro = Process.GetProcesses();
             int count = 0;
+            string appvernew = Application.ProductVersion.ToString();
+            if (appver != appvernew)
+            {
+                object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyDescriptionAttribute), false);
+                string[] description = ((AssemblyDescriptionAttribute)attributes[0]).Description.Split('\n');
+                string DES = description[0] + "\n" + description[1] + "\n" + description[2] + "\n" + description[3] + "\n" + description[4] + "\n";
+                MessageBox.Show(DES, "本次软件更新说明：");
+            }
             foreach (var item in pro)
             {
                 if (item.ProcessName == "frpc")
@@ -4899,7 +4948,9 @@ namespace MyGpnSoftware
                 WritePrivateProfileString(strSec, "761b", com761b.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "761c", com761c.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "761d", com761d.Text.Trim(), strFilePath);
-
+                WritePrivateProfileString(strSec, "761e", com761e.Text.Trim(), strFilePath);
+                WritePrivateProfileString(strSec, "761f", com761f.Text.Trim(), strFilePath);
+                WritePrivateProfileString(strSec, "7620", com7620.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "sysfile", comsysfile.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "voss", comvoss.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "rebootos", comrebootos.Text.Trim(), strFilePath);
@@ -4908,6 +4959,9 @@ namespace MyGpnSoftware
                 WritePrivateProfileString(strSec, "Yaffs", comyaffs.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "GPN7600EMS", comgpn76list.Text.Trim(), strFilePath);
                 WritePrivateProfileString(strSec, "VNCUSER", TextVNCUser.Text.Trim(), strFilePath);
+                string appvernew = Application.ProductVersion.ToString();
+                WritePrivateProfileString(strSec, "appver", appvernew, strFilePath);
+
                 int a = 0;
                 bool zhixing;
                 string ipadd = "";
@@ -7072,7 +7126,7 @@ namespace MyGpnSoftware
                 Thread.Sleep(3000);
                 textguzhangmingling.Text = "exit";
                 butguzhangsend.PerformClick();
-                textguzhangmingling.Text = "reboot " + comotnslot.Text;
+                //textguzhangmingling.Text = "reboot "+ comotnslot.Text;
                 butguzhangsend.PerformClick();
                 textguzhangmingling.Text = "y";
                 butguzhangsend.PerformClick();
@@ -7101,7 +7155,7 @@ namespace MyGpnSoftware
                 Thread.Sleep(3000);
                 textguzhangmingling.Text = "exit";
                 butguzhangsend.PerformClick();
-                textguzhangmingling.Text = "reboot " + comotnslot.Text;
+                //textguzhangmingling.Text = "reboot "+ comotnslot.Text;
                 butguzhangsend.PerformClick();
                 textguzhangmingling.Text = "y";
                 butguzhangsend.PerformClick();
@@ -7122,7 +7176,7 @@ namespace MyGpnSoftware
                 Thread.Sleep(3000);
                 textguzhangmingling.Text = "exit";
                 butguzhangsend.PerformClick();
-                textguzhangmingling.Text = "reboot " + comotnslot.Text;
+                //textguzhangmingling.Text = "reboot "+ comotnslot.Text;
                 butguzhangsend.PerformClick();
                 textguzhangmingling.Text = "y";
                 butguzhangsend.PerformClick();
@@ -7172,7 +7226,7 @@ namespace MyGpnSoftware
                 Thread.Sleep(3000);
                 textguzhangmingling.Text = "exit";
                 butguzhangsend.PerformClick();
-                textguzhangmingling.Text = "reboot " + comotnslot.Text;
+                //textguzhangmingling.Text = "reboot "+ comotnslot.Text;
                 butguzhangsend.PerformClick();
                 textguzhangmingling.Text = "y";
                 butguzhangsend.PerformClick();
@@ -7193,7 +7247,7 @@ namespace MyGpnSoftware
                 Thread.Sleep(3000);
                 textguzhangmingling.Text = "exit";
                 butguzhangsend.PerformClick();
-                textguzhangmingling.Text = "reboot " + comotnslot.Text;
+                //textguzhangmingling.Text = "reboot "+ comotnslot.Text;
                 butguzhangsend.PerformClick();
                 textguzhangmingling.Text = "y";
                 butguzhangsend.PerformClick();
@@ -7214,7 +7268,7 @@ namespace MyGpnSoftware
                 Thread.Sleep(3000);
                 textguzhangmingling.Text = "exit";
                 butguzhangsend.PerformClick();
-                textguzhangmingling.Text = "reboot " + comotnslot.Text;
+                //textguzhangmingling.Text = "reboot "+ comotnslot.Text;
                 butguzhangsend.PerformClick();
                 textguzhangmingling.Text = "y";
                 butguzhangsend.PerformClick();
@@ -7236,7 +7290,7 @@ namespace MyGpnSoftware
                 Thread.Sleep(3000);
                 textguzhangmingling.Text = "exit";
                 butguzhangsend.PerformClick();
-                textguzhangmingling.Text = "reboot " + comotnslot.Text;
+                //textguzhangmingling.Text = "reboot "+ comotnslot.Text;
                 butguzhangsend.PerformClick();
                 textguzhangmingling.Text = "y";
                 butguzhangsend.PerformClick();
@@ -7257,7 +7311,7 @@ namespace MyGpnSoftware
                 Thread.Sleep(3000);
                 textguzhangmingling.Text = "exit";
                 butguzhangsend.PerformClick();
-                textguzhangmingling.Text = "reboot " + comotnslot.Text;
+                //textguzhangmingling.Text = "reboot "+ comotnslot.Text;
                 butguzhangsend.PerformClick();
                 textguzhangmingling.Text = "y";
                 butguzhangsend.PerformClick();
@@ -7278,7 +7332,7 @@ namespace MyGpnSoftware
                 Thread.Sleep(3000);
                 textguzhangmingling.Text = "exit";
                 butguzhangsend.PerformClick();
-                textguzhangmingling.Text = "reboot " + comotnslot.Text;
+                //textguzhangmingling.Text = "reboot "+ comotnslot.Text;
                 butguzhangsend.PerformClick();
                 textguzhangmingling.Text = "y";
                 butguzhangsend.PerformClick();
@@ -7299,7 +7353,7 @@ namespace MyGpnSoftware
                 Thread.Sleep(3000);
                 textguzhangmingling.Text = "exit";
                 butguzhangsend.PerformClick();
-                textguzhangmingling.Text = "reboot " + comotnslot.Text;
+                //textguzhangmingling.Text = "reboot "+ comotnslot.Text;
                 butguzhangsend.PerformClick();
                 textguzhangmingling.Text = "y";
                 butguzhangsend.PerformClick();
@@ -7468,7 +7522,7 @@ namespace MyGpnSoftware
            // textguzhangmingling.Text = "enable show boardname by e2-extinfo";
            // butguzhangsend.PerformClick();
             Thread.Sleep(XHTime);
-            //textguzhangmingling.Text = "reboot " + comotnslot.Text;
+            ////textguzhangmingling.Text = "reboot "+ comotnslot.Text;
             //butguzhangsend.PerformClick();
             //textguzhangmingling.Text = "Y";
             //butguzhangsend.PerformClick();
@@ -7970,6 +8024,36 @@ namespace MyGpnSoftware
             {
                 lSize = new FileInfo(sFullName).Length;
                 lab761d.Text = lSize.ToString();
+            }
+        }
+        private void com761e_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            long lSize = 0;
+            string sFullName = @tbxFtpRoot.Text.Trim() + com761e.Text.Trim();
+            if (File.Exists(sFullName))
+            {
+                lSize = new FileInfo(sFullName).Length;
+                lab761e.Text = lSize.ToString();
+            }
+        }
+        private void com761f_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            long lSize = 0;
+            string sFullName = @tbxFtpRoot.Text.Trim() + com761f.Text.Trim();
+            if (File.Exists(sFullName))
+            {
+                lSize = new FileInfo(sFullName).Length;
+                lab761f.Text = lSize.ToString();
+            }
+        }
+        private void com7620_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            long lSize = 0;
+            string sFullName = @tbxFtpRoot.Text.Trim() + com7620.Text.Trim();
+            if (File.Exists(sFullName))
+            {
+                lSize = new FileInfo(sFullName).Length;
+                lab7620.Text = lSize.ToString();
             }
         }
         private void comsysfile_SelectedIndexChanged(object sender, EventArgs e)
@@ -14784,6 +14868,51 @@ namespace MyGpnSoftware
                 this.DGVSTATUS.Columns["761d"].FillWeight = 50;
                 DGVSTATUS.Columns["761d"].SortMode = DataGridViewColumnSortMode.NotSortable;
             }
+            if (check761e.Checked == true)
+            {
+                if (DGVSTATUS.Columns["761e"] == null)
+                {
+
+                    this.DGVSTATUS.Columns.Add("761e", "761e");
+                }
+                else
+                {
+                    this.DGVSTATUS.Columns.Remove("761e");
+                    this.DGVSTATUS.Columns.Add("761e", "761e");
+                }
+                this.DGVSTATUS.Columns["761e"].FillWeight = 50;
+                DGVSTATUS.Columns["761e"].SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
+            if (check761f.Checked == true)
+            {
+                if (DGVSTATUS.Columns["761f"] == null)
+                {
+
+                    this.DGVSTATUS.Columns.Add("761f", "761f");
+                }
+                else
+                {
+                    this.DGVSTATUS.Columns.Remove("761f");
+                    this.DGVSTATUS.Columns.Add("761f", "761f");
+                }
+                this.DGVSTATUS.Columns["761f"].FillWeight = 50;
+                DGVSTATUS.Columns["761f"].SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
+            if (check7620.Checked == true)
+            {
+                if (DGVSTATUS.Columns["7620"] == null)
+                {
+
+                    this.DGVSTATUS.Columns.Add("7620", "7620");
+                }
+                else
+                {
+                    this.DGVSTATUS.Columns.Remove("7620");
+                    this.DGVSTATUS.Columns.Add("7620", "7620");
+                }
+                this.DGVSTATUS.Columns["7620"].FillWeight = 50;
+                DGVSTATUS.Columns["7620"].SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
             if (checksysfile.Checked == true)
             {
                 if (DGVSTATUS.Columns["SysFile"] == null)
@@ -15442,12 +15571,13 @@ namespace MyGpnSoftware
                         textDOS.AppendText(string.Format(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + gpnip + " 板卡运行型号11/12/17/18槽位 257-uxc 1-null 168-nms ：" + UxcSwNmsTypeStr + "\r\n"));
                         RuningUxcSwStrCount = RuningUxcSwStr.Split(new char[] { '4' }).Length - 1;
                         RuningNmsStrCount = RuningNmsStr.Split(new char[] { '4' }).Length - 1;
-                        UxcTypeStrCount = UxcSwNmsTypeStr.Split(new string[] { "257" }, StringSplitOptions.None).Length - 1;
-                        SwTypeStrCount = UxcSwNmsTypeStr.Split(new string[] { "47" }, StringSplitOptions.None).Length - 1;
-                        SwTypeStrCount = UxcSwNmsTypeStr.Split(new string[] { "93" }, StringSplitOptions.None).Length - 1;
-                        SwTypeStrCount = UxcSwNmsTypeStr.Split(new string[] { "196" }, StringSplitOptions.None).Length - 1;
-                        SwTypeStrCount = UxcSwNmsTypeStr.Split(new string[] { "207" }, StringSplitOptions.None).Length - 1;
-                        NmsTypeStrCount = UxcSwNmsTypeStr.Split(new string[] { "168" }, StringSplitOptions.None).Length - 1;
+                        if (UxcSwNmsTypeStr.Contains("257")) { UxcTypeStrCount = UxcSwNmsTypeStr.Split(new string[] { "257" }, StringSplitOptions.None).Length - 1; }
+                        if (UxcSwNmsTypeStr.Contains("47")) { SwTypeStrCount = UxcSwNmsTypeStr.Split(new string[] { "47" }, StringSplitOptions.None).Length - 1; }                       
+                        if (UxcSwNmsTypeStr.Contains("93")) { SwTypeStrCount = UxcSwNmsTypeStr.Split(new string[] { "93" }, StringSplitOptions.None).Length - 1; }                     
+                        if (UxcSwNmsTypeStr.Contains("196")) { SwTypeStrCount = UxcSwNmsTypeStr.Split(new string[] { "196" }, StringSplitOptions.None).Length - 1; }                      
+                        if (UxcSwNmsTypeStr.Contains("207")) { SwTypeStrCount = UxcSwNmsTypeStr.Split(new string[] { "207" }, StringSplitOptions.None).Length - 1; }                       
+                        if (UxcSwNmsTypeStr.Contains("168")) { NmsTypeStrCount = UxcSwNmsTypeStr.Split(new string[] { "168" }, StringSplitOptions.None).Length - 1; }
+                        
                         Thread.Sleep(3 * XHTime);
 
                     }
@@ -15496,7 +15626,9 @@ namespace MyGpnSoftware
                 { "761b",       "14",com761b.Text,      "/yaffs/sys/761b.fpga"          },
                 { "761c",       "14",com761c.Text,      "/yaffs/sys/761c.fpga"          },
                 { "761d",       "14",com761d.Text,      "/yaffs/sys/761d.fpga"          },
-
+                { "761e",       "14",com761e.Text,      "/yaffs/sys/761e.fpga"          },
+                { "761f",       "14",com761f.Text,      "/yaffs/sys/761f.fpga"          },
+                { "7620",       "14",com7620.Text,      "/yaffs/sys/7620.fpga"          },
                 { "APP2",       "14",comapp2.Text,      "/flash/sys/app_code_backup2.bin"},
                 { "VOSS",       "14",comvoss.Text,      "/flash/sys/voss.sh"            },
                 { "REBOOTOS",   "14",comrebootos.Text,  "/flash/sys/rebootos.sh"        },
@@ -15540,7 +15672,9 @@ namespace MyGpnSoftware
                 { "761b",       "14",com761b.Text,      "/mmc0a/sys/761b.fpga"          },
                 { "761c",       "14",com761c.Text,      "/mmc0a/sys/761c.fpga"          },
                 { "761d",       "14",com761d.Text,      "/mmc0a/sys/761d.fpga"          },
-
+                { "761e",       "14",com761e.Text,      "/yaffs/sys/761e.fpga"          },
+                { "761f",       "14",com761f.Text,      "/yaffs/sys/761f.fpga"          },
+                { "7620",       "14",com7620.Text,      "/yaffs/sys/7620.fpga"          },
                 { "APP2",       "14",comapp2.Text,      "/flash/sys/app_code_backup2.bin"},
                 { "VOSS",       "14",comvoss.Text,      "/flash/sys/voss.sh"            },
                 { "REBOOTOS",   "14",comrebootos.Text,  "/flash/sys/rebootos.sh"        },
@@ -16700,9 +16834,9 @@ namespace MyGpnSoftware
             com761b.Items.Clear();
             com761c.Items.Clear();
             com761d.Items.Clear();
-
-
-
+            com761e.Items.Clear();
+            com761f.Items.Clear();
+            com7620.Items.Clear();
             Readfile(tbxFtpRoot.Text);
 
 
@@ -16821,6 +16955,18 @@ namespace MyGpnSoftware
                 if (com761d.Items.Contains(ContentValue(strSec, "761d")))
                 {
                     com761d.Text = ContentValue(strSec, "761d");
+                }
+                if (com761e.Items.Contains(ContentValue(strSec, "761e")))
+                {
+                    com761e.Text = ContentValue(strSec, "761e");
+                }
+                if (com761f.Items.Contains(ContentValue(strSec, "761f")))
+                {
+                    com761f.Text = ContentValue(strSec, "761f");
+                }
+                if (com7620.Items.Contains(ContentValue(strSec, "7620")))
+                {
+                    com7620.Text = ContentValue(strSec, "7620");
                 }
                 if (comsysfile.Items.Contains(ContentValue(strSec, "sysfile")))
                 {

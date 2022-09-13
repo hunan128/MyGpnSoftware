@@ -126,6 +126,8 @@
             this.tabPageGpn = new System.Windows.Forms.TabPage();
             this.panel3 = new System.Windows.Forms.Panel();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.lab761d = new System.Windows.Forms.Label();
+            this.check761d = new System.Windows.Forms.CheckBox();
             this.labyaffs = new System.Windows.Forms.Label();
             this.label24 = new System.Windows.Forms.Label();
             this.labcpld = new System.Windows.Forms.Label();
@@ -277,6 +279,20 @@
             this.check761b = new System.Windows.Forms.CheckBox();
             this.check761c = new System.Windows.Forms.CheckBox();
             this.lab7616c = new System.Windows.Forms.Label();
+            this.lab761dname = new System.Windows.Forms.Label();
+            this.com761d = new System.Windows.Forms.ComboBox();
+            this.lab761ename = new System.Windows.Forms.Label();
+            this.com761e = new System.Windows.Forms.ComboBox();
+            this.check761e = new System.Windows.Forms.CheckBox();
+            this.lab761e = new System.Windows.Forms.Label();
+            this.lab761fname = new System.Windows.Forms.Label();
+            this.com761f = new System.Windows.Forms.ComboBox();
+            this.check761f = new System.Windows.Forms.CheckBox();
+            this.lab761f = new System.Windows.Forms.Label();
+            this.lab7620name = new System.Windows.Forms.Label();
+            this.com7620 = new System.Windows.Forms.ComboBox();
+            this.check7620 = new System.Windows.Forms.CheckBox();
+            this.lab7620 = new System.Windows.Forms.Label();
             this.ButCheckFile = new System.Windows.Forms.Button();
             this.ButLogin = new System.Windows.Forms.Button();
             this.groupBox12 = new System.Windows.Forms.GroupBox();
@@ -538,10 +554,6 @@
             this.netconfClient下载DToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.LabFtpLed = new System.Windows.Forms.Label();
             this.btnFtpServerStartStop = new System.Windows.Forms.Button();
-            this.lab761dname = new System.Windows.Forms.Label();
-            this.com761d = new System.Windows.Forms.ComboBox();
-            this.check761d = new System.Windows.Forms.CheckBox();
-            this.lab761d = new System.Windows.Forms.Label();
             this.tabPageLog.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -2133,9 +2145,21 @@
             this.tableLayoutPanel1.Controls.Add(this.lab7616c, 3, 32);
             this.tableLayoutPanel1.Controls.Add(this.lab761dname, 0, 38);
             this.tableLayoutPanel1.Controls.Add(this.com761d, 1, 38);
+            this.tableLayoutPanel1.Controls.Add(this.lab761ename, 0, 39);
+            this.tableLayoutPanel1.Controls.Add(this.com761e, 1, 39);
+            this.tableLayoutPanel1.Controls.Add(this.check761e, 2, 39);
+            this.tableLayoutPanel1.Controls.Add(this.lab761e, 3, 39);
+            this.tableLayoutPanel1.Controls.Add(this.lab761fname, 0, 40);
+            this.tableLayoutPanel1.Controls.Add(this.com761f, 1, 40);
+            this.tableLayoutPanel1.Controls.Add(this.check761f, 2, 40);
+            this.tableLayoutPanel1.Controls.Add(this.lab761f, 3, 40);
+            this.tableLayoutPanel1.Controls.Add(this.lab7620name, 0, 41);
+            this.tableLayoutPanel1.Controls.Add(this.com7620, 1, 41);
+            this.tableLayoutPanel1.Controls.Add(this.check7620, 2, 41);
+            this.tableLayoutPanel1.Controls.Add(this.lab7620, 3, 41);
             this.tableLayoutPanel1.Location = new System.Drawing.Point(2, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 41;
+            this.tableLayoutPanel1.RowCount = 43;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
@@ -2177,8 +2201,30 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(356, 846);
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(356, 873);
             this.tableLayoutPanel1.TabIndex = 274;
+            // 
+            // lab761d
+            // 
+            this.lab761d.AutoSize = true;
+            this.lab761d.Location = new System.Drawing.Point(304, 760);
+            this.lab761d.Name = "lab761d";
+            this.lab761d.Size = new System.Drawing.Size(17, 12);
+            this.lab761d.TabIndex = 345;
+            this.lab761d.Text = "空";
+            this.lab761d.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // check761d
+            // 
+            this.check761d.AutoSize = true;
+            this.check761d.Location = new System.Drawing.Point(284, 763);
+            this.check761d.Name = "check761d";
+            this.check761d.Size = new System.Drawing.Size(14, 14);
+            this.check761d.TabIndex = 344;
+            this.check761d.Text = "checkBox6";
+            this.check761d.UseVisualStyleBackColor = true;
             // 
             // labyaffs
             // 
@@ -3850,6 +3896,136 @@
             this.lab7616c.TabIndex = 319;
             this.lab7616c.Text = "空";
             this.lab7616c.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lab761dname
+            // 
+            this.lab761dname.AutoSize = true;
+            this.lab761dname.Location = new System.Drawing.Point(3, 760);
+            this.lab761dname.Name = "lab761dname";
+            this.lab761dname.Size = new System.Drawing.Size(29, 12);
+            this.lab761dname.TabIndex = 342;
+            this.lab761dname.Text = "761D";
+            // 
+            // com761d
+            // 
+            this.com761d.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.com761d.FormattingEnabled = true;
+            this.com761d.Location = new System.Drawing.Point(51, 763);
+            this.com761d.Name = "com761d";
+            this.com761d.Size = new System.Drawing.Size(227, 20);
+            this.com761d.TabIndex = 343;
+            this.com761d.SelectedIndexChanged += new System.EventHandler(this.com761d_SelectedIndexChanged);
+            // 
+            // lab761ename
+            // 
+            this.lab761ename.AutoSize = true;
+            this.lab761ename.Location = new System.Drawing.Point(3, 780);
+            this.lab761ename.Name = "lab761ename";
+            this.lab761ename.Size = new System.Drawing.Size(29, 12);
+            this.lab761ename.TabIndex = 346;
+            this.lab761ename.Text = "761E";
+            // 
+            // com761e
+            // 
+            this.com761e.FormattingEnabled = true;
+            this.com761e.Location = new System.Drawing.Point(51, 783);
+            this.com761e.Name = "com761e";
+            this.com761e.Size = new System.Drawing.Size(227, 20);
+            this.com761e.TabIndex = 347;
+            this.com761e.SelectedIndexChanged += new System.EventHandler(this.com761e_SelectedIndexChanged);
+            // 
+            // check761e
+            // 
+            this.check761e.AutoSize = true;
+            this.check761e.Location = new System.Drawing.Point(284, 783);
+            this.check761e.Name = "check761e";
+            this.check761e.Size = new System.Drawing.Size(14, 14);
+            this.check761e.TabIndex = 348;
+            this.check761e.Text = "checkBox1";
+            this.check761e.UseVisualStyleBackColor = true;
+            // 
+            // lab761e
+            // 
+            this.lab761e.AutoSize = true;
+            this.lab761e.Location = new System.Drawing.Point(304, 780);
+            this.lab761e.Name = "lab761e";
+            this.lab761e.Size = new System.Drawing.Size(17, 12);
+            this.lab761e.TabIndex = 349;
+            this.lab761e.Text = "空";
+            // 
+            // lab761fname
+            // 
+            this.lab761fname.AutoSize = true;
+            this.lab761fname.Location = new System.Drawing.Point(3, 800);
+            this.lab761fname.Name = "lab761fname";
+            this.lab761fname.Size = new System.Drawing.Size(29, 12);
+            this.lab761fname.TabIndex = 350;
+            this.lab761fname.Text = "761F";
+            // 
+            // com761f
+            // 
+            this.com761f.FormattingEnabled = true;
+            this.com761f.Location = new System.Drawing.Point(51, 803);
+            this.com761f.Name = "com761f";
+            this.com761f.Size = new System.Drawing.Size(227, 20);
+            this.com761f.TabIndex = 351;
+            this.com761f.SelectedIndexChanged += new System.EventHandler(this.com761f_SelectedIndexChanged);
+            // 
+            // check761f
+            // 
+            this.check761f.AutoSize = true;
+            this.check761f.Location = new System.Drawing.Point(284, 803);
+            this.check761f.Name = "check761f";
+            this.check761f.Size = new System.Drawing.Size(14, 14);
+            this.check761f.TabIndex = 352;
+            this.check761f.Text = "checkBox2";
+            this.check761f.UseVisualStyleBackColor = true;
+            // 
+            // lab761f
+            // 
+            this.lab761f.AutoSize = true;
+            this.lab761f.Location = new System.Drawing.Point(304, 800);
+            this.lab761f.Name = "lab761f";
+            this.lab761f.Size = new System.Drawing.Size(17, 12);
+            this.lab761f.TabIndex = 353;
+            this.lab761f.Text = "空";
+            // 
+            // lab7620name
+            // 
+            this.lab7620name.AutoSize = true;
+            this.lab7620name.Location = new System.Drawing.Point(3, 820);
+            this.lab7620name.Name = "lab7620name";
+            this.lab7620name.Size = new System.Drawing.Size(29, 12);
+            this.lab7620name.TabIndex = 354;
+            this.lab7620name.Text = "7620";
+            // 
+            // com7620
+            // 
+            this.com7620.FormattingEnabled = true;
+            this.com7620.Location = new System.Drawing.Point(51, 823);
+            this.com7620.Name = "com7620";
+            this.com7620.Size = new System.Drawing.Size(227, 20);
+            this.com7620.TabIndex = 355;
+            this.com7620.SelectedIndexChanged += new System.EventHandler(this.com7620_SelectedIndexChanged);
+            // 
+            // check7620
+            // 
+            this.check7620.AutoSize = true;
+            this.check7620.Location = new System.Drawing.Point(284, 823);
+            this.check7620.Name = "check7620";
+            this.check7620.Size = new System.Drawing.Size(14, 14);
+            this.check7620.TabIndex = 356;
+            this.check7620.Text = "checkBox3";
+            this.check7620.UseVisualStyleBackColor = true;
+            // 
+            // lab7620
+            // 
+            this.lab7620.AutoSize = true;
+            this.lab7620.Location = new System.Drawing.Point(304, 820);
+            this.lab7620.Name = "lab7620";
+            this.lab7620.Size = new System.Drawing.Size(17, 12);
+            this.lab7620.TabIndex = 357;
+            this.lab7620.Text = "空";
             // 
             // ButCheckFile
             // 
@@ -7698,45 +7874,6 @@
             this.btnFtpServerStartStop.UseVisualStyleBackColor = false;
             this.btnFtpServerStartStop.Click += new System.EventHandler(this.BtnFtpServerStartStop_Click);
             // 
-            // lab761dname
-            // 
-            this.lab761dname.AutoSize = true;
-            this.lab761dname.Location = new System.Drawing.Point(3, 760);
-            this.lab761dname.Name = "lab761dname";
-            this.lab761dname.Size = new System.Drawing.Size(29, 12);
-            this.lab761dname.TabIndex = 342;
-            this.lab761dname.Text = "761D";
-            // 
-            // com761d
-            // 
-            this.com761d.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.com761d.FormattingEnabled = true;
-            this.com761d.Location = new System.Drawing.Point(51, 763);
-            this.com761d.Name = "com761d";
-            this.com761d.Size = new System.Drawing.Size(227, 20);
-            this.com761d.TabIndex = 343;
-            this.com761d.SelectedIndexChanged += new System.EventHandler(this.com761d_SelectedIndexChanged);
-            // 
-            // check761d
-            // 
-            this.check761d.AutoSize = true;
-            this.check761d.Location = new System.Drawing.Point(284, 763);
-            this.check761d.Name = "check761d";
-            this.check761d.Size = new System.Drawing.Size(14, 14);
-            this.check761d.TabIndex = 344;
-            this.check761d.Text = "checkBox6";
-            this.check761d.UseVisualStyleBackColor = true;
-            // 
-            // lab761d
-            // 
-            this.lab761d.AutoSize = true;
-            this.lab761d.Location = new System.Drawing.Point(304, 760);
-            this.lab761d.Name = "lab761d";
-            this.lab761d.Size = new System.Drawing.Size(17, 12);
-            this.lab761d.TabIndex = 345;
-            this.lab761d.Text = "空";
-            this.lab761d.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
             // GPN
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -8311,6 +8448,18 @@
         private System.Windows.Forms.CheckBox check761d;
         private System.Windows.Forms.Label lab761dname;
         private System.Windows.Forms.ComboBox com761d;
+        private System.Windows.Forms.Label lab761ename;
+        private System.Windows.Forms.ComboBox com761e;
+        private System.Windows.Forms.CheckBox check761e;
+        private System.Windows.Forms.Label lab761e;
+        private System.Windows.Forms.Label lab761fname;
+        private System.Windows.Forms.ComboBox com761f;
+        private System.Windows.Forms.CheckBox check761f;
+        private System.Windows.Forms.Label lab761f;
+        private System.Windows.Forms.Label lab7620name;
+        private System.Windows.Forms.ComboBox com7620;
+        private System.Windows.Forms.CheckBox check7620;
+        private System.Windows.Forms.Label lab7620;
     }
 }
 

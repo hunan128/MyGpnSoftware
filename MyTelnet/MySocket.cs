@@ -112,8 +112,6 @@ namespace MyGpnSoftware
             return 0;
         }
 
-
-
         /// <summary>
         /// 接收数据
         /// </summary>
